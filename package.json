@@ -13,6 +13,7 @@
     "@chassis/core": "^1.0.1",
     "@chassis/gulp": "^1.0.0",
     "babel-preset-env": "^1.6.0",
+    "babel-preset-minify": "^0.2.0",
     "fs-extra": "^4.0.2",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^2.6.1"

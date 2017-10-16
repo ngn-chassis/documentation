@@ -7,6 +7,8 @@ const postcss = require('postcss')
 const babel = require("babel-core")
 const babylon = require('babylon')
 const cleanCss = new CleanCSS()
+const minifyHtml = require('html-minifier').minify
+const uglify = require('uglify-js').minify
 
 class Builder {
   constructor (cfg) {
@@ -22,6 +24,8 @@ class Builder {
     this.transpile = cfg.transpile || false
 
     this.sourceType = cfg.sourceType || 'script'
+    this.outputStyles = cfg.outputStyles.length > 0 ? cfg.outputStyles : ['bundle']
+
     this.templates = {
       bundled: path.resolve(__dirname, 'templates/bundled.js'),
       import: path.resolve(__dirname, 'templates/import.js')
@@ -41,7 +45,12 @@ class Builder {
   }
 
   get finalTemplateString () {
-    return `<template><style>@charset UTF-8; ${this.css}</style>${this.template}</template>`
+    let templateString = `<template><style>@charset UTF-8; ${this.css}</style>${this.template}</template>`
+
+    return minifyHtml(templateString, {
+      collapseWhitespace: true,
+      removeComments: true
+    })
   }
 
   get outputDir () {
@@ -57,44 +66,70 @@ class Builder {
   }
 
   build () {
-    let tasks = new TaskRunner()
+    let processor = new TaskRunner()
 
-    tasks.add('Processing JavaScript', (next) => this.processJs(next))
-    tasks.add('Processing CSS', (next) => this.processCss(next))
-    tasks.add('Processing Template', (next) => this.processTemplate(next))
-    tasks.add('Bundling Web Component...', (next) => this.bundle(next))
+    processor.add('Processing JavaScript...', (next) => this.processJs(next))
+    processor.add('Processing CSS...', (next) => this.processCss(next))
+    processor.add('Processing Template...', (next) => this.processTemplate(next))
 
-    if (this.transpile) {
-      tasks.add('Transpiling to ES5', (next) => this.transpileJs(next))
-    }
+    processor.on('stepstarted', (task) => console.info(task.name))
 
-    tasks.add('Compressing...', (next) => this.compressOutput(next))
+    processor.on('complete', () => {
+      // if (this.outputStyles.includes('import')) {
+      //   tasks.add('Bundling HTML Import...', (next) => {
+      //     next()
+      //   })
+      // }
+      //
+      // if (this.outputStyles.includes('bundle')) {
+      //   tasks.add('Bundling Web Component...', (next) => {
+      //     next()
+      //   })
+      // }
+      //
+      // if (this.outputStyles.includes('raw')) {
+      //   console.log('raw');
+      // }
 
-    tasks.on('stepstarted', (task) => console.info(task.name))
+      let output = this.js.replace(/{{TEMPLATE-STRING}}/gi, this.finalTemplateString)
+      let compiler = new TaskRunner()
 
-    tasks.on('complete', () => {
-      console.log(this.output);
+      if (this.transpile) {
+        compiler.add('Transpiling to ES5...', (next) => {
+          output = babel.transform(output, {
+            presets: ['env']
+          }).code
 
-      if (this.dest) {
-        console.info('Writing File...')
+          next()
+        })
 
-        this._writeFile(() => {
-          console.info('Done.')
+        compiler.add('Compressing...', (next) => {
+          output = uglify(output).code
+          next()
+        })
+      } else {
+        compiler.add('Compressing...', (next) => {
+          output = babel.transform(output, {
+            presets: ['minify']
+          }).code
+
+          next()
         })
       }
+
+      compiler.on('stepstarted', (task) => console.info(task.name))
+      compiler.on('complete', () => {
+        if (this.dest) {
+          this._writeFile(output, () => {
+            console.info(`Done. Wrote to ${this.outputDir}`)
+          })
+        }
+      })
+
+      compiler.run(true)
     })
 
-    tasks.run(true)
-  }
-
-  bundle (cb) {
-    this.output = this.js.replace(/{{TEMPLATE-STRING}}/gi, this.finalTemplateString)
-    cb && cb()
-  }
-
-  compressOutput (cb) {
-
-    cb && cb()
+    processor.run(true)
   }
 
   processCss (cb) {
@@ -174,13 +209,6 @@ class Builder {
     cb && cb()
   }
 
-  transpileJs (cb) {
-    this.output = babel.transform(this.js, {
-      presets: ['env']
-    }).code
-    cb && cb()
-  }
-
   _mkdirp (dir) {
     try {
       fs.accessSync(dir, fs.F_OK)
@@ -215,9 +243,9 @@ class Builder {
     return selector.replace(result[0], `${this.tagName}${result[1]}`)
   }
 
-  _writeFile (cb) {
+  _writeFile (content, cb) {
     this._mkdirp(this.outputDir)
-    fs.writeFileSync(this.outputFile, this.output)
+    fs.writeFileSync(this.outputFile, content)
 
     cb && cb()
   }

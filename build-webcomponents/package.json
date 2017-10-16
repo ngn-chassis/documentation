@@ -1,0 +1,22 @@
+{
+  "name": "wc-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "build-webcomponent": "cli.js"
+  },
+  "author": "Graham Butler",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babylon": "^6.18.0",
+    "clean-css": "^4.1.9",
+    "postcss": "^6.0.13",
+    "shortbus": "^1.2.7"
+  }
+}

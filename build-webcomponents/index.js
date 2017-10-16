@@ -154,14 +154,16 @@ class Builder {
     let input = this._readFile(this.src.js)
     let output = this._readFile(this.templates.bundled)
 
-    let ast = babylon.parse(input, {
-      sourceType: this.sourceType
+    let ast = babylon.parse(input, {sourceType: this.sourceType})
+
+    let inputClassDecl = ast.program.body.find((node) => {
+      return node.type === 'ClassDeclaration'
     })
 
-    let inputClassDecl = ast.program.body.find((node) => node.type === 'ClassDeclaration')
-
     let elDefinition = ast.program.body.find((node) => {
-      return node.type === 'ExpressionStatement' && node.expression.callee.object.name === 'customElements' && node.expression.callee.property.name === 'define'
+      return node.type === 'ExpressionStatement'
+        && node.expression.callee.object.name === 'customElements'
+        && node.expression.callee.property.name === 'define'
     })
 
     if (!elDefinition) {
@@ -186,16 +188,34 @@ class Builder {
       .replace(/{{SUPER-CLASS}}/gi, inputClassDecl.superClass.name || 'HTMLElement')
       .replace(/{{TAG-NAME}}/gi, tagName)
 
-    // TODO: merge constructor
-
     let methods = []
     let parsed = babylon.parse(output)
-    let outputClassDecl = parsed.program.body.find((node) => node.type === 'ClassDeclaration')
+    let outputClassDecl = parsed.program.body.find((node) => {
+      return node.type === 'ClassDeclaration'
+    })
+
+    let inputConstructor = inputClassDecl.body.body.find((node) => {
+      return node.key.name === 'constructor'
+    })
+
+    let outputConstructor = outputClassDecl.body.body.find((node) => {
+      return node.key.name === 'constructor'
+    })
 
     inputClassDecl.body.body.forEach((method) => {
-      if (method.key.name !== 'constructor') {
-        outputClassDecl.body.body.push(method)
+      if (method.key.name === 'constructor') {
+        method.body.body.forEach((node) => {
+          if (node.hasOwnProperty('expression') && node.expression.hasOwnProperty('callee') && node.expression.callee.type === 'Super') {
+            return
+          }
+
+          outputConstructor.body.body.push(node)
+        })
+
+        return
       }
+
+      outputClassDecl.body.body.push(method)
     })
 
     this.js = babel.transformFromAst(parsed).code

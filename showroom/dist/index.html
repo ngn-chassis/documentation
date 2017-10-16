@@ -294,36 +294,36 @@
               <h3>Forms</h3>
 
               <fieldset>
-                <chassis-control type="field">
-                  <label for="text_field" slot="label">Text field</label>
-                  <input id="text_field" type="text" value="" placeholder="Placeholder" slot="input">
+                <chassis-control id="text_field">
+                  <label>Text field</label>
+                  <input type="text" placeholder="Placeholder">
                 </chassis-control>
 
-                <chassis-control type="field">
-                  <label for="email_field" slot="label">Email field</label>
-                  <input id="email_field" type="email" value="" placeholder="my-email@address.com" slot="input">
+                <chassis-control id="email_field">
+                  <label>Email field</label>
+                  <input type="email" placeholder="my-email@address.com">
                 </chassis-control>
 
-                <chassis-control type="field">
-                  <label for="email_field" slot="label">Textarea</label>
-                  <textarea id="textarea" rows="5" slot="input"></textarea>
+                <chassis-control id="textarea">
+                  <label>Textarea</label>
+                  <textarea rows="5"></textarea>
                 </chassis-control>
               </fieldset>
 
               <fieldset>
                 <h4>Radio Buttons</h4>
 
-                <chassis-control type="toggle">
-                  <label for="radio_button_1" slot="label">Radio Button</label>
-                  <input id="radio_button_1" name="radios" type="radio" value="" slot="input">
+                <chassis-control id="radio_button_1">
+                  <label>Radio Button</label>
+                  <input name="radios" type="radio" value="">
                 </chassis-control>
-                <chassis-control type="toggle">
-                  <label for="radio_button_2" slot="label">Radio Button</label>
-                  <input id="radio_button_2" name="radios" type="radio" value="" slot="input">
+                <chassis-control id="radio_button_2">
+                  <label>Radio Button</label>
+                  <input name="radios" type="radio" value="">
                 </chassis-control>
-                <chassis-control type="toggle">
-                  <label for="radio_button_3" slot="label">Radio Button</label>
-                  <input id="radio_button_3" name="radios" type="radio" value="" slot="input">
+                <chassis-control id="radio_button_3">
+                  <label>Radio Button</label>
+                  <input name="radios" type="radio" value="">
                 </chassis-control>
 
                 <!-- <chassis-control-group>
@@ -334,9 +334,9 @@
               <fieldset>
                 <h4>Select Menu</h4>
 
-                <chassis-control type="field">
-                  <label for="select_menu" slot="label">Select Menu</label>
-                  <select is="chassis-select" class="pill" id="select_menu" slot="input">
+                <chassis-control id="select_menu">
+                  <label>Select Menu</label>
+                  <select class="pill">
                     <option label="Using Label" value="test1">
                       <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>

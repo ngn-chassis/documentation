@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-dev": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && gulp build"
+    "build-dev": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../.. && build-webcomponent webcomponents/src/chassis-control webcomponents/dist && gulp build"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",

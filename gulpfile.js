@@ -21,7 +21,11 @@ const DEST_ASSETS = {
 
 gulp.task('clean', (next) => fs.emptyDir(DEST, next))
 
-gulp.task('css', ['clean'], (next) => {
+gulp.task('clean-css', ['clean'], (next) => {
+  fs.emptyDir(DEST_ASSETS.CSS, next)
+})
+
+gulp.task('css', ['clean-css'], (next) => {
   return gulp.src(SRC_ASSETS.CSS)
     .pipe(sourcemaps.init())
     .pipe(chassis({
@@ -42,16 +46,24 @@ gulp.task('html', ['clean'], (next) => {
   return gulp.src(`${SRC}/**/*.html`).pipe(gulp.dest(DEST))
 })
 
-gulp.task('webcomponents', ['clean'], (next) => {
-  gulp.src(SRC_ASSETS.WEBCOMPONENTS).pipe(gulp.dest(DEST_ASSETS.WEBCOMPONENTS))
+gulp.task('clean-webcomponents', ['clean'], (next) => {
+  fs.emptyDir(DEST_ASSETS.WEBCOMPONENTS, next)
 })
 
-gulp.task('polyfills', ['clean'], (next) => {
-  gulp.src(SRC_ASSETS.POLYFILLS).pipe(gulp.dest(DEST_ASSETS.POLYFILLS))
+gulp.task('webcomponents', ['clean-webcomponents'], (next) => {
+  return gulp.src(SRC_ASSETS.WEBCOMPONENTS).pipe(gulp.dest(DEST_ASSETS.WEBCOMPONENTS))
+})
+
+gulp.task('clean-polyfills', ['clean'], (next) => {
+  fs.emptyDir(DEST_ASSETS.POLYFILLS, next)
+})
+
+gulp.task('polyfills', ['clean-polyfills'], (next) => {
+  return gulp.src(SRC_ASSETS.POLYFILLS).pipe(gulp.dest(DEST_ASSETS.POLYFILLS))
 })
 
 gulp.task('watch', () => {
-  gulp.watch(path.resolve(path.join(SRC, '**/*.*')), ['css', 'html'])
+  gulp.watch(path.resolve(path.join(SRC, '**/*.*')), ['html', 'css', 'webcomponents', 'polyfills'])
 })
 
 gulp.task('build', ['clean', 'css', 'html', 'webcomponents', 'polyfills', 'watch'])

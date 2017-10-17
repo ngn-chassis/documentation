@@ -4,9 +4,19 @@ class {{CLASS-IDENTIFIER}} extends {{SUPER-CLASS}} {
 
     this.attachShadow({mode: 'open'})
 
-    let template = document.createElement('template')
-    template.insertAdjacentHTML('afterbegin', this.templateString)
-    this.shadowRoot.appendChild(template.children[0].content.cloneNode(true))
+    let container = document.createElement('div')
+    container.insertAdjacentHTML('afterbegin', this.templateString)
+
+    let template = container.querySelector('template')
+
+    if ('content' in template) {
+      this.shadowRoot.appendChild(template.content.cloneNode(true))
+    } else {
+      template.childNodes.forEach((child) => {
+        this.shadowRoot.appendChild(child.cloneNode(true))
+      })
+    }
+
     template = null
   }
 

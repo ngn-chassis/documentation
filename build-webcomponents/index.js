@@ -1,8 +1,9 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const TaskRunner = require('shortbus')
-let CleanCSS = require('clean-css')
+const webpack = require('webpack')
 
+let CleanCSS = require('clean-css')
 const postcss = require('postcss')
 const babel = require("babel-core")
 const babylon = require('babylon')
@@ -21,15 +22,9 @@ class Builder {
       cfg.src = path.join(process.cwd(), cfg.src)
     }
 
-    this.transpile = cfg.transpile || false
-
     this.sourceType = cfg.sourceType || 'script'
-    this.outputStyles = cfg.outputStyles.length > 0 ? cfg.outputStyles : ['bundle']
-
-    this.templates = {
-      bundled: path.resolve(__dirname, 'templates/bundled.js'),
-      import: path.resolve(__dirname, 'templates/import.js')
-    }
+    this.addTranspiledVersion = cfg.transpile || false
+    this.filename = path.basename(cfg.src)
 
     this.src = {
       root: cfg.src,
@@ -39,9 +34,11 @@ class Builder {
     }
 
     this.dest = cfg.dest || null
-    this.filename = path.basename(cfg.src)
 
-    this.output = ''
+    this.templates = {
+      bundled: path.resolve(__dirname, 'templates/bundled.js'),
+      import: path.resolve(__dirname, 'templates/import.js')
+    }
   }
 
   get finalTemplateString () {
@@ -51,18 +48,6 @@ class Builder {
       collapseWhitespace: true,
       removeComments: true
     })
-  }
-
-  get outputDir () {
-    if (!this.dest) {
-      return path.join(this.src.root, 'dist')
-    }
-
-    return path.resolve(this.dest)
-  }
-
-  get outputFile () {
-    return path.join(this.outputDir, `${this.filename}.js`)
   }
 
   build () {
@@ -75,56 +60,71 @@ class Builder {
     processor.on('stepstarted', (task) => console.info(task.name))
 
     processor.on('complete', () => {
-      // if (this.outputStyles.includes('import')) {
-      //   tasks.add('Bundling HTML Import...', (next) => {
-      //     next()
-      //   })
-      // }
-      //
-      // if (this.outputStyles.includes('bundle')) {
-      //   tasks.add('Bundling Web Component...', (next) => {
-      //     next()
-      //   })
-      // }
-      //
-      // if (this.outputStyles.includes('raw')) {
-      //   console.log('raw');
-      // }
+      let files = [{
+        name: this.filename,
+        contents: this.js.replace(/{{TEMPLATE-STRING}}/gi, this.finalTemplateString),
+      }]
 
-      let output = this.js.replace(/{{TEMPLATE-STRING}}/gi, this.finalTemplateString)
       let compiler = new TaskRunner()
 
-      if (this.transpile) {
-        compiler.add('Transpiling to ES5...', (next) => {
-          output = babel.transform(output, {
-            presets: ['env']
-          }).code
+      if (this.addTranspiledVersion) {
+        compiler.add('Generating ES5 Version...', (next) => {
+          let file = {
+            name: `${this.filename}-es5`,
+            contents: babel.transform(files[0].contents, {
+              presets: ['env']
+            }).code
+          }
 
-          next()
-        })
+          let bundlesDir = path.resolve(__dirname, 'bundle')
 
-        compiler.add('Compressing...', (next) => {
-          output = uglify(output).code
-          next()
-        })
-      } else {
-        compiler.add('Compressing...', (next) => {
-          output = babel.transform(output, {
-            presets: ['minify']
-          }).code
+          this._mkdirp(bundlesDir)
 
-          next()
+          fs.writeFileSync(path.join(bundlesDir, `${file.name}.js`), file.contents);
+
+          let bundler = webpack({
+            devtool: 'source-map',
+            entry: ['babel-polyfill', path.join(bundlesDir, `${file.name}.js`)],
+            output: {
+              path: bundlesDir,
+              filename: `${file.name}-bundle.js`
+            },
+            plugins: [
+              new webpack.DefinePlugin({
+                'process.env': {
+                  'NODE_ENV': JSON.stringify('production')
+                }
+              })
+            ]
+          })
+
+          bundler.run((err, stats) => {
+            let bundled = fs.readFileSync(path.join(bundlesDir, `${file.name}-bundle.js`));
+            file.contents = bundled.toString()
+            files.push(file)
+            next()
+          })
         })
       }
 
-      compiler.on('stepstarted', (task) => console.info(task.name))
-      compiler.on('complete', () => {
-        if (this.dest) {
-          this._writeFile(output, () => {
-            console.info(`Done. Wrote to ${this.outputDir}`)
-          })
-        }
+      compiler.add('Compressing...', (next) => {
+        files.forEach((file) => {
+          if (file.name.endsWith('-es5')) {
+            file.contents = uglify(file.contents).code
+            return
+          }
+
+          file.contents = babel.transform(file.contents, {
+            presets: ['minify']
+          }).code
+        })
+
+        next()
       })
+
+      compiler.on('stepstarted', (task) => console.info(task.name))
+
+      compiler.on('complete', () => this._writeFiles(files, () => console.info(`Done.`)))
 
       compiler.run(true)
     })
@@ -263,11 +263,23 @@ class Builder {
     return selector.replace(result[0], `${this.tagName}${result[1]}`)
   }
 
-  _writeFile (content, cb) {
-    this._mkdirp(this.outputDir)
-    fs.writeFileSync(this.outputFile, content)
+  _writeFiles (files, cb) {
+    let outputDirectory = path.resolve(this.dest)
+
+    if (!outputDirectory) {
+      outputDirectory = path.join(this.src.root, 'dist')
+    }
+
+    console.info(`Writing to ${outputDirectory}`)
+
+    files.forEach((file) => this._writeFile(file, outputDirectory))
 
     cb && cb()
+  }
+
+  _writeFile (file, outputDirectory) {
+    this._mkdirp(outputDirectory)
+    fs.writeFileSync(path.join(outputDirectory, `${file.name}.js`), file.contents)
   }
 }
 

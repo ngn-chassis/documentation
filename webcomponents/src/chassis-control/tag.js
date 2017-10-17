@@ -69,45 +69,7 @@ class ChassisFormControl extends HTMLElement {
 
   connectedCallback () {
     this._guid = this._generateGuid()
-
-    for (let child of this.shadowRoot.childNodes) {
-      if (child.nodeName === 'SLOT') {
-        child.addEventListener('slotchange', (e) => {
-          console.log('slotchange fired');
-        })
-      }
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (!mutation.addedNodes.length) {
-          return
-        }
-
-        let node = mutation.addedNodes[0]
-
-        switch (node.nodeName) {
-          case 'LABEL':
-            return this.initLabel(node)
-
-          case 'INPUT':
-          case 'TEXTAREA':
-            return this.initInput(node)
-
-          case 'SELECT':
-            return this.initSelectMenu(node)
-
-          default:
-            return
-        }
-      })
-    })
-
-    observer.observe(this, { childList: true })
-
-    // Mutation Observer will not run on initialization in browsers without a
-    // native implementation of Web Components, so this will add labels and
-    // inputs to the appropriate slots once the component has connected
+    
     setTimeout(() => {
       let label = this.querySelector('label')
       let input = this.querySelector('input')

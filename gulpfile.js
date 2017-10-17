@@ -8,18 +8,20 @@ const sourcemaps = require('gulp-sourcemaps')
 const SRC = './showroom/src'
 const SRC_ASSETS = {
   CSS: path.join(SRC, '**/*.css'),
-  WEBCOMPONENTS: path.join('./webcomponents/dist/**/*.js')
+  WEBCOMPONENTS: './webcomponents/dist/**/*.js',
+  POLYFILLS: path.join(SRC, './polyfills/**/*.*')
 }
 
 const DEST = './showroom/dist'
 const DEST_ASSETS = {
   CSS: path.join(DEST, 'css'),
-  WEBCOMPONENTS: path.join(DEST, 'webcomponents')
+  WEBCOMPONENTS: path.join(DEST, 'webcomponents'),
+  POLYFILLS: path.join(DEST, 'polyfills')
 }
 
 gulp.task('clean', (next) => fs.emptyDir(DEST, next))
 
-gulp.task('css', (next) => {
+gulp.task('css', ['clean'], (next) => {
   return gulp.src(SRC_ASSETS.CSS)
     .pipe(sourcemaps.init())
     .pipe(chassis({
@@ -36,16 +38,20 @@ gulp.task('css', (next) => {
     .pipe(gulp.dest(DEST))
 })
 
-gulp.task('html', (next) => {
+gulp.task('html', ['clean'], (next) => {
   return gulp.src(`${SRC}/**/*.html`).pipe(gulp.dest(DEST))
 })
 
-gulp.task('webcomponents', (next) => {
+gulp.task('webcomponents', ['clean'], (next) => {
   gulp.src(SRC_ASSETS.WEBCOMPONENTS).pipe(gulp.dest(DEST_ASSETS.WEBCOMPONENTS))
 })
 
-gulp.task('watch', () => {
-  gulp.watch(path.resolve(`${SRC}/**/*.*`), ['clean', 'css', 'html', 'webcomponents'])
+gulp.task('polyfills', ['clean'], (next) => {
+  gulp.src(SRC_ASSETS.POLYFILLS).pipe(gulp.dest(DEST_ASSETS.POLYFILLS))
 })
 
-gulp.task('build', ['clean', 'css', 'html', 'webcomponents', 'watch'])
+gulp.task('watch', () => {
+  gulp.watch(path.resolve(path.join(SRC, '**/*.*')), ['css', 'html'])
+})
+
+gulp.task('build', ['clean', 'css', 'html', 'webcomponents', 'polyfills', 'watch'])

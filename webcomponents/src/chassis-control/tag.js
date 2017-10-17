@@ -38,15 +38,7 @@ class ChassisFormControl extends HTMLElement {
   }
 
   static get observedAttributes () {
-    return ['type', 'id']
-  }
-
-  get id () {
-    return this.getAttribute('id')
-  }
-
-  set id (value) {
-    this.setAttribute('id', value)
+    return ['type']
   }
 
   get type () {
@@ -57,7 +49,35 @@ class ChassisFormControl extends HTMLElement {
     this.setAttribute('type', value)
   }
 
+  _generateGuid () {
+    let lut = []
+
+    for (let i = 0; i < 256; i++) {
+      lut[i] = (i < 16 ? '0' : '') + i.toString(16)
+    }
+
+    let d0 = Math.random() * 0xffffffff | 0
+    let d1 = Math.random() * 0xffffffff | 0
+    let d2 = Math.random() * 0xffffffff | 0
+    let d3 = Math.random() * 0xffffffff | 0
+
+    return 'input_' + lut[d0&0xff] + lut[d0>>8&0xff] + lut[d0>>16&0xff] + lut[d0>>24&0xff] + '-' +
+      lut[d1&0xff] + lut[d1>>8&0xff] + '-' + lut[d1>>16&0x0f|0x40] + lut[d1>>24&0xff] +'-'+
+      lut[d2&0x3f|0x80] + lut[d2>>8&0xff] + '-' + lut[d2>>16&0xff] + lut[d2>>24&0xff] +
+      lut[d3&0xff] + lut[d3>>8&0xff] + lut[d3>>16&0xff] + lut[d3>>24&0xff]
+  }
+
   connectedCallback () {
+    this._guid = this._generateGuid()
+
+    for (let child of this.shadowRoot.childNodes) {
+      if (child.nodeName === 'SLOT') {
+        child.addEventListener('slotchange', (e) => {
+          console.log('slotchange fired');
+        })
+      }
+    }
+
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (!mutation.addedNodes.length) {
@@ -85,12 +105,31 @@ class ChassisFormControl extends HTMLElement {
 
     observer.observe(this, { childList: true })
 
+    // Mutation Observer will not run on initialization in browsers without a
+    // native implementation of Web Components, so this will add labels and
+    // inputs to the appropriate slots once the component has connected
     setTimeout(() => {
-      this.removeAttribute('id')
-      // console.log('Input added:');
-      // console.log('Label: ', this.label);
-      // console.log('Input:', this.input)
-    }, 0)
+      let label = this.querySelector('label')
+      let input = this.querySelector('input')
+      let textarea = this.querySelector('textarea')
+      let select = this.querySelector('select')
+
+      if (label) {
+        this.initLabel(label)
+      }
+
+      if (input) {
+        this.initInput(input)
+      }
+
+      if (textarea) {
+        this.initInput(textarea)
+      }
+
+      if (select) {
+        this.initSelectMenu(select)
+      }
+    })
   }
 
   attributeChangedCallback (name, oldValue, newValue) {
@@ -103,22 +142,9 @@ class ChassisFormControl extends HTMLElement {
         }
         break
 
-      case 'id':
-        if (this.id && this.id !== newValue) {
-          this.applyId(newValue)
-        }
-        break
-
       default:
         return
     }
-  }
-
-  applyId (id) {
-    this.removeAttribute('id')
-
-    this.input && this.input.setAttribute('id', id)
-    this.label && this.label.setAttribute('for', id)
   }
 
   initLabel (node) {
@@ -126,7 +152,7 @@ class ChassisFormControl extends HTMLElement {
     node.slot = node.slot || 'label'
 
     if (this.id) {
-      node.htmlFor = this.id
+      node.htmlFor = this._guid
     }
   }
 
@@ -135,7 +161,7 @@ class ChassisFormControl extends HTMLElement {
     node.slot = node.slot || 'input'
 
     if (this.id) {
-      node.id = this.id
+      node.id = this._guid
     }
 
     if (this.type) {
@@ -161,7 +187,7 @@ class ChassisFormControl extends HTMLElement {
     this.type = 'select'
 
     if (this.id) {
-      node.id = this.id
+      node.id = this._guid
     }
   }
 }

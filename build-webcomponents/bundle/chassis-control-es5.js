@@ -32,11 +32,20 @@ var ChassisFormControl = function (_HTMLElement) {
     }
 
     template = null;
-    _this.fieldInputTypes = ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'];_this.toggleInputTypes = ['checkbox', 'radio'];_this.supportedTypes = ['field', 'toggle', 'select'];
+    _this.fieldInputTypes = ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'];_this.toggleInputTypes = ['checkbox', 'radio'];_this.supportedTypes = ['field', 'toggle', 'select'];_this._input = null;
     return _this;
   }
 
   _createClass(ChassisFormControl, [{
+    key: 'connectedCallback',
+    value: function connectedCallback() {
+      var _this2 = this;
+
+      this._guid = this._generateGuid();setTimeout(function () {
+        var label = _this2.querySelector('label');var input = _this2.querySelector('input');var textarea = _this2.querySelector('textarea');var select = _this2.querySelector('select');label && _this2._initLabel(label);input && _this2._initInput(input);textarea && _this2._initInput(textarea);select && _this2._initSelectMenu(select);
+      });
+    }
+  }, {
     key: '_generateGuid',
     value: function _generateGuid() {
       var lut = [];for (var i = 0; i < 256; i++) {
@@ -44,47 +53,10 @@ var ChassisFormControl = function (_HTMLElement) {
       }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return 'input_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
     }
   }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      var _this2 = this;
-
-      this._guid = this._generateGuid();setTimeout(function () {
-        var label = _this2.querySelector('label');var input = _this2.querySelector('input');var textarea = _this2.querySelector('textarea');var select = _this2.querySelector('select');if (label) {
-          _this2.initLabel(label);
-        }if (input) {
-          _this2.initInput(input);
-        }if (textarea) {
-          _this2.initInput(textarea);
-        }if (select) {
-          _this2.initSelectMenu(select);
-        }
-      });
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, oldValue, newValue) {
-      var attr = name.toLowerCase();switch (attr) {case 'type':
-          if (this.type !== newValue) {
-            this.type = newValue;
-          }break;default:
-          return;}
-    }
-  }, {
-    key: 'initLabel',
-    value: function initLabel(node) {
-      this.label = node;node.slot = node.slot || 'label';if (this.id) {
-        node.htmlFor = this._guid;
-      }
-    }
-  }, {
-    key: 'initInput',
-    value: function initInput(node) {
-      this.input = node;node.slot = node.slot || 'input';if (this.id) {
+    key: '_initInput',
+    value: function _initInput(node) {
+      this._input = node;node.slot = node.slot || 'input';if (this.id) {
         node.id = this._guid;
-      }if (this.type) {
-        if (!this.supportedTypes.includes(this.type)) {
-          console.warn('[WARNING] Chassis Form Controls do not support type "' + this.type + '." Supported types: ' + this.supportedTypes.join(', ') + '.');
-        }return;
       }if (this.fieldInputTypes.includes(node.type)) {
         this.type = 'field';
       }if (this.toggleInputTypes.includes(node.type)) {
@@ -92,9 +64,16 @@ var ChassisFormControl = function (_HTMLElement) {
       }
     }
   }, {
-    key: 'initSelectMenu',
-    value: function initSelectMenu(node) {
-      this.input = node;node.slot = node.slot || 'input';this.type = 'select';if (this.id) {
+    key: '_initLabel',
+    value: function _initLabel(node) {
+      this.label = node;node.slot = node.slot || 'label';if (this.id) {
+        node.htmlFor = this._guid;
+      }
+    }
+  }, {
+    key: '_initSelectMenu',
+    value: function _initSelectMenu(node) {
+      this._input = node;node.slot = node.slot || 'input';this.type = 'select';if (this.id) {
         node.id = this._guid;
       }
     }
@@ -102,6 +81,16 @@ var ChassisFormControl = function (_HTMLElement) {
     key: 'templateString',
     get: function get() {
       return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:content;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}chassis-control{display:flex;contain:content;max-width:100%}chassis-control *{box-sizing:border-box}chassis-control :before{box-sizing:border-box}chassis-control :after{box-sizing:border-box}chassis-control[type=field]{flex-direction:column}chassis-control[type=toggle]{align-items:center}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}</style><slot name="afterbegin"></slot><div class="label-wrapper"><slot name="beforelabel"></slot><slot name="label"></slot><slot name="afterlabel"></slot></div><slot name="between"></slot><div class="input-wrapper"><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot></div><slot name="beforeend"></slot></template>';
+    }
+  }, {
+    key: 'input',
+    get: function get() {
+      return this._input;
+    },
+    set: function set(input) {
+      if (this._input) {
+        console.warn('Setting <chassis-control> child input programmatically is not allowed.');return;
+      }this._input = input;
     }
   }, {
     key: 'type',
@@ -114,7 +103,7 @@ var ChassisFormControl = function (_HTMLElement) {
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return ['type'];
+      return [];
     }
   }]);
 

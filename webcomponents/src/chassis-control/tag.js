@@ -35,10 +35,25 @@ class ChassisFormControl extends HTMLElement {
       'toggle',
       'select'
     ]
+
+    this._input = null
   }
 
   static get observedAttributes () {
-    return ['type']
+    return []
+  }
+
+  get input () {
+    return this._input
+  }
+
+  set input (input) {
+    if (this._input) {
+      console.warn(`Setting <chassis-control> child input programmatically is not allowed.`)
+      return
+    }
+
+    this._input = input
   }
 
   get type () {
@@ -47,6 +62,22 @@ class ChassisFormControl extends HTMLElement {
 
   set type (value) {
     this.setAttribute('type', value)
+  }
+
+  connectedCallback () {
+    this._guid = this._generateGuid()
+
+    setTimeout(() => {
+      let label = this.querySelector('label')
+      let input = this.querySelector('input')
+      let textarea = this.querySelector('textarea')
+      let select = this.querySelector('select')
+
+      label && this._initLabel(label)
+      input && this._initInput(input)
+      textarea && this._initInput(textarea)
+      select && this._initSelectMenu(select)
+    })
   }
 
   _generateGuid () {
@@ -67,71 +98,12 @@ class ChassisFormControl extends HTMLElement {
       lut[d3&0xff] + lut[d3>>8&0xff] + lut[d3>>16&0xff] + lut[d3>>24&0xff]
   }
 
-  connectedCallback () {
-    this._guid = this._generateGuid()
-    
-    setTimeout(() => {
-      let label = this.querySelector('label')
-      let input = this.querySelector('input')
-      let textarea = this.querySelector('textarea')
-      let select = this.querySelector('select')
-
-      if (label) {
-        this.initLabel(label)
-      }
-
-      if (input) {
-        this.initInput(input)
-      }
-
-      if (textarea) {
-        this.initInput(textarea)
-      }
-
-      if (select) {
-        this.initSelectMenu(select)
-      }
-    })
-  }
-
-  attributeChangedCallback (name, oldValue, newValue) {
-    let attr = name.toLowerCase()
-
-    switch (attr) {
-      case 'type':
-        if (this.type !== newValue) {
-          this.type = newValue
-        }
-        break
-
-      default:
-        return
-    }
-  }
-
-  initLabel (node) {
-    this.label = node
-    node.slot = node.slot || 'label'
-
-    if (this.id) {
-      node.htmlFor = this._guid
-    }
-  }
-
-  initInput (node) {
-    this.input = node
+  _initInput (node) {
+    this._input = node
     node.slot = node.slot || 'input'
 
     if (this.id) {
       node.id = this._guid
-    }
-
-    if (this.type) {
-      if (!this.supportedTypes.includes(this.type)) {
-        console.warn(`[WARNING] Chassis Form Controls do not support type "${this.type}." Supported types: ${this.supportedTypes.join(', ')}.`)
-      }
-
-      return
     }
 
     if (this.fieldInputTypes.includes(node.type)) {
@@ -143,8 +115,17 @@ class ChassisFormControl extends HTMLElement {
     }
   }
 
-  initSelectMenu (node) {
-    this.input = node
+  _initLabel (node) {
+    this.label = node
+    node.slot = node.slot || 'label'
+
+    if (this.id) {
+      node.htmlFor = this._guid
+    }
+  }
+
+  _initSelectMenu (node) {
+    this._input = node
     node.slot = node.slot || 'input'
     this.type = 'select'
 

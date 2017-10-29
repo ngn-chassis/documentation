@@ -879,9 +879,9 @@ var ChassisFormControl = function (_HTMLElement) {
   }, {
     key: '_initInput',
     value: function _initInput(input) {
-      input.slot = input.slot || 'input';this._input = input;input.id = this._guid;if (this.fieldInputTypes.includes(input.type)) {
+      input.slot = input.slot || 'input';this._input = input;input.id = this._guid;if (this.fieldInputTypes.indexOf(input.type) >= 0) {
         this.type = 'field';
-      }if (this.toggleInputTypes.includes(input.type)) {
+      }if (this.toggleInputTypes.indexOf(input.type) >= 0) {
         this.type = 'toggle';
       }
     }

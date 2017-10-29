@@ -183,7 +183,7 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:content;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}chassis-select{display:flex;contain:content;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}</style><div class="hidden"><slot name="select"></slot></div><slot name="title"></slot><div class="options"><slot name="options"></slot></div></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:content;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host .options{display:none}:host(.open) .options{display:block}chassis-select{display:flex;contain:content;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}chassis-select .options{display:none}chassis-select.open .options{display:block}</style><div class="hidden"><slot name="select"></slot></div><slot name="title"></slot><div class="options"><slot name="options"></slot></div></template>';
     }
   }]);
   return ChassisSelect;

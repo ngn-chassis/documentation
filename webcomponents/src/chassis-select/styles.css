@@ -23,3 +23,11 @@
   visibility: hidden;
   opacity: 0;
 }
+
+:host .options {
+  display: none;
+}
+
+:host(.open) .options {
+  display: block;
+}

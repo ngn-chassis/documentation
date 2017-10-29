@@ -103,11 +103,11 @@ class ChassisFormControl extends HTMLElement {
     this._input = input
     input.id = this._guid
 
-    if (this.fieldInputTypes.includes(input.type)) {
+    if (this.fieldInputTypes.indexOf(input.type) >= 0) {
       this.type = 'field'
     }
 
-    if (this.toggleInputTypes.includes(input.type)) {
+    if (this.toggleInputTypes.indexOf(input.type) >= 0) {
       this.type = 'toggle'
     }
   }

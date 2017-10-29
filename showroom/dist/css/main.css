@@ -852,8 +852,7 @@ html.chassis {
 }
 
 .chassis chassis-control[type="field"] input,
-.chassis chassis-control[type="field"] textarea,
-.chassis chassis-control[type="field"] chassis-select {
+.chassis chassis-control[type="field"] textarea {
     margin: .6360098247570551em 0 0;
 }
 
@@ -880,14 +879,8 @@ html.chassis {
     border-color: #09f;
 }
 
-.chassis chassis-control[type="field"] chassis-select {
-    -webkit-box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
-            box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
-}
-
 .chassis chassis-control[type="toggle"] label {
     display: inline-block;
-    width: 100%;
 }
 
 .chassis chassis-control[type="toggle"] input {
@@ -972,6 +965,15 @@ html.chassis {
 
 .chassis .showroom code.example:before, .chassis .showroom code.example:after {
     content: "";
+}
+
+.chassis .showroom chassis-select {
+    -webkit-box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
+            box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
+}
+
+.chassis .showroom chassis-select chassis-option:hover {
+    background: rgba(0, 0, 0, .1);
 }
 
 .chassis .showroom > header {

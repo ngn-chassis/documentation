@@ -555,7 +555,7 @@ html.chassis {
     margin-bottom: 1em;
     padding-right: .9823784767414425em;
     padding-left: .9823784767414425em;
-    line-height: 2.654807886857853em;
+    line-height: 2.654807886857853;
     vertical-align: middle;
     text-align: center;
     white-space: nowrap;
@@ -828,7 +828,7 @@ html.chassis {
     margin: 0;
     padding-right: .9823784767414425em;
     padding-left: .9823784767414425em;
-    line-height: 2.654807886857853em;
+    line-height: 2.654807886857853;
     background: transparent;
     border: none;
 }
@@ -905,11 +905,6 @@ html.chassis {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
         flex-direction: column;
-    margin-right: .3241019226245697em;
-    margin-bottom: 1em;
-    padding-right: .9823784767414425em;
-    padding-left: .9823784767414425em;
-    line-height: 2.654807886857853em;
     vertical-align: middle;
     text-align: center;
     white-space: nowrap;
@@ -920,31 +915,21 @@ html.chassis {
             user-select: none;
 }
 
-.chassis chassis-select svg.icon {
+.chassis chassis-select select-title svg.icon,
+.chassis chassis-select chassis-option svg.icon {
     -webkit-transform: translateX(-0.4293858394957358em);
             transform: translateX(-0.4293858394957358em);
 }
 
-.chassis chassis-select.pill {
-    padding-left: 1.61803398875em;
-    padding-right: 1.61803398875em;
+.chassis chassis-select.pill select-title {
     border-radius: 1.3827882373437426em;
 }
 
-.chassis chassis-select.multi-line {
+.chassis chassis-select.multi-line select-title {
     padding-top: .6360098247570551em;
     padding-bottom: .6360098247570551em;
     line-height: 1.3827882373437426;
     white-space: normal;
-}
-
-.chassis chassis-select chassis-option {
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
 }
 
 .chassis chassis-select[disabled], .chassis chassis-select.disabled {

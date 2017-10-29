@@ -27,5 +27,8 @@
     "shortbus": "^1.2.7",
     "uglify-js": "^3.1.4",
     "webpack": "^3.7.1"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0"
   }
 }

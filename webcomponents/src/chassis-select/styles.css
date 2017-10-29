@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+:host {
+  display: flex;
+  contain: content;
+  max-width: 100%;
+}
+
+:host * {
+  box-sizing: border-box;
+}
+
+:host *:before {
+  box-sizing: border-box;
+}
+
+:host *:after {
+  box-sizing: border-box;
+}
+
+:host .hidden {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+}

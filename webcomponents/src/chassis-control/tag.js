@@ -80,7 +80,7 @@ class ChassisFormControl extends HTMLElement {
     })
   }
 
-  _generateGuid () {
+  _generateGuid (prefix = 'input') {
     let lut = []
 
     for (let i = 0; i < 256; i++) {
@@ -92,46 +92,66 @@ class ChassisFormControl extends HTMLElement {
     let d2 = Math.random() * 0xffffffff | 0
     let d3 = Math.random() * 0xffffffff | 0
 
-    return 'input_' + lut[d0&0xff] + lut[d0>>8&0xff] + lut[d0>>16&0xff] + lut[d0>>24&0xff] + '-' +
+    return `${prefix}_` + lut[d0&0xff] + lut[d0>>8&0xff] + lut[d0>>16&0xff] + lut[d0>>24&0xff] + '-' +
       lut[d1&0xff] + lut[d1>>8&0xff] + '-' + lut[d1>>16&0x0f|0x40] + lut[d1>>24&0xff] +'-'+
       lut[d2&0x3f|0x80] + lut[d2>>8&0xff] + '-' + lut[d2>>16&0xff] + lut[d2>>24&0xff] +
       lut[d3&0xff] + lut[d3>>8&0xff] + lut[d3>>16&0xff] + lut[d3>>24&0xff]
   }
 
-  _initInput (node) {
-    this._input = node
-    node.slot = node.slot || 'input'
+  _initInput (input) {
+    input.slot = input.slot || 'input'
+    this._input = input
+    input.id = this._guid
 
-    if (this.id) {
-      node.id = this._guid
-    }
-
-    if (this.fieldInputTypes.includes(node.type)) {
+    if (this.fieldInputTypes.includes(input.type)) {
       this.type = 'field'
     }
 
-    if (this.toggleInputTypes.includes(node.type)) {
+    if (this.toggleInputTypes.includes(input.type)) {
       this.type = 'toggle'
     }
   }
 
-  _initLabel (node) {
-    this.label = node
-    node.slot = node.slot || 'label'
-
-    if (this.id) {
-      node.htmlFor = this._guid
-    }
+  _initLabel (label) {
+    this.label = label
+    label.slot = label.slot || 'label'
+    label.htmlFor = this._guid
   }
 
-  _initSelectMenu (node) {
-    this._input = node
-    node.slot = node.slot || 'input'
+  _initSelectMenu (select) {
     this.type = 'select'
+    select.setAttribute('role', 'menu')
+    select.id = this._guid
+    select.slot = select.slot || 'input'
+    this._input = select
 
-    if (this.id) {
-      node.id = this._guid
+    if (!customElements.get('chassis-select')) {
+      return
     }
+
+    this.placeholder = document.createElement('chassis-select')
+    this.placeholder.slot = 'input'
+
+    for (let attr of select.attributes) {
+      if (attr.specified) {
+        this.placeholder.setAttribute(attr.name, attr.value)
+      }
+    }
+
+    this.placeholder._inject(select)
+
+    // for (let option of select.options) {
+    //   let fauxOption = document.createElement('chassis-option')
+    //   fauxOption.innerHTML = option.innerHTML
+    //
+    //   for (let attr of option.attributes) {
+    //     fauxOption.setAttribute(attr.name, attr.value)
+    //   }
+    //
+    //   this.placeholder.appendChild(fauxOption)
+    // }
+
+    this.appendChild(this.placeholder)
   }
 }
 

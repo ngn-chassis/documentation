@@ -18,6 +18,12 @@
   box-sizing: border-box;
 }
 
+:host .hidden {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
 :host([type="field"]) {
   flex-direction: column;
 }
@@ -41,4 +47,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+:host([type="select"]) {
+  flex-direction: column;
 }

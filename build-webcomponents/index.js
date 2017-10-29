@@ -53,6 +53,8 @@ class Builder {
   build () {
     let processor = new TaskRunner()
 
+    console.info(`Building "${this.filename}" component...`)
+
     processor.add('Processing JavaScript...', (next) => this.processJs(next))
     processor.add('Processing CSS...', (next) => this.processCss(next))
     processor.add('Processing Template...', (next) => this.processTemplate(next))
@@ -72,7 +74,15 @@ class Builder {
           let file = {
             name: `${this.filename}-es5`,
             contents: babel.transform(files[0].contents, {
-              presets: ['env']
+              presets: ['env'],
+              "plugins": [[
+                "transform-runtime", {
+                  "helpers": true,
+                  "polyfill": true,
+                  "regenerator": true,
+                  "moduleName": "babel-runtime"
+                }]
+              ]
             }).code
           }
 
@@ -84,7 +94,7 @@ class Builder {
 
           let bundler = webpack({
             devtool: 'source-map',
-            entry: ['babel-polyfill', path.join(bundlesDir, `${file.name}.js`)],
+            entry: path.join(bundlesDir, `${file.name}.js`),
             output: {
               path: bundlesDir,
               filename: `${file.name}-bundle.js`
@@ -167,8 +177,8 @@ class Builder {
     })
 
     if (!elDefinition) {
-      console.error(`ERROR "${this.filename}": Web Component must have a Custom Element Definition of the following shape:`)
-      console.info(`customElements.define('tag-name', ClassIdentifier)`);
+      console.error(`ERROR "${this.filename}": tag.js must include a Custom Element Definition as follows:`)
+      console.info(`customElements.define('${this.filename || 'tag-name'}', ${inputClassDecl.id.name || 'ClassIdentifier'})`);
       console.error('Aborting...');
       return
     }

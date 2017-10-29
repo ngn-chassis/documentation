@@ -1,20 +1,38 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = require('babel-runtime/helpers/inherits');
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ChassisFormControl = function (_HTMLElement) {
-  _inherits(ChassisFormControl, _HTMLElement);
+  (0, _inherits3.default)(ChassisFormControl, _HTMLElement);
 
   function ChassisFormControl() {
-    _classCallCheck(this, ChassisFormControl);
+    (0, _classCallCheck3.default)(this, ChassisFormControl);
 
-    var _this = _possibleConstructorReturn(this, (ChassisFormControl.__proto__ || Object.getPrototypeOf(ChassisFormControl)).call(this));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisFormControl.__proto__ || (0, _getPrototypeOf2.default)(ChassisFormControl)).call(this));
 
     _this.attachShadow({ mode: 'open' });
 
@@ -36,7 +54,7 @@ var ChassisFormControl = function (_HTMLElement) {
     return _this;
   }
 
-  _createClass(ChassisFormControl, [{
+  (0, _createClass3.default)(ChassisFormControl, [{
     key: 'connectedCallback',
     value: function connectedCallback() {
       var _this2 = this;
@@ -48,39 +66,74 @@ var ChassisFormControl = function (_HTMLElement) {
   }, {
     key: '_generateGuid',
     value: function _generateGuid() {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'input';
+
       var lut = [];for (var i = 0; i < 256; i++) {
         lut[i] = (i < 16 ? '0' : '') + i.toString(16);
-      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return 'input_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
+      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return prefix + '_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
     }
   }, {
     key: '_initInput',
-    value: function _initInput(node) {
-      this._input = node;node.slot = node.slot || 'input';if (this.id) {
-        node.id = this._guid;
-      }if (this.fieldInputTypes.includes(node.type)) {
+    value: function _initInput(input) {
+      input.slot = input.slot || 'input';this._input = input;input.id = this._guid;if (this.fieldInputTypes.includes(input.type)) {
         this.type = 'field';
-      }if (this.toggleInputTypes.includes(node.type)) {
+      }if (this.toggleInputTypes.includes(input.type)) {
         this.type = 'toggle';
       }
     }
   }, {
     key: '_initLabel',
-    value: function _initLabel(node) {
-      this.label = node;node.slot = node.slot || 'label';if (this.id) {
-        node.htmlFor = this._guid;
-      }
+    value: function _initLabel(label) {
+      this.label = label;label.slot = label.slot || 'label';label.htmlFor = this._guid;
     }
   }, {
     key: '_initSelectMenu',
-    value: function _initSelectMenu(node) {
-      this._input = node;node.slot = node.slot || 'input';this.type = 'select';if (this.id) {
-        node.id = this._guid;
+    value: function _initSelectMenu(select) {
+      this.type = 'select';select.setAttribute('role', 'menu');select.id = this._guid;select.slot = select.slot || 'input';this._input = select;if (!customElements.get('chassis-select')) {
+        return;
+      }this.placeholder = document.createElement('chassis-select');this.placeholder.slot = 'input';var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = (0, _getIterator3.default)(select.attributes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var attr = _step.value;
+
+          if (attr.specified) {
+            this.placeholder.setAttribute(attr.name, attr.value);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
+
+      this.placeholder._inject(select); // for (let option of select.options) {
+      //   let fauxOption = document.createElement('chassis-option')
+      //   fauxOption.innerHTML = option.innerHTML
+      //
+      //   for (let attr of option.attributes) {
+      //     fauxOption.setAttribute(attr.name, attr.value)
+      //   }
+      //
+      //   this.placeholder.appendChild(fauxOption)
+      // }
+      this.appendChild(this.placeholder);
     }
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:content;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}chassis-control{display:flex;contain:content;max-width:100%}chassis-control *{box-sizing:border-box}chassis-control :before{box-sizing:border-box}chassis-control :after{box-sizing:border-box}chassis-control[type=field]{flex-direction:column}chassis-control[type=toggle]{align-items:center}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}</style><slot name="afterbegin"></slot><div class="label-wrapper"><slot name="beforelabel"></slot><slot name="label"></slot><slot name="afterlabel"></slot></div><slot name="between"></slot><div class="input-wrapper"><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot></div><slot name="beforeend"></slot></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:content;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}:host([type=select]){flex-direction:column}chassis-control{display:flex;contain:content;max-width:100%}chassis-control *{box-sizing:border-box}chassis-control :before{box-sizing:border-box}chassis-control :after{box-sizing:border-box}chassis-control .hidden{display:none;visibility:hidden;opacity:0}chassis-control[type=field]{flex-direction:column}chassis-control[type=toggle]{align-items:center}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}chassis-control[type=select]{flex-direction:column}</style><slot name="afterbegin"></slot><div class="label-wrapper"><slot name="beforelabel"></slot><slot name="label"></slot><slot name="afterlabel"></slot></div><slot name="between"></slot><div class="input-wrapper"><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot></div><slot name="beforeend"></slot></template>';
     }
   }, {
     key: 'input',
@@ -106,7 +159,6 @@ var ChassisFormControl = function (_HTMLElement) {
       return [];
     }
   }]);
-
   return ChassisFormControl;
 }(HTMLElement);
 

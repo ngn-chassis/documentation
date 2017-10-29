@@ -12,9 +12,10 @@
     <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
 
-    <!-- <script src="webcomponents/chassis-web-component.js"></script> -->
     <script src="webcomponents/chassis-control-es5.js"></script>
-    <!-- <script src="webcomponents/chassis-select.js"></script> -->
+    <script src="webcomponents/chassis-select-es5.js"></script>
+    <script src="webcomponents/chassis-option-es5.js"></script>
+    <script src="webcomponents/chassis-optgroup-es5.js"></script>
   </head>
 
   <body class="showroom">
@@ -347,9 +348,14 @@
                       </svg>
                       Option 1
                     </option>
-                    <option value="test2" selected="false">Option 2</option>
+                    <option label=" " value="test2" selected="false">Option 2</option>
                     <option value="test3">Option 3</option>
                     <option value="test4">Option 4</option>
+                    <optgroup label="optgroup">
+                      <option value="test5">Grouped Option</option>
+                      <option value="test6">Grouped Option</option>
+                      <option value="test7">Grouped Option</option>
+                    </optgroup>
                   </select>
                 </chassis-control>
               </fieldset>

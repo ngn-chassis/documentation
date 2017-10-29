@@ -2,7 +2,7 @@
 
 :host {
   contain: content;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   max-width: 100%;
 }

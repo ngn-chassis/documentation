@@ -898,6 +898,7 @@ html.chassis {
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
+    overflow: auto;
 }
 
 .chassis chassis-select chassis-select-title {
@@ -908,11 +909,14 @@ html.chassis {
     white-space: normal;
 }
 
+.chassis chassis-select .options {
+    padding-right: .9823784767414425em;
+    padding-left: .9823784767414425em;
+}
+
 .chassis chassis-select chassis-option, .chassis chassis-select .optgroup-label {
     padding-top: .6360098247570551em;
-    padding-right: .9823784767414425em;
     padding-bottom: .6360098247570551em;
-    padding-left: .9823784767414425em;
 }
 
 .chassis chassis-select chassis-select-title svg.icon,
@@ -923,7 +927,6 @@ html.chassis {
 
 .chassis chassis-select.pill {
     border-radius: 1.3827882373437426em;
-    overflow: auto;
 }
 
 .chassis chassis-select.pill chassis-select-title,
@@ -980,11 +983,21 @@ html.chassis {
             box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
 }
 
+.chassis .showroom chassis-select chassis-option {
+    font-size: 12.578px;
+    font-size: .7861513777573977rem;
+}
+
 .chassis .showroom chassis-select chassis-option:hover {
     background: rgba(0, 0, 0, .1);
 }
 
-.chassis .showroom chassis-select.open chassis-select-title {
+.chassis .showroom chassis-select[open] {
+    -webkit-box-shadow: inset 0 0 0 2px rgb(188, 189, 193), 0 1em .236em 0 rgba(0, 0, 0, .1);
+            box-shadow: inset 0 0 0 2px rgb(188, 189, 193), 0 1em .236em 0 rgba(0, 0, 0, .1);
+}
+
+.chassis .showroom chassis-select[open] chassis-select-title {
     border-bottom: 1px solid rgb(188, 189, 193);
 }
 

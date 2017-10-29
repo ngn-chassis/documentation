@@ -2,7 +2,7 @@
 
 :host {
   display: flex;
-  contain: content;
+  contain: layout style;
   max-width: 100%;
 }
 

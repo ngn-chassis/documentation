@@ -1,8 +1,9 @@
 @charset "UTF-8";
 
 :host {
-  display: flex;
   contain: content;
+  display: flex;
+  flex-direction: column;
   max-width: 100%;
 }
 
@@ -24,10 +25,10 @@
   opacity: 0;
 }
 
-:host .options {
+:host .menu {
   display: none;
 }
 
-:host(.open) .options {
+:host([open]) .menu {
   display: block;
 }

@@ -888,19 +888,11 @@ html.chassis {
 }
 
 .chassis chassis-select {
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
         flex-direction: column;
     vertical-align: middle;
-    text-align: center;
-    white-space: nowrap;
     cursor: pointer;
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -908,21 +900,37 @@ html.chassis {
             user-select: none;
 }
 
-.chassis chassis-select select-title svg.icon,
+.chassis chassis-select chassis-select-title {
+    padding-top: .6360098247570551em;
+    padding-right: .9823784767414425em;
+    padding-bottom: .6360098247570551em;
+    padding-left: .9823784767414425em;
+    white-space: normal;
+}
+
+.chassis chassis-select chassis-option, .chassis chassis-select .optgroup-label {
+    padding-top: .6360098247570551em;
+    padding-right: .9823784767414425em;
+    padding-bottom: .6360098247570551em;
+    padding-left: .9823784767414425em;
+}
+
+.chassis chassis-select chassis-select-title svg.icon,
 .chassis chassis-select chassis-option svg.icon {
     -webkit-transform: translateX(-0.4293858394957358em);
             transform: translateX(-0.4293858394957358em);
 }
 
-.chassis chassis-select.pill select-title {
+.chassis chassis-select.pill {
     border-radius: 1.3827882373437426em;
+    overflow: auto;
 }
 
-.chassis chassis-select.multi-line select-title {
-    padding-top: .6360098247570551em;
-    padding-bottom: .6360098247570551em;
-    line-height: 1.3827882373437426;
-    white-space: normal;
+.chassis chassis-select.pill chassis-select-title,
+.chassis chassis-select.pill chassis-option,
+.chassis chassis-select.pill .optgroup-label {
+    padding-right: 1.61803398875em;
+    padding-left: 1.61803398875em;
 }
 
 .chassis chassis-select[disabled], .chassis chassis-select.disabled {
@@ -974,6 +982,10 @@ html.chassis {
 
 .chassis .showroom chassis-select chassis-option:hover {
     background: rgba(0, 0, 0, .1);
+}
+
+.chassis .showroom chassis-select.open chassis-select-title {
+    border-bottom: 1px solid rgb(188, 189, 193);
 }
 
 .chassis .showroom > header {

@@ -57,9 +57,29 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'connectedCallback',
     value: function connectedCallback() {}
   }, {
+    key: 'attributeChangedCallback',
+    value: function attributeChangedCallback(attr, oldValue, newValue) {
+      switch (attr.toLowerCase()) {case 'open':
+          if (this.hasAttribute('open')) {
+            this.open();
+          } else {
+            this.close();
+          }break;default:}
+    }
+  }, {
+    key: 'open',
+    value: function open() {
+      console.log('open');
+    }
+  }, {
+    key: 'close',
+    value: function close() {
+      console.log('close');
+    }
+  }, {
     key: '_inject',
     value: function _inject(select) {
-      select.slot = 'select';this.appendChild(select);this.menu = select;this.options = {};var _iteratorNormalCompletion = true;
+      select.slot = 'select';this.appendChild(select);this.select = select;this.options = {};var menu = document.createElement('div');menu.classList.add('options');menu.slot = 'menu';this.menu = menu;this.appendChild(menu);var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
@@ -68,9 +88,13 @@ var ChassisSelect = function (_HTMLElement) {
           var child = _step.value;
 
           switch (child.nodeName) {case 'OPTION':
-              this.addOption(this._generateChassisOption(child));break;case 'OPTGROUP':
-              this.appendChild(this._generateChassisOptgroup(child));break;default:
-              console.log('OTHER');console.log(child);}
+              if (child.hasAttribute('title')) {
+                this.addTitle(this._generateChassisSelectTitle(child));
+              } else {
+                this.addOption(this._generateChassisOption(child));
+              }break;case 'OPTGROUP':
+              this.addOptgroup(this._generateChassisOptgroup(child));break;default:
+              console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
         }
       } catch (err) {
         _didIteratorError = true;
@@ -86,6 +110,8 @@ var ChassisSelect = function (_HTMLElement) {
           }
         }
       }
+
+      this._applyListeners();
     }
   }, {
     key: 'addOptions',
@@ -99,7 +125,7 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'addOption',
     value: function addOption(data) {
-      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this;
+      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.menu;
 
       if (!customElements.get('chassis-option')) {
         console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
@@ -108,13 +134,34 @@ var ChassisSelect = function (_HTMLElement) {
       }dest.appendChild(option);
     }
   }, {
-    key: '_generateGuid',
-    value: function _generateGuid() {
-      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
+    key: 'addOptgroup',
+    value: function addOptgroup(optgroup) {
+      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.menu;
 
-      var lut = [];for (var i = 0; i < 256; i++) {
-        lut[i] = (i < 16 ? '0' : '') + i.toString(16);
-      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return prefix + '_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
+      var label = document.createElement('div');label.classList.add('optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+    }
+  }, {
+    key: 'addTitle',
+    value: function addTitle(title) {
+      this.insertAdjacentElement('afterbegin', title);
+    }
+  }, {
+    key: '_applyListeners',
+    value: function _applyListeners() {
+      var _this3 = this;
+
+      this.addEventListener('click', function (evt) {
+        if (_this3.hasAttribute('open')) {
+          _this3.removeAttribute('open');
+        } else {
+          _this3.setAttribute('open', '');
+        }
+      });
+    }
+  }, {
+    key: '_generateChassisSelectTitle',
+    value: function _generateChassisSelectTitle(option) {
+      var title = document.createElement('chassis-select-title');title.innerHTML = option.innerHTML;title.slot = 'title';return title;
     }
   }, {
     key: '_generateChassisOption',
@@ -145,6 +192,15 @@ var ChassisSelect = function (_HTMLElement) {
       }
 
       return fauxOption;
+    }
+  }, {
+    key: '_generateGuid',
+    value: function _generateGuid() {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
+
+      var lut = [];for (var i = 0; i < 256; i++) {
+        lut[i] = (i < 16 ? '0' : '') + i.toString(16);
+      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return prefix + '_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
     }
   }, {
     key: '_generateChassisOptgroup',
@@ -183,7 +239,12 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:content;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host .options{display:none}:host(.open) .options{display:block}chassis-select{display:flex;contain:content;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}chassis-select .options{display:none}chassis-select.open .options{display:block}</style><div class="hidden"><slot name="select"></slot></div><slot name="title"></slot><div class="options"><slot name="options"></slot></div></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host .menu{display:none}:host([open]) .menu{display:block}chassis-select{contain:content;display:flex;flex-direction:column;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}chassis-select .menu{display:none}chassis-select[open] .menu{display:block}</style><div class="hidden"><slot name="select"></slot></div><slot name="title"></slot><div class="menu"><slot name="menu"></slot></div></template>';
+    }
+  }], [{
+    key: 'observedAttributes',
+    get: function get() {
+      return ['open'];
     }
   }]);
   return ChassisSelect;

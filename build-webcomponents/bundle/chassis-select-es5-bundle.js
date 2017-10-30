@@ -854,6 +854,11 @@ var ChassisSelect = function (_HTMLElement) {
     }
 
     template = null;
+    _this._bodyClickHandler = function (evt) {
+      if (evt.target === _this || _this.contains(evt.target)) {
+        return;
+      }_this.removeAttribute('open');
+    };
     return _this;
   }
 
@@ -874,13 +879,13 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'open',
     value: function open() {
       // Force redraw in Safari
-      this.menuContainer.style.display = 'none';this.menuContainer.style.display = this.menuContainerBoxModel;
+      this.menuContainer.style.display = 'none';this.menuContainer.style.display = this.menuContainerBoxModel;this.menuContainer.removeAttribute('style');document.body.addEventListener('click', this._bodyClickHandler);
     }
   }, {
     key: 'close',
     value: function close() {
       // Force redraw in Safari
-      this.menuContainer.style.display = 'none';
+      this.menuContainer.style.display = 'none';this.menuContainer.removeAttribute('style');document.body.removeEventListener('click', this._bodyClickHandler);
     }
   }, {
     key: '_inject',

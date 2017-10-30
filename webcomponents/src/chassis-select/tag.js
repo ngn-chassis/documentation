@@ -1,6 +1,14 @@
 class ChassisSelect extends HTMLElement {
   constructor () {
     super()
+
+    this._bodyClickHandler = (evt) => {
+      if (evt.target === this || this.contains(evt.target)) {
+        return
+      }
+
+      this.removeAttribute('open')
+    }
   }
 
   static get observedAttributes () {
@@ -29,11 +37,17 @@ class ChassisSelect extends HTMLElement {
     // Force redraw in Safari
     this.menuContainer.style.display = 'none'
     this.menuContainer.style.display = this.menuContainerBoxModel
+    this.menuContainer.removeAttribute('style')
+
+    document.body.addEventListener('click', this._bodyClickHandler)
   }
 
   close () {
     // Force redraw in Safari
     this.menuContainer.style.display = 'none'
+    this.menuContainer.removeAttribute('style')
+
+    document.body.removeEventListener('click', this._bodyClickHandler)
   }
 
   _inject (select) {

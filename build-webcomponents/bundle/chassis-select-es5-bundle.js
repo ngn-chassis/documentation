@@ -873,17 +873,19 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'open',
     value: function open() {
-      console.log('open');
+      // Force redraw in Safari
+      this.menuContainer.style.display = 'none';this.menuContainer.style.display = this.menuContainerBoxModel;
     }
   }, {
     key: 'close',
     value: function close() {
-      console.log('close');
+      // Force redraw in Safari
+      this.menuContainer.style.display = 'none';
     }
   }, {
     key: '_inject',
     value: function _inject(select) {
-      select.slot = 'select';this.appendChild(select);this.select = select;this.options = {};var menu = document.createElement('div');menu.classList.add('options');menu.slot = 'menu';this.menu = menu;this.appendChild(menu);var _iteratorNormalCompletion = true;
+      select.slot = 'select';this.appendChild(select);this.select = select;this.options = {};var menu = document.createElement('div');menu.classList.add('options');menu.slot = 'options';this.menu = menu;this.menuContainer = this.shadowRoot.querySelector('.options-wrapper');this.menuContainerBoxModel = window.getComputedStyle(this.menuContainer).getPropertyValue('display');this.appendChild(menu);var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
@@ -1043,7 +1045,7 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:inline-flex;flex-direction:column;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host .menu{display:none}:host([open]) .menu{display:block}chassis-select{contain:content;display:inline-flex;flex-direction:column;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}chassis-select .menu{display:none}chassis-select[open] .menu{display:block}</style><div class="hidden"><slot name="select"></slot></div><slot name="title"></slot><div class="menu"><slot name="menu"></slot></div></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host .options-wrapper{display:none;height:0}:host([open]) .options-wrapper{position:absolute;top:100%;left:0;z-index:1;display:block;min-width:100%;height:11.8em;max-height:11.8em}chassis-select{display:inline-flex;flex-direction:column;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}chassis-select .options-wrapper{display:none;height:0}chassis-select[open] .options-wrapper{position:absolute;top:100%;left:0;z-index:1;display:block;min-width:100%;height:11.8em;max-height:11.8em}</style><div class="hidden"><slot name="select"></slot></div><div class="title-wrapper"><slot name="title"></slot></div><div class="options-wrapper"><slot name="options"></slot></div></template>';
     }
   }], [{
     key: 'observedAttributes',

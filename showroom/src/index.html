@@ -316,6 +316,32 @@
               </fieldset>
 
               <fieldset>
+                <h4>Select Menu</h4>
+
+                <chassis-control id="select_menu">
+                  <label>Menu Label</label>
+                  <select class="pill">
+                    <option title>Here's the select title</option>
+                    <option label="Using Label" value="test1">
+                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                      </svg>
+                      Option 1
+                    </option>
+                    <option label=" " value="test2" selected="false">Option 2</option>
+                    <option value="test3">Option 3 is long and should wrap to the next line</option>
+                    <option value="test4">Option 4</option>
+                    <optgroup label="optgroup">
+                      <option value="test5">Grouped Option</option>
+                      <option value="test6">Grouped Option</option>
+                      <option value="test7">Grouped Option</option>
+                    </optgroup>
+                  </select>
+                </chassis-control>
+              </fieldset>
+
+              <fieldset>
                 <h4>Radio Buttons</h4>
 
                 <chassis-control id="radio_button_1">
@@ -337,29 +363,24 @@
               </fieldset>
 
               <fieldset>
-                <h4>Select Menu</h4>
+                <h4>Checkboxes</h4>
 
-                <chassis-control id="select_menu">
-                  <label>Select Menu</label>
-                  <select>
-                    <option title>Here's the select title</option>
-                    <option label="Using Label" value="test1">
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="8" r="7"></circle>
-                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                      </svg>
-                      Option 1
-                    </option>
-                    <option label=" " value="test2" selected="false">Option 2</option>
-                    <option value="test3">Option 3</option>
-                    <option value="test4">Option 4</option>
-                    <optgroup label="optgroup">
-                      <option value="test5">Grouped Option</option>
-                      <option value="test6">Grouped Option</option>
-                      <option value="test7">Grouped Option</option>
-                    </optgroup>
-                  </select>
+                <chassis-control id="checkbox_1">
+                  <label>Checkbox</label>
+                  <input name="checboxes" type="checkbox" value="">
                 </chassis-control>
+                <chassis-control id="checkbox_2">
+                  <label>Checkbox</label>
+                  <input name="checboxes" type="checkbox" value="">
+                </chassis-control>
+                <chassis-control id="checkbox_3">
+                  <label>Checkbox</label>
+                  <input name="checboxes" type="checkbox" value="">
+                </chassis-control>
+
+                <!-- <chassis-control-group>
+
+                </chassis-control-group> -->
               </fieldset>
             </form>
 

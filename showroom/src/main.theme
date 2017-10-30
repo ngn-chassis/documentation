@@ -188,4 +188,30 @@ components {
 			}
 		}
 	}
+
+	select-menu {
+		@state default {
+			box-shadow: inset 0 0 0 2px var(--grey-n04);
+			transition: all ease-in-out .1s;
+
+			chassis-option:hover {
+				background: color(var(--black) alpha(10%));
+			}
+
+			.options {
+				background: var(--white);
+				box-shadow:
+					inset 2px 0 0 0 var(--grey-n04),
+					inset -2px -2px 0 0 var(--grey-n04),
+					0 .236em 1em 0 color(var(--black) alpha(10%))
+				;
+			}
+		}
+
+		@state open {
+			chassis-select-title {
+				box-shadow: inset 0 .236em .382em color(var(--black) alpha(6.18%));
+			}
+		}
+	}
 }

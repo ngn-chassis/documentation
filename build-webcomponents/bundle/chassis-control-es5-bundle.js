@@ -894,45 +894,64 @@ var ChassisFormControl = function (_HTMLElement) {
     key: '_initSelectMenu',
     value: function _initSelectMenu(select) {
       this.type = 'select';select.setAttribute('role', 'menu');select.id = this._guid;select.slot = select.slot || 'input';this._input = select;if (!customElements.get('chassis-select')) {
+        var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
+          return select.removeChild(el);
+        });var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = (0, _getIterator3.default)(select.options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var option = _step.value;
+
+            if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
+              option.removeAttribute('label');
+            }
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
         return;
-      }this.placeholder = document.createElement('chassis-select');this.placeholder.slot = 'input';var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      }this.placeholder = document.createElement('chassis-select');this.placeholder.slot = 'input';var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = (0, _getIterator3.default)(select.attributes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var attr = _step.value;
+        for (var _iterator2 = (0, _getIterator3.default)(select.attributes), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var attr = _step2.value;
 
           if (attr.specified) {
             this.placeholder.setAttribute(attr.name, attr.value);
           }
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
 
-      this.placeholder._inject(select); // for (let option of select.options) {
-      //   let fauxOption = document.createElement('chassis-option')
-      //   fauxOption.innerHTML = option.innerHTML
-      //
-      //   for (let attr of option.attributes) {
-      //     fauxOption.setAttribute(attr.name, attr.value)
-      //   }
-      //
-      //   this.placeholder.appendChild(fauxOption)
-      // }
-      this.appendChild(this.placeholder);
+      this.placeholder._inject(select);this.appendChild(this.placeholder);
     }
   }, {
     key: 'templateString',

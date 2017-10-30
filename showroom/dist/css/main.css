@@ -852,11 +852,13 @@ html.chassis {
 }
 
 .chassis chassis-control[type="field"] input,
-.chassis chassis-control[type="field"] textarea {
+.chassis chassis-control[type="field"] textarea,
+.chassis chassis-control[type="select"] chassis-select {
     margin: .6360098247570551em 0 0;
 }
 
-.chassis select, .chassis chassis-control[type="select"] select[multiple] {
+.chassis chassis-control[type="select"] select,
+.chassis chassis-control[type="select"] select[multiple] {
     vertical-align: top;
 }
 
@@ -888,6 +890,7 @@ html.chassis {
 }
 
 .chassis chassis-select {
+    position: relative;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
@@ -898,7 +901,10 @@ html.chassis {
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
-    overflow: auto;
+    -webkit-box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
+            box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
+    -webkit-transition: all ease-in-out .1s;
+            transition: all ease-in-out .1s;
 }
 
 .chassis chassis-select chassis-select-title {
@@ -909,14 +915,11 @@ html.chassis {
     white-space: normal;
 }
 
-.chassis chassis-select .options {
-    padding-right: .9823784767414425em;
-    padding-left: .9823784767414425em;
-}
-
 .chassis chassis-select chassis-option, .chassis chassis-select .optgroup-label {
     padding-top: .6360098247570551em;
+    padding-right: .9823784767414425em;
     padding-bottom: .6360098247570551em;
+    padding-left: .9823784767414425em;
 }
 
 .chassis chassis-select chassis-select-title svg.icon,
@@ -929,6 +932,14 @@ html.chassis {
     border-radius: 1.3827882373437426em;
 }
 
+.chassis chassis-select[open].pill {
+    border-radius: 1.3827882373437426em 1.3827882373437426em 0 0;
+}
+
+.chassis chassis-select[open].pill .options {
+    border-radius: 0 0 1.3827882373437426em 1.3827882373437426em;
+}
+
 .chassis chassis-select.pill chassis-select-title,
 .chassis chassis-select.pill chassis-option,
 .chassis chassis-select.pill .optgroup-label {
@@ -936,8 +947,28 @@ html.chassis {
     padding-left: 1.61803398875em;
 }
 
-.chassis chassis-select[disabled], .chassis chassis-select.disabled {
-    pointer-events: none;
+.chassis chassis-select chassis-option:hover {
+    background: rgba(0, 0, 0, .1);
+}
+
+.chassis chassis-select .options {
+    background: rgb(255, 255, 255);
+    -webkit-box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
+                        inset -2px -2px 0 0 rgb(188, 189, 193),
+                        0 .236em 1em 0 rgba(0, 0, 0, .1);
+            box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
+                inset -2px -2px 0 0 rgb(188, 189, 193),
+                0 .236em 1em 0 rgba(0, 0, 0, .1);
+}
+
+.chassis chassis-select[open] .options {
+    max-height: 100%;
+    overflow: auto;
+}
+
+.chassis chassis-select[open] .options chassis-select-title {
+    -webkit-box-shadow: inset 0 .236em .382em rgba(0, 0, 0, .06);
+            box-shadow: inset 0 .236em .382em rgba(0, 0, 0, .06);
 }
 
 .chassis .showroom {
@@ -976,29 +1007,6 @@ html.chassis {
 
 .chassis .showroom code.example:before, .chassis .showroom code.example:after {
     content: "";
-}
-
-.chassis .showroom chassis-select {
-    -webkit-box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
-            box-shadow: inset 0 0 0 2px rgb(188, 189, 193);
-}
-
-.chassis .showroom chassis-select chassis-option {
-    font-size: 12.578px;
-    font-size: .7861513777573977rem;
-}
-
-.chassis .showroom chassis-select chassis-option:hover {
-    background: rgba(0, 0, 0, .1);
-}
-
-.chassis .showroom chassis-select[open] {
-    -webkit-box-shadow: inset 0 0 0 2px rgb(188, 189, 193), 0 1em .236em 0 rgba(0, 0, 0, .1);
-            box-shadow: inset 0 0 0 2px rgb(188, 189, 193), 0 1em .236em 0 rgba(0, 0, 0, .1);
-}
-
-.chassis .showroom chassis-select[open] chassis-select-title {
-    border-bottom: 1px solid rgb(188, 189, 193);
 }
 
 .chassis .showroom > header {

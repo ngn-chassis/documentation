@@ -26,11 +26,14 @@ class ChassisSelect extends HTMLElement {
   }
 
   open () {
-    console.log('open');
+    // Force redraw in Safari
+    this.menuContainer.style.display = 'none'
+    this.menuContainer.style.display = this.menuContainerBoxModel
   }
 
   close () {
-    console.log('close');
+    // Force redraw in Safari
+    this.menuContainer.style.display = 'none'
   }
 
   _inject (select) {
@@ -42,8 +45,11 @@ class ChassisSelect extends HTMLElement {
 
     let menu = document.createElement('div')
     menu.classList.add('options')
-    menu.slot = 'menu'
+    menu.slot = 'options'
     this.menu = menu
+
+    this.menuContainer = this.shadowRoot.querySelector('.options-wrapper')
+    this.menuContainerBoxModel = window.getComputedStyle(this.menuContainer).getPropertyValue('display')
 
     this.appendChild(menu)
 

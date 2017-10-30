@@ -126,6 +126,15 @@ class ChassisFormControl extends HTMLElement {
     this._input = select
 
     if (!customElements.get('chassis-select')) {
+      let titleEls = select.querySelectorAll('option[title]')
+      titleEls.forEach((el) => select.removeChild(el))
+
+      for (let option of select.options) {
+        if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
+          option.removeAttribute('label')
+        }
+      }
+
       return
     }
 
@@ -139,18 +148,6 @@ class ChassisFormControl extends HTMLElement {
     }
 
     this.placeholder._inject(select)
-
-    // for (let option of select.options) {
-    //   let fauxOption = document.createElement('chassis-option')
-    //   fauxOption.innerHTML = option.innerHTML
-    //
-    //   for (let attr of option.attributes) {
-    //     fauxOption.setAttribute(attr.name, attr.value)
-    //   }
-    //
-    //   this.placeholder.appendChild(fauxOption)
-    // }
-
     this.appendChild(this.placeholder)
   }
 }

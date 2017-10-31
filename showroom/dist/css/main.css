@@ -474,7 +474,8 @@ html.chassis {
 .chassis .showroom .content > section.ui-components .buttons .custom-1,
 .chassis .showroom .content > section.ui-components .buttons .custom-2,
 .chassis .showroom .content > section.ui-components .buttons .custom-3,
-.chassis a.button {
+.chassis a.button, .chassis input:not([type="checkbox"]):not([type="radio"]),
+.chassis textarea {
     background: transparent none repeat 0% 0% / auto auto padding-box border-box scroll;
     border: medium none currentColor;
     border-radius: 0;
@@ -499,7 +500,7 @@ html.chassis {
 }
 
 .chassis table, .chassis chassis-overlay, .chassis chassis-modal,
-.chassis chassis-control, .chassis chassis-control {
+.chassis chassis-control {
     background: transparent none repeat 0% 0% / auto auto padding-box border-box scroll;
     border: medium none currentColor;
     border-radius: 0;
@@ -553,12 +554,12 @@ html.chassis {
     align-items: center;
     margin-right: .3241019226245697em;
     margin-bottom: 1em;
+    padding-top: .6360098247570551em;
     padding-right: .9823784767414425em;
+    padding-bottom: .6360098247570551em;
     padding-left: .9823784767414425em;
-    line-height: 2.654807886857853;
     vertical-align: middle;
     text-align: center;
-    white-space: nowrap;
     cursor: pointer;
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -585,16 +586,6 @@ html.chassis {
     padding-left: 1.61803398875em;
     padding-right: 1.61803398875em;
     border-radius: 1.3827882373437426em;
-}
-
-.chassis button.multi-line,
-.chassis .showroom .content > section.ui-components .buttons .custom-1.multi-line,
-.chassis .showroom .content > section.ui-components .buttons .custom-2.multi-line,
-.chassis .showroom .content > section.ui-components .buttons .custom-3.multi-line {
-    padding-top: .6360098247570551em;
-    padding-bottom: .6360098247570551em;
-    line-height: 1.3827882373437426;
-    white-space: normal;
 }
 
 .chassis button:hover,
@@ -664,12 +655,14 @@ html.chassis {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    margin: 0 .3241019226245697em 1em 0;
-    padding: 0 .9823784767414425em;
-    line-height: 2.654807886857853;
+    margin-right: .3241019226245697em;
+    margin-bottom: 1em;
+    padding-top: .6360098247570551em;
+    padding-right: .9823784767414425em;
+    padding-bottom: .6360098247570551em;
+    padding-left: .9823784767414425em;
     vertical-align: middle;
     text-align: center;
-    white-space: nowrap;
     cursor: pointer;
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -690,13 +683,6 @@ html.chassis {
     padding-left: 1.61803398875em;
     padding-right: 1.61803398875em;
     border-radius: 1.3827882373437426em;
-}
-
-.chassis a.button.multi-line {
-    padding-top: .6360098247570551em;
-    padding-bottom: .6360098247570551em;
-    line-height: 1.3827882373437426;
-    white-space: normal;
 }
 
 .chassis a.button:hover {
@@ -804,42 +790,29 @@ html.chassis {
     background: rgb(255, 255, 255);
 }
 
-.chassis chassis-control[type="field"] {
-    margin-bottom: 1.3827882373437426em;
-}
-
-.chassis chassis-control[type="field"] label {
-    display: inline-block;
-}
-
-.chassis input[type="date"], .chassis input[type="datetime-local"],
-.chassis input[type="email"], .chassis input[type="file"],
-.chassis input[type="month"], .chassis input[type="number"],
-.chassis input[type="password"], .chassis input[type="range"],
-.chassis input[type="search"], .chassis input[type="tel"],
-.chassis input[type="text"], .chassis input[type="time"],
-.chassis input[type="url"], .chassis input[type="week"],
-.chassis chassis-control[type="field"] input {
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 auto;
-        flex: 1 1 auto;
-    width: 100%;
-    padding: 0;
-    margin: 0;
+.chassis input:not([type="checkbox"]):not([type="radio"]) {
+    margin-right: .3241019226245697em;
+    margin-bottom: 1em;
+    padding-top: .6360098247570551em;
     padding-right: .9823784767414425em;
+    padding-bottom: .6360098247570551em;
     padding-left: .9823784767414425em;
-    line-height: 2.654807886857853;
     background: transparent;
     border: none;
+    margin-top: 0;
+    -webkit-box-shadow: inset 0 -2px 0 0 rgb(188, 189, 193);
+            box-shadow: inset 0 -2px 0 0 rgb(188, 189, 193);
 }
 
-.chassis textarea, .chassis chassis-control[type="field"] textarea {
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 auto;
-        flex: 1 1 auto;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
+.chassis input:not([type="checkbox"]):not([type="radio"]):focus {
+    outline: 0;
+    -webkit-box-shadow: inset 0 -2px 0 0 #09f;
+            box-shadow: inset 0 -2px 0 0 #09f;
+}
+
+.chassis textarea {
+    margin-right: .3241019226245697em;
+    margin-bottom: 1em;
     padding-top: .6360098247570551em;
     padding-right: .9823784767414425em;
     padding-bottom: .6360098247570551em;
@@ -849,44 +822,14 @@ html.chassis {
     resize: vertical;
     background: transparent;
     border: none;
+    -webkit-box-shadow: 0 0 0 2px rgb(188, 189, 193);
+            box-shadow: 0 0 0 2px rgb(188, 189, 193);
 }
 
-.chassis chassis-control[type="field"] input,
-.chassis chassis-control[type="field"] textarea,
-.chassis chassis-control[type="select"] chassis-select {
-    margin: .6360098247570551em 0 0;
-}
-
-.chassis chassis-control[type="select"] select,
-.chassis chassis-control[type="select"] select[multiple] {
-    vertical-align: top;
-}
-
-.chassis chassis-control[type="field"] input {
-    margin-top: 0;
-    border-bottom: 2px solid rgb(188, 189, 193);
-}
-
-.chassis chassis-control[type="field"] input:focus {
+.chassis textarea:focus {
     outline: 0;
-    border-color: #09f;
-}
-
-.chassis chassis-control[type="field"] textarea {
-    border: 2px solid rgb(188, 189, 193);
-}
-
-.chassis chassis-control[type="field"] textarea:focus {
-    outline: 0;
-    border-color: #09f;
-}
-
-.chassis chassis-control[type="toggle"] label {
-    display: inline-block;
-}
-
-.chassis chassis-control[type="toggle"] input {
-    margin: 0 .3241019226245697em 0 0;
+    -webkit-box-shadow: 0 0 0 2px #09f;
+            box-shadow: 0 0 0 2px #09f;
 }
 
 .chassis chassis-select {
@@ -957,6 +900,7 @@ html.chassis {
 }
 
 .chassis chassis-select .options {
+    height: 11.8em;
     background: rgb(255, 255, 255);
     -webkit-box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
                         inset -2px -2px 0 0 rgb(188, 189, 193),
@@ -974,6 +918,47 @@ html.chassis {
 .chassis chassis-select[open] .options chassis-select-title {
     -webkit-box-shadow: inset 0 .236em .382em rgba(0, 0, 0, .06);
             box-shadow: inset 0 .236em .382em rgba(0, 0, 0, .06);
+}
+
+.chassis chassis-control[type="field"] {
+    margin-bottom: 1.3827882373437426em;
+}
+
+.chassis chassis-control[type="field"] label {
+    display: inline-block;
+}
+
+.chassis chassis-control[type="field"] input {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
+.chassis chassis-control[type="field"] textarea {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
+.chassis chassis-control[type="toggle"] input {
+    margin: 0 .3241019226245697em 0 0;
+}
+
+.chassis chassis-control[type="field"] textarea,
+.chassis chassis-control[type="select"] chassis-select {
+    margin: .6360098247570551em 0 0;
+}
+
+.chassis chassis-control[type="field"] textarea,
+.chassis chassis-control[type="select"] select,
+.chassis chassis-control[type="select"] select[multiple] {
+    vertical-align: top;
 }
 
 .chassis .showroom {

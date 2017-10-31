@@ -51,43 +51,40 @@ class ChassisSelect extends HTMLElement {
   }
 
   _inject (select) {
-    select.slot = 'select'
-    this.appendChild(select)
+    this._select = select
+    // this._options = new Map()
 
-    this.select = select
-    this.options = {}
+    // let menu = document.createElement('div')
+    // menu.classList.add('options')
+    // menu.slot = 'options'
+    // this.menu = menu
 
-    let menu = document.createElement('div')
-    menu.classList.add('options')
-    menu.slot = 'options'
-    this.menu = menu
-
-    this.menuContainer = this.shadowRoot.querySelector('.options-wrapper')
-    this.menuContainerBoxModel = window.getComputedStyle(this.menuContainer).getPropertyValue('display')
-
-    this.appendChild(menu)
-
-    for (let child of select.children) {
-      switch (child.nodeName) {
-        case 'OPTION':
-          if (child.hasAttribute('title')) {
-            this.addTitle(this._generateChassisSelectTitle(child))
-          } else {
-            this.addOption(this._generateChassisOption(child))
-          }
-          break
-
-        case 'OPTGROUP':
-          this.addOptgroup(this._generateChassisOptgroup(child))
-          break
-
-        default:
-          console.warn(`${child.nodeName.toLowerCase()} is not a valid child element for <chassis-select>. Removing...`)
-          break
-      }
-    }
-
-    this._applyListeners()
+    // this.menuContainer = this.shadowRoot.querySelector('.options-wrapper')
+    // this.menuContainerBoxModel = window.getComputedStyle(this.menuContainer).getPropertyValue('display')
+    //
+    // this.appendChild(menu)
+    //
+    // for (let child of select.children) {
+    //   switch (child.nodeName) {
+    //     case 'OPTION':
+    //       if (child.hasAttribute('title')) {
+    //         this.addTitle(this._generateChassisSelectTitle(child))
+    //       } else {
+    //         this.addOption(this._generateChassisOption(child))
+    //       }
+    //       break
+    //
+    //     case 'OPTGROUP':
+    //       this.addOptgroup(this._generateChassisOptgroup(child))
+    //       break
+    //
+    //     default:
+    //       console.warn(`${child.nodeName.toLowerCase()} is not a valid child element for <chassis-select>. Removing...`)
+    //       break
+    //   }
+    // }
+    //
+    // this._applyListeners()
   }
 
   addOptions (options) {
@@ -145,7 +142,7 @@ class ChassisSelect extends HTMLElement {
 
   _generateChassisOption (option) {
     let id = this._generateGuid()
-    this.options[id] = option
+    this._options.set(id, option)
 
     let label = option.getAttribute('label')
 

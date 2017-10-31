@@ -120,12 +120,13 @@ class ChassisFormControl extends HTMLElement {
 
   _initSelectMenu (select) {
     this.type = 'select'
-    select.setAttribute('role', 'menu')
-    select.id = this._guid
-    select.slot = select.slot || 'input'
-    this._input = select
 
     if (!customElements.get('chassis-select')) {
+      select.id = this._guid
+      select.slot = select.slot || 'input'
+      select.setAttribute('role', 'menu')
+      this._input = select
+
       let titleEls = select.querySelectorAll('option[title]')
       titleEls.forEach((el) => select.removeChild(el))
 
@@ -138,17 +139,20 @@ class ChassisFormControl extends HTMLElement {
       return
     }
 
-    this.placeholder = document.createElement('chassis-select')
-    this.placeholder.slot = 'input'
+    let placeholder = document.createElement('chassis-select')
+    placeholder.slot = 'input'
 
     for (let attr of select.attributes) {
       if (attr.specified) {
-        this.placeholder.setAttribute(attr.name, attr.value)
+        placeholder.setAttribute(attr.name, attr.value)
       }
     }
 
-    this.placeholder._inject(select)
-    this.appendChild(this.placeholder)
+    this.removeChild(select)
+
+    placeholder._inject(select)
+    this.appendChild(placeholder)
+    this._input = placeholder
   }
 }
 

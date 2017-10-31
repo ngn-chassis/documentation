@@ -89,8 +89,8 @@ var ChassisFormControl = function (_HTMLElement) {
   }, {
     key: '_initSelectMenu',
     value: function _initSelectMenu(select) {
-      this.type = 'select';select.setAttribute('role', 'menu');select.id = this._guid;select.slot = select.slot || 'input';this._input = select;if (!customElements.get('chassis-select')) {
-        var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
+      this.type = 'select';if (!customElements.get('chassis-select')) {
+        select.id = this._guid;select.slot = select.slot || 'input';select.setAttribute('role', 'menu');this._input = select;var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
           return select.removeChild(el);
         });var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -120,7 +120,7 @@ var ChassisFormControl = function (_HTMLElement) {
         }
 
         return;
-      }this.placeholder = document.createElement('chassis-select');this.placeholder.slot = 'input';var _iteratorNormalCompletion2 = true;
+      }var placeholder = document.createElement('chassis-select');placeholder.slot = 'input';var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
       var _iteratorError2 = undefined;
 
@@ -129,7 +129,7 @@ var ChassisFormControl = function (_HTMLElement) {
           var attr = _step2.value;
 
           if (attr.specified) {
-            this.placeholder.setAttribute(attr.name, attr.value);
+            placeholder.setAttribute(attr.name, attr.value);
           }
         }
       } catch (err) {
@@ -147,7 +147,7 @@ var ChassisFormControl = function (_HTMLElement) {
         }
       }
 
-      this.placeholder._inject(select);this.appendChild(this.placeholder);
+      this.removeChild(select);placeholder._inject(select);this.appendChild(placeholder);this._input = placeholder;
     }
   }, {
     key: 'templateString',

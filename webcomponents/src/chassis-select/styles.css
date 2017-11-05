@@ -3,6 +3,7 @@
 :host {
   display: inline-flex;
   flex-direction: column;
+  width: 100%;
   max-width: 100%;
 }
 
@@ -18,21 +19,16 @@
   box-sizing: border-box;
 }
 
-:host .hidden {
-  display: none;
-  visibility: hidden;
-  opacity: 0;
+:host ::slotted(chassis-options) {
+  height: 0;
+  overflow: hidden;
 }
 
-:host .options-wrapper {
-  display: none;
-}
-
-:host([open]) .options-wrapper {
+:host([open]) ::slotted(chassis-options) {
   position: absolute;
   top: 100%;
   left: 0;
   z-index: 1;
-  display: block;
+  height: auto;
   min-width: 100%;
 }

@@ -321,15 +321,15 @@
                 <chassis-control id="select_menu">
                   <label>Menu Label</label>
                   <select>
-                    <option title>Here's the select title</option>
-                    <option label="Using Label" value="test1" selected>
+                    <!-- <option title>Here's the select title</option> -->
+                    <option label="Using Label" value="test1">
                       <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>
                         <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                       </svg>
                       Option 1
                     </option>
-                    <option label=" " value="test2" selected="false">Option 2</option>
+                    <option label=" " value="test2">Option 2</option>
                     <option value="test3">Option 3 is long and should wrap to the next line</option>
                     <option value="test4">Option 4</option>
                     <optgroup label="optgroup">
@@ -431,11 +431,11 @@
       window.addEventListener('WebComponentsReady', function () {
         // let select = document.getElementById('select_menu').querySelector('chassis-select')
         // console.log(select.options);
-        let control = document.getElementById('text_field')
+        // let control = document.getElementById('text_field')
 
         // console.dir(control);
 
-        control.input = document.createElement('div')
+        // control.input = document.createElement('div')
       })
     </script>
   </body>

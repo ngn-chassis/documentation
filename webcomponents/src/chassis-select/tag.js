@@ -2,6 +2,10 @@ class ChassisSelect extends HTMLElement {
   constructor () {
     super()
 
+    this._options = new Map()
+    this._title = ''
+    this._selectEledOption = null
+
     this._bodyClickHandler = (evt) => {
       if (evt.target === this || this.contains(evt.target)) {
         return
@@ -15,8 +19,16 @@ class ChassisSelect extends HTMLElement {
     return ['open']
   }
 
-  connectedCallback () {
+  get options () {
+    return Array.from(this._options.values())
+  }
 
+  get sourceElement () {
+    return this._selectEl
+  }
+
+  connectedCallback () {
+    setTimeout(() => this._applyListeners(), 0)
   }
 
   attributeChangedCallback (attr, oldValue, newValue) {
@@ -35,91 +47,85 @@ class ChassisSelect extends HTMLElement {
 
   open () {
     // Force redraw in Safari
-    this.menuContainer.style.display = 'none'
-    this.menuContainer.style.display = this.menuContainerBoxModel
-    this.menuContainer.removeAttribute('style')
+    // this.menuContainer.style.display = 'none'
+    // this.menuContainer.style.display = this.menuContainerBoxModel
+    // this.menuContainer.removeAttribute('style')
 
     document.body.addEventListener('click', this._bodyClickHandler)
   }
 
   close () {
     // Force redraw in Safari
-    this.menuContainer.style.display = 'none'
-    this.menuContainer.removeAttribute('style')
+    // this.menuContainer.style.display = 'none'
+    // this.menuContainer.removeAttribute('style')
 
     document.body.removeEventListener('click', this._bodyClickHandler)
   }
 
   _inject (select) {
-    this._select = select
-    // this._options = new Map()
+    this._selectEl = select
 
-    // let menu = document.createElement('div')
-    // menu.classList.add('options')
-    // menu.slot = 'options'
-    // this.menu = menu
+    this._titleEl = document.createElement('chassis-select-title')
+    this._titleEl.slot = 'title'
+    this.appendChild(this._titleEl)
 
-    // this.menuContainer = this.shadowRoot.querySelector('.options-wrapper')
-    // this.menuContainerBoxModel = window.getComputedStyle(this.menuContainer).getPropertyValue('display')
-    //
-    // this.appendChild(menu)
-    //
-    // for (let child of select.children) {
-    //   switch (child.nodeName) {
-    //     case 'OPTION':
-    //       if (child.hasAttribute('title')) {
-    //         this.addTitle(this._generateChassisSelectTitle(child))
-    //       } else {
-    //         this.addOption(this._generateChassisOption(child))
-    //       }
-    //       break
-    //
-    //     case 'OPTGROUP':
-    //       this.addOptgroup(this._generateChassisOptgroup(child))
-    //       break
-    //
-    //     default:
-    //       console.warn(`${child.nodeName.toLowerCase()} is not a valid child element for <chassis-select>. Removing...`)
-    //       break
-    //   }
-    // }
-    //
-    // this._applyListeners()
+    this._optionsEl = document.createElement('chassis-options')
+    this._optionsEl.slot = 'options'
+    this.appendChild(this._optionsEl)
+
+    this.addChildren(select.children)
+
+    this._titleEl.innerHTML = this.options[0].displayElement.innerHTML
   }
 
-  addOptions (options) {
-    options.forEach((option) => this.addOption(option))
+  addChildren (children) {
+    for (let child of children) {
+      switch (child.nodeName) {
+        case 'OPTION':
+          // if (child.hasAttribute('title')) {
+            // this.addTitle(this._generateChassisSelectTitle(child))
+          // } else {
+            this.addOption(this._generateOptionObject(child))
+          // }
+          break
+
+        // case 'OPTGROUP':
+        //   this.addOptgroup(this._generateChassisOptgroup(child))
+        //   break
+
+        default:
+          console.warn(`${child.nodeName.toLowerCase()} is not a valid child element for <chassis-select>. Removing...`)
+          break
+      }
+    }
   }
 
-  addOption (data, dest = this.menu) {
+  addOption (option, dest = this._optionsEl) {
     if (!customElements.get('chassis-option')) {
       console.error(`chassis-select requires chassis-option. Please include it in this document's <head> element.`)
       return
     }
 
-    let option = document.createElement('chassis-option')
-    option.dataset['optionId'] = data.id
-    option.innerHTML = data.innerHTML
-    option.slot = 'options'
+    let label = option.sourceElement.getAttribute('label')
+    let chassisOption = document.createElement('chassis-option')
 
-    for (let attr in data.attributes) {
-      option.setAttribute(attr, data.attributes[attr])
-    }
+    chassisOption.key = option.id
+    chassisOption.innerHTML = label && label.trim() !== '' ? label : option.sourceElement.innerHTML
+    chassisOption.sourceElement = option.sourceElement
 
-    dest.appendChild(option)
+    dest.appendChild(chassisOption)
+
+    option.displayElement = chassisOption
+    this._options.set(option.id, option)
   }
 
-  addOptgroup (optgroup, dest = this.menu) {
+  addOptgroup (optgroup, dest = this._optionsEl) {
     let label = document.createElement('div')
     label.classList.add('optgroup-label')
     label.innerHTML = optgroup.getAttribute('label')
 
     dest.appendChild(label)
     dest.appendChild(optgroup)
-  }
-
-  addTitle (title) {
-    this.insertAdjacentElement('afterbegin', title)
   }
 
   _applyListeners () {
@@ -132,31 +138,23 @@ class ChassisSelect extends HTMLElement {
     })
   }
 
-  _generateChassisSelectTitle (option) {
-    let title = document.createElement('chassis-select-title')
-    title.innerHTML = option.innerHTML
-    title.slot = 'title'
+  _generateOptionObject (optionEl) {
+    if (!customElements.get('chassis-option')) {
+      console.error(`chassis-select requires chassis-option. Please include it in this document's <head> element.`)
+      return
+    }
 
-    return title
-  }
-
-  _generateChassisOption (option) {
-    let id = this._generateGuid()
-    this._options.set(id, option)
-
-    let label = option.getAttribute('label')
-
-    let fauxOption = {
-      id,
+    let obj = {
+      id: this._generateGuid(),
       attributes: {},
-      innerHTML: label && label.trim() !== '' ? label : option.innerHTML
+      sourceElement: optionEl
     }
 
-    for (let attr of option.attributes) {
-      fauxOption.attributes[attr.name] = attr.value
+    for (let attr of optionEl.attributes) {
+      obj.attributes[attr.name] = attr.value
     }
 
-    return fauxOption
+    return obj
   }
 
   _generateGuid (prefix = 'option') {
@@ -199,7 +197,7 @@ class ChassisSelect extends HTMLElement {
     let options = optgroup.querySelectorAll('option')
 
     for (let option of options) {
-      this.addOption(this._generateChassisOption(option), fauxOptgroup)
+      this.addOption(this._generateOptionObject(option), fauxOptgroup)
     }
 
     return fauxOptgroup

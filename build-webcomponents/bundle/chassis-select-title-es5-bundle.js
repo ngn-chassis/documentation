@@ -812,7 +812,7 @@ var ChassisSelectTitle = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-select-title{contain:content;display:flex;flex-direction:column;max-width:100%}chassis-select-title *{box-sizing:border-box}chassis-select-title :before{box-sizing:border-box}chassis-select-title :after{box-sizing:border-box}</style><slot></slot></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}chassis-select-title *{box-sizing:border-box}chassis-select-title :before{box-sizing:border-box}chassis-select-title :after{box-sizing:border-box}</style><slot></slot></template>';
     }
   }]);
   return ChassisSelectTitle;

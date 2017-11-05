@@ -149,7 +149,7 @@ class Builder {
 
     this.css.walkRules((rule) => newRules.push(
       rule.clone({
-        selector: this._transformSelector(rule.selector)
+        selector: this._transformSelector(this._stripUnsupportedSelectorElements(rule.selector))
       })
     ))
 
@@ -255,6 +255,18 @@ class Builder {
 
   _readFile (filepath) {
     return fs.readFileSync(filepath).toString()
+  }
+
+  _stripUnsupportedSelectorElements (selector) {
+    let slugs = selector.split(' ')
+
+    return slugs.map((slug) => {
+      if (slug.includes('::slotted')) {
+        return /\(([^)]+)\)/.exec(slug)[1]
+      }
+
+      return slug
+    }).join(' ')
   }
 
   _transformSelector (selector) {

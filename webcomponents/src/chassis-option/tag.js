@@ -6,8 +6,6 @@ class ChassisOption extends HTMLElement {
   connectedCallback () {
 
   }
-
-
 }
 
 customElements.define('chassis-option', ChassisOption)

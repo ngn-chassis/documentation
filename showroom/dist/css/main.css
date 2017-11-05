@@ -858,6 +858,18 @@ html.chassis {
     white-space: normal;
 }
 
+.chassis chassis-select chassis-options {
+    overflow: auto;
+    max-height: 16.18em;
+    background: rgb(255, 255, 255);
+    -webkit-box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
+                        inset -2px -2px 0 0 rgb(188, 189, 193),
+                        0 .236em 1em 0 rgba(0, 0, 0, .1);
+            box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
+                inset -2px -2px 0 0 rgb(188, 189, 193),
+                0 .236em 1em 0 rgba(0, 0, 0, .1);
+}
+
 .chassis chassis-select chassis-option, .chassis chassis-select .optgroup-label {
     padding-top: .6360098247570551em;
     padding-right: .9823784767414425em;
@@ -875,11 +887,11 @@ html.chassis {
     border-radius: 1.3827882373437426em;
 }
 
-.chassis chassis-select[open].pill {
-    border-radius: 1.3827882373437426em 1.3827882373437426em 0 0;
+.chassis chassis-select.pill chassis-select-title {
+    border-radius: 1.3827882373437426em;
 }
 
-.chassis chassis-select[open].pill .options {
+.chassis chassis-select.pill chassis-options {
     border-radius: 0 0 1.3827882373437426em 1.3827882373437426em;
 }
 
@@ -899,25 +911,19 @@ html.chassis {
     background: rgba(0, 0, 0, .1);
 }
 
-.chassis chassis-select .options {
-    height: 11.8em;
-    background: rgb(255, 255, 255);
-    -webkit-box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
-                        inset -2px -2px 0 0 rgb(188, 189, 193),
-                        0 .236em 1em 0 rgba(0, 0, 0, .1);
-            box-shadow: inset 2px 0 0 0 rgb(188, 189, 193),
-                inset -2px -2px 0 0 rgb(188, 189, 193),
-                0 .236em 1em 0 rgba(0, 0, 0, .1);
+.chassis chassis-select[open] {
+    -webkit-box-shadow: inset 0 0 0 2px #09f;
+            box-shadow: inset 0 0 0 2px #09f;
 }
 
-.chassis chassis-select[open] .options {
-    max-height: 100%;
-    overflow: auto;
+.chassis chassis-select[open].pill,
+.chassis chassis-select[open].pill chassis-select-title {
+    border-radius: 1.3827882373437426em 1.3827882373437426em 0 0;
 }
 
-.chassis chassis-select[open] .options chassis-select-title {
-    -webkit-box-shadow: inset 0 .236em .382em rgba(0, 0, 0, .06);
-            box-shadow: inset 0 .236em .382em rgba(0, 0, 0, .06);
+.chassis chassis-select[open] chassis-options {
+    -webkit-box-shadow: inset 2px 0 0 0 #09f, inset -2px -2px 0 0 #09f, 0 .236em 1em 0 rgba(0, 0, 0, .1);
+            box-shadow: inset 2px 0 0 0 #09f, inset -2px -2px 0 0 #09f, 0 .236em 1em 0 rgba(0, 0, 0, .1);
 }
 
 .chassis chassis-control[type="field"] {

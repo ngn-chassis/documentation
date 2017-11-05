@@ -1,8 +1,16 @@
 'use strict';
 
+var _from = require('babel-runtime/core-js/array/from');
+
+var _from2 = _interopRequireDefault(_from);
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _map = require('babel-runtime/core-js/map');
+
+var _map2 = _interopRequireDefault(_map);
 
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
@@ -50,7 +58,7 @@ var ChassisSelect = function (_HTMLElement) {
     }
 
     template = null;
-    _this._bodyClickHandler = function (evt) {
+    _this._options = new _map2.default();_this._title = '';_this._selectEledOption = null;_this._bodyClickHandler = function (evt) {
       if (evt.target === _this || _this.contains(evt.target)) {
         return;
       }_this.removeAttribute('open');
@@ -60,7 +68,13 @@ var ChassisSelect = function (_HTMLElement) {
 
   (0, _createClass3.default)(ChassisSelect, [{
     key: 'connectedCallback',
-    value: function connectedCallback() {}
+    value: function connectedCallback() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        return _this2._applyListeners();
+      }, 0);
+    }
   }, {
     key: 'attributeChangedCallback',
     value: function attributeChangedCallback(attr, oldValue, newValue) {
@@ -75,111 +89,45 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'open',
     value: function open() {
       // Force redraw in Safari
-      this.menuContainer.style.display = 'none';this.menuContainer.style.display = this.menuContainerBoxModel;this.menuContainer.removeAttribute('style');document.body.addEventListener('click', this._bodyClickHandler);
+      // this.menuContainer.style.display = 'none'
+      // this.menuContainer.style.display = this.menuContainerBoxModel
+      // this.menuContainer.removeAttribute('style')
+      document.body.addEventListener('click', this._bodyClickHandler);
     }
   }, {
     key: 'close',
     value: function close() {
       // Force redraw in Safari
-      this.menuContainer.style.display = 'none';this.menuContainer.removeAttribute('style');document.body.removeEventListener('click', this._bodyClickHandler);
+      // this.menuContainer.style.display = 'none'
+      // this.menuContainer.removeAttribute('style')
+      document.body.removeEventListener('click', this._bodyClickHandler);
     }
   }, {
     key: '_inject',
     value: function _inject(select) {
-      this._select = select; // this._options = new Map()
-      // let menu = document.createElement('div')
-      // menu.classList.add('options')
-      // menu.slot = 'options'
-      // this.menu = menu
-      // this.menuContainer = this.shadowRoot.querySelector('.options-wrapper')
-      // this.menuContainerBoxModel = window.getComputedStyle(this.menuContainer).getPropertyValue('display')
-      //
-      // this.appendChild(menu)
-      //
-      // for (let child of select.children) {
-      //   switch (child.nodeName) {
-      //     case 'OPTION':
-      //       if (child.hasAttribute('title')) {
-      //         this.addTitle(this._generateChassisSelectTitle(child))
-      //       } else {
-      //         this.addOption(this._generateChassisOption(child))
-      //       }
-      //       break
-      //
-      //     case 'OPTGROUP':
-      //       this.addOptgroup(this._generateChassisOptgroup(child))
-      //       break
-      //
-      //     default:
-      //       console.warn(`${child.nodeName.toLowerCase()} is not a valid child element for <chassis-select>. Removing...`)
-      //       break
-      //   }
-      // }
-      //
-      // this._applyListeners()
+      this._selectEl = select;this._titleEl = document.createElement('chassis-select-title');this._titleEl.slot = 'title';this.appendChild(this._titleEl);this._optionsEl = document.createElement('chassis-options');this._optionsEl.slot = 'options';this.appendChild(this._optionsEl);this.addChildren(select.children);this._titleEl.innerHTML = this.options[0].displayElement.innerHTML;
     }
   }, {
-    key: 'addOptions',
-    value: function addOptions(options) {
-      var _this2 = this;
-
-      options.forEach(function (option) {
-        return _this2.addOption(option);
-      });
-    }
-  }, {
-    key: 'addOption',
-    value: function addOption(data) {
-      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.menu;
-
-      if (!customElements.get('chassis-option')) {
-        console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
-      }var option = document.createElement('chassis-option');option.dataset['optionId'] = data.id;option.innerHTML = data.innerHTML;option.slot = 'options';for (var attr in data.attributes) {
-        option.setAttribute(attr, data.attributes[attr]);
-      }dest.appendChild(option);
-    }
-  }, {
-    key: 'addOptgroup',
-    value: function addOptgroup(optgroup) {
-      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.menu;
-
-      var label = document.createElement('div');label.classList.add('optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
-    }
-  }, {
-    key: 'addTitle',
-    value: function addTitle(title) {
-      this.insertAdjacentElement('afterbegin', title);
-    }
-  }, {
-    key: '_applyListeners',
-    value: function _applyListeners() {
-      var _this3 = this;
-
-      this.addEventListener('click', function (evt) {
-        if (_this3.hasAttribute('open')) {
-          _this3.removeAttribute('open');
-        } else {
-          _this3.setAttribute('open', '');
-        }
-      });
-    }
-  }, {
-    key: '_generateChassisSelectTitle',
-    value: function _generateChassisSelectTitle(option) {
-      var title = document.createElement('chassis-select-title');title.innerHTML = option.innerHTML;title.slot = 'title';return title;
-    }
-  }, {
-    key: '_generateChassisOption',
-    value: function _generateChassisOption(option) {
-      var id = this._generateGuid();this._options.set(id, option);var label = option.getAttribute('label');var fauxOption = { id: id, attributes: {}, innerHTML: label && label.trim() !== '' ? label : option.innerHTML };var _iteratorNormalCompletion = true;
+    key: 'addChildren',
+    value: function addChildren(children) {
+      var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = (0, _getIterator3.default)(option.attributes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var attr = _step.value;
+        for (var _iterator = (0, _getIterator3.default)(children), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var child = _step.value;
 
-          fauxOption.attributes[attr.name] = attr.value;
+          switch (child.nodeName) {case 'OPTION':
+              // if (child.hasAttribute('title')) {
+              // this.addTitle(this._generateChassisSelectTitle(child))
+              // } else {
+              this.addOption(this._generateOptionObject(child)); // }
+              break; // case 'OPTGROUP':
+            //   this.addOptgroup(this._generateChassisOptgroup(child))
+            //   break
+            default:
+              console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
         }
       } catch (err) {
         _didIteratorError = true;
@@ -195,8 +143,67 @@ var ChassisSelect = function (_HTMLElement) {
           }
         }
       }
+    }
+  }, {
+    key: 'addOption',
+    value: function addOption(option) {
+      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._optionsEl;
 
-      return fauxOption;
+      if (!customElements.get('chassis-option')) {
+        console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
+      }var label = option.sourceElement.getAttribute('label');var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = label && label.trim() !== '' ? label : option.sourceElement.innerHTML;chassisOption.sourceElement = option.sourceElement;dest.appendChild(chassisOption);option.displayElement = chassisOption;this._options.set(option.id, option);
+    }
+  }, {
+    key: 'addOptgroup',
+    value: function addOptgroup(optgroup) {
+      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._optionsEl;
+
+      var label = document.createElement('div');label.classList.add('optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+    }
+  }, {
+    key: '_applyListeners',
+    value: function _applyListeners() {
+      var _this3 = this;
+
+      this.addEventListener('click', function (evt) {
+        if (_this3.hasAttribute('open')) {
+          _this3.removeAttribute('open');
+        } else {
+          _this3.setAttribute('open', '');
+        }
+      });
+    }
+  }, {
+    key: '_generateOptionObject',
+    value: function _generateOptionObject(optionEl) {
+      if (!customElements.get('chassis-option')) {
+        console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
+      }var obj = { id: this._generateGuid(), attributes: {}, sourceElement: optionEl };var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = (0, _getIterator3.default)(optionEl.attributes), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var attr = _step2.value;
+
+          obj.attributes[attr.name] = attr.value;
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      return obj;
     }
   }, {
     key: '_generateGuid',
@@ -214,27 +221,27 @@ var ChassisSelect = function (_HTMLElement) {
         console.error('chassis-select requires chassis-optgroup. Please include it in this document\'s <head> element.');return;
       }var fauxOptgroup = document.createElement('chassis-optgroup');fauxOptgroup.id = this._generateGuid('optgroup');var label = optgroup.getAttribute('label');if (!label || label.trim() === '') {
         console.error('[ERROR] <optgroup> must have a label attribute!');return;
-      }fauxOptgroup.setAttribute('label', label);fauxOptgroup.slot = 'options';var options = optgroup.querySelectorAll('option');var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      }fauxOptgroup.setAttribute('label', label);fauxOptgroup.slot = 'options';var options = optgroup.querySelectorAll('option');var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator2 = (0, _getIterator3.default)(options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var option = _step2.value;
+        for (var _iterator3 = (0, _getIterator3.default)(options), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var option = _step3.value;
 
-          this.addOption(this._generateChassisOption(option), fauxOptgroup);
+          this.addOption(this._generateOptionObject(option), fauxOptgroup);
         }
       } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
           }
         } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
+          if (_didIteratorError3) {
+            throw _iteratorError3;
           }
         }
       }
@@ -244,7 +251,17 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host .options-wrapper{display:none}:host([open]) .options-wrapper{position:absolute;top:100%;left:0;z-index:1;display:block;min-width:100%}chassis-select{display:inline-flex;flex-direction:column;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select .hidden{display:none;visibility:hidden;opacity:0}chassis-select .options-wrapper{display:none}chassis-select[open] .options-wrapper{position:absolute;top:100%;left:0;z-index:1;display:block;min-width:100%}</style><div class="title-wrapper"><slot name="title"></slot></div><div class="options-wrapper"><slot name="options"></slot></div></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host ::slotted(chassis-options){height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select chassis-options{height:0;overflow:hidden}chassis-select[open] chassis-options{position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}</style><slot name="title"></slot><slot name="options"></slot></template>';
+    }
+  }, {
+    key: 'options',
+    get: function get() {
+      return (0, _from2.default)(this._options.values());
+    }
+  }, {
+    key: 'sourceElement',
+    get: function get() {
+      return this._selectEl;
     }
   }], [{
     key: 'observedAttributes',

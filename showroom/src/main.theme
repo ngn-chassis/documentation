@@ -220,7 +220,7 @@ components {
 			}
 
 			chassis-option:hover {
-				background: color(var(--black) alpha(10%));
+				background: color(var(--black) alpha(6.18%));
 			}
 
 			chassis-options {

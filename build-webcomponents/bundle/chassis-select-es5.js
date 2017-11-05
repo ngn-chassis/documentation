@@ -58,7 +58,7 @@ var ChassisSelect = function (_HTMLElement) {
     }
 
     template = null;
-    _this._options = new _map2.default();_this._title = '';_this._selectEledOption = null;_this._bodyClickHandler = function (evt) {
+    _this._options = new _map2.default();_this._title = '';_this._selectedOption = null;_this._bodyClickHandler = function (evt) {
       if (evt.target === _this || _this.contains(evt.target)) {
         return;
       }_this.removeAttribute('open');
@@ -79,33 +79,26 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'attributeChangedCallback',
     value: function attributeChangedCallback(attr, oldValue, newValue) {
       switch (attr.toLowerCase()) {case 'open':
-          if (this.hasAttribute('open')) {
-            this.open();
-          } else {
-            this.close();
-          }break;default:}
+          this.isOpen ? this.open() : this.close();break;default:}
     }
   }, {
     key: 'open',
     value: function open() {
-      // Force redraw in Safari
-      // this.menuContainer.style.display = 'none'
-      // this.menuContainer.style.display = this.menuContainerBoxModel
-      // this.menuContainer.removeAttribute('style')
-      document.body.addEventListener('click', this._bodyClickHandler);
+      document.body.addEventListener('click', this._bodyClickHandler);document.body.addEventListener('touchcancel', this._bodyClickHandler);document.body.addEventListener('touchend', this._bodyClickHandler);if (!this.isOpen) {
+        this.isOpen = true;
+      }
     }
   }, {
     key: 'close',
     value: function close() {
-      // Force redraw in Safari
-      // this.menuContainer.style.display = 'none'
-      // this.menuContainer.removeAttribute('style')
-      document.body.removeEventListener('click', this._bodyClickHandler);
+      document.body.removeEventListener('click', this._bodyClickHandler);document.body.removeEventListener('touchcancel', this._bodyClickHandler);document.body.removeEventListener('touchend', this._bodyClickHandler);if (this.isOpen) {
+        this.isOpen = false;
+      }
     }
   }, {
     key: '_inject',
     value: function _inject(select) {
-      this._selectEl = select;this._titleEl = document.createElement('chassis-select-title');this._titleEl.slot = 'title';this.appendChild(this._titleEl);this._optionsEl = document.createElement('chassis-options');this._optionsEl.slot = 'options';this.appendChild(this._optionsEl);this.addChildren(select.children);this._titleEl.innerHTML = this.options[0].displayElement.innerHTML;
+      this._selectEl = select;this._titleEl = document.createElement('chassis-select-title');this._titleEl.slot = 'title';this.appendChild(this._titleEl);this._optionsEl = document.createElement('chassis-options');this._optionsEl.slot = 'options';this.appendChild(this._optionsEl);this.addChildren(select.children);this.select(this.options[0].id);
     }
   }, {
     key: 'addChildren',
@@ -151,7 +144,7 @@ var ChassisSelect = function (_HTMLElement) {
 
       if (!customElements.get('chassis-option')) {
         console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
-      }var label = option.sourceElement.getAttribute('label');var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = label && label.trim() !== '' ? label : option.sourceElement.innerHTML;chassisOption.sourceElement = option.sourceElement;dest.appendChild(chassisOption);option.displayElement = chassisOption;this._options.set(option.id, option);
+      }var label = option.sourceElement.getAttribute('label');var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = label && label.trim() !== '' ? label : option.sourceElement.innerHTML;chassisOption.sourceElement = option.sourceElement;dest.appendChild(chassisOption);this._applyOptionListeners(chassisOption);option.displayElement = chassisOption;this._options.set(option.id, option);
     }
   }, {
     key: 'addOptgroup',
@@ -159,6 +152,15 @@ var ChassisSelect = function (_HTMLElement) {
       var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._optionsEl;
 
       var label = document.createElement('div');label.classList.add('optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+    }
+  }, {
+    key: 'select',
+    value: function select(id) {
+      var option = this._options.get(id);if (option) {
+        option.sourceElement.selected = true;this._titleEl.innerHTML = option.displayElement.innerHTML;this.selectedOption = option;this.options.forEach(function (option) {
+          return option.displayElement.removeAttribute('selected');
+        });option.displayElement.setAttribute('selected', '');
+      }
     }
   }, {
     key: '_applyListeners',
@@ -171,6 +173,15 @@ var ChassisSelect = function (_HTMLElement) {
         } else {
           _this3.setAttribute('open', '');
         }
+      });
+    }
+  }, {
+    key: '_applyOptionListeners',
+    value: function _applyOptionListeners(option) {
+      var _this4 = this;
+
+      option.addEventListener('click', function (evt) {
+        return _this4.select(option.key);
       });
     }
   }, {
@@ -204,15 +215,6 @@ var ChassisSelect = function (_HTMLElement) {
       }
 
       return obj;
-    }
-  }, {
-    key: '_generateGuid',
-    value: function _generateGuid() {
-      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
-
-      var lut = [];for (var i = 0; i < 256; i++) {
-        lut[i] = (i < 16 ? '0' : '') + i.toString(16);
-      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return prefix + '_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
     }
   }, {
     key: '_generateChassisOptgroup',
@@ -249,14 +251,36 @@ var ChassisSelect = function (_HTMLElement) {
       return fauxOptgroup;
     }
   }, {
+    key: '_generateGuid',
+    value: function _generateGuid() {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
+
+      var lut = [];for (var i = 0; i < 256; i++) {
+        lut[i] = (i < 16 ? '0' : '') + i.toString(16);
+      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return prefix + '_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
+    }
+  }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host ::slotted(chassis-options){height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select chassis-options{height:0;overflow:hidden}chassis-select[open] chassis-options{position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}</style><slot name="title"></slot><slot name="options"></slot></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host ::slotted(chassis-options){height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}:host([disabled]){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select chassis-options{height:0;overflow:hidden}chassis-select[open] chassis-options{position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}chassis-select[disabled]{pointer-events:none}</style><slot name="title"></slot><slot name="options"></slot></template>';
+    }
+  }, {
+    key: 'isOpen',
+    get: function get() {
+      return this.hasAttribute('open');
+    },
+    set: function set(bool) {
+      bool ? this.setAttribute('open', '') : this.removeAttribute('open');
     }
   }, {
     key: 'options',
     get: function get() {
       return (0, _from2.default)(this._options.values());
+    }
+  }, {
+    key: 'selectedIndex',
+    get: function get() {
+      return this._selectEl.selectedIndex;
     }
   }, {
     key: 'sourceElement',
@@ -266,7 +290,7 @@ var ChassisSelect = function (_HTMLElement) {
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return ['open'];
+      return ['open', 'disabled'];
     }
   }]);
   return ChassisSelect;

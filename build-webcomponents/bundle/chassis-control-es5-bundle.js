@@ -979,7 +979,7 @@ var ChassisFormControl = function (_HTMLElement) {
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return [];
+      return ['disabled'];
     }
   }]);
   return ChassisFormControl;

@@ -166,6 +166,14 @@ components {
 		}
 	}
 
+	chassis-control {
+		@state default {}
+
+		@state disabled {
+			opacity: .382;
+		}
+	}
+
 	input {
 		@state default {
 			margin-top: 0;
@@ -230,6 +238,10 @@ components {
 					0 .236em 1em 0 color(var(--black) alpha(10%))
 				;
 			}
+		}
+
+		@state disabled {
+			opacity: .382;
 		}
 	}
 }

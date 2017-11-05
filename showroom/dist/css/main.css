@@ -926,6 +926,12 @@ html.chassis {
             box-shadow: inset 2px 0 0 0 #09f, inset -2px -2px 0 0 #09f, 0 .236em 1em 0 rgba(0, 0, 0, .1);
 }
 
+.chassis chassis-select[disabled], .chassis chassis-select.disabled,
+.chassis chassis-select:disabled {
+    pointer-events: none;
+    opacity: .382;
+}
+
 .chassis chassis-control[type="field"] {
     margin-bottom: 1.3827882373437426em;
 }
@@ -965,6 +971,12 @@ html.chassis {
 .chassis chassis-control[type="select"] select,
 .chassis chassis-control[type="select"] select[multiple] {
     vertical-align: top;
+}
+
+.chassis chassis-control.disabled, .chassis chassis-control[disabled],
+.chassis chassis-control:disabled {
+    pointer-events: none;
+    opacity: .382;
 }
 
 .chassis .showroom {

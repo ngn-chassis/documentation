@@ -40,7 +40,7 @@ class ChassisFormControl extends HTMLElement {
   }
 
   static get observedAttributes () {
-    return []
+    return ['disabled']
   }
 
   get input () {

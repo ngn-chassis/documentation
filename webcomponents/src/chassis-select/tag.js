@@ -4,7 +4,7 @@ class ChassisSelect extends HTMLElement {
 
     this._options = new Map()
     this._title = ''
-    this._selectEledOption = null
+    this._selectedOption = null
 
     this._bodyClickHandler = (evt) => {
       if (evt.target === this || this.contains(evt.target)) {
@@ -16,11 +16,23 @@ class ChassisSelect extends HTMLElement {
   }
 
   static get observedAttributes () {
-    return ['open']
+    return ['open', 'disabled']
+  }
+
+  get isOpen () {
+    return this.hasAttribute('open')
+  }
+
+  set isOpen (bool) {
+    bool ? this.setAttribute('open', '') : this.removeAttribute('open')
   }
 
   get options () {
     return Array.from(this._options.values())
+  }
+
+  get selectedIndex () {
+    return this._selectEl.selectedIndex
   }
 
   get sourceElement () {
@@ -34,32 +46,31 @@ class ChassisSelect extends HTMLElement {
   attributeChangedCallback (attr, oldValue, newValue) {
     switch (attr.toLowerCase()) {
       case 'open':
-        if (this.hasAttribute('open')) {
-          this.open()
-        } else {
-          this.close()
-        }
-        break;
+        this.isOpen ? this.open() : this.close()
+        break
       default:
 
     }
   }
 
   open () {
-    // Force redraw in Safari
-    // this.menuContainer.style.display = 'none'
-    // this.menuContainer.style.display = this.menuContainerBoxModel
-    // this.menuContainer.removeAttribute('style')
-
     document.body.addEventListener('click', this._bodyClickHandler)
+    document.body.addEventListener('touchcancel', this._bodyClickHandler)
+    document.body.addEventListener('touchend', this._bodyClickHandler)
+
+    if (!this.isOpen) {
+      this.isOpen = true
+    }
   }
 
   close () {
-    // Force redraw in Safari
-    // this.menuContainer.style.display = 'none'
-    // this.menuContainer.removeAttribute('style')
-
     document.body.removeEventListener('click', this._bodyClickHandler)
+    document.body.removeEventListener('touchcancel', this._bodyClickHandler)
+    document.body.removeEventListener('touchend', this._bodyClickHandler)
+
+    if (this.isOpen) {
+      this.isOpen = false
+    }
   }
 
   _inject (select) {
@@ -74,8 +85,7 @@ class ChassisSelect extends HTMLElement {
     this.appendChild(this._optionsEl)
 
     this.addChildren(select.children)
-
-    this._titleEl.innerHTML = this.options[0].displayElement.innerHTML
+    this.select(this.options[0].id)
   }
 
   addChildren (children) {
@@ -114,6 +124,7 @@ class ChassisSelect extends HTMLElement {
     chassisOption.sourceElement = option.sourceElement
 
     dest.appendChild(chassisOption)
+    this._applyOptionListeners(chassisOption)
 
     option.displayElement = chassisOption
     this._options.set(option.id, option)
@@ -128,6 +139,19 @@ class ChassisSelect extends HTMLElement {
     dest.appendChild(optgroup)
   }
 
+  select (id) {
+    let option = this._options.get(id)
+
+    if (option) {
+      option.sourceElement.selected = true
+      this._titleEl.innerHTML = option.displayElement.innerHTML
+      this.selectedOption = option
+
+      this.options.forEach((option) => option.displayElement.removeAttribute('selected'))
+      option.displayElement.setAttribute('selected', '')
+    }
+  }
+
   _applyListeners () {
     this.addEventListener('click', (evt) => {
       if (this.hasAttribute('open')) {
@@ -136,6 +160,10 @@ class ChassisSelect extends HTMLElement {
         this.setAttribute('open', '')
       }
     })
+  }
+
+  _applyOptionListeners (option) {
+    option.addEventListener('click', (evt) => this.select(option.key))
   }
 
   _generateOptionObject (optionEl) {
@@ -155,24 +183,6 @@ class ChassisSelect extends HTMLElement {
     }
 
     return obj
-  }
-
-  _generateGuid (prefix = 'option') {
-    let lut = []
-
-    for (let i = 0; i < 256; i++) {
-      lut[i] = (i < 16 ? '0' : '') + i.toString(16)
-    }
-
-    let d0 = Math.random() * 0xffffffff | 0
-    let d1 = Math.random() * 0xffffffff | 0
-    let d2 = Math.random() * 0xffffffff | 0
-    let d3 = Math.random() * 0xffffffff | 0
-
-    return `${prefix}_` + lut[d0&0xff] + lut[d0>>8&0xff] + lut[d0>>16&0xff] + lut[d0>>24&0xff] + '-' +
-      lut[d1&0xff] + lut[d1>>8&0xff] + '-' + lut[d1>>16&0x0f|0x40] + lut[d1>>24&0xff] +'-'+
-      lut[d2&0x3f|0x80] + lut[d2>>8&0xff] + '-' + lut[d2>>16&0xff] + lut[d2>>24&0xff] +
-      lut[d3&0xff] + lut[d3>>8&0xff] + lut[d3>>16&0xff] + lut[d3>>24&0xff]
   }
 
   _generateChassisOptgroup (optgroup) {
@@ -201,6 +211,24 @@ class ChassisSelect extends HTMLElement {
     }
 
     return fauxOptgroup
+  }
+
+  _generateGuid (prefix = 'option') {
+    let lut = []
+
+    for (let i = 0; i < 256; i++) {
+      lut[i] = (i < 16 ? '0' : '') + i.toString(16)
+    }
+
+    let d0 = Math.random() * 0xffffffff | 0
+    let d1 = Math.random() * 0xffffffff | 0
+    let d2 = Math.random() * 0xffffffff | 0
+    let d3 = Math.random() * 0xffffffff | 0
+
+    return `${prefix}_` + lut[d0&0xff] + lut[d0>>8&0xff] + lut[d0>>16&0xff] + lut[d0>>24&0xff] + '-' +
+      lut[d1&0xff] + lut[d1>>8&0xff] + '-' + lut[d1>>16&0x0f|0x40] + lut[d1>>24&0xff] +'-'+
+      lut[d2&0x3f|0x80] + lut[d2>>8&0xff] + '-' + lut[d2>>16&0xff] + lut[d2>>24&0xff] +
+      lut[d3&0xff] + lut[d3>>8&0xff] + lut[d3>>16&0xff] + lut[d3>>24&0xff]
   }
 }
 

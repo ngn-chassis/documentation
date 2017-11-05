@@ -856,6 +856,12 @@ html.chassis {
     padding-bottom: .6360098247570551em;
     padding-left: .9823784767414425em;
     white-space: normal;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
 }
 
 .chassis chassis-select chassis-options {
@@ -905,6 +911,13 @@ html.chassis {
 .chassis chassis-select .optgroup-label {
     font-weight: 700;
     border-bottom: 1px solid rgb(188, 189, 193);
+}
+
+.chassis chassis-select chassis-select-title svg {
+    width: 1em;
+    height: 1em;
+    margin-left: 1em;
+    vertical-align: middle;
 }
 
 .chassis chassis-select chassis-option:hover {

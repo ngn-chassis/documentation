@@ -207,6 +207,18 @@ components {
 				border-bottom: 1px solid var(--grey-n04);
 			}
 
+			chassis-select-title {
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			chassis-select-title svg {
+				width: 1em;
+				height: 1em;
+				margin-left: 1em;
+				vertical-align: middle;
+			}
+
 			chassis-option:hover {
 				background: color(var(--black) alpha(10%));
 			}

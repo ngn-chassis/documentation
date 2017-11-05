@@ -777,13 +777,13 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ChassisSelectTitle = function (_HTMLElement) {
-  (0, _inherits3.default)(ChassisSelectTitle, _HTMLElement);
+var ChassisOptgroupLabel = function (_HTMLElement) {
+  (0, _inherits3.default)(ChassisOptgroupLabel, _HTMLElement);
 
-  function ChassisSelectTitle() {
-    (0, _classCallCheck3.default)(this, ChassisSelectTitle);
+  function ChassisOptgroupLabel() {
+    (0, _classCallCheck3.default)(this, ChassisOptgroupLabel);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisSelectTitle.__proto__ || (0, _getPrototypeOf2.default)(ChassisSelectTitle)).call(this));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisOptgroupLabel.__proto__ || (0, _getPrototypeOf2.default)(ChassisOptgroupLabel)).call(this));
 
     _this.attachShadow({ mode: 'open' });
 
@@ -804,34 +804,19 @@ var ChassisSelectTitle = function (_HTMLElement) {
     return _this;
   }
 
-  (0, _createClass3.default)(ChassisSelectTitle, [{
+  (0, _createClass3.default)(ChassisOptgroupLabel, [{
     key: 'connectedCallback',
-    value: function connectedCallback() {
-      this._appendCaret();
-    }
-  }, {
-    key: '_appendCaret',
-    value: function _appendCaret() {
-      var xmlns = 'http://www.w3.org/2000/svg';var width = 24;var height = 24;var caret = document.createElementNS(xmlns, 'svg');caret.slot = 'caret';caret.setAttributeNS(null, 'width', width);caret.setAttributeNS(null, 'height', height);caret.setAttributeNS(null, 'viewBox', '0 0 ' + width + ' ' + height);caret.setAttributeNS(null, 'fill', 'none');caret.setAttributeNS(null, 'stroke', 'currentColor');caret.setAttributeNS(null, 'stroke-width', '3');caret.setAttributeNS(null, 'stroke-linecap', 'square');caret.setAttributeNS(null, 'stroke-linejoin', 'miter');var shape = document.createElementNS(xmlns, 'polyline');shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');caret.appendChild(shape);this.appendChild(caret);
-    }
+    value: function connectedCallback() {}
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}chassis-select-title *{box-sizing:border-box}chassis-select-title :before{box-sizing:border-box}chassis-select-title :after{box-sizing:border-box}</style><div class="title"><slot></slot></div><div class="caret"><slot name="caret"></slot></div></template>';
-    }
-  }, {
-    key: 'innerHTML',
-    get: function get() {
-      return this.shadowRoot.querySelector('.title').innerHTML;
-    },
-    set: function set(value) {
-      this.shadowRoot.querySelector('.title').innerHTML = value;
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-optgroup-label{contain:content;display:flex;max-width:100%}chassis-optgroup-label *{box-sizing:border-box}chassis-optgroup-label :before{box-sizing:border-box}chassis-optgroup-label :after{box-sizing:border-box}</style><slot></slot></template>';
     }
   }]);
-  return ChassisSelectTitle;
+  return ChassisOptgroupLabel;
 }(HTMLElement);
 
-customElements.define('chassis-select-title', ChassisSelectTitle);
+customElements.define('chassis-optgroup-label', ChassisOptgroupLabel);
 
 /***/ }),
 /* 42 */
@@ -1757,4 +1742,4 @@ $export($export.S, 'Object', { create: __webpack_require__(21) });
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=chassis-select-title-es5-bundle.js.map
+//# sourceMappingURL=chassis-optgroup-label-es5-bundle.js.map

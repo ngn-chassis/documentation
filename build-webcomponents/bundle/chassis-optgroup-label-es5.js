@@ -22,13 +22,13 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ChassisOptgroup = function (_HTMLElement) {
-  (0, _inherits3.default)(ChassisOptgroup, _HTMLElement);
+var ChassisOptgroupLabel = function (_HTMLElement) {
+  (0, _inherits3.default)(ChassisOptgroupLabel, _HTMLElement);
 
-  function ChassisOptgroup() {
-    (0, _classCallCheck3.default)(this, ChassisOptgroup);
+  function ChassisOptgroupLabel() {
+    (0, _classCallCheck3.default)(this, ChassisOptgroupLabel);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisOptgroup.__proto__ || (0, _getPrototypeOf2.default)(ChassisOptgroup)).call(this));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisOptgroupLabel.__proto__ || (0, _getPrototypeOf2.default)(ChassisOptgroupLabel)).call(this));
 
     _this.attachShadow({ mode: 'open' });
 
@@ -49,16 +49,16 @@ var ChassisOptgroup = function (_HTMLElement) {
     return _this;
   }
 
-  (0, _createClass3.default)(ChassisOptgroup, [{
+  (0, _createClass3.default)(ChassisOptgroupLabel, [{
     key: 'connectedCallback',
     value: function connectedCallback() {}
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-optgroup{contain:content;display:flex;flex-direction:column;max-width:100%}chassis-optgroup *{box-sizing:border-box}chassis-optgroup :before{box-sizing:border-box}chassis-optgroup :after{box-sizing:border-box}</style><slot></slot></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-optgroup-label{contain:content;display:flex;max-width:100%}chassis-optgroup-label *{box-sizing:border-box}chassis-optgroup-label :before{box-sizing:border-box}chassis-optgroup-label :after{box-sizing:border-box}</style><slot></slot></template>';
     }
   }]);
-  return ChassisOptgroup;
+  return ChassisOptgroupLabel;
 }(HTMLElement);
 
-customElements.define('chassis-optgroup', ChassisOptgroup);
+customElements.define('chassis-optgroup-label', ChassisOptgroupLabel);

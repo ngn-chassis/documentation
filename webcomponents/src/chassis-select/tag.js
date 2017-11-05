@@ -92,16 +92,12 @@ class ChassisSelect extends HTMLElement {
     for (let child of children) {
       switch (child.nodeName) {
         case 'OPTION':
-          // if (child.hasAttribute('title')) {
-            // this.addTitle(this._generateChassisSelectTitle(child))
-          // } else {
-            this.addOption(this._generateOptionObject(child))
-          // }
+          this.addOption(this._generateOptionObject(child))
           break
 
-        // case 'OPTGROUP':
-        //   this.addOptgroup(this._generateChassisOptgroup(child))
-        //   break
+        case 'OPTGROUP':
+          this.addOptgroup(this._generateChassisOptgroup(child))
+          break
 
         default:
           console.warn(`${child.nodeName.toLowerCase()} is not a valid child element for <chassis-select>. Removing...`)
@@ -131,8 +127,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   addOptgroup (optgroup, dest = this._optionsEl) {
-    let label = document.createElement('div')
-    label.classList.add('optgroup-label')
+    let label = document.createElement('chassis-optgroup-label')
     label.innerHTML = optgroup.getAttribute('label')
 
     dest.appendChild(label)
@@ -202,7 +197,6 @@ class ChassisSelect extends HTMLElement {
     }
 
     fauxOptgroup.setAttribute('label', label)
-    fauxOptgroup.slot = 'options'
 
     let options = optgroup.querySelectorAll('option')
 

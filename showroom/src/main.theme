@@ -202,9 +202,13 @@ components {
 			box-shadow: inset 0 0 0 2px var(--grey-n04);
 			transition: all ease-in-out .1s;
 
-			.optgroup-label {
+			chassis-optgroup-label {
 				font-weight: 700;
-				border-bottom: 1px solid var(--grey-n04);
+			}
+
+			chassis-optgroup {
+				margin: 0 .618em .618em;
+				border: 1px solid var(--grey-n04);
 			}
 
 			chassis-select-title {

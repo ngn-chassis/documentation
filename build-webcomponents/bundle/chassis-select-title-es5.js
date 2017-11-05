@@ -62,7 +62,15 @@ var ChassisSelectTitle = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}chassis-select-title *{box-sizing:border-box}chassis-select-title :before{box-sizing:border-box}chassis-select-title :after{box-sizing:border-box}</style><div><slot></slot></div><div style="align-items: center"><slot name="caret"></slot></div></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}chassis-select-title *{box-sizing:border-box}chassis-select-title :before{box-sizing:border-box}chassis-select-title :after{box-sizing:border-box}</style><div class="title"><slot></slot></div><div class="caret"><slot name="caret"></slot></div></template>';
+    }
+  }, {
+    key: 'innerHTML',
+    get: function get() {
+      return this.shadowRoot.querySelector('.title').innerHTML;
+    },
+    set: function set(value) {
+      this.shadowRoot.querySelector('.title').innerHTML = value;
     }
   }]);
   return ChassisSelectTitle;

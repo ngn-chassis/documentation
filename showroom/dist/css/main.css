@@ -876,7 +876,8 @@ html.chassis {
                 0 .236em 1em 0 rgba(0, 0, 0, .1);
 }
 
-.chassis chassis-select chassis-option, .chassis chassis-select .optgroup-label {
+.chassis chassis-select chassis-option,
+.chassis chassis-select chassis-optgroup-label {
     padding-top: .6360098247570551em;
     padding-right: .9823784767414425em;
     padding-bottom: .6360098247570551em;
@@ -903,14 +904,18 @@ html.chassis {
 
 .chassis chassis-select.pill chassis-select-title,
 .chassis chassis-select.pill chassis-option,
-.chassis chassis-select.pill .optgroup-label {
+.chassis chassis-select.pill chassis-optgroup-label {
     padding-right: 1.61803398875em;
     padding-left: 1.61803398875em;
 }
 
-.chassis chassis-select .optgroup-label {
+.chassis chassis-select chassis-optgroup-label {
     font-weight: 700;
-    border-bottom: 1px solid rgb(188, 189, 193);
+}
+
+.chassis chassis-select chassis-optgroup {
+    margin: 0 .618em .618em;
+    border: 1px solid rgb(188, 189, 193);
 }
 
 .chassis chassis-select chassis-select-title svg {
@@ -927,6 +932,10 @@ html.chassis {
 .chassis chassis-select[open] {
     -webkit-box-shadow: inset 0 0 0 2px #09f;
             box-shadow: inset 0 0 0 2px #09f;
+}
+
+.chassis chassis-select[open] chassis-options {
+    margin-bottom: 1em;
 }
 
 .chassis chassis-select[open].pill,

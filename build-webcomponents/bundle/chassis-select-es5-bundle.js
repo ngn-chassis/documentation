@@ -1176,14 +1176,8 @@ var ChassisSelect = function (_HTMLElement) {
           var child = _step.value;
 
           switch (child.nodeName) {case 'OPTION':
-              // if (child.hasAttribute('title')) {
-              // this.addTitle(this._generateChassisSelectTitle(child))
-              // } else {
-              this.addOption(this._generateOptionObject(child)); // }
-              break; // case 'OPTGROUP':
-            //   this.addOptgroup(this._generateChassisOptgroup(child))
-            //   break
-            default:
+              this.addOption(this._generateOptionObject(child));break;case 'OPTGROUP':
+              this.addOptgroup(this._generateChassisOptgroup(child));break;default:
               console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
         }
       } catch (err) {
@@ -1215,7 +1209,7 @@ var ChassisSelect = function (_HTMLElement) {
     value: function addOptgroup(optgroup) {
       var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._optionsEl;
 
-      var label = document.createElement('div');label.classList.add('optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+      var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
     }
   }, {
     key: 'select',
@@ -1287,7 +1281,7 @@ var ChassisSelect = function (_HTMLElement) {
         console.error('chassis-select requires chassis-optgroup. Please include it in this document\'s <head> element.');return;
       }var fauxOptgroup = document.createElement('chassis-optgroup');fauxOptgroup.id = this._generateGuid('optgroup');var label = optgroup.getAttribute('label');if (!label || label.trim() === '') {
         console.error('[ERROR] <optgroup> must have a label attribute!');return;
-      }fauxOptgroup.setAttribute('label', label);fauxOptgroup.slot = 'options';var options = optgroup.querySelectorAll('option');var _iteratorNormalCompletion3 = true;
+      }fauxOptgroup.setAttribute('label', label);var options = optgroup.querySelectorAll('option');var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
 

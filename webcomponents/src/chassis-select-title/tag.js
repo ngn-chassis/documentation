@@ -3,6 +3,14 @@ class ChassisSelectTitle extends HTMLElement {
     super()
   }
 
+  get innerHTML () {
+    return this.shadowRoot.querySelector('.title').innerHTML
+  }
+
+  set innerHTML (value) {
+    this.shadowRoot.querySelector('.title').innerHTML = value
+  }
+
   connectedCallback () {
     this._appendCaret()
   }

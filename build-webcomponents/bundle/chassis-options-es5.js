@@ -55,7 +55,7 @@ var ChassisOptions = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-options{display:block;max-width:100%}chassis-options *{box-sizing:border-box}chassis-options :before{box-sizing:border-box}chassis-options :after{box-sizing:border-box}</style><slot></slot></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block;width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-options{display:block;width:100%}:host :after,:host :before,chassis-options *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeoptions"></slot><slot></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>';
     }
   }]);
   return ChassisOptions;

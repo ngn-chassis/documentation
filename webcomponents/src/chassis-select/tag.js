@@ -139,7 +139,7 @@ class ChassisSelect extends HTMLElement {
 
     if (option) {
       option.sourceElement.selected = true
-      this._titleEl.innerHTML = option.displayElement.innerHTML
+      this._titleEl.title = option.displayElement.innerHTML
       this.selectedOption = option
 
       this.options.forEach((option) => option.displayElement.removeAttribute('selected'))

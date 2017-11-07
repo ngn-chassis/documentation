@@ -57,20 +57,20 @@ var ChassisSelectTitle = function (_HTMLElement) {
   }, {
     key: '_appendCaret',
     value: function _appendCaret() {
-      var xmlns = 'http://www.w3.org/2000/svg';var width = 24;var height = 24;var caret = document.createElementNS(xmlns, 'svg');caret.slot = 'caret';caret.setAttributeNS(null, 'width', width);caret.setAttributeNS(null, 'height', height);caret.setAttributeNS(null, 'viewBox', '0 0 ' + width + ' ' + height);caret.setAttributeNS(null, 'fill', 'none');caret.setAttributeNS(null, 'stroke', 'currentColor');caret.setAttributeNS(null, 'stroke-width', '3');caret.setAttributeNS(null, 'stroke-linecap', 'square');caret.setAttributeNS(null, 'stroke-linejoin', 'miter');var shape = document.createElementNS(xmlns, 'polyline');shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');caret.appendChild(shape);this.appendChild(caret);
+      var xmlns = 'http://www.w3.org/2000/svg';var width = 24;var height = 24;var caret = document.createElementNS(xmlns, 'svg');caret.slot = 'beforeend';caret.setAttributeNS(null, 'width', width);caret.setAttributeNS(null, 'height', height);caret.setAttributeNS(null, 'viewBox', '0 0 ' + width + ' ' + height);caret.setAttributeNS(null, 'fill', 'none');caret.setAttributeNS(null, 'stroke', 'currentColor');caret.setAttributeNS(null, 'stroke-width', '3');caret.setAttributeNS(null, 'stroke-linecap', 'square');caret.setAttributeNS(null, 'stroke-linejoin', 'miter');var shape = document.createElementNS(xmlns, 'polyline');shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');caret.appendChild(shape);this.appendChild(caret);
     }
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}chassis-select-title *{box-sizing:border-box}chassis-select-title :before{box-sizing:border-box}chassis-select-title :after{box-sizing:border-box}</style><div class="title"><slot></slot></div><div class="caret"><slot name="caret"></slot></div></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-select-title *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot id="title"></slot><slot name="aftertitle"></slot><slot name="beforeend"></slot></template>';
     }
   }, {
-    key: 'innerHTML',
+    key: 'title',
     get: function get() {
-      return this.shadowRoot.querySelector('.title').innerHTML;
+      return this.shadowRoot.querySelector('#title').innerHTML;
     },
     set: function set(value) {
-      this.shadowRoot.querySelector('.title').innerHTML = value;
+      this.shadowRoot.querySelector('#title').innerHTML = value;
     }
   }]);
   return ChassisSelectTitle;

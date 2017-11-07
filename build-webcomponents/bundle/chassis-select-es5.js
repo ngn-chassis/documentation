@@ -151,7 +151,7 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'select',
     value: function select(id) {
       var option = this._options.get(id);if (option) {
-        option.sourceElement.selected = true;this._titleEl.innerHTML = option.displayElement.innerHTML;this.selectedOption = option;this.options.forEach(function (option) {
+        option.sourceElement.selected = true;this._titleEl.title = option.displayElement.innerHTML;this.selectedOption = option;this.options.forEach(function (option) {
           return option.displayElement.removeAttribute('selected');
         });option.displayElement.setAttribute('selected', '');
       }
@@ -256,7 +256,7 @@ var ChassisSelect = function (_HTMLElement) {
   }, {
     key: 'templateString',
     get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *{box-sizing:border-box}:host :before{box-sizing:border-box}:host :after{box-sizing:border-box}:host ::slotted(chassis-options){height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}:host([disabled]){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}chassis-select *{box-sizing:border-box}chassis-select :before{box-sizing:border-box}chassis-select :after{box-sizing:border-box}chassis-select chassis-options{height:0;overflow:hidden}chassis-select[open] chassis-options{position:absolute;top:100%;left:0;z-index:1;height:auto;min-width:100%}chassis-select[disabled]{pointer-events:none}</style><slot name="title"></slot><slot name="options"></slot></template>';
+      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}chassis-select[disabled]{pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>';
     }
   }, {
     key: 'isOpen',

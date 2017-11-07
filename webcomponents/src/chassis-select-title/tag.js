@@ -3,12 +3,12 @@ class ChassisSelectTitle extends HTMLElement {
     super()
   }
 
-  get innerHTML () {
-    return this.shadowRoot.querySelector('.title').innerHTML
+  get title () {
+    return this.shadowRoot.querySelector('#title').innerHTML
   }
 
-  set innerHTML (value) {
-    this.shadowRoot.querySelector('.title').innerHTML = value
+  set title (value) {
+    this.shadowRoot.querySelector('#title').innerHTML = value
   }
 
   connectedCallback () {
@@ -21,7 +21,7 @@ class ChassisSelectTitle extends HTMLElement {
     let height = 24
 
     let caret = document.createElementNS(xmlns, 'svg')
-    caret.slot = 'caret'
+    caret.slot = 'beforeend'
     caret.setAttributeNS(null, 'width', width)
     caret.setAttributeNS(null, 'height', height)
     caret.setAttributeNS(null, 'viewBox', `0 0 ${width} ${height}`)

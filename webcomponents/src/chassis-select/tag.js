@@ -13,10 +13,49 @@ class ChassisSelect extends HTMLElement {
 
       this.removeAttribute('open')
     }
+
+    this._arrowKeydownHandler = (evt) => {
+      switch (evt.keyCode) {
+        case 38:
+          evt.preventDefault()
+          console.log('select previous option');
+          break
+
+        case 40:
+          evt.preventDefault()
+          console.log('select next option');
+          break
+
+        default:
+          return
+      }
+    }
   }
 
   static get observedAttributes () {
-    return ['open', 'disabled']
+    return ['autofocus', 'disabled', 'name', 'open', 'tabindex']
+  }
+
+  get autofocus () {
+    return this._selectEl.autofocus
+  }
+
+  set autofocus (value) {
+    if (typeof value !== 'boolean') {
+      console.error(`<chassis-select> autofocus property type must be boolean, received ${typeof value}`)
+      this.removeAttribute('autofocus')
+      return
+    }
+
+    if (this._selectEl) {
+      this._selectEl.autofocus = value
+    }
+
+    value = value ? 'true' : 'false'
+
+    if (!this.hasAttribute('autofocus') || this.getAttribute('autofocus') !== value) {
+      this.setAttribute('autofocus', value)
+    }
   }
 
   get isOpen () {
@@ -25,6 +64,20 @@ class ChassisSelect extends HTMLElement {
 
   set isOpen (bool) {
     bool ? this.setAttribute('open', '') : this.removeAttribute('open')
+  }
+
+  get name () {
+    return this._selectEl.name
+  }
+
+  set name (value) {
+    if (this._selectEl) {
+      this._selectEl.name = value
+    }
+
+    if (!this.hasAttribute('name') || this.getAttribute('name') !== value) {
+      this.setAttribute('name', value)
+    }
   }
 
   get options () {
@@ -39,18 +92,52 @@ class ChassisSelect extends HTMLElement {
     return this._selectEl
   }
 
+  get value () {
+    return this._selectEl.value
+  }
+
   connectedCallback () {
-    setTimeout(() => this._applyListeners(), 0)
+    setTimeout(() => {
+      if (!this.hasAttribute('tabindex')) {
+        this.setAttribute('tabindex', 0)
+      }
+
+      this._applyListeners()
+    }, 0)
   }
 
   attributeChangedCallback (attr, oldValue, newValue) {
     switch (attr.toLowerCase()) {
+      case 'autofocus':
+        this._handleAutoFocusChange(newValue)
+        break
+
+      case 'name':
+        this.name = newValue
+        break
+
       case 'open':
         this.isOpen ? this.open() : this.close()
         break
-      default:
 
+      default:
+        return
     }
+  }
+
+  _handleAutoFocusChange (value) {
+    if (!value) {
+      this.removeAttribute('autofocus')
+      return
+    }
+
+    if (value !== 'true' && value !== 'false') {
+      console.error(`<chassis-select> autofocus attribute expected boolean but received "${value}"`)
+      this.removeAttribute('autofocus')
+      return
+    }
+
+    this.autofocus = value === 'true'
   }
 
   open () {
@@ -154,6 +241,14 @@ class ChassisSelect extends HTMLElement {
       } else {
         this.setAttribute('open', '')
       }
+    })
+
+    this.addEventListener('focus', (evt) => {
+      this.addEventListener('keydown', this._arrowKeydownHandler)
+    })
+
+    this.addEventListener('blur', (evt) => {
+      this.removeEventListener('keydown', this._arrowKeydownHandler)
     })
   }
 

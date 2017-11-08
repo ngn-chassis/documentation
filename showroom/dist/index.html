@@ -322,7 +322,7 @@
 
                 <chassis-control id="select_menu">
                   <label>Menu Label</label>
-                  <select>
+                  <select name="name-test">
                     <option value="test1">
                       <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>
@@ -435,13 +435,11 @@
 
     <script type="text/javascript">
       window.addEventListener('WebComponentsReady', function () {
-        // let select = document.getElementById('select_menu').querySelector('chassis-select')
-        // console.log(select.options);
-        // let control = document.getElementById('text_field')
+        window.select = document.getElementById('select_menu').input
 
-        // console.dir(control);
 
-        // control.input = document.createElement('div')
+        // select.name = 'new-name'
+        // console.log(select._selectEl.autofocus);
       })
     </script>
   </body>

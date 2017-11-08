@@ -4,6 +4,10 @@ var _from = require('babel-runtime/core-js/array/from');
 
 var _from2 = _interopRequireDefault(_from);
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -62,6 +66,13 @@ var ChassisSelect = function (_HTMLElement) {
       if (evt.target === _this || _this.contains(evt.target)) {
         return;
       }_this.removeAttribute('open');
+    };_this._arrowKeydownHandler = function (evt) {
+      switch (evt.keyCode) {case 38:
+          evt.preventDefault();console.log('select previous option');break;case 40:
+          evt.preventDefault();console.log('select next option');
+
+          break;default:
+          return;}
     };
     return _this;
   }
@@ -72,14 +83,28 @@ var ChassisSelect = function (_HTMLElement) {
       var _this2 = this;
 
       setTimeout(function () {
-        return _this2._applyListeners();
+        if (!_this2.hasAttribute('tabindex')) {
+          _this2.setAttribute('tabindex', 0);
+        }_this2._applyListeners();
       }, 0);
     }
   }, {
     key: 'attributeChangedCallback',
     value: function attributeChangedCallback(attr, oldValue, newValue) {
-      switch (attr.toLowerCase()) {case 'open':
-          this.isOpen ? this.open() : this.close();break;default:}
+      switch (attr.toLowerCase()) {case 'autofocus':
+          this._handleAutoFocusChange(newValue);break;case 'name':
+          this.name = newValue;break;case 'open':
+          this.isOpen ? this.open() : this.close();break;default:
+          return;}
+    }
+  }, {
+    key: '_handleAutoFocusChange',
+    value: function _handleAutoFocusChange(value) {
+      if (!value) {
+        this.removeAttribute('autofocus');return;
+      }if (value !== 'true' && value !== 'false') {
+        console.error('<chassis-select> autofocus attribute expected boolean but received "' + value + '"');this.removeAttribute('autofocus');return;
+      }this.autofocus = value === 'true';
     }
   }, {
     key: 'open',
@@ -167,6 +192,10 @@ var ChassisSelect = function (_HTMLElement) {
         } else {
           _this3.setAttribute('open', '');
         }
+      });this.addEventListener('focus', function (evt) {
+        _this3.addEventListener('keydown', _this3._arrowKeydownHandler);
+      });this.addEventListener('blur', function (evt) {
+        _this3.removeEventListener('keydown', _this3._arrowKeydownHandler);
       });
     }
   }, {
@@ -259,12 +288,38 @@ var ChassisSelect = function (_HTMLElement) {
       return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}chassis-select[disabled]{pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>';
     }
   }, {
+    key: 'autofocus',
+    get: function get() {
+      return this._selectEl.autofocus;
+    },
+    set: function set(value) {
+      if (typeof value !== 'boolean') {
+        console.error('<chassis-select> autofocus property type must be boolean, received ' + (typeof value === 'undefined' ? 'undefined' : (0, _typeof3.default)(value)));this.removeAttribute('autofocus');return;
+      }if (this._selectEl) {
+        this._selectEl.autofocus = value;
+      }value = value ? 'true' : 'false';if (!this.hasAttribute('autofocus') || this.getAttribute('autofocus') !== value) {
+        this.setAttribute('autofocus', value);
+      }
+    }
+  }, {
     key: 'isOpen',
     get: function get() {
       return this.hasAttribute('open');
     },
     set: function set(bool) {
       bool ? this.setAttribute('open', '') : this.removeAttribute('open');
+    }
+  }, {
+    key: 'name',
+    get: function get() {
+      return this._selectEl.name;
+    },
+    set: function set(value) {
+      if (this._selectEl) {
+        this._selectEl.name = value;
+      }if (!this.hasAttribute('name') || this.getAttribute('name') !== value) {
+        this.setAttribute('name', value);
+      }
     }
   }, {
     key: 'options',
@@ -281,10 +336,15 @@ var ChassisSelect = function (_HTMLElement) {
     get: function get() {
       return this._selectEl;
     }
+  }, {
+    key: 'value',
+    get: function get() {
+      return this._selectEl.value;
+    }
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return ['open', 'disabled'];
+      return ['autofocus', 'disabled', 'name', 'open', 'tabindex'];
     }
   }]);
   return ChassisSelect;

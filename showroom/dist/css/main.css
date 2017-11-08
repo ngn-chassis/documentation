@@ -475,7 +475,7 @@ html.chassis {
 .chassis .showroom .content > section.ui-components .buttons .custom-2,
 .chassis .showroom .content > section.ui-components .buttons .custom-3,
 .chassis a.button, .chassis input:not([type="checkbox"]):not([type="radio"]),
-.chassis textarea {
+.chassis textarea, .chassis chassis-select {
     background: transparent none repeat 0% 0% / auto auto padding-box border-box scroll;
     border: medium none currentColor;
     border-radius: 0;
@@ -855,7 +855,6 @@ html.chassis {
     padding-right: .9823784767414425em;
     padding-bottom: .6360098247570551em;
     padding-left: .9823784767414425em;
-    white-space: normal;
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;

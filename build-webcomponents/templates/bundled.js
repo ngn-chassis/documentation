@@ -18,6 +18,14 @@ class {{CLASS-IDENTIFIER}} extends {{SUPER-CLASS}} {
     }
 
     template = null
+
+    this.crypto = null
+
+    try {
+      this.crypto = crypto
+    } catch (e) {
+      this.crypto = msCrypto
+    }
   }
 
   get templateString () {

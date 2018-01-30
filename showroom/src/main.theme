@@ -239,12 +239,6 @@ components {
 		}
 
 		@state open {
-			chassis-select-title {
-				box-shadow: inset 0 .236em .382em color(var(--black) alpha(6.18%));
-			}
-		}
-
-		@state open {
 			box-shadow: inset 0 0 0 2px var(--blue);
 
 			chassis-options {

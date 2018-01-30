@@ -50,6 +50,14 @@ var ChassisFormControl = function (_HTMLElement) {
     }
 
     template = null;
+
+    _this.crypto = null;
+
+    try {
+      _this.crypto = crypto;
+    } catch (e) {
+      _this.crypto = msCrypto;
+    }
     _this.fieldInputTypes = ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'];_this.toggleInputTypes = ['checkbox', 'radio'];_this.supportedTypes = ['field', 'toggle', 'select'];_this._input = null;
     return _this;
   }
@@ -66,11 +74,13 @@ var ChassisFormControl = function (_HTMLElement) {
   }, {
     key: '_generateGuid',
     value: function _generateGuid() {
+      var _this3 = this;
+
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'input';
 
-      var lut = [];for (var i = 0; i < 256; i++) {
-        lut[i] = (i < 16 ? '0' : '') + i.toString(16);
-      }var d0 = Math.random() * 0xffffffff | 0;var d1 = Math.random() * 0xffffffff | 0;var d2 = Math.random() * 0xffffffff | 0;var d3 = Math.random() * 0xffffffff | 0;return prefix + '_' + lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' + lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' + lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] + lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
+      return prefix + '_' + ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+        return (c ^ _this3.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+      });
     }
   }, {
     key: '_initInput',

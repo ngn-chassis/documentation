@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../.. && build-webcomponent webcomponents/src/chassis-control webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-select webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-option webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-select-title webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-options webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup-label webcomponents/dist --es5 && gulp build"
+    "build": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../.. && build-webcomponent webcomponents/src/chassis-control webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-select webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-option webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-select-title webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-options webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup-label webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup-label webcomponents/dist --es5 && gulp build"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",

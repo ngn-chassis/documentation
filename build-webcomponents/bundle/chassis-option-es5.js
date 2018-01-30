@@ -46,6 +46,14 @@ var ChassisOption = function (_HTMLElement) {
     }
 
     template = null;
+
+    _this.crypto = null;
+
+    try {
+      _this.crypto = crypto;
+    } catch (e) {
+      _this.crypto = msCrypto;
+    }
     return _this;
   }
 

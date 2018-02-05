@@ -124,7 +124,7 @@ components {
 			border-radius: .236em;
 			color: white;
 
-			svg.icon {
+			& svg.icon {
 				stroke: currentColor;
 			}
 		}

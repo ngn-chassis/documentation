@@ -5,6 +5,7 @@
   padding-bottom: 3.618em;
   transition: all ease-in-out .382s;
 
+  @chassis import components;
   @chassis import overrides;
 
   @chassis import layout/header;

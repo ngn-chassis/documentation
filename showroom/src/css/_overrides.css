@@ -12,27 +12,42 @@
 	@chassis font-size root;
 }
 
+& .tag {
+	&.alert {
+		background: var(--blue);
+	}
+}
+
 & code {
-	background: color(var(--grey-n00) alpha(61.8%));
-	border: 1px solid var(--grey-n01);
-	border-radius: .236em;
+	@chassis extend tag {
+		@state default {
+			background: color(var(--grey-n00) alpha(61.8%));
+			border: 1px solid var(--grey-n01);
+			border-radius: .236em;
 
-	font-family: monospace;
-	color: var(--grey-n08);
-
-	&:before,
-	&:after {
-		letter-spacing: -0.2em;
-		content: "\00a0";
+			font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+			@chassis font-size small mult(1.1);
+			color: var(--grey-n09);
+		}
 	}
 
 	&.example {
 		display: block;
 		@chassis inline-block-layout multi-line no-margin-right;
+	}
+}
 
-		&:before,
-		&:after {
-			content: "";
-		}
+& .example {
+	& code {
+		display: block;
+		@chassis inline-block-layout multi-line no-margin;
+		border-radius: .236em .236em 0 0;
+	}
+
+	& .output {
+		@chassis inline-block-layout multi-line no-margin;
+		border: 1px solid var(--grey-n01);
+		border-top: 0;
+		border-radius: 0 0 .236em .236em;
 	}
 }

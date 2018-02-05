@@ -1,2 +1,5 @@
 chassis-select
 - Add focus
+
+Spec Sheets still don't fully support nesting
+Theme doesn't support mixins

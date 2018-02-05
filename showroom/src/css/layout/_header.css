@@ -15,7 +15,7 @@
     & a {
       margin-left: 1em;
 
-      &:first-child {
+      &:first-of-type {
         margin-left: 0;
       }
     }

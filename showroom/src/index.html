@@ -27,6 +27,7 @@
       <div class="width-constraint">
         <h1>NGN Chassis Docs</h1>
         <aside class="links">
+          <h2 class="hidden">Navigation</h2>
           <a href="javascript:;">Showroom</a>
           <a href="https://github.com/ngnjs" target="_blank">Github</a>
         </aside>
@@ -35,28 +36,33 @@
 
     <main>
       <aside class="sidebar">
+        <h2 class="hidden">Sidebar</h2>
+
         <nav>
-          <a href="#typography">
+          <h2 class="hidden">Sections</h2>
+          <a href="#typography_section">
             Typography
           </a>
-          <a href="#layout">
+          <a href="#layout_section">
             Layout
           </a>
-          <a href="#components">
+          <a href="#components_section">
             UI Components
           </a>
         </nav>
       </aside>
 
       <div class="content">
-        <section id="typography">
+        <section id="typography_section" class="typography">
           <header>
             <h2>Typography</h2>
           </header>
+
           <section class="mixins">
+            <h3 class="hidden">Mixins</h3>
             <section class="font-size">
               <header>
-                <h3>font-size</h3>
+                <h4>font-size</h4>
                 <code class="example">@chassis font-size [alias] [mult(int)];</code>
               </header>
               <p>
@@ -65,7 +71,7 @@
             </section>
             <section class="ellipsis">
               <header>
-                <h3>ellipsis</h3>
+                <h4>ellipsis</h4>
                 <code class="example">@chassis ellipsis;</code>
               </header>
               <p>
@@ -75,14 +81,15 @@
           </section>
         </section>
 
-        <section id="layout">
+        <section id="layout_section" class="layout">
           <header>
             <h2>Layout</h2>
           </header>
           <section class="mixins">
+            <h3 class="hidden">Mixins</h3>
             <section class="constrain-width">
               <header>
-                <h3>constrain-width</h3>
+                <h4>constrain-width</h4>
                 <code class="example">@chassis constrain-width [min(int)] [max(int)] [gutter()];</code>
               </header>
               <p>
@@ -94,7 +101,7 @@
             </section>
             <section class="inline-block-layout">
               <header>
-                <h3>inline-block-layout</h3>
+                <h4>inline-block-layout</h4>
                 <code class="example">@chassis inline-block-layout <span class="nowrap">[no-margin</span>[-right[-bottom]]] <span class="nowrap">[no-padding</span>[-top[-right[-bottom[-left]]]]] <span class="nowrap">[no-line-height]</span> <span class="nowrap">[multi-line]</span>;</code>
               </header>
               <p>
@@ -103,7 +110,7 @@
             </section>
             <section class="z-index">
               <header>
-                <h3>z-index</h3>
+                <h4>z-index</h4>
                 <code class="example">@chassis z-index [value or component name];</code>
               </header>
               <p>
@@ -140,17 +147,234 @@
           </section>
         </section>
 
-        <section id="components">
+        <section id="components_section" class="ui-components">
           <header>
-            <h2>UI Component Mixins</h2>
+            <h2>UI Components</h2>
             <p>
               Chassis UI components are totally modular and completely themeable. They are built to work seamlessly with Chassis' Auto-Typography engine, so they are always proportioned correctly based on your core typography rules. Chassis provides a series of mixins for working with components:
             </p>
           </header>
+
+          <section class="examples">
+            <h3 class="hidden">Built-in UI Components</h3>
+
+            <section class="links">
+              <header>
+                <h4>Link</h4>
+                <p>
+                  Chassis links fully reset the default browser styles and are themeable.
+                </p>
+              </header>
+              <p>
+                <a href="#">Here's a link</a>
+              </p>
+            </section>
+
+            <section class="buttons">
+              <header>
+                <h4>Button</h4>
+                <p>
+                  Chassis' default button component has calculated margin, padding, line-height values by default, so its proportions will be correct to your base typography rules.
+                </p>
+              </header>
+              <section class="default">
+                <h5 class="hidden">Default</h5>
+                <code class="example">
+                  &lt;a class="button" href="#"&gt;Default Button&lt;/a&gt;<br>
+                  &lt;button&gt;Button Tag&lt;/button&gt;
+                </code>
+                <a class="button" href="#">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Default Button
+                </a>
+                <button>
+                  <span>Button Tag</span>
+                </button>
+                <button>
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  <span>Icon Button Tag</span>
+                </button>
+                <div>
+                  <a class="button" href="#">
+                    button text will wrap to the next line when it is too wide for the viewport
+                  </a>
+                </div>
+              </section>
+
+              <section class="pill">
+                <h5 class="hidden">Pill</h5>
+                <code class="example">&lt;a class="pill button" href="#"&gt;Pill Button&lt;/a&gt;</code>
+                <a class="pill button" href="#">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Pill Button
+                </a>
+              </section>
+
+              <section class="variations">
+                <h5 class="hidden">Variations</h5>
+                <code class="example">
+                  &lt;a class="custom" href="#"&gt;Custom Button&lt;/a&gt;
+                </code>
+                <a class="custom-1" href="#">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Custom Button
+                </a>
+                <a class="custom-2" href="#">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Custom Button
+                </a>
+                <a class="custom-3" href="#">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Custom Button
+                </a>
+              </section>
+            </section>
+
+            <section class="tags">
+              <header>
+                <h4>Tag</h4>
+              </header>
+              <p>
+                <span class="tag" href="#">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Tags
+                </span> display inline with text and can have icons placed in them. They come in regular and
+                <span class="pill tag">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  pill-shaped
+                </span> varieties.
+              </p>
+            </section>
+
+            <section class="forms">
+              <form>
+                <h4>Forms</h4>
+
+                <fieldset>
+                  <input type="text" placeholder="Placeholder">
+
+                  <chassis-control id="text_field">
+                    <label>Text field</label>
+                    <input type="text" placeholder="Placeholder">
+                  </chassis-control>
+
+                  <chassis-control id="email_field">
+                    <label>Email field</label>
+                    <input type="email" placeholder="my-email@address.com">
+                  </chassis-control>
+
+                  <chassis-control id="textarea">
+                    <label>Textarea</label>
+                    <textarea rows="5"></textarea>
+                  </chassis-control>
+                </fieldset>
+
+                <fieldset>
+                  <h4>Select Menu</h4>
+
+                  <chassis-control id="select_menu">
+                    <label>Menu Label</label>
+                    <select name="name-test">
+                      <option value="test1">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="8" r="7"></circle>
+                          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        Option 1
+                      </option>
+                      <option label=" " value="test2">Option 2</option>
+                      <option value="test3">Option 3 is long and should wrap to the next line</option>
+                      <option value="test4">Option 4</option>
+                      <optgroup label="Option Group 1">
+                        <option value="test5">Grouped Option</option>
+                        <option value="test6">Grouped Option</option>
+                        <option value="test7">Grouped Option</option>
+                      </optgroup>
+                      <optgroup label="Option Group 2">
+                        <option value="test8">Grouped Option</option>
+                        <option value="test9">Grouped Option</option>
+                        <option value="test10">Grouped Option</option>
+                      </optgroup>
+                    </select>
+                  </chassis-control>
+                </fieldset>
+
+                <fieldset>
+                  <h4>Radio Buttons</h4>
+
+                  <chassis-control id="radio_button_1">
+                    <label>Radio Button</label>
+                    <input name="radios" type="radio" value="">
+                  </chassis-control>
+                  <chassis-control id="radio_button_2">
+                    <label>Radio Button</label>
+                    <input name="radios" type="radio" value="">
+                  </chassis-control>
+                  <chassis-control id="radio_button_3">
+                    <label>Radio Button</label>
+                    <input name="radios" type="radio" value="">
+                  </chassis-control>
+
+                  <!-- <chassis-control-group>
+
+                  </chassis-control-group> -->
+                </fieldset>
+
+                <fieldset>
+                  <h4>Checkboxes</h4>
+
+                  <chassis-control id="checkbox_1">
+                    <label>Checkbox</label>
+                    <input name="checboxes" type="checkbox" value="">
+                  </chassis-control>
+                  <chassis-control id="checkbox_2">
+                    <label>Checkbox</label>
+                    <input name="checboxes" type="checkbox" value="">
+                  </chassis-control>
+                  <chassis-control id="checkbox_3">
+                    <label>Checkbox</label>
+                    <input name="checboxes" type="checkbox" value="">
+                  </chassis-control>
+
+                  <!-- <chassis-control-group>
+
+                  </chassis-control-group> -->
+                </fieldset>
+              </form>
+
+            </section>
+          </section>
+
           <section class="mixins">
+            <h3>Mixins</h3>
+
             <section class="include">
               <header>
-                <h3>include</h3>
+                <h4>include</h4>
                 <code class="example">@chassis include [component name[ additional components separated by spaces]];</code>
               </header>
               <p>
@@ -159,7 +383,7 @@
             </section>
             <section class="extend">
               <header>
-                <h3>new</h3>
+                <h4>new</h4>
                 <code class="example">@chassis new [component name] {...};</code>
               </header>
               <p>
@@ -171,7 +395,7 @@
             </section>
             <section class="extend">
               <header>
-                <h3>extend</h3>
+                <h4>extend</h4>
                 <code class="example">@chassis extend [component name] {...};</code>
               </header>
               <p>
@@ -183,223 +407,12 @@
             </section>
           </section>
         </section>
-
-        <section class="ui-components">
-          <h2>Built-in UI Components</h2>
-
-          <section class="links">
-            <header>
-              <h3>Link</h3>
-              <p>
-                Chassis links fully reset the default browser styles and are themeable.
-              </p>
-            </header>
-            <p>
-              <a href="#">Here's a link</a>
-            </p>
-          </section>
-
-          <section class="buttons">
-            <header>
-              <h3>Button</h3>
-              <p>
-                Chassis' default button component has calculated margin, padding, line-height values by default, so its proportions will be correct to your base typography rules.
-              </p>
-            </header>
-            <section class="default">
-              <code class="example">
-                &lt;a class="button" href="#"&gt;Default Button&lt;/a&gt;<br>
-                &lt;button&gt;Button Tag&lt;/button&gt;
-              </code>
-              <a class="button" href="#">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Default Button
-              </a>
-              <button>Button Tag</button>
-              <button>
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Icon Button Tag
-              </button>
-            </section>
-
-            <section class="pill">
-              <code class="example">&lt;a class="pill button" href="#"&gt;Pill Button&lt;/a&gt;</code>
-              <a class="pill button" href="#">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Pill Button
-              </a>
-            </section>
-
-            <section class="multi-line">
-              <code class="example">&lt;a class="multi-line button" href="#"&gt;Button with text wrap&lt;/a&gt;</code>
-              <a class="button" href="#">
-                button text will wrap to the next line when it is too wide for the viewport
-              </a>
-            </section>
-
-            <section class="variations">
-              <code class="example">
-                &lt;a class="custom" href="#"&gt;Custom Button&lt;/a&gt;
-              </code>
-              <a class="custom-1" href="#">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Custom Button
-              </a>
-              <a class="custom-2" href="#">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Custom Button
-              </a>
-              <a class="custom-3" href="#">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Custom Button
-              </a>
-            </section>
-          </section>
-
-          <section class="tags">
-            <header>
-              <h3>Tag</h3>
-            </header>
-            <p>
-              <span class="tag" href="#">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                Tags
-              </span> display inline with text and can have icons placed in them. They come in regular and
-              <span class="pill tag">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="7"></circle>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                </svg>
-                pill-shaped
-              </span> varieties.
-            </p>
-          </section>
-
-          <section class="forms">
-            <form>
-              <h3>Forms</h3>
-
-              <fieldset>
-                <input type="text" placeholder="Placeholder">
-
-                <chassis-control id="text_field">
-                  <label>Text field</label>
-                  <input type="text" placeholder="Placeholder">
-                </chassis-control>
-
-                <chassis-control id="email_field">
-                  <label>Email field</label>
-                  <input type="email" placeholder="my-email@address.com">
-                </chassis-control>
-
-                <chassis-control id="textarea">
-                  <label>Textarea</label>
-                  <textarea rows="5"></textarea>
-                </chassis-control>
-              </fieldset>
-
-              <fieldset>
-                <h4>Select Menu</h4>
-
-                <chassis-control id="select_menu">
-                  <label>Menu Label</label>
-                  <select name="name-test">
-                    <option value="test1">
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="8" r="7"></circle>
-                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                      </svg>
-                      Option 1
-                    </option>
-                    <option label=" " value="test2">Option 2</option>
-                    <option value="test3">Option 3 is long and should wrap to the next line</option>
-                    <option value="test4">Option 4</option>
-                    <optgroup label="Option Group 1">
-                      <option value="test5">Grouped Option</option>
-                      <option value="test6">Grouped Option</option>
-                      <option value="test7">Grouped Option</option>
-                    </optgroup>
-                    <optgroup label="Option Group 2">
-                      <option value="test8">Grouped Option</option>
-                      <option value="test9">Grouped Option</option>
-                      <option value="test10">Grouped Option</option>
-                    </optgroup>
-                  </select>
-                </chassis-control>
-              </fieldset>
-
-              <fieldset>
-                <h4>Radio Buttons</h4>
-
-                <chassis-control id="radio_button_1">
-                  <label>Radio Button</label>
-                  <input name="radios" type="radio" value="">
-                </chassis-control>
-                <chassis-control id="radio_button_2">
-                  <label>Radio Button</label>
-                  <input name="radios" type="radio" value="">
-                </chassis-control>
-                <chassis-control id="radio_button_3">
-                  <label>Radio Button</label>
-                  <input name="radios" type="radio" value="">
-                </chassis-control>
-
-                <!-- <chassis-control-group>
-
-                </chassis-control-group> -->
-              </fieldset>
-
-              <fieldset>
-                <h4>Checkboxes</h4>
-
-                <chassis-control id="checkbox_1">
-                  <label>Checkbox</label>
-                  <input name="checboxes" type="checkbox" value="">
-                </chassis-control>
-                <chassis-control id="checkbox_2">
-                  <label>Checkbox</label>
-                  <input name="checboxes" type="checkbox" value="">
-                </chassis-control>
-                <chassis-control id="checkbox_3">
-                  <label>Checkbox</label>
-                  <input name="checboxes" type="checkbox" value="">
-                </chassis-control>
-
-                <!-- <chassis-control-group>
-
-                </chassis-control-group> -->
-              </fieldset>
-            </form>
-
-          </section>
-        </section>
       </div>
     </main>
 
     <footer>
       <div class="width-constraint">
-        <span class="label">Viewport Width Range:</span>
+        <span class="label">Viewport:</span>
 
         <span class="below-min range">
           Below min: <= 319px

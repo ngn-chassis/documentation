@@ -1,6 +1,4 @@
 custom-properties {
-	--black: rgb(0,0,0);
-	--white: rgb(255,255,255);
 	--red: hsl(11,74%,54%);
 	--green: hsl(89,82%,40%);
 	--blue: #0099FF;
@@ -8,6 +6,15 @@ custom-properties {
 
 	--font-family: -apple-system, BlinkMacSystemFont, 'Avenir Next', Avenir, Helvetica, Arial, sans-serif;
 	--text-color: rgb(68,68,68);
+
+	--header-border-color: var(--grey-n00);
+
+	--sidebar-link-border-color: var(--grey-n00);
+	--sidebar-link-hover-bg-color: var(--blue);
+	--sidebar-link-hover-text-color: white;
+
+	--footer-bg-color: white;
+  --footer-border-color: var(--grey-n00);
 }
 
 h1 {
@@ -39,11 +46,31 @@ legend {
 }
 
 components {
+	anchor {
+		@state default {
+			color: var(--blue);
+		}
+
+		@state hover {
+			color: color(var(--blue) lightness(50%));
+			text-decoration: underline;
+		}
+
+		@state active {
+			color: color(var(--blue) lightness(44%));
+		}
+
+		@state disabled {
+			color: var(--grey-n04);
+			text-decoration: none;
+		}
+	}
+
 	button {
 		@state default {
 			background: var(--blue);
 			border-radius: .236em;
-			color: var(--white);
+			color: white;
 
 			svg.icon {
 				stroke: currentColor;
@@ -67,31 +94,11 @@ components {
 		}
 	}
 
-	link {
-		@state default {
-			color: var(--blue);
-		}
-
-		@state hover {
-			color: color(var(--blue) lightness(50%));
-			text-decoration: underline;
-		}
-
-		@state active {
-			color: color(var(--blue) lightness(44%));
-		}
-
-		@state disabled {
-			color: var(--grey-n04);
-			text-decoration: none;
-		}
-	}
-
-	button-link {
+	anchor-button {
 		@state default {
 			background: var(--blue);
 			border-radius: .236em;
-			color: var(--white);
+			color: white;
 
 			svg.icon {
 				stroke: currentColor;
@@ -115,7 +122,7 @@ components {
 		@state default {
 			background: var(--green);
 			border-radius: .236em;
-			color: var(--white);
+			color: white;
 
 			svg.icon {
 				stroke: currentColor;
@@ -156,13 +163,13 @@ components {
 
 	overlay {
 		@state default {
-			background: var(--black);
+			background: black;
 		}
 	}
 
 	modal {
 		@state default {
-			background: var(--white);
+			background: white;
 		}
 	}
 
@@ -224,16 +231,16 @@ components {
 			}
 
 			chassis-option:hover {
-				background: color(var(--black) alpha(6.18%));
+				background: color(black alpha(6.18%));
 			}
 
 			chassis-options {
 				max-height: 16.18em;
-				background: var(--white);
+				background: white;
 				box-shadow:
 					inset 2px 0 0 0 var(--grey-n04),
 					inset -2px -2px 0 0 var(--grey-n04),
-					0 .236em 1em 0 color(var(--black) alpha(10%))
+					0 .236em 1em 0 color(black alpha(10%))
 				;
 			}
 		}
@@ -245,7 +252,7 @@ components {
 				box-shadow:
 					inset 2px 0 0 0 var(--blue),
 					inset -2px -2px 0 0 var(--blue),
-					0 .236em 1em 0 color(var(--black) alpha(10%))
+					0 .236em 1em 0 color(black alpha(10%))
 				;
 			}
 		}

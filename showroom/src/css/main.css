@@ -1,18 +1,13 @@
 @chassis init;
 @chassis include all;
 
-@chassis import properties;
-
 .showroom {
   padding-bottom: 3.618em;
-	transition: all ease-in-out .382s;
+  transition: all ease-in-out .382s;
 
   @chassis import overrides;
 
   @chassis import layout/header;
-  @chassis import layout/sidebar;
-  @chassis import layout/content;
+  @chassis import layout/main;
   @chassis import layout/footer;
 }
-
-@chassis import singletons;

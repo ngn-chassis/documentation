@@ -35,11 +35,11 @@ gulp.task('css', ['clean-css'], (next) => {
       // customProperties: {},
     	layout: {
     		minWidth: 320,
-    		maxWidth: 1024
-    	},
-      typography: {
-        baseFontSize: 14
-      }
+    		maxWidth: 2048
+    	}//,
+      // typography: {
+      //   baseFontSize: 18
+      // }
     }))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(DEST))

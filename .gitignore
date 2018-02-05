@@ -3,7 +3,9 @@
 !.npmignore
 !.codeclimate.yml
 _*
+!_*.css
 *.log
 *.svg
 node_modules
+**/dist
 env.json

@@ -7,4 +7,5 @@ _*
 *.log
 *.svg
 node_modules
+**/dist
 env.json

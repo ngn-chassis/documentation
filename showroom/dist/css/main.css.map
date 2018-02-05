@@ -1,1 +1,0 @@
-{"version":3,"names":[],"mappings":"","sources":["css/main.css"],"sourcesContent":["@chassis init;\n@chassis include all;\n\n.showroom {\n  padding-bottom: 3.618em;\n  transition: all ease-in-out .382s;\n\n  @chassis import overrides;\n\n  @chassis import layout/header;\n  @chassis import layout/main;\n  @chassis import layout/footer;\n}\n"],"file":"main.css"}

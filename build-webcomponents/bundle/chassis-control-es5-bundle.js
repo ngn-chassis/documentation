@@ -943,7 +943,9 @@ var ChassisFormControl = function (_HTMLElement) {
           var attr = _step2.value;
 
           if (attr.specified) {
-            placeholder.setAttribute(attr.name, attr.value);
+            placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
+              select.removeAttribute(attr.name);
+            }
           }
         }
       } catch (err) {

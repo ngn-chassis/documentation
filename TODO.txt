@@ -1,5 +1,36 @@
 chassis-select
 - Add focus
+- "label" attribute should override innerHTML as this is
+  the default <select> behavior
 
 Spec Sheets still don't fully support nesting
 Theme doesn't support mixins
+
+Spec sheet states can't have more than one selector. ie:
+
+component {
+  @state disabled {
+    $(selector)[disabled] {
+      opacity: .382;
+    }
+
+    $(selector)[disabled="false"] {
+      opacity: 1;
+    }
+  }
+}
+
+If a theme or extension calls for this:
+
+extension {
+  @chassis extend component {
+    @state disabled {
+      background: red;
+    }
+  }
+}
+
+...where does the background: red decl go?
+
+Possible solution: Always add extension decls to the first rule in
+each state. That should theoretically work in all cases.

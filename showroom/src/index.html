@@ -307,7 +307,7 @@
             </section>
 
             <section class="forms">
-              <form>
+              <form name="form">
                 <h4>Forms</h4>
 
                 <fieldset>
@@ -332,9 +332,15 @@
                 <fieldset>
                   <h4>Select Menu</h4>
 
+                  <select id="select_test">
+                    <option value="">test</option>
+                    <option value="">test2</option>
+                    <option value="">test 3</option>
+                  </select>
+
                   <chassis-control id="select_menu">
                     <label>Menu Label</label>
-                    <select name="name-test">
+                    <select name="name-test" disabled>
                       <option value="test1">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <circle cx="12" cy="8" r="7"></circle>
@@ -356,6 +362,27 @@
                         <option value="test10">Grouped Option</option>
                       </optgroup>
                     </select>
+                  </chassis-control>
+
+                  <chassis-control id="custom_select">
+                    <label>Custom Select Menu</label>
+                    <chassis-select slot="input">
+                      <chassis-select-title slot="title">
+                        Custom Select Menu
+                        <span slot="beforeend">Test</span>
+                      </chassis-select-title>
+                      <chassis-options slot="options">
+                        <chassis-option>
+                          Test
+                        </chassis-option>
+                        <chassis-option>
+                          Test
+                        </chassis-option>
+                        <chassis-option>
+                          Test
+                        </chassis-option>
+                      </chassis-options>
+                    </chassis-select>
                   </chassis-control>
                 </fieldset>
 
@@ -491,9 +518,17 @@
       window.addEventListener('WebComponentsReady', function () {
         window.select = document.getElementById('select_menu').input
 
+        window.select2 = document.getElementById('select_test')
+
+        // select.addOption({
+        //   label: 'heyyy',
+        //   value: 'test'
+        // })
+
+        // console.log(select.options);
 
         // select.name = 'new-name'
-        // console.log(select._selectEl.autofocus);
+        // console.log(select.autofocus);
       })
     </script>
   </body>

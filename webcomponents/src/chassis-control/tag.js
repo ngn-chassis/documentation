@@ -133,6 +133,10 @@ class ChassisFormControl extends HTMLElement {
     for (let attr of select.attributes) {
       if (attr.specified) {
         placeholder.setAttribute(attr.name, attr.value)
+
+        if (attr.name === 'autofocus') {
+          select.removeAttribute(attr.name)
+        }
       }
     }
 

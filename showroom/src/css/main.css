@@ -7,8 +7,5 @@
 
   @chassis import components;
   @chassis import overrides;
-
-  @chassis import layout/header;
-  @chassis import layout/main;
-  @chassis import layout/footer;
+  @chassis import layout;
 }

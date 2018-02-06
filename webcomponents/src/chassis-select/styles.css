@@ -27,6 +27,6 @@
   height: auto;
 }
 
-:host([disabled]) {
+:host([disabled]:not([disabled*="false"])) {
   pointer-events: none;
 }

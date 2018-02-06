@@ -2,6 +2,12 @@ chassis-select
 - Add focus
 - "label" attribute should override innerHTML as this is
   the default <select> behavior
+- Missing HTMLSelectElement methods:
+  - .add()
+  - .item()
+  - .namedItem()
+  - .remove()
+- Complete arrow key functions
 
 Spec Sheets still don't fully support nesting
 Theme doesn't support mixins

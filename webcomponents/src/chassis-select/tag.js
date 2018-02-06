@@ -243,7 +243,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.form
   }
 
-  set form () {
+  set form (x) {
     this._throw('readonly', {name: 'form'})
   }
 
@@ -269,7 +269,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.labels
   }
 
-  set labels () {
+  set labels (x) {
     this._throw('readonly', {name: 'labels'})
   }
 
@@ -277,8 +277,8 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.name
   }
 
-  set name (val) {
-    this._handlePropertyChange('name', val)
+  set name (name) {
+    this._handlePropertyChange('name', name)
   }
 
   /**
@@ -290,7 +290,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.options
   }
 
-  set options () {
+  set options (x) {
     this._throw('readonly', {name: 'options'})
   }
 
@@ -306,6 +306,10 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.selectedIndex
   }
 
+  set selectedIndex (index) {
+    this.select(this._options[index].id)
+  }
+
   /**
    * @property selectedOptions
    * @return {HTMLCollection}
@@ -315,7 +319,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.selectedOptions
   }
 
-  set selectedOptions () {
+  set selectedOptions (x) {
     this._throw('readonly', {name: 'selectedOptions'})
   }
 
@@ -332,7 +336,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.type
   }
 
-  set type (prop) {
+  set type (x) {
     this._throw('readonly', {name: 'type'})
   }
 
@@ -345,7 +349,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.validationMessage
   }
 
-  set validationMessage (prop) {
+  set validationMessage (x) {
     this._throw('readonly', {name: 'validationMessage'})
   }
 
@@ -358,7 +362,7 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.validity
   }
 
-  set validity (prop) {
+  set validity (x) {
     this._throw('readonly', {name: 'validity'})
   }
 
@@ -375,17 +379,21 @@ class ChassisSelect extends HTMLElement {
     return this._sourceEl.willValidate
   }
 
-  set willValidate (prop) {
+  set willValidate (x) {
     this._throw('readonly', {name: 'willValidate'})
+  }
+
+  checkValidity () {
+    return this._sourceEl.checkValidity()
+  }
+
+  setCustomValidity (string) {
+    this._sourceEl.setCustomValidity(string)
   }
 
   connectedCallback () {
     this.addEventListener('click', (evt) => {
-      if (this.hasAttribute('open')) {
-        this.removeAttribute('open')
-      } else {
-        this.setAttribute('open', '')
-      }
+      this.hasAttribute('open') ? this.removeAttribute('open') : this.setAttribute('open', '')
     })
 
     this.addEventListener('focus', (evt) => {

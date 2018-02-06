@@ -986,21 +986,31 @@ var ChassisSelect = function (_HTMLElement) {
           }
         } }, _inject: { value: function value(select) {
           (0, _defineProperties2.default)(_this, { _sourceEl: { value: select }, _titleEl: { value: document.createElement('chassis-select-title') }, _optionsEl: { value: document.createElement('chassis-options') } });_this._titleEl.slot = 'title';_this.appendChild(_this._titleEl);_this._optionsEl.slot = 'options';_this.appendChild(_this._optionsEl);_this.addChildren(select.children);_this.select(_this._options[0].id);
+        } }, _throw: { value: function value(type, vars) {
+          switch (type) {case 'readonly':
+              console.error('ERROR Cannot set read-only property "' + vars.name + '".');break;default:
+              console.error('ERROR <chassis-select>');}
         } } });
     return _this;
   }
 
   (0, _createClass3.default)(ChassisSelect, [{
+    key: 'checkValidity',
+    value: function checkValidity() {
+      return this._sourceEl.checkValidity();
+    }
+  }, {
+    key: 'setCustomValidity',
+    value: function setCustomValidity(string) {
+      this._sourceEl.setCustomValidity(string);
+    }
+  }, {
     key: 'connectedCallback',
     value: function connectedCallback() {
       var _this2 = this;
 
       this.addEventListener('click', function (evt) {
-        if (_this2.hasAttribute('open')) {
-          _this2.removeAttribute('open');
-        } else {
-          _this2.setAttribute('open', '');
-        }
+        _this2.hasAttribute('open') ? _this2.removeAttribute('open') : _this2.setAttribute('open', '');
       });this.addEventListener('focus', function (evt) {
         _this2.addEventListener('keydown', _this2._arrowKeydownHandler);
       });this.addEventListener('blur', function (evt) {
@@ -1145,6 +1155,9 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'form',
     get: function get() {
       return this._sourceEl.form;
+    },
+    set: function set(x) {
+      this._throw('readonly', { name: 'form' });
     }
   }, {
     key: 'isOpen',
@@ -1159,24 +1172,38 @@ var ChassisSelect = function (_HTMLElement) {
     get: function get() {
       return this._sourceEl.length;
     } // TODO: Check this functionality
-
+    /**
+     * @property labels
+     * @return {NodeList}
+     * @readonly
+     */
   }, {
     key: 'labels',
     get: function get() {
       return this._sourceEl.labels;
+    },
+    set: function set(x) {
+      this._throw('readonly', { name: 'labels' });
     }
   }, {
     key: 'name',
     get: function get() {
       return this._sourceEl.name;
     },
-    set: function set(val) {
-      this._handlePropertyChange('name', val);
-    }
+    set: function set(name) {
+      this._handlePropertyChange('name', name);
+    } /**
+       * @property options
+       * @return {HTMLOptionsCollection}
+       * @readonly
+       */
   }, {
     key: 'options',
     get: function get() {
       return this._sourceEl.options;
+    },
+    set: function set(x) {
+      this._throw('readonly', { name: 'options' });
     }
   }, {
     key: 'required',
@@ -1190,24 +1217,53 @@ var ChassisSelect = function (_HTMLElement) {
     key: 'selectedIndex',
     get: function get() {
       return this._sourceEl.selectedIndex;
+    },
+    set: function set(index) {
+      this.select(this._options[index].id);
+    } /**
+       * @property selectedOptions
+       * @return {HTMLCollection}
+       * @readonly
+       */
+  }, {
+    key: 'selectedOptions',
+    get: function get() {
+      return this._sourceEl.selectedOptions;
+    },
+    set: function set(x) {
+      this._throw('readonly', { name: 'selectedOptions' });
     }
   }, {
     key: 'sourceElement',
     get: function get() {
       return this._sourceEl;
-    }
+    } /**
+       * @property type
+       * @return {Boolean}
+       * @readonly
+       */
   }, {
     key: 'type',
     get: function get() {
       return this._sourceEl.type;
-    }
+    },
+    set: function set(x) {
+      this._throw('readonly', { name: 'type' });
+    } /**
+       * @property validationMessage
+       * @return {String}
+       * @readonly
+       */
   }, {
     key: 'validationMessage',
     get: function get() {
       return this._sourceEl.validationMessage;
+    },
+    set: function set(x) {
+      this._throw('readonly', { name: 'validationMessage' });
     } /**
        * @property validity
-       * @return {Boolean}
+       * @return {Object}
        * @readonly
        */
   }, {
@@ -1215,8 +1271,8 @@ var ChassisSelect = function (_HTMLElement) {
     get: function get() {
       return this._sourceEl.validity;
     },
-    set: function set(prop) {
-      console.error('ERROR Cannot set read-only property "validity".');
+    set: function set(x) {
+      this._throw('readonly', { name: 'validity' });
     }
   }, {
     key: 'value',
@@ -1232,8 +1288,8 @@ var ChassisSelect = function (_HTMLElement) {
     get: function get() {
       return this._sourceEl.willValidate;
     },
-    set: function set(prop) {
-      console.error('ERROR Cannot set read-only property "willValidate".');
+    set: function set(x) {
+      this._throw('readonly', { name: 'willValidate' });
     }
   }], [{
     key: 'observedAttributes',

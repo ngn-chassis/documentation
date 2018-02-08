@@ -1,5 +1,6 @@
 & main {
   @chassis constrain-width;
+  padding-bottom: 3.618em;
 
   & > * {
     padding-top: 3.82em;

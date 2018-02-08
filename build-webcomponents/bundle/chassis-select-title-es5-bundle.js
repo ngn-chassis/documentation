@@ -1083,7 +1083,7 @@ customElements.define('chassis-select-title', function () {
     }, {
       key: 'templateString',
       get: function get() {
-        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-select-title *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot id="title"></slot><slot name="aftertitle"></slot><slot name="beforeend"></slot></template>';
+        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-select-title *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><div class="title"><slot id="title"></slot></div><slot name="aftertitle"></slot><div class="beforeend"><slot name="beforeend"></slot></div></template>';
       }
     }, {
       key: 'title',

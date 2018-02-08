@@ -240,96 +240,6 @@ class ChassisSelect extends HTMLElement {
     return _private.get(this).sourceEl.value
   }
 
-  checkValidity () {
-    return _private.get(this).sourceEl.checkValidity()
-  }
-
-  setCustomValidity (string) {
-    _private.get(this).sourceEl.setCustomValidity(string)
-  }
-
-  connectedCallback () {
-    this.addEventListener('click', (evt) => {
-      this.hasAttribute('open') ? this.removeAttribute('open') : this.setAttribute('open', '')
-    })
-
-    this.addEventListener('focus', (evt) => {
-      this.addEventListener('keydown', _private.get(this).arrowKeydownHandler)
-    })
-
-    this.addEventListener('blur', (evt) => {
-      this.removeEventListener('keydown', _private.get(this).arrowKeydownHandler)
-    })
-
-    setTimeout(() => {
-      if (!this.hasAttribute('tabindex')) {
-        this.setAttribute('tabindex', 0)
-      }
-
-      if (this.autofocus) {
-        this.focus()
-      }
-    }, 0)
-  }
-
-  attributeChangedCallback (attr, oldValue, newValue) {
-    attr = attr.toLowerCase()
-
-    if (newValue === oldValue) {
-      return
-    }
-
-    switch (attr) {
-      case 'autofocus':
-      case 'disabled':
-        _private.get(this).handleBooleanAttributeChange(attr, newValue)
-        break
-
-      case 'name':
-        _private.get(this).handleAttributeChange(attr, newValue)
-        break
-
-      case 'open':
-        this.isOpen ? this.open() : this.close()
-        break
-    }
-  }
-
-  inject (select) {
-    _private.get(this).sourceEl = select
-    _private.get(this).titleEl = document.createElement('chassis-select-title')
-    _private.get(this).optionsEl = document.createElement('chassis-options')
-
-    _private.get(this).titleEl.slot = 'title'
-    this.appendChild(_private.get(this).titleEl)
-
-    _private.get(this).optionsEl.slot = 'options'
-    this.appendChild(_private.get(this).optionsEl)
-
-    this.addChildren(select.children)
-    this.select(_private.get(this).options[0].id)
-  }
-
-  open () {
-    document.body.addEventListener('click', _private.get(this).bodyClickHandler)
-    document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler)
-    document.body.addEventListener('touchend', _private.get(this).bodyClickHandler)
-
-    if (!this.isOpen) {
-      this.isOpen = true
-    }
-  }
-
-  close () {
-    document.body.removeEventListener('click', _private.get(this).bodyClickHandler)
-    document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler)
-    document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler)
-
-    if (this.isOpen) {
-      this.isOpen = false
-    }
-  }
-
   addChildren (children) {
     for (let child of children) {
       let isElement = child instanceof HTMLElement
@@ -349,6 +259,14 @@ class ChassisSelect extends HTMLElement {
           break
       }
     }
+  }
+
+  addOptgroup (optgroup, dest = _private.get(this).optionsEl) {
+    let label = document.createElement('chassis-optgroup-label')
+    label.innerHTML = optgroup.getAttribute('label')
+
+    dest.appendChild(label)
+    dest.appendChild(optgroup)
   }
 
   addOption (option, index, dest = _private.get(this).optionsEl) {
@@ -411,12 +329,90 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).options.push(option)
   }
 
-  addOptgroup (optgroup, dest = _private.get(this).optionsEl) {
-    let label = document.createElement('chassis-optgroup-label')
-    label.innerHTML = optgroup.getAttribute('label')
+  attributeChangedCallback (attr, oldValue, newValue) {
+    attr = attr.toLowerCase()
 
-    dest.appendChild(label)
-    dest.appendChild(optgroup)
+    if (newValue === oldValue) {
+      return
+    }
+
+    switch (attr) {
+      case 'autofocus':
+      case 'disabled':
+        _private.get(this).handleBooleanAttributeChange(attr, newValue)
+        break
+
+      case 'name':
+        _private.get(this).handleAttributeChange(attr, newValue)
+        break
+
+      case 'open':
+        this.isOpen ? this.open() : this.close()
+        break
+    }
+  }
+
+  checkValidity () {
+    return _private.get(this).sourceEl.checkValidity()
+  }
+
+  close () {
+    document.body.removeEventListener('click', _private.get(this).bodyClickHandler)
+    document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler)
+    document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler)
+
+    if (this.isOpen) {
+      this.isOpen = false
+    }
+  }
+
+  connectedCallback () {
+    this.addEventListener('click', (evt) => {
+      this.hasAttribute('open') ? this.removeAttribute('open') : this.setAttribute('open', '')
+    })
+
+    this.addEventListener('focus', (evt) => {
+      this.addEventListener('keydown', _private.get(this).arrowKeydownHandler)
+    })
+
+    this.addEventListener('blur', (evt) => {
+      this.removeEventListener('keydown', _private.get(this).arrowKeydownHandler)
+    })
+
+    setTimeout(() => {
+      if (!this.hasAttribute('tabindex')) {
+        this.setAttribute('tabindex', 0)
+      }
+
+      if (this.autofocus) {
+        this.focus()
+      }
+    }, 0)
+  }
+
+  inject (select) {
+    _private.get(this).sourceEl = select
+    _private.get(this).titleEl = document.createElement('chassis-select-title')
+    _private.get(this).optionsEl = document.createElement('chassis-options')
+
+    _private.get(this).titleEl.slot = 'title'
+    this.appendChild(_private.get(this).titleEl)
+
+    _private.get(this).optionsEl.slot = 'options'
+    this.appendChild(_private.get(this).optionsEl)
+
+    this.addChildren(select.children)
+    this.select(_private.get(this).options[0].id)
+  }
+
+  open () {
+    document.body.addEventListener('click', _private.get(this).bodyClickHandler)
+    document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler)
+    document.body.addEventListener('touchend', _private.get(this).bodyClickHandler)
+
+    if (!this.isOpen) {
+      this.isOpen = true
+    }
   }
 
   select (id) {
@@ -430,6 +426,10 @@ class ChassisSelect extends HTMLElement {
       _private.get(this).options.forEach((option) => option.displayElement.removeAttribute('selected'))
       option.displayElement.setAttribute('selected', '')
     }
+  }
+
+  setCustomValidity (string) {
+    _private.get(this).sourceEl.setCustomValidity(string)
   }
 }
 

@@ -187,64 +187,6 @@ customElements.define('chassis-select', function () {
     }
 
     (0, _createClass3.default)(_class, [{
-      key: 'checkValidity',
-      value: function checkValidity() {
-        return _private.get(this).sourceEl.checkValidity();
-      }
-    }, {
-      key: 'setCustomValidity',
-      value: function setCustomValidity(string) {
-        _private.get(this).sourceEl.setCustomValidity(string);
-      }
-    }, {
-      key: 'connectedCallback',
-      value: function connectedCallback() {
-        var _this2 = this;
-
-        this.addEventListener('click', function (evt) {
-          _this2.hasAttribute('open') ? _this2.removeAttribute('open') : _this2.setAttribute('open', '');
-        });this.addEventListener('focus', function (evt) {
-          _this2.addEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
-        });this.addEventListener('blur', function (evt) {
-          _this2.removeEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
-        });setTimeout(function () {
-          if (!_this2.hasAttribute('tabindex')) {
-            _this2.setAttribute('tabindex', 0);
-          }if (_this2.autofocus) {
-            _this2.focus();
-          }
-        }, 0);
-      }
-    }, {
-      key: 'attributeChangedCallback',
-      value: function attributeChangedCallback(attr, oldValue, newValue) {
-        attr = attr.toLowerCase();if (newValue === oldValue) {
-          return;
-        }switch (attr) {case 'autofocus':case 'disabled':
-            _private.get(this).handleBooleanAttributeChange(attr, newValue);break;case 'name':
-            _private.get(this).handleAttributeChange(attr, newValue);break;case 'open':
-            this.isOpen ? this.open() : this.close();break;}
-      }
-    }, {
-      key: 'inject',
-      value: function inject(select) {
-        _private.get(this).sourceEl = select;_private.get(this).titleEl = document.createElement('chassis-select-title');_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).titleEl.slot = 'title';this.appendChild(_private.get(this).titleEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(select.children);this.select(_private.get(this).options[0].id);
-      }
-    }, {
-      key: 'open',
-      value: function open() {
-        document.body.addEventListener('click', _private.get(this).bodyClickHandler);document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.addEventListener('touchend', _private.get(this).bodyClickHandler);if (!this.isOpen) {
-          this.isOpen = true;
-        }
-      }
-    }, {
-      key: 'close',
-      value: function close() {
-        document.body.removeEventListener('click', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler);if (this.isOpen) {
-          this.isOpen = false;
-        }
-      }
-    }, {
       key: 'addChildren',
       value: function addChildren(children) {
         var _iteratorNormalCompletion3 = true;
@@ -276,9 +218,16 @@ customElements.define('chassis-select', function () {
         }
       }
     }, {
+      key: 'addOptgroup',
+      value: function addOptgroup(optgroup) {
+        var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _private.get(this).optionsEl;
+
+        var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+      }
+    }, {
       key: 'addOption',
       value: function addOption(option, index) {
-        var _this3 = this;
+        var _this2 = this;
 
         var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
 
@@ -297,17 +246,63 @@ customElements.define('chassis-select', function () {
             sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
           }option.sourceElement = sourceEl;
         }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
-          return _this3.select(chassisOption.key);
+          return _this2.select(chassisOption.key);
         });option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
           this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);return;
         }this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);
       }
     }, {
-      key: 'addOptgroup',
-      value: function addOptgroup(optgroup) {
-        var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _private.get(this).optionsEl;
+      key: 'attributeChangedCallback',
+      value: function attributeChangedCallback(attr, oldValue, newValue) {
+        attr = attr.toLowerCase();if (newValue === oldValue) {
+          return;
+        }switch (attr) {case 'autofocus':case 'disabled':
+            _private.get(this).handleBooleanAttributeChange(attr, newValue);break;case 'name':
+            _private.get(this).handleAttributeChange(attr, newValue);break;case 'open':
+            this.isOpen ? this.open() : this.close();break;}
+      }
+    }, {
+      key: 'checkValidity',
+      value: function checkValidity() {
+        return _private.get(this).sourceEl.checkValidity();
+      }
+    }, {
+      key: 'close',
+      value: function close() {
+        document.body.removeEventListener('click', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler);if (this.isOpen) {
+          this.isOpen = false;
+        }
+      }
+    }, {
+      key: 'connectedCallback',
+      value: function connectedCallback() {
+        var _this3 = this;
 
-        var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+        this.addEventListener('click', function (evt) {
+          _this3.hasAttribute('open') ? _this3.removeAttribute('open') : _this3.setAttribute('open', '');
+        });this.addEventListener('focus', function (evt) {
+          _this3.addEventListener('keydown', _private.get(_this3).arrowKeydownHandler);
+        });this.addEventListener('blur', function (evt) {
+          _this3.removeEventListener('keydown', _private.get(_this3).arrowKeydownHandler);
+        });setTimeout(function () {
+          if (!_this3.hasAttribute('tabindex')) {
+            _this3.setAttribute('tabindex', 0);
+          }if (_this3.autofocus) {
+            _this3.focus();
+          }
+        }, 0);
+      }
+    }, {
+      key: 'inject',
+      value: function inject(select) {
+        _private.get(this).sourceEl = select;_private.get(this).titleEl = document.createElement('chassis-select-title');_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).titleEl.slot = 'title';this.appendChild(_private.get(this).titleEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(select.children);this.select(_private.get(this).options[0].id);
+      }
+    }, {
+      key: 'open',
+      value: function open() {
+        document.body.addEventListener('click', _private.get(this).bodyClickHandler);document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.addEventListener('touchend', _private.get(this).bodyClickHandler);if (!this.isOpen) {
+          this.isOpen = true;
+        }
       }
     }, {
       key: 'select',
@@ -319,6 +314,11 @@ customElements.define('chassis-select', function () {
             return option.displayElement.removeAttribute('selected');
           });option.displayElement.setAttribute('selected', '');
         }
+      }
+    }, {
+      key: 'setCustomValidity',
+      value: function setCustomValidity(string) {
+        _private.get(this).sourceEl.setCustomValidity(string);
       }
     }, {
       key: 'templateString',

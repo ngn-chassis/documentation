@@ -1072,13 +1072,11 @@ customElements.define('chassis-layout', function () {
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
-      value: function connectedCallback() {
-        console.log(_private);
-      }
+      value: function connectedCallback() {}
     }, {
       key: 'templateString',
       get: function get() {
-        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex}:host *,:host :after,:host :before{box-sizing:border-box}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex}:host :after,:host :before,chassis-layout *{box-sizing:border-box}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>';
+        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column}:host([fullscreen]){height:100vh;width:100vw}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex;flex-direction:column}chassis-layout[fullscreen]{height:100vh;width:100vw}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>';
       }
     }]);
     return _class;

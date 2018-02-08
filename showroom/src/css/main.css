@@ -2,7 +2,6 @@
 @chassis include all;
 
 .showroom {
-  padding-bottom: 3.618em;
   transition: all ease-in-out .382s;
 
   @chassis import components;

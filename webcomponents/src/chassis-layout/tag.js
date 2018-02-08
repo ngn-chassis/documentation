@@ -4,7 +4,7 @@ class ChassisLayout extends HTMLElement {
   }
 
   connectedCallback () {
-    console.log(_private);
+
   }
 }
 

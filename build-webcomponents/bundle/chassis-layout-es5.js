@@ -26,7 +26,7 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-customElements.define('chassis-options', function () {
+customElements.define('chassis-layout', function () {
   var _private = new _weakMap2.default();
 
   return function (_HTMLElement) {
@@ -66,11 +66,13 @@ customElements.define('chassis-options', function () {
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
-      value: function connectedCallback() {}
+      value: function connectedCallback() {
+        console.log(_private);
+      }
     }, {
       key: 'templateString',
       get: function get() {
-        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block;width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-options{display:block;width:100%}:host :after,:host :before,chassis-options *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeoptions"></slot><slot></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>';
+        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex}:host *,:host :after,:host :before{box-sizing:border-box}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex}:host :after,:host :before,chassis-layout *{box-sizing:border-box}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>';
       }
     }]);
     return _class;

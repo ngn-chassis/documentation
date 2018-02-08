@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" class="chassis">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <title>Chassis Showroom</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+    <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
+
+    <script src="webcomponents/chassis-select-es5.js"></script>
+  </head>
+
+  <body class="showroom">
+
+    <header>
+      <div class="width-constraint">
+        <h1>NGN Chassis Docs</h1>
+        <aside class="links">
+          <h2 class="hidden">Navigation</h2>
+          <a href="javascript:;">Showroom</a>
+          <a href="https://github.com/ngnjs" target="_blank">Github</a>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <chassis-layout orientation="vertical">
+        <div>cell 1</div>
+        <div>cell 2</div>
+        <div>cell 3</div>
+      </chassis-layout>
+    </main>
+
+    <footer>
+      <div class="width-constraint">
+        <span class="label">Viewport:</span>
+
+        <span class="below-min range">
+          Below min: <= 319px
+        </span>
+
+        <span class="tiny range">
+          Tiny: 320 - 511px
+        </span>
+
+        <span class="small range">
+          Small: 512 - 767px
+        </span>
+
+        <span class="medium range">
+          Medium: 768 - 1023px
+        </span>
+
+        <span class="large range">
+          Large: 1024 - 1199px
+        </span>
+
+        <span class="huge range">
+          Huge: 1200 - 1439px
+        </span>
+
+        <span class="massive range">
+          Massive: 1440 - 1600px
+        </span>
+
+        <span class="above-max range">
+          Above max: > 1600px
+        </span>
+      </div>
+    </footer>
+
+    <script type="text/javascript">
+      window.addEventListener('WebComponentsReady', function () {
+        // window.select = document.getElementById('select_menu').input
+        //
+        // window.select2 = document.getElementById('select_test')
+
+        // select.addOption({
+        //   label: 'heyyy',
+        //   value: 'test'
+        // })
+
+        // console.log(select.options);
+
+        // select.name = 'new-name'
+        // console.log(select.autofocus);
+      })
+    </script>
+  </body>
+
+</html>

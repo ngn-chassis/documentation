@@ -20,53 +20,59 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _weakMap = require('babel-runtime/core-js/weak-map');
+
+var _weakMap2 = _interopRequireDefault(_weakMap);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ChassisOptgroup = function (_HTMLElement) {
-  (0, _inherits3.default)(ChassisOptgroup, _HTMLElement);
+customElements.define('chassis-optgroup', function () {
+  var _private = new _weakMap2.default();
 
-  function ChassisOptgroup() {
-    (0, _classCallCheck3.default)(this, ChassisOptgroup);
+  return function (_HTMLElement) {
+    (0, _inherits3.default)(_class, _HTMLElement);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisOptgroup.__proto__ || (0, _getPrototypeOf2.default)(ChassisOptgroup)).call(this));
+    function _class() {
+      (0, _classCallCheck3.default)(this, _class);
 
-    _this.attachShadow({ mode: 'open' });
+      var _this = (0, _possibleConstructorReturn3.default)(this, (_class.__proto__ || (0, _getPrototypeOf2.default)(_class)).call(this));
 
-    var container = document.createElement('div');
-    container.insertAdjacentHTML('afterbegin', _this.templateString);
+      _this.attachShadow({ mode: 'open' });
 
-    var template = container.querySelector('template');
+      var container = document.createElement('div');
+      container.insertAdjacentHTML('afterbegin', _this.templateString);
 
-    if ('content' in template) {
-      _this.shadowRoot.appendChild(template.content.cloneNode(true));
-    } else {
-      template.childNodes.forEach(function (child) {
-        _this.shadowRoot.appendChild(child.cloneNode(true));
-      });
+      var template = container.querySelector('template');
+
+      if ('content' in template) {
+        _this.shadowRoot.appendChild(template.content.cloneNode(true));
+      } else {
+        template.childNodes.forEach(function (child) {
+          _this.shadowRoot.appendChild(child.cloneNode(true));
+        });
+      }
+
+      template = null;
+
+      _this.crypto = null;
+
+      try {
+        _this.crypto = crypto;
+      } catch (e) {
+        _this.crypto = msCrypto;
+      }
+      return _this;
     }
 
-    template = null;
-
-    _this.crypto = null;
-
-    try {
-      _this.crypto = crypto;
-    } catch (e) {
-      _this.crypto = msCrypto;
-    }
-    return _this;
-  }
-
-  (0, _createClass3.default)(ChassisOptgroup, [{
-    key: 'connectedCallback',
-    value: function connectedCallback() {}
-  }, {
-    key: 'templateString',
-    get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-optgroup{contain:content;display:flex;flex-direction:column;max-width:100%}:host :after,:host :before,chassis-optgroup *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeoptgroup"></slot><slot></slot><slot name="afteroptgroup"></slot><slot name="beforeend"></slot></template>';
-    }
-  }]);
-  return ChassisOptgroup;
-}(HTMLElement);
-
-customElements.define('chassis-optgroup', ChassisOptgroup);
+    (0, _createClass3.default)(_class, [{
+      key: 'connectedCallback',
+      value: function connectedCallback() {}
+    }, {
+      key: 'templateString',
+      get: function get() {
+        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-optgroup{contain:content;display:flex;flex-direction:column;max-width:100%}:host :after,:host :before,chassis-optgroup *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeoptgroup"></slot><slot></slot><slot name="afteroptgroup"></slot><slot name="beforeend"></slot></template>';
+      }
+    }]);
+    return _class;
+  }(HTMLElement);
+}());

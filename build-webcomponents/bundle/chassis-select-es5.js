@@ -1,12 +1,12 @@
 'use strict';
 
+var _defineProperty = require('babel-runtime/core-js/object/define-property');
+
+var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _defineProperties = require('babel-runtime/core-js/object/define-properties');
-
-var _defineProperties2 = _interopRequireDefault(_defineProperties);
 
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
@@ -28,59 +28,67 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _weakMap = require('babel-runtime/core-js/weak-map');
+
+var _weakMap2 = _interopRequireDefault(_weakMap);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ChassisSelect = function (_HTMLElement) {
-  (0, _inherits3.default)(ChassisSelect, _HTMLElement);
+customElements.define('chassis-select', function () {
+  var _private = new _weakMap2.default();
 
-  function ChassisSelect() {
-    (0, _classCallCheck3.default)(this, ChassisSelect);
+  return function (_HTMLElement) {
+    (0, _inherits3.default)(_class, _HTMLElement);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ChassisSelect.__proto__ || (0, _getPrototypeOf2.default)(ChassisSelect)).call(this));
+    function _class() {
+      (0, _classCallCheck3.default)(this, _class);
 
-    _this.attachShadow({ mode: 'open' });
+      var _this = (0, _possibleConstructorReturn3.default)(this, (_class.__proto__ || (0, _getPrototypeOf2.default)(_class)).call(this));
 
-    var container = document.createElement('div');
-    container.insertAdjacentHTML('afterbegin', _this.templateString);
+      _this.attachShadow({ mode: 'open' });
 
-    var template = container.querySelector('template');
+      var container = document.createElement('div');
+      container.insertAdjacentHTML('afterbegin', _this.templateString);
 
-    if ('content' in template) {
-      _this.shadowRoot.appendChild(template.content.cloneNode(true));
-    } else {
-      template.childNodes.forEach(function (child) {
-        _this.shadowRoot.appendChild(child.cloneNode(true));
-      });
-    }
+      var template = container.querySelector('template');
 
-    template = null;
+      if ('content' in template) {
+        _this.shadowRoot.appendChild(template.content.cloneNode(true));
+      } else {
+        template.childNodes.forEach(function (child) {
+          _this.shadowRoot.appendChild(child.cloneNode(true));
+        });
+      }
 
-    _this.crypto = null;
+      template = null;
 
-    try {
-      _this.crypto = crypto;
-    } catch (e) {
-      _this.crypto = msCrypto;
-    }
-    (0, _defineProperties2.default)(_this, { _options: { value: [] }, _title: { value: '' }, _selectedOption: { writable: true }, _arrowKeydownHandler: { value: function value(evt) {
+      _this.crypto = null;
+
+      try {
+        _this.crypto = crypto;
+      } catch (e) {
+        _this.crypto = msCrypto;
+      }
+      _private.set(_this, { options: [], title: '', selectedOption: null, readonlyProps: ['form', 'labels', 'options', 'willValidate', 'selectedOptions', 'type', 'validationMessage', 'validity'], arrowKeydownHandler: function arrowKeydownHandler(evt) {
           switch (evt.keyCode) {case 38:
               evt.preventDefault();console.log('select previous option');break;case 40:
               evt.preventDefault();console.log('select next option');break;default:
               return;}
-        } }, _bodyClickHandler: { value: function value(evt) {
+        }, bodyClickHandler: function bodyClickHandler(evt) {
           if (evt.target === _this || _this.contains(evt.target)) {
             return;
-          }_this.removeAttribute('open');
-        } }, _generateGuid: { value: function value() {
+          }
+          _this.removeAttribute('open');
+        }, generateGuid: function generateGuid() {
           var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
 
           return prefix + '_' + ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
             return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
           });
-        } }, _generateChassisOptgroup: { value: function value(optgroup) {
+        }, generateChassisOptgroup: function generateChassisOptgroup(optgroup) {
           if (!customElements.get('chassis-optgroup')) {
             console.error('chassis-select requires chassis-optgroup. Please include it in this document\'s <head> element.');return;
-          }var fauxOptgroup = document.createElement('chassis-optgroup');fauxOptgroup.id = _this._generateGuid('optgroup');var label = optgroup.getAttribute('label');if (!label || label.trim() === '') {
+          }var fauxOptgroup = document.createElement('chassis-optgroup');fauxOptgroup.id = _private.get(_this).generateGuid('optgroup');var label = optgroup.getAttribute('label');if (!label || label.trim() === '') {
             console.error('[ERROR] <optgroup> must have a label attribute!');return;
           }fauxOptgroup.setAttribute('label', label);var options = optgroup.querySelectorAll('option');var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
@@ -90,7 +98,7 @@ var ChassisSelect = function (_HTMLElement) {
             for (var _iterator = (0, _getIterator3.default)(options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var option = _step.value;
 
-              _this.addOption(_this._generateOptionObject(option), null, fauxOptgroup);
+              _this.addOption(_private.get(_this).generateOptionObject(option), null, fauxOptgroup);
             }
           } catch (err) {
             _didIteratorError = true;
@@ -108,10 +116,10 @@ var ChassisSelect = function (_HTMLElement) {
           }
 
           return fauxOptgroup;
-        } }, _generateOptionObject: { value: function value(optionEl) {
+        }, generateOptionObject: function generateOptionObject(optionEl) {
           if (!customElements.get('chassis-option')) {
             console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
-          }var obj = { id: _this._generateGuid(), attributes: {}, sourceElement: optionEl };var _iteratorNormalCompletion2 = true;
+          }var obj = { id: _private.get(_this).generateGuid(), attributes: {}, sourceElement: optionEl };var _iteratorNormalCompletion2 = true;
           var _didIteratorError2 = false;
           var _iteratorError2 = undefined;
 
@@ -137,344 +145,255 @@ var ChassisSelect = function (_HTMLElement) {
           }
 
           return obj;
-        } }, _getBooleanPropertyValue: { value: function value(prop) {
+        }, getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
           return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-        } }, _handleAttributeChange: { value: function value(attr, val) {
-          if (!_this._sourceEl) {
+        }, handleAttributeChange: function handleAttributeChange(attr, val) {
+          if (!_private.get(_this).sourceEl) {
             return;
-          }_this.setAttribute(attr, val);_this._sourceEl[attr] = val;
-        } }, _handleBooleanAttributeChange: { value: function value(attr, _value) {
-          if (!_this._sourceEl) {
+          }_this.setAttribute(attr, val);_private.get(_this).sourceEl[attr] = val;
+        }, handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+          if (!_private.get(_this).sourceEl) {
             return;
-          }var acceptableValues = ['true', 'false', '', null];if (!acceptableValues.includes(_value)) {
-            console.error('<chassis-select> ' + attr + ' attribute expected boolean but received "' + _value + '"');_this.removeAttribute(attr);_this._sourceEl[attr] = false;return;
-          }if (_value === 'false' && _this.hasAttribute(attr)) {
-            _this.removeAttribute(attr);_this._sourceEl[attr] = false;return;
-          }_this._sourceEl[attr] = _this.hasAttribute(attr);
-        } }, _handleBooleanPropertyChange: { value: function value(prop, bool) {
+          }var acceptableValues = ['true', 'false', '', null];if (!acceptableValues.includes(value)) {
+            console.error('<chassis-select> ' + attr + ' attribute expected boolean but received "' + value + '"');_this.removeAttribute(attr);_private.get(_this).sourceEl[attr] = false;return;
+          }if (value === 'false' && _this.hasAttribute(attr)) {
+            _this.removeAttribute(attr);_private.get(_this).sourceEl[attr] = false;return;
+          }_private.get(_this).sourceEl[attr] = _this.hasAttribute(attr);
+        }, handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
           if (!bool) {
-            _this.removeAttribute(prop);_this._sourceEl[prop] = false;return;
+            _this.removeAttribute(prop);_private.get(_this).sourceEl[prop] = false;return;
           }if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
-            _this.setAttribute(prop, '');_this._sourceEl[prop] = true;
+            _this.setAttribute(prop, '');_private.get(_this).sourceEl[prop] = true;
           }
-        } }, _handlePropertyChange: { value: function value(prop, val) {
-          _this._sourceEl[prop] = val;if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+        }, handlePropertyChange: function handlePropertyChange(prop, val) {
+          _private.get(_this).sourceEl[prop] = val;if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
             _this.setAttribute(prop, val);
           }
-        } }, _inject: { value: function value(select) {
-          (0, _defineProperties2.default)(_this, { _sourceEl: { value: select }, _titleEl: { value: document.createElement('chassis-select-title') }, _optionsEl: { value: document.createElement('chassis-options') } });_this._titleEl.slot = 'title';_this.appendChild(_this._titleEl);_this._optionsEl.slot = 'options';_this.appendChild(_this._optionsEl);_this.addChildren(select.children);_this.select(_this._options[0].id);
-        } }, _throw: { value: function value(type, vars) {
-          switch (type) {case 'readonly':
-              console.error('ERROR Cannot set read-only property "' + vars.name + '".');break;default:
-              console.error('ERROR <chassis-select>');}
-        } } });
-    return _this;
-  }
+        }, readonlyProperty: function readonlyProperty(name) {
+          return { get: function get() {
+              return _private.get(_this).sourceEl[name];
+            }, set: function set() {
+              return _private.get(_this).throw('readonly', { name: name });
+            } };
+        }, throw: function _throw(type, vars) {
+          var message = 'ERROR <chassis-select> ';switch (type) {case 'readonly':
+              message += 'Cannot set read-only property "' + vars.name + '".';break;default:
+              message = message.trim();}console.error(message);
+        } }); // Set readonly HTMLSelectElement properties
+      _private.get(_this).readonlyProps.forEach(function (prop) {
+        (0, _defineProperty2.default)(_this, prop, _private.get(_this).readonlyProperty(prop));
+      });
+      return _this;
+    }
 
-  (0, _createClass3.default)(ChassisSelect, [{
-    key: 'checkValidity',
-    value: function checkValidity() {
-      return this._sourceEl.checkValidity();
-    }
-  }, {
-    key: 'setCustomValidity',
-    value: function setCustomValidity(string) {
-      this._sourceEl.setCustomValidity(string);
-    }
-  }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      var _this2 = this;
-
-      this.addEventListener('click', function (evt) {
-        _this2.hasAttribute('open') ? _this2.removeAttribute('open') : _this2.setAttribute('open', '');
-      });this.addEventListener('focus', function (evt) {
-        _this2.addEventListener('keydown', _this2._arrowKeydownHandler);
-      });this.addEventListener('blur', function (evt) {
-        _this2.removeEventListener('keydown', _this2._arrowKeydownHandler);
-      });setTimeout(function () {
-        if (!_this2.hasAttribute('tabindex')) {
-          _this2.setAttribute('tabindex', 0);
-        }if (_this2.autofocus) {
-          _this2.focus();
-        }
-      }, 0);
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(attr, oldValue, newValue) {
-      attr = attr.toLowerCase();if (newValue === oldValue) {
-        return;
-      }switch (attr) {case 'autofocus':case 'disabled':
-          this._handleBooleanAttributeChange(attr, newValue);break;case 'name':
-          this._handleAttributeChange(attr, newValue);break;case 'open':
-          this.isOpen ? this.open() : this.close();break;}
-    }
-  }, {
-    key: 'open',
-    value: function open() {
-      document.body.addEventListener('click', this._bodyClickHandler);document.body.addEventListener('touchcancel', this._bodyClickHandler);document.body.addEventListener('touchend', this._bodyClickHandler);if (!this.isOpen) {
-        this.isOpen = true;
+    (0, _createClass3.default)(_class, [{
+      key: 'checkValidity',
+      value: function checkValidity() {
+        return _private.get(this).sourceEl.checkValidity();
       }
-    }
-  }, {
-    key: 'close',
-    value: function close() {
-      document.body.removeEventListener('click', this._bodyClickHandler);document.body.removeEventListener('touchcancel', this._bodyClickHandler);document.body.removeEventListener('touchend', this._bodyClickHandler);if (this.isOpen) {
-        this.isOpen = false;
+    }, {
+      key: 'setCustomValidity',
+      value: function setCustomValidity(string) {
+        _private.get(this).sourceEl.setCustomValidity(string);
       }
-    }
-  }, {
-    key: 'addChildren',
-    value: function addChildren(children) {
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+    }, {
+      key: 'connectedCallback',
+      value: function connectedCallback() {
+        var _this2 = this;
 
-      try {
-        for (var _iterator3 = (0, _getIterator3.default)(children), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var child = _step3.value;
-
-          var isElement = child instanceof HTMLElement;switch (child.nodeName) {case 'OPTION':
-              this.addOption(isElement ? this._generateOptionObject(child) : child);break;case 'OPTGROUP':
-              this.addOptgroup(isElement ? this._generateChassisOptgroup(child) : child);break;default:
-              console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
+        this.addEventListener('click', function (evt) {
+          _this2.hasAttribute('open') ? _this2.removeAttribute('open') : _this2.setAttribute('open', '');
+        });this.addEventListener('focus', function (evt) {
+          _this2.addEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
+        });this.addEventListener('blur', function (evt) {
+          _this2.removeEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
+        });setTimeout(function () {
+          if (!_this2.hasAttribute('tabindex')) {
+            _this2.setAttribute('tabindex', 0);
+          }if (_this2.autofocus) {
+            _this2.focus();
+          }
+        }, 0);
+      }
+    }, {
+      key: 'attributeChangedCallback',
+      value: function attributeChangedCallback(attr, oldValue, newValue) {
+        attr = attr.toLowerCase();if (newValue === oldValue) {
+          return;
+        }switch (attr) {case 'autofocus':case 'disabled':
+            _private.get(this).handleBooleanAttributeChange(attr, newValue);break;case 'name':
+            _private.get(this).handleAttributeChange(attr, newValue);break;case 'open':
+            this.isOpen ? this.open() : this.close();break;}
+      }
+    }, {
+      key: 'inject',
+      value: function inject(select) {
+        _private.get(this).sourceEl = select;_private.get(this).titleEl = document.createElement('chassis-select-title');_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).titleEl.slot = 'title';this.appendChild(_private.get(this).titleEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(select.children);this.select(_private.get(this).options[0].id);
+      }
+    }, {
+      key: 'open',
+      value: function open() {
+        document.body.addEventListener('click', _private.get(this).bodyClickHandler);document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.addEventListener('touchend', _private.get(this).bodyClickHandler);if (!this.isOpen) {
+          this.isOpen = true;
         }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
+      }
+    }, {
+      key: 'close',
+      value: function close() {
+        document.body.removeEventListener('click', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler);if (this.isOpen) {
+          this.isOpen = false;
+        }
+      }
+    }, {
+      key: 'addChildren',
+      value: function addChildren(children) {
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          for (var _iterator3 = (0, _getIterator3.default)(children), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var child = _step3.value;
+
+            var isElement = child instanceof HTMLElement;switch (child.nodeName) {case 'OPTION':
+                this.addOption(isElement ? _private.get(this).generateOptionObject(child) : child);break;case 'OPTGROUP':
+                this.addOptgroup(isElement ? _private.get(this).generateChassisOptgroup(child) : child);break;default:
+                console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
           }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
           }
         }
       }
-    }
-  }, {
-    key: 'addOption',
-    value: function addOption(option, index) {
-      var _this3 = this;
+    }, {
+      key: 'addOption',
+      value: function addOption(option, index) {
+        var _this3 = this;
 
-      var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._optionsEl;
+        var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
 
-      if (!customElements.get('chassis-option')) {
-        console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
-      }if (!option.hasOwnProperty('id')) {
-        option.id = this._generateGuid();
-      }if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
-        var sourceEl = document.createElement('option');if (option.hasOwnProperty('innerHTML')) {
-          sourceEl.innerHTML = option.innerHTML;
-        }if (option.hasOwnProperty('label')) {
-          sourceEl.innerHTML = option.label;
-        }if (option.hasOwnProperty('value')) {
-          sourceEl.value = option.value;
-        }if (option.hasOwnProperty('disabled')) {
-          sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
-        }option.sourceElement = sourceEl;
-      }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
-        return _this3.select(chassisOption.key);
-      });option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
-        this._options.splice(index, 0, option);return;
-      }this._options.push(option);
-    }
-  }, {
-    key: 'addOptgroup',
-    value: function addOptgroup(optgroup) {
-      var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._optionsEl;
-
-      var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
-    }
-  }, {
-    key: 'select',
-    value: function select(id) {
-      var option = this._options.find(function (option) {
-        return option.id === id;
-      });if (option) {
-        option.sourceElement.selected = true;this._titleEl.title = option.displayElement.innerHTML;this._selectedOption = option;this._options.forEach(function (option) {
-          return option.displayElement.removeAttribute('selected');
-        });option.displayElement.setAttribute('selected', '');
+        if (!customElements.get('chassis-option')) {
+          console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
+        }if (!option.hasOwnProperty('id')) {
+          option.id = _private.get(this).generateGuid();
+        }if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
+          var sourceEl = document.createElement('option');if (option.hasOwnProperty('innerHTML')) {
+            sourceEl.innerHTML = option.innerHTML;
+          }if (option.hasOwnProperty('label')) {
+            sourceEl.innerHTML = option.label;
+          }if (option.hasOwnProperty('value')) {
+            sourceEl.value = option.value;
+          }if (option.hasOwnProperty('disabled')) {
+            sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
+          }option.sourceElement = sourceEl;
+        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
+          return _this3.select(chassisOption.key);
+        });option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
+          this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);return;
+        }this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);
       }
-    }
-  }, {
-    key: 'templateString',
-    get: function get() {
-      return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]:not([disabled*=false])){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}chassis-select[disabled]:not([disabled*=false]){pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>';
-    }
-  }, {
-    key: 'autofocus',
-    get: function get() {
-      return this._getBooleanPropertyValue('autofocus');
-    },
-    set: function set(bool) {
-      this._handleBooleanPropertyChange('autofocus', bool);
-    }
-  }, {
-    key: 'disabled',
-    get: function get() {
-      return this._getBooleanPropertyValue('disabled');
-    },
-    set: function set(bool) {
-      this._handleBooleanPropertyChange('disabled', bool);
-    } // TODO: Look for form in parent nodes, this always returns null because
-    // this._sourceEl is not in the DOM
-    /**
-     * @property form
-     * @return {Object}
-     * Parent Form Element
-     * @readonly
-     */
-  }, {
-    key: 'form',
-    get: function get() {
-      return this._sourceEl.form;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'form' });
-    }
-  }, {
-    key: 'isOpen',
-    get: function get() {
-      return this.hasAttribute('open');
-    },
-    set: function set(bool) {
-      bool ? this.setAttribute('open', '') : this.removeAttribute('open');
-    }
-  }, {
-    key: 'length',
-    get: function get() {
-      return this._sourceEl.length;
-    } // TODO: Check this functionality
-    /**
-     * @property labels
-     * @return {NodeList}
-     * @readonly
-     */
-  }, {
-    key: 'labels',
-    get: function get() {
-      return this._sourceEl.labels;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'labels' });
-    }
-  }, {
-    key: 'name',
-    get: function get() {
-      return this._sourceEl.name;
-    },
-    set: function set(name) {
-      this._handlePropertyChange('name', name);
-    } /**
-       * @property options
-       * @return {HTMLOptionsCollection}
-       * @readonly
-       */
-  }, {
-    key: 'options',
-    get: function get() {
-      return this._sourceEl.options;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'options' });
-    }
-  }, {
-    key: 'required',
-    get: function get() {
-      return this._getBooleanPropertyValue('required');
-    },
-    set: function set(bool) {
-      this._handleBooleanPropertyChange('required', bool);
-    }
-  }, {
-    key: 'selectedIndex',
-    get: function get() {
-      return this._sourceEl.selectedIndex;
-    },
-    set: function set(index) {
-      this.select(this._options[index].id);
-    } /**
-       * @property selectedOptions
-       * @return {HTMLCollection}
-       * @readonly
-       */
-  }, {
-    key: 'selectedOptions',
-    get: function get() {
-      return this._sourceEl.selectedOptions;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'selectedOptions' });
-    }
-  }, {
-    key: 'sourceElement',
-    get: function get() {
-      return this._sourceEl;
-    } /**
-       * @property type
-       * @return {Boolean}
-       * @readonly
-       */
-  }, {
-    key: 'type',
-    get: function get() {
-      return this._sourceEl.type;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'type' });
-    } /**
-       * @property validationMessage
-       * @return {String}
-       * @readonly
-       */
-  }, {
-    key: 'validationMessage',
-    get: function get() {
-      return this._sourceEl.validationMessage;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'validationMessage' });
-    } /**
-       * @property validity
-       * @return {Object}
-       * @readonly
-       */
-  }, {
-    key: 'validity',
-    get: function get() {
-      return this._sourceEl.validity;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'validity' });
-    }
-  }, {
-    key: 'value',
-    get: function get() {
-      return this._sourceEl.value;
-    } /**
-       * @property willValidate
-       * @return {Boolean}
-       * @readonly
-       */
-  }, {
-    key: 'willValidate',
-    get: function get() {
-      return this._sourceEl.willValidate;
-    },
-    set: function set(x) {
-      this._throw('readonly', { name: 'willValidate' });
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['autofocus', 'disabled', 'name', 'open', 'tabindex'];
-    }
-  }]);
-  return ChassisSelect;
-}(HTMLElement);
+    }, {
+      key: 'addOptgroup',
+      value: function addOptgroup(optgroup) {
+        var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _private.get(this).optionsEl;
 
-customElements.define('chassis-select', ChassisSelect);
+        var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
+      }
+    }, {
+      key: 'select',
+      value: function select(id) {
+        var option = _private.get(this).options.find(function (option) {
+          return option.id === id;
+        });if (option) {
+          option.sourceElement.selected = true;_private.get(this).titleEl.title = option.displayElement.innerHTML;_private.get(this).selectedOption = option;_private.get(this).options.forEach(function (option) {
+            return option.displayElement.removeAttribute('selected');
+          });option.displayElement.setAttribute('selected', '');
+        }
+      }
+    }, {
+      key: 'templateString',
+      get: function get() {
+        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]:not([disabled*=false])){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}chassis-select[disabled]:not([disabled*=false]){pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>';
+      }
+    }, {
+      key: 'autofocus',
+      get: function get() {
+        return _private.get(this).getBooleanPropertyValue('autofocus');
+      },
+      set: function set(bool) {
+        _private.get(this).handleBooleanPropertyChange('autofocus', bool);
+      }
+    }, {
+      key: 'disabled',
+      get: function get() {
+        return _private.get(this).getBooleanPropertyValue('disabled');
+      },
+      set: function set(bool) {
+        _private.get(this).handleBooleanPropertyChange('disabled', bool);
+      }
+    }, {
+      key: 'isOpen',
+      get: function get() {
+        return this.hasAttribute('open');
+      },
+      set: function set(bool) {
+        bool ? this.setAttribute('open', '') : this.removeAttribute('open');
+      }
+    }, {
+      key: 'length',
+      get: function get() {
+        return _private.get(this).sourceEl.length;
+      }
+    }, {
+      key: 'name',
+      get: function get() {
+        return _private.get(this).sourceEl.name;
+      },
+      set: function set(name) {
+        _private.get(this).handlePropertyChange('name', name);
+      }
+    }, {
+      key: 'required',
+      get: function get() {
+        return _private.get(this).getBooleanPropertyValue('required');
+      },
+      set: function set(bool) {
+        _private.get(this).handleBooleanPropertyChange('required', bool);
+      }
+    }, {
+      key: 'selectedIndex',
+      get: function get() {
+        return _private.get(this).sourceEl.selectedIndex;
+      },
+      set: function set(index) {
+        this.select(_private.get(this).options[index].id);
+      }
+    }, {
+      key: 'sourceElement',
+      get: function get() {
+        return _private.get(this).sourceEl;
+      }
+    }, {
+      key: 'value',
+      get: function get() {
+        return _private.get(this).sourceEl.value;
+      }
+    }], [{
+      key: 'observedAttributes',
+      get: function get() {
+        return ['autofocus', 'disabled', 'name', 'open', 'tabindex'];
+      }
+    }]);
+    return _class;
+  }(HTMLElement);
+}());

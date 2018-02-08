@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+:host {
+  display: flex;
+}
+
+:host *,
+:host *:before,
+:host *:after {
+  box-sizing: border-box;
+}
+
+:host([orientation="horizontal"]) {
+  flex-direction: row;
+}
+
+:host([orientation="vertical"]) {
+  flex-direction: column;
+}

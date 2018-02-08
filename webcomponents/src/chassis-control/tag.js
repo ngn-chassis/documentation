@@ -142,7 +142,7 @@ class ChassisFormControl extends HTMLElement {
 
     this.removeChild(select)
 
-    placeholder._inject(select)
+    placeholder.inject(select)
     this.appendChild(placeholder)
     this._input = placeholder
   }

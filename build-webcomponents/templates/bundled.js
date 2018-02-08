@@ -1,36 +1,38 @@
-class {{CLASS-IDENTIFIER}} extends {{SUPER-CLASS}} {
-  constructor () {
-    super()
+customElements.define('{{TAG-NAME}}', (function () {
+  let _private = new WeakMap()
 
-    this.attachShadow({mode: 'open'})
+  return class extends {{SUPER-CLASS}} {
+    constructor () {
+      super()
 
-    let container = document.createElement('div')
-    container.insertAdjacentHTML('afterbegin', this.templateString)
+      this.attachShadow({mode: 'open'})
 
-    let template = container.querySelector('template')
+      let container = document.createElement('div')
+      container.insertAdjacentHTML('afterbegin', this.templateString)
 
-    if ('content' in template) {
-      this.shadowRoot.appendChild(template.content.cloneNode(true))
-    } else {
-      template.childNodes.forEach((child) => {
-        this.shadowRoot.appendChild(child.cloneNode(true))
-      })
+      let template = container.querySelector('template')
+
+      if ('content' in template) {
+        this.shadowRoot.appendChild(template.content.cloneNode(true))
+      } else {
+        template.childNodes.forEach((child) => {
+          this.shadowRoot.appendChild(child.cloneNode(true))
+        })
+      }
+
+      template = null
+
+      this.crypto = null
+
+      try {
+        this.crypto = crypto
+      } catch (e) {
+        this.crypto = msCrypto
+      }
     }
 
-    template = null
-
-    this.crypto = null
-
-    try {
-      this.crypto = crypto
-    } catch (e) {
-      this.crypto = msCrypto
+    get templateString () {
+      return `{{TEMPLATE-STRING}}`
     }
   }
-
-  get templateString () {
-    return `{{TEMPLATE-STRING}}`
-  }
-}
-
-customElements.define('{{TAG-NAME}}', {{CLASS-IDENTIFIER}})
+})())

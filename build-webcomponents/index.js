@@ -200,15 +200,14 @@ class Builder {
 
     let methods = []
     let parsed = babylon.parse(output)
-    let outputClassDecl = parsed.program.body.find((node) => {
-      return node.type === 'ClassDeclaration'
-    })
 
-    let inputConstructor = inputClassDecl.body.body.find((node) => {
-      return node.key.name === 'constructor'
-    })
+    let outputClassExpression = parsed.program.body[0].expression.arguments[1].callee.body.body[1].argument
 
-    let outputConstructor = outputClassDecl.body.body.find((node) => {
+    // let inputConstructor = inputClassDecl.body.body.find((node) => {
+    //   return node.key.name === 'constructor'
+    // })
+
+    let outputConstructor = outputClassExpression.body.body.find((node) => {
       return node.key.name === 'constructor'
     })
 
@@ -225,7 +224,7 @@ class Builder {
         return
       }
 
-      outputClassDecl.body.body.push(method)
+      outputClassExpression.body.body.push(method)
     })
 
     this.js = babel.transformFromAst(parsed).code

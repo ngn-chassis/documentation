@@ -117,20 +117,20 @@ class Builder {
         })
       }
 
-      compiler.add('Compressing...', (next) => {
-        files.forEach((file) => {
-          if (file.name.endsWith('-es5')) {
-            file.contents = uglify(file.contents).code
-            return
-          }
-
-          file.contents = babel.transform(file.contents, {
-            presets: ['minify']
-          }).code
-        })
-
-        next()
-      })
+      // compiler.add('Compressing...', (next) => {
+      //   files.forEach((file) => {
+      //     if (file.name.endsWith('-es5')) {
+      //       file.contents = uglify(file.contents).code
+      //       return
+      //     }
+      //
+      //     file.contents = babel.transform(file.contents, {
+      //       presets: ['minify']
+      //     }).code
+      //   })
+      //
+      //   next()
+      // })
 
       compiler.on('stepstarted', (task) => console.info(task.name))
 

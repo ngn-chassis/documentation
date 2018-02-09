@@ -8,6 +8,7 @@
     <title>Chassis Showroom</title>
 
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/layout.css">
 
     <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
@@ -16,27 +17,33 @@
     <script src="webcomponents/chassis-layout-cell.js"></script>
   </head>
 
-  <body class="showroom">
+  <body class="layout showroom">
 
-    <chassis-layout fullscreen>
-      <chassis-layout-cell>
+    <chassis-layout id="layout" fullscreen>
+      <chassis-layout-cell class="header">
         header
       </chassis-layout-cell>
       <chassis-layout-cell orientation="horizontal" stretch>
         <chassis-layout-cell size="23.6%">
-          sidebar
+          <aside class="sidebar">
+            sidebar
+          </aside>
         </chassis-layout-cell>
         <chassis-layout-cell stretch>
-          workspace
+          <div class="workspace">
+            workspace
+          </div>
         </chassis-layout-cell>
       </chassis-layout-cell>
-      <chassis-layout-cell>
+      <chassis-layout-cell class="footer">
         footer
       </chassis-layout-cell>
     </chassis-layout>
 
     <script type="text/javascript">
-      window.addEventListener('WebComponentsReady', function () {
+      window.addEventListener('DOMContentLoaded', function () {
+        console.log('hello');
+        window.cell = document.querySelector('#layout chassis-layout-cell[size]')
         // window.select = document.getElementById('select_menu').input
         //
         // window.select2 = document.getElementById('select_test')

@@ -8,7 +8,7 @@ customElements.define('{{TAG-NAME}}', (function () {
       this.attachShadow({mode: 'open'})
 
       let container = document.createElement('div')
-      container.insertAdjacentHTML('afterbegin', this.templateString)
+      container.insertAdjacentHTML('afterbegin', `{{TEMPLATE-STRING}}`)
 
       let template = container.querySelector('template')
 
@@ -21,7 +21,6 @@ customElements.define('{{TAG-NAME}}', (function () {
       }
 
       template = null
-
       this.crypto = null
 
       try {
@@ -29,10 +28,6 @@ customElements.define('{{TAG-NAME}}', (function () {
       } catch (e) {
         this.crypto = msCrypto
       }
-    }
-
-    get templateString () {
-      return `{{TEMPLATE-STRING}}`
     }
   }
 })())

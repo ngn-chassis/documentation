@@ -1,0 +1,5 @@
+.showroom chassis-layout {
+  & chassis-layout-cell {
+    padding: .382em;
+  }
+}

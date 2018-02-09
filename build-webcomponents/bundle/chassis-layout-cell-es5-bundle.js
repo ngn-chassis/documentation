@@ -1046,7 +1046,7 @@ customElements.define('chassis-layout-cell', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', _this.templateString);
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host *,:host :after,:host :before{box-sizing:border-box}:host([stretch]){flex:1 1 auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout-cell{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host :after,:host :before,chassis-layout-cell *{box-sizing:border-box}chassis-layout-cell[stretch]{flex:1 1 auto}chassis-layout-cell[orientation=horizontal]{flex-direction:row}chassis-layout-cell[orientation=vertical]{flex-direction:column}</style><slot></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -1059,7 +1059,6 @@ customElements.define('chassis-layout-cell', function () {
       }
 
       template = null;
-
       _this.crypto = null;
 
       try {
@@ -1067,6 +1066,7 @@ customElements.define('chassis-layout-cell', function () {
       } catch (e) {
         _this.crypto = msCrypto;
       }
+      _private.set(_this, { styleSheet: null, sizeRule: null, size: null });
       return _this;
     }
 
@@ -1076,24 +1076,21 @@ customElements.define('chassis-layout-cell', function () {
         var _this2 = this;
 
         setTimeout(function () {
-          _this2.styleSheet = _this2.shadowRoot.styleSheets[0];_this2.styleSheet.insertRule(':host([size]) {}', _this2.styleSheet.cssRules.length);_this2.sizeRule = _this2.styleSheet.cssRules[_this2.styleSheet.cssRules.length - 1];if (_this2.hasAttribute('size')) {
+          _private.get(_this2).styleSheet = _this2.shadowRoot.styleSheets[0];var sheetLength = _private.get(_this2).styleSheet.cssRules.length;_private.get(_this2).styleSheet.insertRule(':host([size]) {}', sheetLength);_private.get(_this2).sizeRule = _private.get(_this2).styleSheet.cssRules[sheetLength];if (_this2.hasAttribute('size')) {
             _this2.size = _this2.getAttribute('size');
           }
         }, 0);
       }
     }, {
       key: 'attributeChangedCallback',
-      value: function attributeChangedCallback(attr, newValue, oldValue) {
+      value: function attributeChangedCallback(attr, oldValue, newValue) {
         attr = attr.toLowerCase();if (newValue === oldValue) {
           return;
         }switch (attr) {case 'size':
-            this.size = newValue;break;default:
+            if (_private.get(this).size !== newValue) {
+              this.size = newValue;
+            }break;default:
             return;}
-      }
-    }, {
-      key: 'templateString',
-      get: function get() {
-        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host *,:host :after,:host :before{box-sizing:border-box}:host([stretch]){flex:1 1 auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout-cell{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host :after,:host :before,chassis-layout-cell *{box-sizing:border-box}chassis-layout-cell[stretch]{flex:1 1 auto}chassis-layout-cell[orientation=horizontal]{flex-direction:row}chassis-layout-cell[orientation=vertical]{flex-direction:column}</style><slot></slot></template>';
       }
     }, {
       key: 'size',
@@ -1101,9 +1098,9 @@ customElements.define('chassis-layout-cell', function () {
         return this.hasAttribute('size') ? this.getAttribute('size') : 'auto';
       },
       set: function set(val) {
-        if (!this.sizeRule) {
+        if (!_private.get(this).sizeRule) {
           return;
-        }this.sizeRule.style.setProperty('flex-basis', val); // console.log(this.sizeRule);
+        }_private.get(this).size = val;_private.get(this).sizeRule.style.setProperty('flex-basis', val);this.setAttribute('size', val);
       }
     }], [{
       key: 'observedAttributes',

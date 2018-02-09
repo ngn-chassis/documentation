@@ -1046,7 +1046,7 @@ customElements.define('chassis-layout', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', _this.templateString);
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column}:host([fullscreen]){height:100vh;max-height:100%;width:100vw;max-width:100%;overflow:auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex;flex-direction:column}chassis-layout[fullscreen]{height:100vh;max-height:100%;width:100vw;max-width:100%;overflow:auto}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -1059,7 +1059,6 @@ customElements.define('chassis-layout', function () {
       }
 
       template = null;
-
       _this.crypto = null;
 
       try {
@@ -1073,11 +1072,6 @@ customElements.define('chassis-layout', function () {
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
       value: function connectedCallback() {}
-    }, {
-      key: 'templateString',
-      get: function get() {
-        return '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column}:host([fullscreen]){height:100vh;width:100vw}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex;flex-direction:column}chassis-layout[fullscreen]{height:100vh;width:100vw}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>';
-      }
     }]);
     return _class;
   }(HTMLElement);

@@ -37,19 +37,19 @@
 
 	&.example {
 		display: block;
-		@chassis inline-block-layout multi-line no-margin-right;
+		@chassis apply inline-block padding margin-bottom;
 	}
 }
 
 & .example {
 	& code {
 		display: block;
-		@chassis inline-block-layout multi-line no-margin;
+		@chassis apply inline-block padding;
 		border-radius: .236em .236em 0 0;
 	}
 
 	& .output {
-		@chassis inline-block-layout multi-line no-margin;
+		@chassis apply inline-block padding;
 		border: 1px solid var(--grey-n01);
 		border-top: 0;
 		border-radius: 0 0 .236em .236em;

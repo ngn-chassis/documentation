@@ -7,4 +7,9 @@
   @chassis import components;
   @chassis import overrides;
   @chassis import layout;
+
+  & .ibl {
+    background: var(--blue);
+    @chassis apply inline-block;
+  }
 }

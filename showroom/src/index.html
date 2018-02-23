@@ -9,16 +9,12 @@
 
     <link rel="stylesheet" href="/css/main.css">
 
-    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
-    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
+    <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
 
-    <script src="webcomponents/chassis-control.js"></script>
-    <script src="webcomponents/chassis-select.js"></script>
-    <script src="webcomponents/chassis-select-title.js"></script>
-    <script src="webcomponents/chassis-options.js"></script>
-    <script src="webcomponents/chassis-option.js"></script>
-    <script src="webcomponents/chassis-optgroup.js"></script>
-    <script src="webcomponents/chassis-optgroup-label.js"></script>
+    <script src="webcomponents/chassis-control-es5.js"></script>
+    <script src="webcomponents/chassis-select-es5.js"></script>
+    <script src="webcomponents/chassis-datalist-es5.js"></script>
   </head>
 
   <body class="showroom">
@@ -53,6 +49,20 @@
       </aside>
 
       <div class="content">
+        <section>
+          <chassis-control>
+            <label>Datalist</label>
+            <input type="text" list="list" name="">
+            <datalist id="list">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </datalist>
+          </chassis-control>
+        </section>
+
         <section>
           <div class="ibl">
             Inline Block test
@@ -525,6 +535,8 @@
         window.select = document.getElementById('select_menu').input
 
         window.select2 = document.getElementById('select_test')
+
+        window.datalist = document.querySelector('chassis-datalist')
 
         // select.addOption({
         //   label: 'heyyy',

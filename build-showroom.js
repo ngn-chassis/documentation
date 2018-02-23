@@ -21,7 +21,9 @@ class Showroom {
 
     this.tasks.add('Clean', (next) => this.clean)
 
-    this.tasks.on('stepcomplete', ())
+    this.tasks.on('stepcomplete', () => {
+      
+    })
   }
 
   build () {

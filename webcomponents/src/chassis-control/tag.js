@@ -65,18 +65,20 @@ class ChassisFormControl extends HTMLElement {
   }
 
   connectedCallback () {
-    this._guid = this._generateGuid()
+    this._guid = _private.get(this).generateGuid()
 
     setTimeout(() => {
       let label = this.querySelector('label')
       let input = this.querySelector('input')
       let textarea = this.querySelector('textarea')
       let select = this.querySelector('select')
+      let datalist = this.querySelector('datalist')
 
       label && this._initLabel(label)
       input && this._initInput(input)
       textarea && this._initInput(textarea)
       select && this._initSelectMenu(select)
+      datalist && this._initDatalist(datalist)
     })
   }
 
@@ -104,6 +106,10 @@ class ChassisFormControl extends HTMLElement {
     this.label = label
     label.slot = label.slot || 'label'
     label.htmlFor = this._guid
+  }
+
+  _initDatalist (datalist) {
+    console.log(datalist);
   }
 
   _initSelectMenu (select) {

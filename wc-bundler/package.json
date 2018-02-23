@@ -1,0 +1,18 @@
+{
+  "name": "wc-bundler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "bundle-webcomponent": "cli.js"
+  },
+  "author": "Graham Butler",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "fs-extra": "^5.0.0",
+    "yargs": "^11.0.0"
+  }
+}

@@ -5,11 +5,10 @@
   "main": "build-showroom.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../.. && build-webcomponent webcomponents/src/chassis-control webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-select webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-option webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-select-title webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-options webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup-label webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup-label webcomponents/dist --es5 && gulp build",
-    "build2": "build-webcomponent webcomponents/src/chassis-layout webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-layout-cell webcomponents/dist --es5 && gulp build"
-  },
-  "bin": {
-    "build-showroom": "build-showroom.js"
+    "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
+    "build-webcomponents": "build-webcomponents webcomponents/src webcomponents/dist --es5",
+    "bundle-webcomponents": "bundle-webcomponent --name=chassis-select --components=chassis-select-title,chassis-options,chassis-option,chassis-optgroup,chassis-optgroup-label,chassis-select --dir=webcomponents/dist && bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist",
+    "build": "npm run link-chassis && npm run build-webcomponents && npm run bundle-webcomponents && gulp build"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",
@@ -26,6 +25,8 @@
     "postcss-selector-not": "^3.0.1"
   },
   "devDependencies": {
-    "babel-plugin-transform-runtime": "^6.23.0"
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "productionline": "^1.0.7",
+    "shortbus": "^1.2.8"
   }
 }

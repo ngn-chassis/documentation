@@ -2,7 +2,7 @@ class ChassisFormControl extends HTMLElement {
   constructor () {
     super()
 
-    this.fieldInputTypes = [
+    _private.get(this).fieldInputTypes = [
       'color',
       'date',
       'datetime-local',
@@ -25,18 +25,115 @@ class ChassisFormControl extends HTMLElement {
       'textarea'
     ]
 
-    this.toggleInputTypes = [
+    _private.get(this).toggleInputTypes = [
       'checkbox',
       'radio'
     ]
 
-    this.supportedTypes = [
+    _private.get(this).supportedTypes = [
       'field',
       'toggle',
       'select'
     ]
 
-    this._input = null
+    _private.get(this).input = null
+
+    _private.get(this).initDatalist = (input, datalist) => {
+      this.type = 'field'
+
+      if (!customElements.get('chassis-datalist')) {
+        // Setup defaults
+        return
+      }
+
+      let placeholder = document.createElement('chassis-datalist')
+      placeholder.slot = 'input'
+
+      for (let attr of datalist.attributes) {
+        if (attr.specified) {
+          placeholder.setAttribute(attr.name, attr.value)
+
+          if (attr.name === 'autofocus') {
+            datalist.removeAttribute(attr.name)
+          }
+        }
+      }
+
+      this.removeChild(datalist)
+      this.removeChild(input)
+
+      placeholder.inject(input, datalist, _private.get(this).guid)
+      this.appendChild(placeholder)
+      _private.get(this).input = placeholder
+    }
+
+    _private.get(this).initInput = (input) => {
+      input.slot = input.slot || 'input'
+      _private.get(this).input = input
+      input.id = _private.get(this).guid
+
+      if (_private.get(this).fieldInputTypes.indexOf(input.type) >= 0) {
+        this.type = 'field'
+      }
+
+      if (_private.get(this).toggleInputTypes.indexOf(input.type) >= 0) {
+        this.type = 'toggle'
+      }
+    }
+
+    _private.get(this).initLabel = (label) => {
+      this.label = label
+      label.slot = label.slot || 'label'
+      label.htmlFor = _private.get(this).guid
+
+      if (this.type === 'select') {
+        this.label.addEventListener('click', (evt) => {
+          this.input.focus()
+        })
+      }
+    }
+
+    _private.get(this).initSelectMenu = (select) => {
+      this.type = 'select'
+
+      if (!customElements.get('chassis-select')) {
+        select.id = _private.get(this).guid
+        select.slot = select.slot || 'input'
+        select.setAttribute('role', 'menu')
+        _private.get(this).input = select
+
+        let titleEls = select.querySelectorAll('option[title]')
+        titleEls.forEach((el) => select.removeChild(el))
+
+        for (let option of select.options) {
+          if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
+            option.removeAttribute('label')
+          }
+        }
+
+        return
+      }
+
+      let placeholder = document.createElement('chassis-select')
+      placeholder.slot = 'input'
+      placeholder.id = _private.get(this).guid
+
+      for (let attr of select.attributes) {
+        if (attr.specified) {
+          placeholder.setAttribute(attr.name, attr.value)
+
+          if (attr.name === 'autofocus') {
+            select.removeAttribute(attr.name)
+          }
+        }
+      }
+
+      this.removeChild(select)
+
+      placeholder.inject(select)
+      this.appendChild(placeholder)
+      _private.get(this).input = placeholder
+    }
   }
 
   static get observedAttributes () {
@@ -44,16 +141,16 @@ class ChassisFormControl extends HTMLElement {
   }
 
   get input () {
-    return this._input
+    return _private.get(this).input
   }
 
   set input (input) {
-    if (this._input) {
+    if (this.input) {
       console.warn(`Setting <chassis-control> child input programmatically is not allowed.`)
       return
     }
 
-    this._input = input
+    _private.get(this).input = input
   }
 
   get type () {
@@ -65,7 +162,7 @@ class ChassisFormControl extends HTMLElement {
   }
 
   connectedCallback () {
-    this._guid = _private.get(this).generateGuid()
+    _private.get(this).guid = _private.get(this).generateGuid('control')
 
     setTimeout(() => {
       let label = this.querySelector('label')
@@ -74,83 +171,19 @@ class ChassisFormControl extends HTMLElement {
       let select = this.querySelector('select')
       let datalist = this.querySelector('datalist')
 
-      label && this._initLabel(label)
-      input && this._initInput(input)
-      textarea && this._initInput(textarea)
-      select && this._initSelectMenu(select)
-      datalist && this._initDatalist(datalist)
+      textarea && _private.get(this).initInput(textarea)
+      select && _private.get(this).initSelectMenu(select)
+
+      if (input) {
+        if (datalist) {
+          _private.get(this).initDatalist(input, datalist)
+        } else {
+          _private.get(this).initInput(input)
+        }
+      }
+
+      label && _private.get(this).initLabel(label)
     })
-  }
-
-  _generateGuid (prefix = 'input') {
-    return `${prefix}_` + ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    )
-  }
-
-  _initInput (input) {
-    input.slot = input.slot || 'input'
-    this._input = input
-    input.id = this._guid
-
-    if (this.fieldInputTypes.indexOf(input.type) >= 0) {
-      this.type = 'field'
-    }
-
-    if (this.toggleInputTypes.indexOf(input.type) >= 0) {
-      this.type = 'toggle'
-    }
-  }
-
-  _initLabel (label) {
-    this.label = label
-    label.slot = label.slot || 'label'
-    label.htmlFor = this._guid
-  }
-
-  _initDatalist (datalist) {
-    console.log(datalist);
-  }
-
-  _initSelectMenu (select) {
-    this.type = 'select'
-
-    if (!customElements.get('chassis-select')) {
-      select.id = this._guid
-      select.slot = select.slot || 'input'
-      select.setAttribute('role', 'menu')
-      this._input = select
-
-      let titleEls = select.querySelectorAll('option[title]')
-      titleEls.forEach((el) => select.removeChild(el))
-
-      for (let option of select.options) {
-        if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
-          option.removeAttribute('label')
-        }
-      }
-
-      return
-    }
-
-    let placeholder = document.createElement('chassis-select')
-    placeholder.slot = 'input'
-
-    for (let attr of select.attributes) {
-      if (attr.specified) {
-        placeholder.setAttribute(attr.name, attr.value)
-
-        if (attr.name === 'autofocus') {
-          select.removeAttribute(attr.name)
-        }
-      }
-    }
-
-    this.removeChild(select)
-
-    placeholder.inject(select)
-    this.appendChild(placeholder)
-    this._input = placeholder
   }
 }
 

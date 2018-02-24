@@ -9,12 +9,12 @@
 
     <link rel="stylesheet" href="/css/main.css">
 
-    <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
-    <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
+    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
 
-    <script src="webcomponents/chassis-control-es5.js"></script>
-    <script src="webcomponents/chassis-select-es5.js"></script>
-    <script src="webcomponents/chassis-datalist-es5.js"></script>
+    <script src="webcomponents/chassis-control.js"></script>
+    <script src="webcomponents/chassis-select.js"></script>
+    <script src="webcomponents/chassis-datalist.js"></script>
   </head>
 
   <body class="showroom">
@@ -52,8 +52,8 @@
         <section>
           <chassis-control>
             <label>Datalist</label>
-            <input type="text" list="list" name="">
-            <datalist id="list">
+            <input type="text">
+            <datalist>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -348,12 +348,6 @@
                 <fieldset>
                   <h4>Select Menu</h4>
 
-                  <select id="select_test">
-                    <option value="">test</option>
-                    <option value="">test2</option>
-                    <option value="">test 3</option>
-                  </select>
-
                   <chassis-control id="select_menu">
                     <label>Menu Label</label>
                     <select name="name-test">
@@ -378,27 +372,6 @@
                         <option value="test10">Grouped Option</option>
                       </optgroup>
                     </select>
-                  </chassis-control>
-
-                  <chassis-control id="custom_select">
-                    <label>Custom Select Menu</label>
-                    <chassis-select slot="input">
-                      <chassis-select-title slot="title">
-                        Custom Select Menu
-                        <span slot="beforeend">Test</span>
-                      </chassis-select-title>
-                      <chassis-options slot="options">
-                        <chassis-option>
-                          Test
-                        </chassis-option>
-                        <chassis-option>
-                          Test
-                        </chassis-option>
-                        <chassis-option>
-                          Test
-                        </chassis-option>
-                      </chassis-options>
-                    </chassis-select>
                   </chassis-control>
                 </fieldset>
 
@@ -533,8 +506,6 @@
     <script type="text/javascript">
       window.addEventListener('WebComponentsReady', function () {
         window.select = document.getElementById('select_menu').input
-
-        window.select2 = document.getElementById('select_test')
 
         window.datalist = document.querySelector('chassis-datalist')
 

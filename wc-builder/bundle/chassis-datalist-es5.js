@@ -48,7 +48,7 @@ customElements.define('chassis-datalist', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]:not([disabled*=false])){pointer-events:none}chassis-datalist{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-datalist *{box-sizing:border-box}chassis-datalist chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-datalist[open] chassis-options{height:auto}chassis-datalist[disabled]:not([disabled*=false]){pointer-events:none}</style></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]:not([disabled*=false])){pointer-events:none}chassis-datalist{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-datalist *{box-sizing:border-box}chassis-datalist chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-datalist[open] chassis-options{height:auto}chassis-datalist[disabled]:not([disabled*=false]){pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot><slot name="beforedatalist"></slot><slot name="datalist"></slot><slot name="afterdatalist"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -81,11 +81,13 @@ customElements.define('chassis-datalist', function () {
         },
 
         generateGuid: function generateGuid() {
-          var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
+          var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-          return prefix + '_' + ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+          var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
             return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
           });
+
+          return prefix ? prefix + '_' + id : id;
         },
 
         readonlyProperty: function readonlyProperty(name) {
@@ -126,7 +128,7 @@ customElements.define('chassis-datalist', function () {
       };_private.get(_this).generateOptionObject = function (optionEl) {
         if (!customElements.get('chassis-option')) {
           console.error('chassis-datalist requires chassis-option. Please include it in this document\'s <head> element.');return;
-        }var obj = { id: _private.get(_this).generateGuid(), attributes: {}, sourceElement: optionEl };var _iteratorNormalCompletion = true;
+        }var obj = { id: _private.get(_this).generateGuid('option'), attributes: {}, sourceElement: optionEl };var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
@@ -158,9 +160,7 @@ customElements.define('chassis-datalist', function () {
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
-      value: function connectedCallback() {
-        console.log(_private);
-      }
+      value: function connectedCallback() {}
     }, {
       key: 'addChildren',
       value: function addChildren(children) {
@@ -190,6 +190,33 @@ customElements.define('chassis-datalist', function () {
         }
       }
     }, {
+      key: 'addOption',
+      value: function addOption(option, index) {
+        var _this2 = this;
+
+        var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
+
+        if (!customElements.get('chassis-option')) {
+          console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
+        }if (!option.hasOwnProperty('id')) {
+          option.id = _private.get(this).generateGuid('option');
+        }if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
+          var sourceEl = document.createElement('option');if (option.hasOwnProperty('innerHTML')) {
+            sourceEl.innerHTML = option.innerHTML;
+          }if (option.hasOwnProperty('label')) {
+            sourceEl.innerHTML = option.label;
+          }if (option.hasOwnProperty('value')) {
+            sourceEl.value = option.value;
+          }if (option.hasOwnProperty('disabled')) {
+            sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
+          }option.sourceElement = sourceEl;
+        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
+          return _this2.select(chassisOption.key);
+        });option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
+          this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);return;
+        }this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);
+      }
+    }, {
       key: 'attributeChangedCallback',
       value: function attributeChangedCallback(attr, oldValue, newValue) {
         attr = attr.toLowerCase();if (newValue === oldValue) {
@@ -202,8 +229,8 @@ customElements.define('chassis-datalist', function () {
       }
     }, {
       key: 'inject',
-      value: function inject(datalist) {
-        _private.get(this).sourceEl = datalist;_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(datalist.options);
+      value: function inject(input, datalist, guid) {
+        _private.get(this).sourceEl = datalist;_private.get(this).inputEl = input;_private.get(this).inputEl.slot = 'input';_private.get(this).inputEl.id = guid;this.appendChild(_private.get(this).inputEl);_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(datalist.options);
       }
     }], [{
       key: 'observedAttributes',

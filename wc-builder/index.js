@@ -203,6 +203,7 @@ module.exports = class {
 
     let outputClassExpression = parsed.program.body[0].expression.arguments[1].callee.body.body[1].argument
 
+
     // let inputConstructor = inputClassDecl.body.body.find((node) => {
     //   return node.key.name === 'constructor'
     // })

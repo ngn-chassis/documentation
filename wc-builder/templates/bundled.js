@@ -38,10 +38,12 @@ customElements.define('{{TAG-NAME}}', (function () {
           props.forEach((prop) => _private.get(this).addReadOnlyProp(prop))
         },
 
-        generateGuid: (prefix = 'option') => {
-          return `${prefix}_` + ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-            (c ^ this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-          )
+        generateGuid: (prefix = null) => {
+          let id = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => {
+            return (c ^ this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+          })
+
+          return prefix ? `${prefix}_${id}` : id
         },
 
         readonlyProperty: (name) => ({

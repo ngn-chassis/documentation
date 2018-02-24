@@ -81,11 +81,13 @@ customElements.define('chassis-control', function () {
         },
 
         generateGuid: function generateGuid() {
-          var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
+          var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-          return prefix + '_' + ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+          var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
             return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
           });
+
+          return prefix ? prefix + '_' + id : id;
         },
 
         readonlyProperty: function readonlyProperty(name) {
@@ -114,90 +116,91 @@ customElements.define('chassis-control', function () {
           console.error(message);
         }
       });
-      _this.fieldInputTypes = ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'];_this.toggleInputTypes = ['checkbox', 'radio'];_this.supportedTypes = ['field', 'toggle', 'select'];_this._input = null;
-      return _this;
-    }
+      _private.get(_this).fieldInputTypes = ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'];_private.get(_this).toggleInputTypes = ['checkbox', 'radio'];_private.get(_this).supportedTypes = ['field', 'toggle', 'select'];_private.get(_this).input = null;_private.get(_this).initDatalist = function (input, datalist) {
+        _this.type = 'field';if (!customElements.get('chassis-datalist')) {
+          // Setup defaults
+          return;
+        }var placeholder = document.createElement('chassis-datalist');placeholder.slot = 'input';var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-    (0, _createClass3.default)(_class, [{
-      key: 'connectedCallback',
-      value: function connectedCallback() {
-        var _this2 = this;
+        try {
+          for (var _iterator = (0, _getIterator3.default)(datalist.attributes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var attr = _step.value;
 
-        this._guid = _private.get(this).generateGuid();setTimeout(function () {
-          var label = _this2.querySelector('label');var input = _this2.querySelector('input');var textarea = _this2.querySelector('textarea');var select = _this2.querySelector('select');var datalist = _this2.querySelector('datalist');label && _this2._initLabel(label);input && _this2._initInput(input);textarea && _this2._initInput(textarea);select && _this2._initSelectMenu(select);datalist && _this2._initDatalist(datalist);
-        });
-      }
-    }, {
-      key: '_generateGuid',
-      value: function _generateGuid() {
-        var _this3 = this;
-
-        var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'input';
-
-        return prefix + '_' + ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-          return (c ^ _this3.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
-        });
-      }
-    }, {
-      key: '_initInput',
-      value: function _initInput(input) {
-        input.slot = input.slot || 'input';this._input = input;input.id = this._guid;if (this.fieldInputTypes.indexOf(input.type) >= 0) {
-          this.type = 'field';
-        }if (this.toggleInputTypes.indexOf(input.type) >= 0) {
-          this.type = 'toggle';
+            if (attr.specified) {
+              placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
+                datalist.removeAttribute(attr.name);
+              }
+            }
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
         }
-      }
-    }, {
-      key: '_initLabel',
-      value: function _initLabel(label) {
-        this.label = label;label.slot = label.slot || 'label';label.htmlFor = this._guid;
-      }
-    }, {
-      key: '_initDatalist',
-      value: function _initDatalist(datalist) {
-        console.log(datalist);
-      }
-    }, {
-      key: '_initSelectMenu',
-      value: function _initSelectMenu(select) {
-        this.type = 'select';if (!customElements.get('chassis-select')) {
-          select.id = this._guid;select.slot = select.slot || 'input';select.setAttribute('role', 'menu');this._input = select;var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
+
+        _this.removeChild(datalist);_this.removeChild(input);placeholder.inject(input, datalist, _private.get(_this).guid);_this.appendChild(placeholder);_private.get(_this).input = placeholder;
+      };_private.get(_this).initInput = function (input) {
+        input.slot = input.slot || 'input';_private.get(_this).input = input;input.id = _private.get(_this).guid;if (_private.get(_this).fieldInputTypes.indexOf(input.type) >= 0) {
+          _this.type = 'field';
+        }if (_private.get(_this).toggleInputTypes.indexOf(input.type) >= 0) {
+          _this.type = 'toggle';
+        }
+      };_private.get(_this).initLabel = function (label) {
+        _this.label = label;label.slot = label.slot || 'label';label.htmlFor = _private.get(_this).guid;if (_this.type === 'select') {
+          _this.label.addEventListener('click', function (evt) {
+            _this.input.focus();
+          });
+        }
+      };_private.get(_this).initSelectMenu = function (select) {
+        _this.type = 'select';if (!customElements.get('chassis-select')) {
+          select.id = _private.get(_this).guid;select.slot = select.slot || 'input';select.setAttribute('role', 'menu');_private.get(_this).input = select;var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
             return select.removeChild(el);
-          });var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+          });var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
 
           try {
-            for (var _iterator = (0, _getIterator3.default)(select.options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var option = _step.value;
+            for (var _iterator2 = (0, _getIterator3.default)(select.options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var option = _step2.value;
 
               if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
                 option.removeAttribute('label');
               }
             }
           } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
               }
             } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
+              if (_didIteratorError2) {
+                throw _iteratorError2;
               }
             }
           }
 
           return;
-        }var placeholder = document.createElement('chassis-select');placeholder.slot = 'input';var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+        }var placeholder = document.createElement('chassis-select');placeholder.slot = 'input';placeholder.id = _private.get(_this).guid;var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
         try {
-          for (var _iterator2 = (0, _getIterator3.default)(select.attributes), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var attr = _step2.value;
+          for (var _iterator3 = (0, _getIterator3.default)(select.attributes), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var attr = _step3.value;
 
             if (attr.specified) {
               placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
@@ -206,31 +209,49 @@ customElements.define('chassis-control', function () {
             }
           }
         } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
             }
           } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
+            if (_didIteratorError3) {
+              throw _iteratorError3;
             }
           }
         }
 
-        this.removeChild(select);placeholder.inject(select);this.appendChild(placeholder);this._input = placeholder;
+        _this.removeChild(select);placeholder.inject(select);_this.appendChild(placeholder);_private.get(_this).input = placeholder;
+      };
+      return _this;
+    }
+
+    (0, _createClass3.default)(_class, [{
+      key: 'connectedCallback',
+      value: function connectedCallback() {
+        var _this2 = this;
+
+        _private.get(this).guid = _private.get(this).generateGuid('control');setTimeout(function () {
+          var label = _this2.querySelector('label');var input = _this2.querySelector('input');var textarea = _this2.querySelector('textarea');var select = _this2.querySelector('select');var datalist = _this2.querySelector('datalist');textarea && _private.get(_this2).initInput(textarea);select && _private.get(_this2).initSelectMenu(select);if (input) {
+            if (datalist) {
+              _private.get(_this2).initDatalist(input, datalist);
+            } else {
+              _private.get(_this2).initInput(input);
+            }
+          }label && _private.get(_this2).initLabel(label);
+        });
       }
     }, {
       key: 'input',
       get: function get() {
-        return this._input;
+        return _private.get(this).input;
       },
       set: function set(input) {
-        if (this._input) {
+        if (this.input) {
           console.warn('Setting <chassis-control> child input programmatically is not allowed.');return;
-        }this._input = input;
+        }_private.get(this).input = input;
       }
     }, {
       key: 'type',

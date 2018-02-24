@@ -77,11 +77,13 @@ customElements.define('chassis-optgroup', function () {
         },
 
         generateGuid: function generateGuid() {
-          var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'option';
+          var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-          return prefix + '_' + ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+          var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
             return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
           });
+
+          return prefix ? prefix + '_' + id : id;
         },
 
         readonlyProperty: function readonlyProperty(name) {

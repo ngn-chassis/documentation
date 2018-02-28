@@ -1,3 +1,21 @@
+media queries
+- Add calc function, ie:
+
+buttons
+- remove side margin. let user decide which side to put it on using @chassis apply
+
+@chassis viewport-width < calc(medium + 200px)
+
+^ This should get the value of medium and add 200px to it. It should
+ideally be able to calculate different units as well, if possible.
+
+New Features
+--------------------
+- Add eval() function for math preprocessing
+- Add vars for things like "button-box-model" so that display properties can be
+  reset automatically
+
+
 chassis-select
 - Add focus
 - "label" attribute should override innerHTML as this is

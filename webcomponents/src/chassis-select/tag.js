@@ -18,13 +18,15 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).selectedOption = null
 
     _private.get(this).arrowKeydownHandler = (evt) => {
-      switch (evt.keyCode) {
+      switch (evt[this.keySource]) {
         case 38:
+        case 'ArrowUp':
           evt.preventDefault()
           console.log('select previous option');
           break
 
         case 40:
+        case 'ArrowDown':
           evt.preventDefault()
           console.log('select next option');
           break
@@ -397,6 +399,10 @@ class ChassisSelect extends HTMLElement {
     }
   }
 
+  /**
+   * [select description]
+   * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
+   */
   select (id) {
     let option = _private.get(this).getOptionById(id)
 
@@ -407,6 +413,10 @@ class ChassisSelect extends HTMLElement {
 
       _private.get(this).options.forEach((option) => option.displayElement.removeAttribute('selected'))
       option.displayElement.setAttribute('selected', '')
+
+      this.dispatchEvent(new Event('change', {
+        bubbles: true
+      }))
     }
   }
 

@@ -1,6 +1,10 @@
 @chassis init;
 @chassis include all;
 
+:root {
+  --test: 3;
+}
+
 .showroom {
   transition: all ease-in-out .382s;
 
@@ -11,5 +15,7 @@
   & .ibl {
     background: var(--blue);
     @chassis apply inline-block;
+
+    @chassis z-index max;
   }
 }

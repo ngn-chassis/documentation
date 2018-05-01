@@ -9,12 +9,12 @@
 
     <link rel="stylesheet" href="/css/main.css">
 
-    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
-    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
+    <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
 
-    <script src="webcomponents/chassis-control.js"></script>
-    <script src="webcomponents/chassis-select.js"></script>
-    <script src="webcomponents/chassis-datalist.js"></script>
+    <script src="webcomponents/chassis-control-es5.js"></script>
+    <script src="webcomponents/chassis-select-es5.js"></script>
+    <script src="webcomponents/chassis-datalist-es5.js"></script>
   </head>
 
   <body class="showroom">
@@ -50,17 +50,27 @@
 
       <div class="content">
         <section>
-          <chassis-control>
-            <label>Datalist</label>
-            <input type="text">
+          <chassis-control id="datalist">
+            <label>Chassis Datalist</label>
+            <input type="text" placeholder="Enter your search query">
             <datalist>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
+              <option value="1">Test Heyyy</option>
+              <option value="2">Uh Huhhhh</option>
+              <option value="3">Wuuuuut</option>
+              <option value="4">Awww yeeaaaa</option>
+              <option value="5">You know it</option>
             </datalist>
           </chassis-control>
+
+          <label for="heyyy">Regular Datalist</label>
+          <input list="testssss" id="heyyy" type="text">
+          <datalist id="testssss">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </datalist>
         </section>
 
         <section>
@@ -504,10 +514,23 @@
     </footer>
 
     <script type="text/javascript">
-      window.addEventListener('WebComponentsReady', function () {
-        window.select = document.getElementById('select_menu').input
+      window.addEventListener('DOMContentLoaded', function () {
+        var old = document.getElementById('heyyy')
 
-        window.datalist = document.querySelector('chassis-datalist')
+        console.log(old);
+
+        old.addEventListener('input', function (evt) {
+          console.log('hey');
+          console.log(this.value);
+        })
+      })
+
+      document.addEventListener('WebComponentsReady', function () {
+        var datalist = document.getElementById('datalist')
+
+        datalist.input.addEventListener('input', function (evt) {
+          console.log(evt.target.value);
+        })
 
         // select.addOption({
         //   label: 'heyyy',

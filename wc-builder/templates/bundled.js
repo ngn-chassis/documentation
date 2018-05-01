@@ -5,6 +5,8 @@ customElements.define('{{TAG-NAME}}', (function () {
     constructor () {
       super()
 
+      this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : ('keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode')
+
       this.attachShadow({mode: 'open'})
 
       let container = document.createElement('div')

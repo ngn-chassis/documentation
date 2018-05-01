@@ -1053,6 +1053,8 @@ customElements.define('chassis-option', function () {
 
       var _this = (0, _possibleConstructorReturn3.default)(this, (_class.__proto__ || (0, _getPrototypeOf2.default)(_class)).call(this));
 
+      _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
+
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');

@@ -2,18 +2,32 @@ class ChassisDatalist extends HTMLElement {
   constructor () {
     super()
 
+    this.value = null
+
     _private.get(this).addReadOnlyProp('options')
 
     _private.get(this).options = []
 
-    _private.get(this).arrowKeydownHandler = (evt) => {
-      switch (evt.keyCode) {
+    _private.get(this).find = query => {
+      return _private.get(this).options.filter(option => {
+        return option.sourceElement.value.indexOf(query) >= 0 || option.sourceElement.text.indexOf(query) >= 0
+      })
+    }
+
+    _private.get(this).clear = () => {
+      _private.get(this).options.forEach(option => option.displayElement.style.display = 'none')
+    }
+
+    _private.get(this).arrowKeydownHandler = evt => {
+      switch (evt[this.keySource]) {
         case 38:
+        case 'ArrowUp':
           evt.preventDefault()
           console.log('select previous option');
           break
 
         case 40:
+        case 'ArrowDown':
           evt.preventDefault()
           console.log('select next option');
           break
@@ -23,7 +37,35 @@ class ChassisDatalist extends HTMLElement {
       }
     }
 
-    _private.get(this).bodyClickHandler = (evt) => {
+    _private.get(this).inputHandler = evt => {
+      _private.get(this).clear()
+      let query = _private.get(this).inputEl.value
+
+      if (!query) {
+        return
+      }
+
+
+      let results = _private.get(this).find(query)
+
+      if (results.length) {
+        results.forEach(result => result.displayElement.style.display = '')
+        this.setAttribute('open', '')
+        return
+      }
+
+      if (this.hasAttribute('open')) {
+        this.removeAttribute('open')
+      }
+
+      _private.get(this).clear()
+
+      // this.dispatchEvent(new CustomEvent('change', {
+      //   bubbles: true
+      // }))
+    }
+
+    _private.get(this).bodyClickHandler = evt => {
       if (evt.target === this || this.contains(evt.target)) {
         return
       }
@@ -31,7 +73,21 @@ class ChassisDatalist extends HTMLElement {
       this.removeAttribute('open')
     }
 
-    _private.get(this).generateOptionObject = (optionEl) => {
+    _private.get(this).getOptionById = (id) => {
+      let options = _private.get(this).options
+      let option
+
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].id === id) {
+          option = options[i]
+          break
+        }
+      }
+
+      return option
+    }
+
+    _private.get(this).generateOptionObject = optionEl => {
       if (!customElements.get('chassis-option')) {
         console.error(`chassis-datalist requires chassis-option. Please include it in this document's <head> element.`)
         return
@@ -52,11 +108,37 @@ class ChassisDatalist extends HTMLElement {
   }
 
   static get observedAttributes () {
-    return ['autofocus', 'disabled', 'name', 'tabindex']
+    return ['autofocus', 'disabled', 'name', 'open', 'tabindex']
+  }
+
+  get isOpen () {
+    return this.hasAttribute('open')
+  }
+
+  set isOpen (bool) {
+    bool ? this.setAttribute('open', '') : this.removeAttribute('open')
   }
 
   connectedCallback () {
+    _private.get(this).inputEl.addEventListener('focus', evt => {
+      this.addEventListener('input', _private.get(this).inputHandler)
+      this.addEventListener('keydown', _private.get(this).arrowKeydownHandler)
+    })
 
+    this.addEventListener('blur', evt => {
+      this.removeEventListener('input', _private.get(this).inputHandler)
+      this.removeEventListener('keydown', _private.get(this).arrowKeydownHandler)
+    })
+
+    setTimeout(() => {
+      if (!this.hasAttribute('tabindex')) {
+        this.setAttribute('tabindex', 0)
+      }
+
+      if (this.autofocus) {
+        this.focus()
+      }
+    }, 0)
   }
 
   addChildren (children) {
@@ -102,11 +184,12 @@ class ChassisDatalist extends HTMLElement {
     let disabled = option.sourceElement.disabled
     let chassisOption = document.createElement('chassis-option')
 
+    chassisOption.style.display = 'none'
     chassisOption.key = option.id
     chassisOption.innerHTML = option.sourceElement.innerHTML
 
     dest.appendChild(chassisOption)
-    chassisOption.addEventListener('click', (evt) => this.select(chassisOption.key))
+    chassisOption.addEventListener('click', evt => this.select(chassisOption.key))
 
     option = {
       attributes: { disabled, label, value },
@@ -143,12 +226,35 @@ class ChassisDatalist extends HTMLElement {
         console.log(attr);
         // _private.get(this).handleAttributeChange(attr, newValue)
         break
+
+      case 'open':
+        this.isOpen ? this.open() : this.close()
+        break
+    }
+  }
+
+  close () {
+    document.body.removeEventListener('click', _private.get(this).bodyClickHandler)
+    document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler)
+    document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler)
+
+    if (this.isOpen) {
+      this.isOpen = false
+    }
+  }
+
+  open () {
+    document.body.addEventListener('click', _private.get(this).bodyClickHandler)
+    document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler)
+    document.body.addEventListener('touchend', _private.get(this).bodyClickHandler)
+
+    if (!this.isOpen) {
+      this.isOpen = true
     }
   }
 
   inject (input, datalist, guid) {
     _private.get(this).sourceEl = datalist
-
     _private.get(this).inputEl = input
     _private.get(this).inputEl.slot = 'input'
     _private.get(this).inputEl.id = guid
@@ -160,6 +266,26 @@ class ChassisDatalist extends HTMLElement {
     this.appendChild(_private.get(this).optionsEl)
 
     this.addChildren(datalist.options)
+  }
+
+  select (id) {
+    let option = _private.get(this).getOptionById(id)
+
+    if (option) {
+      option.sourceElement.selected = true
+      _private.get(this).inputEl.value = option.displayElement.innerHTML
+      _private.get(this).selectedOption = option
+
+      _private.get(this).options.forEach(option => option.displayElement.removeAttribute('selected'))
+      option.displayElement.setAttribute('selected', '')
+
+      this.value = _private.get(this).inputEl.value
+      this.dispatchEvent(new Event('input', {
+        bubbles: true
+      }))
+
+      this.close()
+    }
   }
 }
 

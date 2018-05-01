@@ -45,10 +45,12 @@ customElements.define('chassis-select', function () {
 
       var _this = (0, _possibleConstructorReturn3.default)(this, (_class.__proto__ || (0, _getPrototypeOf2.default)(_class)).call(this));
 
+      _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
+
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]:not([disabled*=false])){pointer-events:none}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}chassis-select[disabled]:not([disabled*=false]){pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -117,8 +119,8 @@ customElements.define('chassis-select', function () {
         }
       });
       _private.get(_this).addReadOnlyProps(['form', 'labels', 'options', 'willValidate', 'selectedOptions', 'type', 'validationMessage', 'validity']);_private.get(_this).options = [];_private.get(_this).title = '';_private.get(_this).selectedOption = null;_private.get(_this).arrowKeydownHandler = function (evt) {
-        switch (evt.keyCode) {case 38:
-            evt.preventDefault();console.log('select previous option');break;case 40:
+        switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
+            evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
             evt.preventDefault();console.log('select next option');break;default:
             return;}
       };_private.get(_this).bodyClickHandler = function (evt) {
@@ -336,14 +338,17 @@ customElements.define('chassis-select', function () {
         document.body.addEventListener('click', _private.get(this).bodyClickHandler);document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.addEventListener('touchend', _private.get(this).bodyClickHandler);if (!this.isOpen) {
           this.isOpen = true;
         }
-      }
+      } /**
+         * [select description]
+         * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
+         */
     }, {
       key: 'select',
       value: function select(id) {
         var option = _private.get(this).getOptionById(id);if (option) {
           option.sourceElement.selected = true;_private.get(this).titleEl.title = option.displayElement.innerHTML;_private.get(this).selectedOption = option;_private.get(this).options.forEach(function (option) {
             return option.displayElement.removeAttribute('selected');
-          });option.displayElement.setAttribute('selected', '');
+          });option.displayElement.setAttribute('selected', '');this.dispatchEvent(new Event('change', { bubbles: true }));
         }
       }
     }, {

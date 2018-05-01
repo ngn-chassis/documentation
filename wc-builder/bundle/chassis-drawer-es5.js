@@ -30,7 +30,7 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-customElements.define('nkx-table', function () {
+customElements.define('chassis-drawer', function () {
   var _private = new _weakMap2.default();
 
   return function (_HTMLElement) {
@@ -46,7 +46,7 @@ customElements.define('nkx-table', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";</style><slot></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column}:host *,:host :after,:host :before{box-sizing:border-box}chassis-drawer{display:flex;flex-direction:column}:host :after,:host :before,chassis-drawer *{box-sizing:border-box}</style></template>');
 
       var template = container.querySelector('template');
 
@@ -120,54 +120,7 @@ customElements.define('nkx-table', function () {
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
       value: function connectedCallback() {
-        this._table = document.createElement('table');this._thead = document.createElement('thead');this._tbody = document.createElement('tbody');this._table.appendChild(this._thead);this._table.appendChild(this._tbody);this.appendChild(this._table);
-      }
-    }, {
-      key: 'attributeChangedCallback',
-      value: function attributeChangedCallback(attr, oldValue, newValue) {
-        switch (attr.toLowerCase()) {case 'max-length':
-            console.log("Max Length: " + newValue);break;default:
-            return;}
-      }
-    }, {
-      key: '_addHeader',
-      value: function _addHeader(tr, label) {
-        var th = document.createElement('th');th.insertAdjacentHTML('beforeend', label);tr.appendChild(th);
-      }
-    }, {
-      key: '_addRow',
-      value: function _addRow(data) {
-        var tr = document.createElement('tr');this._headers.forEach(function (label) {
-          var td = document.createElement('td');td.innerHTML = data[label];tr.appendChild(td);
-        });this._tbody.appendChild(tr);
-      }
-    }, {
-      key: 'render',
-      value: function render(data) {
-        var _this2 = this;
-
-        this._headers = data.headers;this._rows = data.rows;if (data.hasOwnProperty('headers')) {
-          var tr = document.createElement('tr');this._headers.forEach(function (label) {
-            return _this2._addHeader(tr, label);
-          });this._thead.appendChild(tr);
-        }this._rows.forEach(function (row) {
-          return _this2._addRow(row);
-        });
-      }
-    }, {
-      key: 'headers',
-      get: function get() {
-        return this._headers;
-      }
-    }, {
-      key: 'rows',
-      get: function get() {
-        return this._rows;
-      }
-    }], [{
-      key: 'observedAttributes',
-      get: function get() {
-        return ['max-length', 'sort-key', 'sort-order'];
+        console.log('init chassis-drawer');
       }
     }]);
     return _class;

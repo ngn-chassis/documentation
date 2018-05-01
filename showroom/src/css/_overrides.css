@@ -24,7 +24,7 @@
 			overflow: hidden;
 
 			background: color(var(--grey-n00) alpha(61.8%));
-			border: 1px solid var(--grey-n01);
+			box-shadow: inset 0 0 0 1px var(--grey-n01);
 			border-radius: .236em;
 
 			font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;

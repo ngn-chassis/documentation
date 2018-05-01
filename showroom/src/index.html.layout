@@ -14,7 +14,6 @@
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
 
     <script src="webcomponents/chassis-layout.js"></script>
-    <script src="webcomponents/chassis-layout-cell.js"></script>
   </head>
 
   <body class="layout showroom">

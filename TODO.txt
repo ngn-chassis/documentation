@@ -1,23 +1,47 @@
+* === done
+
+Math Functions:
+-Support nested functions and vars
+
+Add vars:
+--inline-block-margin-x
+--inline-block-margin-y
+--inline-block-padding-x
+--inline-block-padding-y
+
+^ this will allow the values to be used for properties other than margin or padding (ie borders or shadows)
+
+class namespacing needs to handle class names added to the html tag. For example, right now,
+
+<html class="project">
+
+will be namespaced "chassis .project". It needs to be ".chassis.project"
+
+consider adding a config option for namespace class. Instead of using "chassis" and forcing the
+dev to add that class to the html tag, maybe make it customizable
+
+------------------
+
 media queries
 - Add calc function, ie:
-
-buttons
-- remove side margin. let user decide which side to put it on using @chassis apply
 
 @chassis viewport-width < calc(medium + 200px)
 
 ^ This should get the value of medium and add 200px to it. It should
 ideally be able to calculate different units as well, if possible.
 
+buttons
+* remove side margin. let user decide which side to put it on using @chassis apply
+
 New Features
 --------------------
-- Add eval() function for math preprocessing
+*- Add eval() function for math preprocessing
 - Add vars for things like "button-box-model" so that display properties can be
   reset automatically
 
 
 chassis-select
-- Add focus
+* Add focus
 - "label" attribute should override innerHTML as this is
   the default <select> behavior
 - Missing HTMLSelectElement methods:

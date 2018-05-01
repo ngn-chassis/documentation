@@ -1042,7 +1042,7 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-customElements.define('chassis-select-title', function () {
+customElements.define('chassis-drawer', function () {
   var _private = new _weakMap2.default();
 
   return function (_HTMLElement) {
@@ -1058,7 +1058,7 @@ customElements.define('chassis-select-title', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-select-title *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><div class="title"><slot id="title"></slot></div><slot name="aftertitle"></slot><div class="beforeend"><slot name="beforeend"></slot></div></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column}:host *,:host :after,:host :before{box-sizing:border-box}chassis-drawer{display:flex;flex-direction:column}:host :after,:host :before,chassis-drawer *{box-sizing:border-box}</style></template>');
 
       var template = container.querySelector('template');
 
@@ -1132,20 +1132,7 @@ customElements.define('chassis-select-title', function () {
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
       value: function connectedCallback() {
-        this._appendCaret();
-      }
-    }, {
-      key: '_appendCaret',
-      value: function _appendCaret() {
-        var xmlns = 'http://www.w3.org/2000/svg';var width = 24;var height = 24;var caret = document.createElementNS(xmlns, 'svg');caret.slot = 'beforeend';caret.setAttributeNS(null, 'width', width);caret.setAttributeNS(null, 'height', height);caret.setAttributeNS(null, 'viewBox', '0 0 ' + width + ' ' + height);caret.setAttributeNS(null, 'fill', 'none');caret.setAttributeNS(null, 'stroke', 'currentColor');caret.setAttributeNS(null, 'stroke-width', '3');caret.setAttributeNS(null, 'stroke-linecap', 'square');caret.setAttributeNS(null, 'stroke-linejoin', 'miter');var shape = document.createElementNS(xmlns, 'polyline');shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');caret.appendChild(shape);this.appendChild(caret);
-      }
-    }, {
-      key: 'title',
-      get: function get() {
-        return this.shadowRoot.querySelector('#title').innerHTML;
-      },
-      set: function set(value) {
-        this.shadowRoot.querySelector('#title').innerHTML = value;
+        console.log('init chassis-drawer');
       }
     }]);
     return _class;
@@ -2397,4 +2384,4 @@ module.exports = function (COLLECTION) {
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=chassis-select-title-es5-bundle.js.map
+//# sourceMappingURL=chassis-drawer-es5-bundle.js.map

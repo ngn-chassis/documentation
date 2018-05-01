@@ -7,8 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
     "build-webcomponents": "build-webcomponents webcomponents/src webcomponents/dist --es5",
-    "bundle-webcomponents": "bundle-webcomponent --name=chassis-select --components=chassis-select-title,chassis-options,chassis-option,chassis-optgroup,chassis-optgroup-label,chassis-select --dir=webcomponents/dist && bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist",
-    "build": "npm run link-chassis && npm run build-webcomponents && npm run bundle-webcomponents && gulp build"
+    "bundle-chassis-select": "bundle-webcomponent --name=chassis-select --components=chassis-select-title,chassis-options,chassis-option,chassis-optgroup,chassis-optgroup-label,chassis-select --dir=webcomponents/dist",
+    "bundle-chassis-datalist": "bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist",
+    "bundle-chassis-layout": "bundle-webcomponent --name=chassis-layout --components=chassis-layout-cell,chassis-layout --dir=webcomponents/dist",
+    "bundle-webcomponents": "npm run bundle-chassis-select && npm run bundle-chassis-datalist && npm run bundle-chassis-layout",
+    "build": "npm run link-chassis && npm run build-webcomponents && npm run bundle-webcomponents && gulp build",
+    "build2": "build-webcomponent webcomponents/src/chassis-datalist webcomponents/dist --es5 && bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist && gulp build"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",

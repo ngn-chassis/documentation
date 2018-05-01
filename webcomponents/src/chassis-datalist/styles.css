@@ -26,7 +26,3 @@
 :host([open]) ::slotted(chassis-options) {
   height: auto;
 }
-
-:host([disabled]:not([disabled*="false"])) {
-  pointer-events: none;
-}

@@ -45,10 +45,12 @@ customElements.define('chassis-datalist', function () {
 
       var _this = (0, _possibleConstructorReturn3.default)(this, (_class.__proto__ || (0, _getPrototypeOf2.default)(_class)).call(this));
 
+      _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
+
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}:host([disabled]:not([disabled*=false])){pointer-events:none}chassis-datalist{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-datalist *{box-sizing:border-box}chassis-datalist chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-datalist[open] chassis-options{height:auto}chassis-datalist[disabled]:not([disabled*=false]){pointer-events:none}</style><slot name="afterbegin"></slot><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot><slot name="beforedatalist"></slot><slot name="datalist"></slot><slot name="afterdatalist"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}chassis-datalist{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-datalist *{box-sizing:border-box}chassis-datalist chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-datalist[open] chassis-options{height:auto}</style><slot name="afterbegin"></slot><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot><slot name="beforedatalist"></slot><slot name="datalist"></slot><slot name="afterdatalist"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -116,15 +118,41 @@ customElements.define('chassis-datalist', function () {
           console.error(message);
         }
       });
-      _private.get(_this).addReadOnlyProp('options');_private.get(_this).options = [];_private.get(_this).arrowKeydownHandler = function (evt) {
-        switch (evt.keyCode) {case 38:
-            evt.preventDefault();console.log('select previous option');break;case 40:
+      _this.value = null;_private.get(_this).addReadOnlyProp('options');_private.get(_this).options = [];_private.get(_this).find = function (query) {
+        return _private.get(_this).options.filter(function (option) {
+          return option.sourceElement.value.indexOf(query) >= 0 || option.sourceElement.text.indexOf(query) >= 0;
+        });
+      };_private.get(_this).clear = function () {
+        _private.get(_this).options.forEach(function (option) {
+          return option.displayElement.style.display = 'none';
+        });
+      };_private.get(_this).arrowKeydownHandler = function (evt) {
+        switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
+            evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
             evt.preventDefault();console.log('select next option');break;default:
             return;}
+      };_private.get(_this).inputHandler = function (evt) {
+        _private.get(_this).clear();var query = _private.get(_this).inputEl.value;if (!query) {
+          return;
+        }var results = _private.get(_this).find(query);if (results.length) {
+          results.forEach(function (result) {
+            return result.displayElement.style.display = '';
+          });_this.setAttribute('open', '');return;
+        }if (_this.hasAttribute('open')) {
+          _this.removeAttribute('open');
+        }_private.get(_this).clear(); // this.dispatchEvent(new CustomEvent('change', {
+        //   bubbles: true
+        // }))
       };_private.get(_this).bodyClickHandler = function (evt) {
         if (evt.target === _this || _this.contains(evt.target)) {
           return;
         }_this.removeAttribute('open');
+      };_private.get(_this).getOptionById = function (id) {
+        var options = _private.get(_this).options;var option = void 0;for (var i = 0; i < options.length; i++) {
+          if (options[i].id === id) {
+            option = options[i];break;
+          }
+        }return option;
       };_private.get(_this).generateOptionObject = function (optionEl) {
         if (!customElements.get('chassis-option')) {
           console.error('chassis-datalist requires chassis-option. Please include it in this document\'s <head> element.');return;
@@ -160,7 +188,21 @@ customElements.define('chassis-datalist', function () {
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
-      value: function connectedCallback() {}
+      value: function connectedCallback() {
+        var _this2 = this;
+
+        _private.get(this).inputEl.addEventListener('focus', function (evt) {
+          _this2.addEventListener('input', _private.get(_this2).inputHandler);_this2.addEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
+        });this.addEventListener('blur', function (evt) {
+          _this2.removeEventListener('input', _private.get(_this2).inputHandler);_this2.removeEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
+        });setTimeout(function () {
+          if (!_this2.hasAttribute('tabindex')) {
+            _this2.setAttribute('tabindex', 0);
+          }if (_this2.autofocus) {
+            _this2.focus();
+          }
+        }, 0);
+      }
     }, {
       key: 'addChildren',
       value: function addChildren(children) {
@@ -192,7 +234,7 @@ customElements.define('chassis-datalist', function () {
     }, {
       key: 'addOption',
       value: function addOption(option, index) {
-        var _this2 = this;
+        var _this3 = this;
 
         var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
 
@@ -210,8 +252,8 @@ customElements.define('chassis-datalist', function () {
           }if (option.hasOwnProperty('disabled')) {
             sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
           }option.sourceElement = sourceEl;
-        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
-          return _this2.select(chassisOption.key);
+        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.style.display = 'none';chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
+          return _this3.select(chassisOption.key);
         });option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
           this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);return;
         }this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);
@@ -225,17 +267,49 @@ customElements.define('chassis-datalist', function () {
             console.log(attr); // _private.get(this).handleBooleanAttributeChange(attr, newValue)
             break;case 'name':
             console.log(attr); // _private.get(this).handleAttributeChange(attr, newValue)
-            break;}
+            break;case 'open':
+            this.isOpen ? this.open() : this.close();break;}
+      }
+    }, {
+      key: 'close',
+      value: function close() {
+        document.body.removeEventListener('click', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler);if (this.isOpen) {
+          this.isOpen = false;
+        }
+      }
+    }, {
+      key: 'open',
+      value: function open() {
+        document.body.addEventListener('click', _private.get(this).bodyClickHandler);document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.addEventListener('touchend', _private.get(this).bodyClickHandler);if (!this.isOpen) {
+          this.isOpen = true;
+        }
       }
     }, {
       key: 'inject',
       value: function inject(input, datalist, guid) {
         _private.get(this).sourceEl = datalist;_private.get(this).inputEl = input;_private.get(this).inputEl.slot = 'input';_private.get(this).inputEl.id = guid;this.appendChild(_private.get(this).inputEl);_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(datalist.options);
       }
+    }, {
+      key: 'select',
+      value: function select(id) {
+        var option = _private.get(this).getOptionById(id);if (option) {
+          option.sourceElement.selected = true;_private.get(this).inputEl.value = option.displayElement.innerHTML;_private.get(this).selectedOption = option;_private.get(this).options.forEach(function (option) {
+            return option.displayElement.removeAttribute('selected');
+          });option.displayElement.setAttribute('selected', '');this.value = _private.get(this).inputEl.value;this.dispatchEvent(new Event('input', { bubbles: true }));this.close();
+        }
+      }
+    }, {
+      key: 'isOpen',
+      get: function get() {
+        return this.hasAttribute('open');
+      },
+      set: function set(bool) {
+        bool ? this.setAttribute('open', '') : this.removeAttribute('open');
+      }
     }], [{
       key: 'observedAttributes',
       get: function get() {
-        return ['autofocus', 'disabled', 'name', 'tabindex'];
+        return ['autofocus', 'disabled', 'name', 'open', 'tabindex'];
       }
     }]);
     return _class;

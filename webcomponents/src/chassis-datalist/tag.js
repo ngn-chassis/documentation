@@ -2,7 +2,7 @@ class ChassisDatalist extends HTMLElement {
   constructor () {
     super()
 
-    this.value = null
+    this.clickCount = 0
 
     _private.get(this).addReadOnlyProp('options')
 
@@ -10,7 +10,11 @@ class ChassisDatalist extends HTMLElement {
 
     _private.get(this).find = query => {
       return _private.get(this).options.filter(option => {
-        return option.sourceElement.value.indexOf(query) >= 0 || option.sourceElement.text.indexOf(query) >= 0
+        let value = this.hasAttribute('case-sensitive') ? option.sourceElement.value : option.sourceElement.value.toLowerCase()
+        let text = this.hasAttribute('case-sensitive') ? option.sourceElement.text : option.sourceElement.text.toLowerCase()
+        query = this.hasAttribute('case-sensitive') ? query : query.toLowerCase()
+
+        return value.indexOf(query) >= 0 || text.indexOf(query) >= 0
       })
     }
 
@@ -18,8 +22,32 @@ class ChassisDatalist extends HTMLElement {
       _private.get(this).options.forEach(option => option.displayElement.style.display = 'none')
     }
 
-    _private.get(this).arrowKeydownHandler = evt => {
+    _private.get(this).showAllOptions = () => {
+      _private.get(this).options.forEach(option => option.displayElement.style.display = '')
+    }
+
+    _private.get(this).clickHandler = evt => {
+      this.clickCount++
+
+      if (this.clickCount === 2) {
+        _private.get(this).showAllOptions()
+        this.open()
+      }
+    }
+
+    _private.get(this).keydownHandler = evt => {
+      if (!this.isOpen) {
+        _private.get(this).showAllOptions()
+        return this.open()
+      }
+
       switch (evt[this.keySource]) {
+        case 27:
+        case 'Escape':
+          _private.get(this).clear()
+          this.close()
+          break
+
         case 38:
         case 'ArrowUp':
           evt.preventDefault()
@@ -45,7 +73,6 @@ class ChassisDatalist extends HTMLElement {
         return
       }
 
-
       let results = _private.get(this).find(query)
 
       if (results.length) {
@@ -59,10 +86,6 @@ class ChassisDatalist extends HTMLElement {
       }
 
       _private.get(this).clear()
-
-      // this.dispatchEvent(new CustomEvent('change', {
-      //   bubbles: true
-      // }))
     }
 
     _private.get(this).bodyClickHandler = evt => {
@@ -108,7 +131,7 @@ class ChassisDatalist extends HTMLElement {
   }
 
   static get observedAttributes () {
-    return ['autofocus', 'disabled', 'name', 'open', 'tabindex']
+    return ['autofocus', 'case-sensitive', 'disabled', 'name', 'open', 'tabindex']
   }
 
   get isOpen () {
@@ -119,15 +142,22 @@ class ChassisDatalist extends HTMLElement {
     bool ? this.setAttribute('open', '') : this.removeAttribute('open')
   }
 
+  get value () {
+    return _private.get(this).inputEl.value
+  }
+
   connectedCallback () {
     _private.get(this).inputEl.addEventListener('focus', evt => {
-      this.addEventListener('input', _private.get(this).inputHandler)
-      this.addEventListener('keydown', _private.get(this).arrowKeydownHandler)
+      this.addEventListener('keydown', _private.get(this).keydownHandler)
     })
 
-    this.addEventListener('blur', evt => {
-      this.removeEventListener('input', _private.get(this).inputHandler)
-      this.removeEventListener('keydown', _private.get(this).arrowKeydownHandler)
+    _private.get(this).inputEl.addEventListener('input', _private.get(this).inputHandler)
+
+    _private.get(this).inputEl.addEventListener('click', _private.get(this).clickHandler)
+
+    _private.get(this).inputEl.addEventListener('blur', evt => {
+      this.clickCount = 0
+      this.removeEventListener('keydown', _private.get(this).keydownHandler)
     })
 
     setTimeout(() => {
@@ -149,7 +179,7 @@ class ChassisDatalist extends HTMLElement {
 
   addOption (option, index, dest = _private.get(this).optionsEl) {
     if (!customElements.get('chassis-option')) {
-      console.error(`chassis-select requires chassis-option. Please include it in this document's <head> element.`)
+      console.error(`chassis-datalist requires chassis-option. Please include it in this document's <head> element.`)
       return
     }
 
@@ -279,7 +309,6 @@ class ChassisDatalist extends HTMLElement {
       _private.get(this).options.forEach(option => option.displayElement.removeAttribute('selected'))
       option.displayElement.setAttribute('selected', '')
 
-      this.value = _private.get(this).inputEl.value
       this.dispatchEvent(new Event('input', {
         bubbles: true
       }))

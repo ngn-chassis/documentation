@@ -118,16 +118,27 @@ customElements.define('chassis-datalist', function () {
           console.error(message);
         }
       });
-      _this.value = null;_private.get(_this).addReadOnlyProp('options');_private.get(_this).options = [];_private.get(_this).find = function (query) {
+      _this.clickCount = 0;_private.get(_this).addReadOnlyProp('options');_private.get(_this).options = [];_private.get(_this).find = function (query) {
         return _private.get(_this).options.filter(function (option) {
-          return option.sourceElement.value.indexOf(query) >= 0 || option.sourceElement.text.indexOf(query) >= 0;
+          var value = _this.hasAttribute('case-sensitive') ? option.sourceElement.value : option.sourceElement.value.toLowerCase();var text = _this.hasAttribute('case-sensitive') ? option.sourceElement.text : option.sourceElement.text.toLowerCase();query = _this.hasAttribute('case-sensitive') ? query : query.toLowerCase();return value.indexOf(query) >= 0 || text.indexOf(query) >= 0;
         });
       };_private.get(_this).clear = function () {
         _private.get(_this).options.forEach(function (option) {
           return option.displayElement.style.display = 'none';
         });
-      };_private.get(_this).arrowKeydownHandler = function (evt) {
-        switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
+      };_private.get(_this).showAllOptions = function () {
+        _private.get(_this).options.forEach(function (option) {
+          return option.displayElement.style.display = '';
+        });
+      };_private.get(_this).clickHandler = function (evt) {
+        _this.clickCount++;if (_this.clickCount === 2) {
+          _private.get(_this).showAllOptions();_this.open();
+        }
+      };_private.get(_this).keydownHandler = function (evt) {
+        if (!_this.isOpen) {
+          _private.get(_this).showAllOptions();return _this.open();
+        }switch (evt[_this.keySource]) {case 27:case 'Escape':
+            _private.get(_this).clear();_this.close();break;case 38:case 'ArrowUp':
             evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
             evt.preventDefault();console.log('select next option');break;default:
             return;}
@@ -140,9 +151,7 @@ customElements.define('chassis-datalist', function () {
           });_this.setAttribute('open', '');return;
         }if (_this.hasAttribute('open')) {
           _this.removeAttribute('open');
-        }_private.get(_this).clear(); // this.dispatchEvent(new CustomEvent('change', {
-        //   bubbles: true
-        // }))
+        }_private.get(_this).clear();
       };_private.get(_this).bodyClickHandler = function (evt) {
         if (evt.target === _this || _this.contains(evt.target)) {
           return;
@@ -192,9 +201,9 @@ customElements.define('chassis-datalist', function () {
         var _this2 = this;
 
         _private.get(this).inputEl.addEventListener('focus', function (evt) {
-          _this2.addEventListener('input', _private.get(_this2).inputHandler);_this2.addEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
-        });this.addEventListener('blur', function (evt) {
-          _this2.removeEventListener('input', _private.get(_this2).inputHandler);_this2.removeEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
+          _this2.addEventListener('keydown', _private.get(_this2).keydownHandler);
+        });_private.get(this).inputEl.addEventListener('input', _private.get(this).inputHandler);_private.get(this).inputEl.addEventListener('click', _private.get(this).clickHandler);_private.get(this).inputEl.addEventListener('blur', function (evt) {
+          _this2.clickCount = 0;_this2.removeEventListener('keydown', _private.get(_this2).keydownHandler);
         });setTimeout(function () {
           if (!_this2.hasAttribute('tabindex')) {
             _this2.setAttribute('tabindex', 0);
@@ -239,7 +248,7 @@ customElements.define('chassis-datalist', function () {
         var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
 
         if (!customElements.get('chassis-option')) {
-          console.error('chassis-select requires chassis-option. Please include it in this document\'s <head> element.');return;
+          console.error('chassis-datalist requires chassis-option. Please include it in this document\'s <head> element.');return;
         }if (!option.hasOwnProperty('id')) {
           option.id = _private.get(this).generateGuid('option');
         }if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
@@ -295,7 +304,7 @@ customElements.define('chassis-datalist', function () {
         var option = _private.get(this).getOptionById(id);if (option) {
           option.sourceElement.selected = true;_private.get(this).inputEl.value = option.displayElement.innerHTML;_private.get(this).selectedOption = option;_private.get(this).options.forEach(function (option) {
             return option.displayElement.removeAttribute('selected');
-          });option.displayElement.setAttribute('selected', '');this.value = _private.get(this).inputEl.value;this.dispatchEvent(new Event('input', { bubbles: true }));this.close();
+          });option.displayElement.setAttribute('selected', '');this.dispatchEvent(new Event('input', { bubbles: true }));this.close();
         }
       }
     }, {
@@ -306,10 +315,15 @@ customElements.define('chassis-datalist', function () {
       set: function set(bool) {
         bool ? this.setAttribute('open', '') : this.removeAttribute('open');
       }
+    }, {
+      key: 'value',
+      get: function get() {
+        return _private.get(this).inputEl.value;
+      }
     }], [{
       key: 'observedAttributes',
       get: function get() {
-        return ['autofocus', 'disabled', 'name', 'open', 'tabindex'];
+        return ['autofocus', 'case-sensitive', 'disabled', 'name', 'open', 'tabindex'];
       }
     }]);
     return _class;

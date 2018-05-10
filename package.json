@@ -12,7 +12,7 @@
     "bundle-chassis-layout": "bundle-webcomponent --name=chassis-layout --components=chassis-layout-cell,chassis-layout --dir=webcomponents/dist",
     "bundle-webcomponents": "npm run bundle-chassis-select && npm run bundle-chassis-datalist && npm run bundle-chassis-layout",
     "build": "npm run link-chassis && npm run build-webcomponents && npm run bundle-webcomponents && gulp build",
-    "build2": "build-webcomponent webcomponents/src/chassis-datalist webcomponents/dist --es5 && bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist && gulp build"
+    "build2": "build-webcomponent webcomponents/src/chassis-cycle webcomponents/dist --es5 && gulp build"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",

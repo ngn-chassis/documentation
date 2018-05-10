@@ -1,7 +1,9 @@
 * === done
 
-Math Functions:
+WIP: Math Functions:
 -Support nested functions and vars
+
+Add mult() and rotate() functions to chassis apply mixin
 
 Add vars:
 --inline-block-margin-x

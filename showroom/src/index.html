@@ -15,6 +15,7 @@
     <script src="webcomponents/chassis-control-es5.js"></script>
     <script src="webcomponents/chassis-select-es5.js"></script>
     <script src="webcomponents/chassis-datalist-es5.js"></script>
+    <script src="webcomponents/chassis-cycle-es5.js"></script>
   </head>
 
   <body class="showroom">
@@ -50,6 +51,21 @@
 
       <div class="content">
         <section>
+          <chassis-cycle>
+            <section>
+              section 1
+            </section>
+
+            <section active>
+              section 2
+            </section>
+
+            <section>
+              section 3
+            </section>
+          </chassis-cycle>
+
+
           <chassis-control id="datalist">
             <label>Chassis Datalist</label>
             <input type="text" placeholder="Enter your search query">
@@ -526,6 +542,8 @@
       })
 
       document.addEventListener('WebComponentsReady', function () {
+        window.cycle = document.querySelector('chassis-cycle')
+
         // var datalist = document.getElementById('datalist')
         //
         // datalist.input.addEventListener('input', function (evt) {

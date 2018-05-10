@@ -1,5 +1,13 @@
 'use strict';
 
+var _getIterator2 = require('babel-runtime/core-js/get-iterator');
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _defineProperty = require('babel-runtime/core-js/object/define-property');
 
 var _defineProperty2 = _interopRequireDefault(_defineProperty);
@@ -46,7 +54,7 @@ customElements.define('chassis-cycle', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8;</style><slot></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -114,14 +122,146 @@ customElements.define('chassis-cycle', function () {
           console.error(message);
         }
       });
-      _this.active = false;
+      _private.get(_this).hideChild = function (child) {
+        child.removeAttribute('active', '');
+      };_private.get(_this).showChild = function (child) {
+        child.setAttribute('active', '');
+      };_private.get(_this).showChildByIndex = function (index) {
+        if (_this.activeIndex === index) {
+          return;
+        }if (index >= _this.children.length) {
+          return;
+        } // TODO: Handle backward and forward indexes. i.e.
+        // '-2' or '+3'
+        var current = _this.children.item(_this.activeIndex);_private.get(_this).hideChild(current);_private.get(_this).showChild(_this.children.item(index));
+      };
       return _this;
     }
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
       value: function connectedCallback() {
-        console.log('init chassis-cycle');
+        var _this2 = this;
+
+        var observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            var addedNodes = mutation.addedNodes,
+                removedNodes = mutation.removedNodes,
+                type = mutation.type;
+            switch (type) {case 'childList':
+                if (removedNodes.length > 0 && !_this2.activeElement) {
+                  _this2.previous();
+                }break;default:
+                return;}
+          });
+        });observer.observe(this, { attributes: false, childList: true, characterData: false });
+      } /**
+         * @method goto
+         * Deactive the currently active element, unless query matches it, and
+         * Activate a different one
+         * @param {number | string | HTMLElement} query
+         * 1-based index (i.e. first element index === 1),
+         * Element selector string, or
+         * HTMLElement to make active
+         */
+    }, {
+      key: 'goto',
+      value: function goto(query) {
+        switch ((typeof query === 'undefined' ? 'undefined' : (0, _typeof3.default)(query)).toLowerCase()) {case 'number':
+            return _private.get(this).showChildByIndex(query);case 'string':
+            return isNaN(parseInt(query)) ? _private.get(this).showElementBySelector(query) : _private.get(this).showChildByIndex(query);default:
+            if (query instanceof HTMLElement) {
+              return _private.get(this).showElement(query);
+            }} // TODO: Throw error
+      }
+    }, {
+      key: 'hideAll',
+      value: function hideAll() {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = (0, _getIterator3.default)(this.children), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var child = _step.value;
+
+            child.removeAttribute('active');
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      } /**
+         * @method first
+         * A helper method to display the first element.
+         */
+    }, {
+      key: 'first',
+      value: function first() {
+        this.goto(0);
+      }
+    }, {
+      key: 'last',
+      value: function last() {
+        this.goto(this.children.length - 1);
+      } /**
+         * @method next
+         * Deactivate the currently active child element and activate the one
+         * adjacent to it.
+         * @param {function} callback
+         * Executed when the operation is complete.
+         */
+    }, {
+      key: 'next',
+      value: function next(callback) {
+        var currentIndex = this.activeIndex;this.goto(currentIndex === this.children.length - 1 ? 0 : currentIndex + 1);callback && callback(this.children.item(currentIndex));
+      } /**
+         * @method previous
+         * Deactivate the currently active child element and activate the one
+         * immediately preceding it.
+         * @param {function} callback
+         * Executed when the operation is complete.
+         */
+    }, {
+      key: 'previous',
+      value: function previous(callback) {
+        var currentIndex = this.activeIndex;this.goto(currentIndex === 0 ? this.children.length - 1 : currentIndex - 1);callback && callback(this.children.item(currentIndex));
+      }
+    }, {
+      key: 'active',
+      get: function get() {
+        return { element: this.activeElement, index: this.activeIndex };
+      }
+    }, {
+      key: 'activeElement',
+      get: function get() {
+        return this.activeIndex === null ? null : this.children.item(this.activeIndex);
+      }
+    }, {
+      key: 'activeIndex',
+      get: function get() {
+        for (var index in this.children) {
+          if (!this.children.hasOwnProperty(index)) {
+            continue;
+          }var child = this.children.item(index);if (child.hasAttribute('active')) {
+            return parseInt(index);
+          }
+        }return null;
+      }
+    }], [{
+      key: 'observedAttributes',
+      get: function get() {
+        return [];
       }
     }]);
     return _class;

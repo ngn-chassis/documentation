@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+:host {
+  display: block;
+}
+
+:host *,
+:host *:before,
+:host *:after {
+  box-sizing: border-box;
+}
+
+:host ::slotted(*:not([active])) {
+  display: none !important;
+}

@@ -52,15 +52,27 @@
       <div class="content">
         <section>
           <chassis-cycle>
-            <section>
-              section 1
+            <section id="test1">
+              <div>
+                  flexbox
+              </div>
+              <div>
+                  flexbox
+              </div>
+              <div>
+                  flexbox
+              </div>
             </section>
 
-            <section active>
+            <section class="test2" active>
               section 2
             </section>
 
-            <section>
+            <section class="test2">
+              section 2 - 2
+            </section>
+
+            <section id="test3">
               section 3
             </section>
           </chassis-cycle>
@@ -543,6 +555,21 @@
 
       document.addEventListener('WebComponentsReady', function () {
         window.cycle = document.querySelector('chassis-cycle')
+
+        setTimeout(function () {
+          var page = document.createElement('section')
+          page.innerHTML = 'New Page 1'
+          page.id = 'newPage1'
+
+          cycle.appendChild(page)
+
+          var page2 = document.createElement('section')
+          page2.innerHTML = 'New Page 2'
+          page2.id = 'newPage2'
+          page2.setAttribute('active', '')
+
+          cycle.appendChild(page2)
+        }, 2000)
 
         // var datalist = document.getElementById('datalist')
         //

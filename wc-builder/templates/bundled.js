@@ -54,7 +54,7 @@ customElements.define('{{TAG-NAME}}', (function () {
         }),
 
         throw: (type, vars) => {
-          let message = 'ERROR <chassis-select> '
+          let message = 'ERROR <{{TAG-NAME}}> '
 
           switch (type) {
             case 'readonly':

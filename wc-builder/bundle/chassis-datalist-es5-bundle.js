@@ -1154,7 +1154,7 @@ customElements.define('chassis-datalist', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-select> ';
+          var message = 'ERROR <chassis-datalist> ';
 
           switch (type) {
             case 'readonly':

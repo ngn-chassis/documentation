@@ -1112,7 +1112,7 @@ customElements.define('nkx-table', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-select> ';
+          var message = 'ERROR <nkx-table> ';
 
           switch (type) {
             case 'readonly':

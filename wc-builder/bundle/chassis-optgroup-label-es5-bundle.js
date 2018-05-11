@@ -1112,7 +1112,7 @@ customElements.define('chassis-optgroup-label', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-select> ';
+          var message = 'ERROR <chassis-optgroup-label> ';
 
           switch (type) {
             case 'readonly':

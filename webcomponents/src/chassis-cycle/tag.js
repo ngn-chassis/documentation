@@ -32,12 +32,32 @@ class ChassisCycle extends HTMLElement {
 
       _private.get(this).showChild(nodes.item(0))
     }
+
+    _private.get(this).replaceDeprecatedAttributes = child => {
+      if (child.hasAttribute('selected')) {
+        console.warn(`<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.`);
+        child.removeAttribute('selected')
+        child.setAttribute('active', '')
+      }
+    }
   }
 
   static get observedAttributes () {
     return []
   }
 
+  /**
+   * @typedef {Object} ActiveElementProperties
+   * @property {HTMLElement} element The currently active page.
+   * @property {Number} index The zero-based index of the currently active page.
+   * @property {Number} page The 1-based index of the currently active page.
+   */
+
+  /**
+   * @property active
+   * Information about the currently active page.
+   * @return {ActiveElementProperties}
+   */
   get active () {
     return {
       element: this.activeElement,
@@ -46,14 +66,29 @@ class ChassisCycle extends HTMLElement {
     }
   }
 
+  /**
+   * @property activeElement
+   * The currently active page.
+   * @return {HTMLElement}
+   */
   get activeElement () {
     return this.activeIndex === null ? null : this.children.item(this.activeIndex)
   }
 
+  /**
+   * @property activePage
+   * The 1-based index of the currently active page.
+   * @return {Number}
+   */
   get activePage () {
     return this.activeIndex + 1
   }
 
+  /**
+   * @property activeIndex
+   * The zero-based index of the currently active page.
+   * @return {Number}
+   */
   get activeIndex () {
     for (let index in this.children) {
       if (!this.children.hasOwnProperty(index)) {
@@ -68,6 +103,28 @@ class ChassisCycle extends HTMLElement {
     }
 
     return null
+  }
+
+  /**
+   * @property selected
+   * The current active section.
+   * @return {HTMLElement}
+   * @deprecated
+   */
+  get selected () {
+    console.warn(`<chassis-cycle> 'selected' property is deprecated. Please use 'activeElement' instead.`);
+    return this.activeElement
+  }
+
+  /**
+   * @property selectedIndex
+   * The index number of the current active section.
+   * @return {Number}
+   * @deprecated
+   */
+  get selectedIndex () {
+    console.warn(`<chassis-cycle> 'selectedIndex' property is deprecated. Please use 'activeIndex' for zero-based indexing or 'activePage' for 1-based indexing instead.`);
+    return this.activePage
   }
 
   connectedCallback () {
@@ -85,8 +142,16 @@ class ChassisCycle extends HTMLElement {
               return
             }
 
-            if (addedNodes.item(0).hasAttribute('active')) {
-              return this.show(addedNodes.item(0))
+            let node = addedNodes.item(0)
+
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+              return
+            }
+
+            _private.get(this).replaceDeprecatedAttributes(node)
+
+            if (node.hasAttribute('active')) {
+              return this.show(node)
             }
 
           default: return
@@ -99,22 +164,56 @@ class ChassisCycle extends HTMLElement {
       childList: true,
       characterData: false
     })
+
+    setTimeout(() => {
+      for (let child of this.children) {
+        _private.get(this).replaceDeprecatedAttributes(child)
+      }
+    }, 0)
   }
 
+  /**
+   * @method hideActive
+   * Deactivate the currently active page.
+   * @deprecated
+   */
+  hide (child) {
+    console.warn(`<chassis-cycle> "hide()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.`);
+    _private.get(this).hideChild(child)
+  }
+
+  /**
+   * @method hideActive
+   * Deactivate the currently active page.
+   * @deprecated
+   */
+  hideActive () {
+    console.warn(`<chassis-cycle> "hideActive()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.`);
+    _private.get(this).hideChild(this.activeElement)
+  }
+
+  /**
+   * @method hideAll
+   * Deactivate all pages.
+   */
   hideAll () {
     for (let child of this.children) {
-      child.removeAttribute('active')
+      _private.get(this).hideChild(child)
     }
   }
 
   /**
    * @method first
-   * A helper method to display the first element.
+   * A helper method to display the first child element.
    */
   first () {
     this.show(1)
   }
 
+  /**
+   * @method last
+   * A helper method to display the last child element.
+   */
   last () {
     this.show(this.children.length)
   }
@@ -122,7 +221,7 @@ class ChassisCycle extends HTMLElement {
   /**
    * @method next
    * Deactivate the currently active child element and activate the one
-   * adjacent to it.
+   * immediately adjacent to it.
    * @param {function} callback
    * Executed when the operation is complete.
    */
@@ -145,10 +244,9 @@ class ChassisCycle extends HTMLElement {
 
   /**
    * @method show
-   * Deactive the currently active element, unless query matches it, and
-   * Activate a different one
+   * Deactive the currently active element activate a different one.
    * @param {number | string | HTMLElement} query
-   * index,
+   * 1-based index,
    * Element selector string, or
    * HTMLElement to make active
    */

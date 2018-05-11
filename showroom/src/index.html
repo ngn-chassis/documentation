@@ -64,7 +64,7 @@
               </div>
             </section>
 
-            <section class="test2" active>
+            <section class="test2" selected>
               section 2
             </section>
 
@@ -560,6 +560,7 @@
           var page = document.createElement('section')
           page.innerHTML = 'New Page 1'
           page.id = 'newPage1'
+          page.setAttribute('selected', '')
 
           cycle.appendChild(page)
 

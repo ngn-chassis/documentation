@@ -1112,7 +1112,7 @@ customElements.define('chassis-options', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-select> ';
+          var message = 'ERROR <chassis-options> ';
 
           switch (type) {
             case 'readonly':

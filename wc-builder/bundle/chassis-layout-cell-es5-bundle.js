@@ -1112,7 +1112,7 @@ customElements.define('chassis-layout-cell', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-select> ';
+          var message = 'ERROR <chassis-layout-cell> ';
 
           switch (type) {
             case 'readonly':

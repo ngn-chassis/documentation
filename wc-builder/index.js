@@ -5,6 +5,7 @@ const webpack = require('webpack')
 
 let CleanCSS = require('clean-css')
 const postcss = require('postcss')
+const SelectorParser = require('postcss-selector-parser')
 const babel = require("babel-core")
 const babylon = require('babylon')
 const cleanCss = new CleanCSS()
@@ -147,7 +148,7 @@ module.exports = class {
 
     let newRules = []
 
-    this.css.walkRules((rule) => newRules.push(
+    this.css.walkRules(rule => newRules.push(
       rule.clone({
         selector: this._transformSelector(this._stripUnsupportedSelectorElements(rule.selector))
       })
@@ -260,9 +261,10 @@ module.exports = class {
   _stripUnsupportedSelectorElements (selector) {
     let slugs = selector.split(' ')
 
-    return slugs.map((slug) => {
+    return slugs.map(slug => {
       if (slug.includes('::slotted')) {
-        return /\(([^)]+)\)/.exec(slug)[1]
+        // return /\(([^)]+)\)/.exec(slug)[1]
+        return slug.replace('::slotted(', '').slice(0, -1)
       }
 
       return slug

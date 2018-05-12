@@ -4,10 +4,6 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _getIterator2 = require('babel-runtime/core-js/get-iterator');
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
 var _defineProperty = require('babel-runtime/core-js/object/define-property');
 
 var _defineProperty2 = _interopRequireDefault(_defineProperty);
@@ -54,7 +50,7 @@ customElements.define('chassis-cycle', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host>::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}chassis-cycle>:not([active]){display:none!important}</style><slot></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -122,10 +118,10 @@ customElements.define('chassis-cycle', function () {
           console.error(message);
         }
       });
-      _private.get(_this).hideChild = function (child) {
+      _private.get(_this).dummyEl = document.createElement('div');_private.get(_this).hideChild = function (child) {
         child.removeAttribute('active', '');
       };_private.get(_this).showChild = function (child) {
-        _private.get(_this).hideChild(_this.children.item(_this.activeIndex));child.setAttribute('active', '');
+        _private.get(_this).hideChild(_this.children.item(_this.activeIndex || 0));child.setAttribute('active', '');
       };_private.get(_this).showChildByIndex = function (index) {
         if (_this.activeIndex === index || index >= _this.children.length || index < 0) {
           return;
@@ -167,29 +163,12 @@ customElements.define('chassis-cycle', function () {
                 return;}
           });
         });observer.observe(this, { attributes: false, childList: true, characterData: false });setTimeout(function () {
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
-
-          try {
-            for (var _iterator = (0, _getIterator3.default)(_this2.children), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var child = _step.value;
-
-              _private.get(_this2).replaceDeprecatedAttributes(child);
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
+          for (var index in _this2.children) {
+            if (!_this2.children.hasOwnProperty(index)) {
+              continue;
+            }var child = _this2.children.item(index);if ((typeof child === 'undefined' ? 'undefined' : (0, _typeof3.default)(child)) !== 'object') {
+              continue;
+            }_private.get(_this2).replaceDeprecatedAttributes(child);
           }
         }, 0);
       } /**
@@ -217,30 +196,44 @@ customElements.define('chassis-cycle', function () {
     }, {
       key: 'hideAll',
       value: function hideAll() {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = (0, _getIterator3.default)(this.children), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var child = _step2.value;
-
-            _private.get(this).hideChild(child);
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
+        for (var index in this.children) {
+          if (!this.children.hasOwnProperty(index)) {
+            continue;
+          }var child = this.children.item(index);if ((typeof child === 'undefined' ? 'undefined' : (0, _typeof3.default)(child)) !== 'object') {
+            continue;
+          }_private.get(this).hideChild(child);
         }
+      } /**
+         * @method insertAdjacentHTML
+         * Override this.prototype.insertAdjacentHTML and replace with
+         * appendChild() or insertBefore()
+         * This is done because of bugs with insertAdjacentHTML() on web components
+         * in Firefox and IE11.
+         * @override
+         */
+    }, {
+      key: 'insertAdjacentHTML',
+      value: function insertAdjacentHTML(position, text) {
+        switch (position) {case 'beforebegin':case 'afterend':
+            return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text);default:
+            _private.get(this).dummyEl.insertAdjacentHTML(position, text);var node = _private.get(this).dummyEl.children.item(0);while (_private.get(this).dummyEl.firstChild) {
+              _private.get(this).dummyEl.removeChild(_private.get(this).dummyEl.firstChild);
+            }return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild);}
+      } /**
+         * @method insertAdjacentElement
+         * Override this.prototype.insertAdjacentElement and replace with
+         * appendChild() or insertBefore()
+         * This is done because of bugs with insertAdjacentElement() on web components
+         * in Firefox and IE11.
+         * @override
+         */
+    }, {
+      key: 'insertAdjacentElement',
+      value: function insertAdjacentElement(position, node) {
+        switch (position) {case 'beforeend':
+            return this.appendChild(node);case 'afterbegin':
+            return this.insertBefore(node, this.firstElementChild);default:
+            return HTMLElement.prototype.insertAdjacentElement.call(this, position, node);}
       } /**
          * @method first
          * A helper method to display the first child element.
@@ -290,7 +283,9 @@ customElements.define('chassis-cycle', function () {
     }, {
       key: 'show',
       value: function show(query) {
-        switch ((typeof query === 'undefined' ? 'undefined' : (0, _typeof3.default)(query)).toLowerCase()) {case 'number':
+        if (!query) {
+          return _private.get(this).showChildByIndex(0);
+        }switch ((typeof query === 'undefined' ? 'undefined' : (0, _typeof3.default)(query)).toLowerCase()) {case 'number':
             return _private.get(this).showChildByIndex(query - 1);case 'string':
             return isNaN(parseInt(query)) ? _private.get(this).showChildBySelector(query) : _private.get(this).showChildByIndex(parseInt(query) - 1);default:
             return query instanceof HTMLElement ? _private.get(this).showChild(query) : console.error('<chassis-cycle>: Invalid query "' + query + '"');}
@@ -337,7 +332,9 @@ customElements.define('chassis-cycle', function () {
         for (var index in this.children) {
           if (!this.children.hasOwnProperty(index)) {
             continue;
-          }var child = this.children.item(index);if (child.hasAttribute('active')) {
+          }var child = this.children.item(index);if ((typeof child === 'undefined' ? 'undefined' : (0, _typeof3.default)(child)) !== 'object') {
+            continue;
+          }if (child.hasAttribute('active')) {
             return parseInt(index);
           }
         }return null;

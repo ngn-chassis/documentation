@@ -1,5 +1,7 @@
 * === done
 
+Add "truncate" helper class that applies ellipsis
+
 WIP: Math Functions:
 -Support nested functions and vars
 
@@ -17,7 +19,7 @@ class namespacing needs to handle class names added to the html tag. For example
 
 <html class="project">
 
-will be namespaced "chassis .project". It needs to be ".chassis.project"
+will be namespaced ".chassis .project". It needs to be ".chassis.project"
 
 consider adding a config option for namespace class. Instead of using "chassis" and forcing the
 dev to add that class to the html tag, maybe make it customizable

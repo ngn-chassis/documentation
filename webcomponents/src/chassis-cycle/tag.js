@@ -2,12 +2,14 @@ class ChassisCycle extends HTMLElement {
   constructor () {
     super()
 
+    _private.get(this).dummyEl = document.createElement('div')
+
     _private.get(this).hideChild = child => {
       child.removeAttribute('active', '')
     }
 
     _private.get(this).showChild = child => {
-      _private.get(this).hideChild(this.children.item(this.activeIndex))
+      _private.get(this).hideChild(this.children.item(this.activeIndex || 0))
       child.setAttribute('active', '')
     }
 
@@ -97,6 +99,10 @@ class ChassisCycle extends HTMLElement {
 
       let child = this.children.item(index)
 
+      if (typeof child !== 'object') {
+        continue
+      }
+
       if (child.hasAttribute('active')) {
         return parseInt(index)
       }
@@ -166,7 +172,17 @@ class ChassisCycle extends HTMLElement {
     })
 
     setTimeout(() => {
-      for (let child of this.children) {
+      for (let index in this.children) {
+        if (!this.children.hasOwnProperty(index)) {
+          continue
+        }
+
+        let child = this.children.item(index)
+
+        if (typeof child !== 'object') {
+          continue
+        }
+
         _private.get(this).replaceDeprecatedAttributes(child)
       }
     }, 0)
@@ -197,8 +213,65 @@ class ChassisCycle extends HTMLElement {
    * Deactivate all pages.
    */
   hideAll () {
-    for (let child of this.children) {
+    for (let index in this.children) {
+      if (!this.children.hasOwnProperty(index)) {
+        continue
+      }
+
+      let child = this.children.item(index)
+
+      if (typeof child !== 'object') {
+        continue
+      }
+
       _private.get(this).hideChild(child)
+    }
+  }
+
+  /**
+   * @method insertAdjacentHTML
+   * Override this.prototype.insertAdjacentHTML and replace with
+   * appendChild() or insertBefore()
+   * This is done because of bugs with insertAdjacentHTML() on web components
+   * in Firefox and IE11.
+   * @override
+   */
+  insertAdjacentHTML (position, text) {
+    switch (position) {
+      case 'beforebegin':
+      case 'afterend':
+        return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text)
+
+      default:
+        _private.get(this).dummyEl.insertAdjacentHTML(position, text)
+        let node = _private.get(this).dummyEl.children.item(0)
+
+        while (_private.get(this).dummyEl.firstChild) {
+          _private.get(this).dummyEl.removeChild(_private.get(this).dummyEl.firstChild)
+        }
+
+        return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild)
+    }
+  }
+
+  /**
+   * @method insertAdjacentElement
+   * Override this.prototype.insertAdjacentElement and replace with
+   * appendChild() or insertBefore()
+   * This is done because of bugs with insertAdjacentElement() on web components
+   * in Firefox and IE11.
+   * @override
+   */
+  insertAdjacentElement (position, node) {
+    switch (position) {
+      case 'beforeend':
+        return this.appendChild(node)
+
+      case 'afterbegin':
+        return this.insertBefore(node, this.firstElementChild)
+
+      default:
+        return HTMLElement.prototype.insertAdjacentElement.call(this, position, node)
     }
   }
 
@@ -251,6 +324,10 @@ class ChassisCycle extends HTMLElement {
    * HTMLElement to make active
    */
   show (query) {
+    if (!query) {
+      return _private.get(this).showChildByIndex(0)
+    }
+
     switch ((typeof query).toLowerCase()) {
       case 'number':
         return _private.get(this).showChildByIndex(query - 1)

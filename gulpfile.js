@@ -9,7 +9,14 @@ const SRC = './showroom/src'
 const SRC_ASSETS = {
   CSS: path.join(SRC, '**/*.css'),
   WEBCOMPONENTS: './webcomponents/dist/**/*.js',
-  POLYFILLS: path.join(SRC, './polyfills/**/*.*')
+  POLYFILLS: path.join(SRC, './polyfills/**/*.*'),
+
+  WC_POLYFILLS: './node_modules/@webcomponents/**/*.*',
+  // WC_POLYFILL_ES5_ADAPTER: './node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js',
+  // WC_POLYFILL_BUNDLE: './node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
+  // WC_POLYFILL_BUNDLE_SRCMAP: './node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js.map',
+  // WC_POLYFILL_LOADER: './node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js',
+  // WC_POLYFILL_BUNDLE_SRCMAP: './node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js.map'
 }
 
 const DEST = './showroom/dist'
@@ -63,7 +70,13 @@ gulp.task('clean-polyfills', ['clean'], (next) => {
 })
 
 gulp.task('polyfills', ['clean-polyfills'], (next) => {
+  // return gulp.src(SRC_ASSETS.WC_POLYFILLS).pipe(gulp.dest(DEST_ASSETS.POLYFILLS))
   return gulp.src(SRC_ASSETS.POLYFILLS).pipe(gulp.dest(DEST_ASSETS.POLYFILLS))
+  // return gulp.src([
+  //   SRC_ASSETS.WC_POLYFILL_ES5_ADAPTER,
+  //   SRC_ASSETS.WC_POLYFILL_BUNDLE,
+  //   SRC_ASSETS.WC_POLYFILL_BUNDLE_SRCMAP
+  // ]).pipe(gulp.dest(DEST_ASSETS.POLYFILLS))
 })
 
 gulp.task('watch', () => {

@@ -17,20 +17,21 @@
   "author": "Graham Butler",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@chassis/core": "^1.0.1",
+    "@chassis/core": "^1.2.3",
     "@chassis/gulp": "^1.0.0",
+    "@webcomponents/webcomponentsjs": "github:webcomponents/webcomponentsjs",
     "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-minify": "^0.2.0",
     "babel-runtime": "^6.26.0",
-    "fs-extra": "^4.0.2",
+    "fs-extra": "^4.0.3",
     "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.6.1",
+    "gulp-sourcemaps": "^2.6.4",
     "postcss-selector-not": "^3.0.1"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
-    "productionline": "^1.0.7",
+    "productionline": "^1.2.10",
     "shortbus": "^1.2.8"
   }
 }

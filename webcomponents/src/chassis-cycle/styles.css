@@ -10,11 +10,6 @@
   box-sizing: border-box;
 }
 
-/* For Firefox & IE */
-/* :host > :not([active]) {
+/* :host > ::slotted(*:not([active])) {
   display: none !important;
 } */
-
-:host > ::slotted(*:not([active])) {
-  display: none !important;
-}

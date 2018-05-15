@@ -6,11 +6,16 @@ class ChassisCycle extends HTMLElement {
 
     _private.get(this).hideChild = child => {
       child.removeAttribute('active', '')
+      child.style.setProperty('display', 'none', 'important')
     }
 
     _private.get(this).showChild = child => {
-      _private.get(this).hideChild(this.children.item(this.activeIndex || 0))
+      if (this.activeIndex >= 0) {
+        _private.get(this).hideChild(this.children.item(this.activeIndex || 0))
+      }
+
       child.setAttribute('active', '')
+      child.style.removeProperty('display')
     }
 
     _private.get(this).showChildByIndex = index => {
@@ -39,7 +44,8 @@ class ChassisCycle extends HTMLElement {
       if (child.hasAttribute('selected')) {
         console.warn(`<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.`);
         child.removeAttribute('selected')
-        child.setAttribute('active', '')
+
+        _private.get(this).showChild(child)
       }
     }
   }
@@ -156,9 +162,7 @@ class ChassisCycle extends HTMLElement {
 
             _private.get(this).replaceDeprecatedAttributes(node)
 
-            if (node.hasAttribute('active')) {
-              return this.show(node)
-            }
+            return node.hasAttribute('active') ? _private.get(this).showChild(node) : _private.get(this).hideChild(node)
 
           default: return
         }
@@ -184,6 +188,10 @@ class ChassisCycle extends HTMLElement {
         }
 
         _private.get(this).replaceDeprecatedAttributes(child)
+
+        if (child !== this.activeElement) {
+          _private.get(this).hideChild(child)
+        }
       }
     }, 0)
   }

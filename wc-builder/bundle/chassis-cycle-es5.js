@@ -50,7 +50,7 @@ customElements.define('chassis-cycle', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host>::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}chassis-cycle>:not([active]){display:none!important}</style><slot></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -119,9 +119,11 @@ customElements.define('chassis-cycle', function () {
         }
       });
       _private.get(_this).dummyEl = document.createElement('div');_private.get(_this).hideChild = function (child) {
-        child.removeAttribute('active', '');
+        child.removeAttribute('active', '');child.style.setProperty('display', 'none', 'important');
       };_private.get(_this).showChild = function (child) {
-        _private.get(_this).hideChild(_this.children.item(_this.activeIndex || 0));child.setAttribute('active', '');
+        if (_this.activeIndex >= 0) {
+          _private.get(_this).hideChild(_this.children.item(_this.activeIndex || 0));
+        }child.setAttribute('active', '');child.style.removeProperty('display');
       };_private.get(_this).showChildByIndex = function (index) {
         if (_this.activeIndex === index || index >= _this.children.length || index < 0) {
           return;
@@ -134,7 +136,7 @@ customElements.define('chassis-cycle', function () {
         }_private.get(_this).showChild(nodes.item(0));
       };_private.get(_this).replaceDeprecatedAttributes = function (child) {
         if (child.hasAttribute('selected')) {
-          console.warn('<chassis-cycle> \'selected\' attribute is deprecated. Please use \'active\' instead.');child.removeAttribute('selected');child.setAttribute('active', '');
+          console.warn('<chassis-cycle> \'selected\' attribute is deprecated. Please use \'active\' instead.');child.removeAttribute('selected');_private.get(_this).showChild(child);
         }
       };
       return _this;
@@ -157,9 +159,7 @@ customElements.define('chassis-cycle', function () {
                   return;
                 }var node = addedNodes.item(0);if (node.nodeType !== Node.ELEMENT_NODE) {
                   return;
-                }_private.get(_this2).replaceDeprecatedAttributes(node);if (node.hasAttribute('active')) {
-                  return _this2.show(node);
-                }default:
+                }_private.get(_this2).replaceDeprecatedAttributes(node);return node.hasAttribute('active') ? _private.get(_this2).showChild(node) : _private.get(_this2).hideChild(node);default:
                 return;}
           });
         });observer.observe(this, { attributes: false, childList: true, characterData: false });setTimeout(function () {
@@ -168,7 +168,9 @@ customElements.define('chassis-cycle', function () {
               continue;
             }var child = _this2.children.item(index);if ((typeof child === 'undefined' ? 'undefined' : (0, _typeof3.default)(child)) !== 'object') {
               continue;
-            }_private.get(_this2).replaceDeprecatedAttributes(child);
+            }_private.get(_this2).replaceDeprecatedAttributes(child);if (child !== _this2.activeElement) {
+              _private.get(_this2).hideChild(child);
+            }
           }
         }, 0);
       } /**

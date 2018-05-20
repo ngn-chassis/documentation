@@ -13,9 +13,10 @@
   @chassis import layout;
 
   & .ibl {
+    margin: var(--chassis-select-pill-padding-x);
     background: var(--blue);
-    @chassis apply inline-block;
-
-    @chassis z-index max;
+    /* @chassis apply inline-block; */
+    z-index: var(--test);
+    /* @chassis z-index max; */
   }
 }

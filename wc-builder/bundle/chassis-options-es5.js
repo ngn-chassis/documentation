@@ -120,6 +120,13 @@ customElements.define('chassis-options', function () {
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
       value: function connectedCallback() {}
+    }, {
+      key: 'clear',
+      value: function clear() {
+        while (this.lastChild) {
+          this.removeChild(this.lastChild);
+        }
+      }
     }]);
     return _class;
   }(HTMLElement);

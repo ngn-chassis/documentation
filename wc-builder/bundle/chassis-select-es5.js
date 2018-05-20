@@ -140,7 +140,7 @@ customElements.define('chassis-select', function () {
           for (var _iterator = (0, _getIterator3.default)(options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var option = _step.value;
 
-            _this.addOption(_private.get(_this).generateOptionObject(option), null, fauxOptgroup);
+            _this.add(_private.get(_this).generateOptionObject(option), null, fauxOptgroup);
           }
         } catch (err) {
           _didIteratorError = true;
@@ -233,7 +233,7 @@ customElements.define('chassis-select', function () {
             var child = _step3.value;
 
             var isElement = child instanceof HTMLElement;switch (child.nodeName) {case 'OPTION':
-                this.addOption(isElement ? _private.get(this).generateOptionObject(child) : child);break;case 'OPTGROUP':
+                this.add(isElement ? _private.get(this).generateOptionObject(child) : child);break;case 'OPTGROUP':
                 this.addOptgroup(isElement ? _private.get(this).generateChassisOptgroup(child) : child);break;default:
                 console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
           }
@@ -260,8 +260,8 @@ customElements.define('chassis-select', function () {
         var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
       }
     }, {
-      key: 'addOption',
-      value: function addOption(option, index) {
+      key: 'add',
+      value: function add(option, index) {
         var _this2 = this;
 
         var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
@@ -280,11 +280,11 @@ customElements.define('chassis-select', function () {
           }if (option.hasOwnProperty('disabled')) {
             sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
           }option.sourceElement = sourceEl;
-        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;dest.appendChild(chassisOption);chassisOption.addEventListener('click', function (evt) {
+        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var chassisOption = document.createElement('chassis-option');chassisOption.addEventListener('click', function (evt) {
           return _this2.select(chassisOption.key);
-        });option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
-          this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);return;
-        }this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);
+        });chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;option = { attributes: { disabled: disabled, label: label, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
+          dest.insertBefore(chassisOption, dest.children.item(index));this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);_private.get(this).sourceEl.add(option.sourceElement, index);return;
+        }dest.appendChild(chassisOption);_private.get(this).sourceEl.appendChild(option.sourceElement);this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);
       }
     }, {
       key: 'attributeChangedCallback',
@@ -300,6 +300,11 @@ customElements.define('chassis-select', function () {
       key: 'checkValidity',
       value: function checkValidity() {
         return _private.get(this).sourceEl.checkValidity();
+      }
+    }, {
+      key: 'clear',
+      value: function clear() {
+        _private.get(this).optionsEl.clear();_private.get(this).titleEl.clear();
       }
     }, {
       key: 'close',
@@ -330,7 +335,9 @@ customElements.define('chassis-select', function () {
     }, {
       key: 'inject',
       value: function inject(select) {
-        _private.get(this).sourceEl = select;_private.get(this).titleEl = document.createElement('chassis-select-title');_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).titleEl.slot = 'title';this.appendChild(_private.get(this).titleEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);this.addChildren(select.children);this.select(_private.get(this).options[0].id);
+        _private.get(this).sourceEl = select;_private.get(this).titleEl = document.createElement('chassis-select-title');_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).titleEl.slot = 'title';this.appendChild(_private.get(this).titleEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);if (select.children.length > 0) {
+          this.addChildren(select.children);this.select(_private.get(this).options[0].id);
+        }
       }
     }, {
       key: 'open',

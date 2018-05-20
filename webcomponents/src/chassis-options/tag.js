@@ -6,6 +6,12 @@ class ChassisOptions extends HTMLElement {
   connectedCallback () {
 
   }
+
+  clear () {
+    while (this.lastChild) {
+      this.removeChild(this.lastChild);
+    }
+  }
 }
 
 customElements.define('chassis-options', ChassisOptions)

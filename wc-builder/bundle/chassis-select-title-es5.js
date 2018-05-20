@@ -118,6 +118,11 @@ customElements.define('chassis-select-title', function () {
     }
 
     (0, _createClass3.default)(_class, [{
+      key: 'clear',
+      value: function clear() {
+        this.title = '';
+      }
+    }, {
       key: 'connectedCallback',
       value: function connectedCallback() {
         this._appendCaret();

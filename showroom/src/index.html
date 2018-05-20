@@ -53,6 +53,11 @@
 
       <div class="content">
         <section>
+          <chassis-control id="select2">
+            <label></label>
+            <select></select>
+          </chassis-control>
+
           <chassis-cycle>
             <section id="test1">
               <div>
@@ -557,6 +562,7 @@
 
       document.addEventListener('WebComponentsReady', function () {
         window.cycle = document.querySelector('chassis-cycle')
+        window.select = document.getElementById('select2').input
 
         // setTimeout(function () {
         //   var page = document.createElement('section')

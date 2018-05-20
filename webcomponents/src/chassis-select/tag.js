@@ -65,7 +65,7 @@ class ChassisSelect extends HTMLElement {
       let options = optgroup.querySelectorAll('option')
 
       for (let option of options) {
-        this.addOption(_private.get(this).generateOptionObject(option), null, fauxOptgroup)
+        this.add(_private.get(this).generateOptionObject(option), null, fauxOptgroup)
       }
 
       return fauxOptgroup
@@ -230,7 +230,7 @@ class ChassisSelect extends HTMLElement {
 
       switch (child.nodeName) {
         case 'OPTION':
-          this.addOption(isElement ? _private.get(this).generateOptionObject(child) : child)
+          this.add(isElement ? _private.get(this).generateOptionObject(child) : child)
           break
 
         case 'OPTGROUP':
@@ -253,7 +253,7 @@ class ChassisSelect extends HTMLElement {
     dest.appendChild(optgroup)
   }
 
-  addOption (option, index, dest = _private.get(this).optionsEl) {
+  add (option, index, dest = _private.get(this).optionsEl) {
     if (!customElements.get('chassis-option')) {
       console.error(`chassis-select requires chassis-option. Please include it in this document's <head> element.`)
       return
@@ -290,11 +290,9 @@ class ChassisSelect extends HTMLElement {
     let disabled = option.sourceElement.disabled
     let chassisOption = document.createElement('chassis-option')
 
+    chassisOption.addEventListener('click', (evt) => this.select(chassisOption.key))
     chassisOption.key = option.id
     chassisOption.innerHTML = option.sourceElement.innerHTML
-
-    dest.appendChild(chassisOption)
-    chassisOption.addEventListener('click', (evt) => this.select(chassisOption.key))
 
     option = {
       attributes: { disabled, label, value },
@@ -304,11 +302,17 @@ class ChassisSelect extends HTMLElement {
     }
 
     if (index) {
+      dest.insertBefore(chassisOption, dest.children.item(index))
+
       this[`${index}`] = option.sourceElement
       _private.get(this).options.splice(index, 0, option)
+      _private.get(this).sourceEl.add(option.sourceElement, index)
       return
     }
 
+    dest.appendChild(chassisOption)
+
+    _private.get(this).sourceEl.appendChild(option.sourceElement)
     this[`${_private.get(this).options.length}`] = option.sourceElement
     _private.get(this).options.push(option)
   }
@@ -338,6 +342,11 @@ class ChassisSelect extends HTMLElement {
 
   checkValidity () {
     return _private.get(this).sourceEl.checkValidity()
+  }
+
+  clear () {
+    _private.get(this).optionsEl.clear()
+    _private.get(this).titleEl.clear()
   }
 
   close () {
@@ -385,8 +394,10 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).optionsEl.slot = 'options'
     this.appendChild(_private.get(this).optionsEl)
 
-    this.addChildren(select.children)
-    this.select(_private.get(this).options[0].id)
+    if (select.children.length > 0) {
+      this.addChildren(select.children)
+      this.select(_private.get(this).options[0].id)
+    }
   }
 
   open () {

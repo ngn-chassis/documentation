@@ -1,19 +1,39 @@
 * === done
 
+Add "buffer" to media queries:
+
+@chassis viewport-width < medium buffer(+-200px) {
+  ...
+}
+
+Can do "+" for "medium + 200px",
+"-" for "medium - 200px",
+or "+-" or "" for both
+
+-----------
+
 Add "truncate" helper class that applies ellipsis
+
+--------------
 
 WIP: Math Functions:
 -Support nested functions and vars
 
+----------------------
+
 Add mult() and rotate() functions to chassis apply mixin
 
-Add vars:
+-----------------------
+
+* Add vars:
 --inline-block-margin-x
 --inline-block-margin-y
 --inline-block-padding-x
 --inline-block-padding-y
 
 ^ this will allow the values to be used for properties other than margin or padding (ie borders or shadows)
+
+--------------------
 
 class namespacing needs to handle class names added to the html tag. For example, right now,
 

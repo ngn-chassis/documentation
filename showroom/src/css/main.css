@@ -12,6 +12,12 @@
   @chassis import overrides;
   @chassis import layout;
 
+  & .custom-prop-test {
+    height: var(--root-line-height)em;
+    width: var(--root-line-height)em;
+    background: var(--blue);
+  }
+
   & .ibl {
     margin: var(--chassis-select-pill-padding-x);
     background: var(--blue);

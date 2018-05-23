@@ -1,5 +1,14 @@
 * === done
 
+Add config option to log all custom properties and their values to the console
+on build
+
+-------------
+
+Add "invalid" state to inputs
+
+------------
+
 Add "buffer" to media queries:
 
 @chassis viewport-width < medium buffer(+-200px) {

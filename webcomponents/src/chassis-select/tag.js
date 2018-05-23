@@ -312,9 +312,12 @@ class ChassisSelect extends HTMLElement {
 
     dest.appendChild(chassisOption)
 
-    _private.get(this).sourceEl.appendChild(option.sourceElement)
     this[`${_private.get(this).options.length}`] = option.sourceElement
     _private.get(this).options.push(option)
+
+    if (!_private.get(this).sourceEl[_private.get(this).options.length - 1]) {
+      _private.get(this).sourceEl.appendChild(option.sourceElement)
+    }
   }
 
   attributeChangedCallback (attr, oldValue, newValue) {

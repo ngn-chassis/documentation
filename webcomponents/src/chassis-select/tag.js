@@ -16,8 +16,9 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).options = []
     _private.get(this).title = ''
     _private.get(this).selectedOption = null
+    _private.get(this).placeholder = ''
 
-    _private.get(this).arrowKeydownHandler = (evt) => {
+    _private.get(this).arrowKeydownHandler = evt => {
       switch (evt[this.keySource]) {
         case 38:
         case 'ArrowUp':
@@ -36,7 +37,7 @@ class ChassisSelect extends HTMLElement {
       }
     }
 
-    _private.get(this).bodyClickHandler = (evt) => {
+    _private.get(this).bodyClickHandler = evt => {
       if (evt.target === this || this.contains(evt.target)) {
         return
       }
@@ -46,7 +47,7 @@ class ChassisSelect extends HTMLElement {
 
     _private.get(this).generateChassisOptgroup = (optgroup) => {
       if (!customElements.get('chassis-optgroup')) {
-        console.error(`chassis-select requires chassis-optgroup. Please include it in this document's <head> element.`)
+        console.error(`<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.`)
         return
       }
 
@@ -56,7 +57,7 @@ class ChassisSelect extends HTMLElement {
       let label = optgroup.getAttribute('label')
 
       if (!label || label.trim() === '') {
-        console.error('[ERROR] <optgroup> must have a label attribute!')
+        console.error('<optgroup> must have a label attribute!')
         return
       }
 
@@ -73,7 +74,7 @@ class ChassisSelect extends HTMLElement {
 
     _private.get(this).generateOptionObject = (optionEl) => {
       if (!customElements.get('chassis-option')) {
-        console.error(`chassis-select requires chassis-option. Please include it in this document's <head> element.`)
+        console.error(`<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.`)
         return
       }
 
@@ -123,7 +124,7 @@ class ChassisSelect extends HTMLElement {
       let acceptableValues = ['true', 'false', '', null]
 
       if (!acceptableValues.includes(value)) {
-        console.error(`<chassis-select> ${attr} attribute expected boolean but received "${value}"`)
+        console.error(`<chassis-select> "${attr}" attribute expected boolean but received "${value}"`)
         this.removeAttribute(attr)
         _private.get(this).sourceEl[attr] = false
         return
@@ -200,6 +201,14 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).handlePropertyChange('name', name)
   }
 
+  get placeholder () {
+    return _private.get(this).placeholder
+  }
+
+  set placeholder (text) {
+    _private.get(this).placeholder = text
+  }
+
   get required () {
     return _private.get(this).getBooleanPropertyValue('required')
   }
@@ -213,7 +222,17 @@ class ChassisSelect extends HTMLElement {
   }
 
   set selectedIndex (index) {
-    this.select(_private.get(this).options[index].id)
+    if (index < 0) {
+      return this.deselectAll()
+    }
+
+    let option = _private.get(this).options[index]
+
+    if (!option) {
+      return console.error(`No option at index ${index}`)
+    }
+
+    this.select(option.id)
   }
 
   get sourceElement () {
@@ -255,7 +274,7 @@ class ChassisSelect extends HTMLElement {
 
   add (option, index, dest = _private.get(this).optionsEl) {
     if (!customElements.get('chassis-option')) {
-      console.error(`chassis-select requires chassis-option. Please include it in this document's <head> element.`)
+      console.error(`<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.`)
       return
     }
 
@@ -288,6 +307,7 @@ class ChassisSelect extends HTMLElement {
     let label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim()
     let value = option.sourceElement.getAttribute('value')
     let disabled = option.sourceElement.disabled
+    let selected = option.sourceElement.hasAttribute('selected')
     let chassisOption = document.createElement('chassis-option')
 
     chassisOption.addEventListener('click', (evt) => this.select(chassisOption.key))
@@ -295,7 +315,7 @@ class ChassisSelect extends HTMLElement {
     chassisOption.innerHTML = option.sourceElement.innerHTML
 
     option = {
-      attributes: { disabled, label, value },
+      attributes: { disabled, label, selected, value },
       id: option.id,
       displayElement: chassisOption,
       sourceElement: option.sourceElement
@@ -307,6 +327,11 @@ class ChassisSelect extends HTMLElement {
       this[`${index}`] = option.sourceElement
       _private.get(this).options.splice(index, 0, option)
       _private.get(this).sourceEl.add(option.sourceElement, index)
+
+      if (selected) {
+        this.select(_private.get(this).options[index].id)
+      }
+
       return
     }
 
@@ -317,6 +342,10 @@ class ChassisSelect extends HTMLElement {
 
     if (!_private.get(this).sourceEl[_private.get(this).options.length - 1]) {
       _private.get(this).sourceEl.appendChild(option.sourceElement)
+    }
+
+    if (selected) {
+      this.select(option.id)
     }
   }
 
@@ -386,6 +415,13 @@ class ChassisSelect extends HTMLElement {
     }, 0)
   }
 
+  deselectAll () {
+    _private.get(this).selectedOption = null
+    _private.get(this).sourceEl.selectedIndex = -1
+    _private.get(this).titleEl.title = _private.get(this).placeholder
+    _private.get(this).titleEl.setAttribute('placeholder', '')
+  }
+
   inject (select) {
     _private.get(this).sourceEl = select
     _private.get(this).titleEl = document.createElement('chassis-select-title')
@@ -397,9 +433,13 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).optionsEl.slot = 'options'
     this.appendChild(_private.get(this).optionsEl)
 
+    _private.get(this).placeholder = this.getAttribute('placeholder')
+
     if (select.children.length > 0) {
       this.addChildren(select.children)
       this.select(_private.get(this).options[0].id)
+    } else {
+      this.deselectAll()
     }
   }
 
@@ -420,18 +460,23 @@ class ChassisSelect extends HTMLElement {
   select (id) {
     let option = _private.get(this).getOptionById(id)
 
-    if (option) {
-      option.sourceElement.selected = true
-      _private.get(this).titleEl.title = option.displayElement.innerHTML
-      _private.get(this).selectedOption = option
-
-      _private.get(this).options.forEach((option) => option.displayElement.removeAttribute('selected'))
-      option.displayElement.setAttribute('selected', '')
-
-      this.dispatchEvent(new Event('change', {
-        bubbles: true
-      }))
+    if (!option) {
+      console.error(`Invalid option id "${id}"`)
+      return this.deselectAll()
     }
+
+    option.sourceElement.selected = true
+    _private.get(this).titleEl.title = option.displayElement.innerHTML
+    _private.get(this).selectedOption = option
+
+    _private.get(this).options.forEach(option => option.displayElement.removeAttribute('selected'))
+    option.displayElement.setAttribute('selected', '')
+
+    _private.get(this).titleEl.removeAttribute('placeholder')
+
+    this.dispatchEvent(new Event('change', {
+      bubbles: true
+    }))
   }
 
   setCustomValidity (string) {

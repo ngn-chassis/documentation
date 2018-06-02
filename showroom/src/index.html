@@ -52,16 +52,49 @@
       </aside>
 
       <div class="content">
-        <div class="custom-prop-test">
+        <h1>H1 Test</h1>
+        <div class="h1 test">
+
+        </div>
+
+        <h2>H2 Test</h2>
+        <div class="h2 test">
+
+        </div>
+
+        <h3>H3 Test</h3>
+        <div class="h3 test">
+
+        </div>
+
+        <h4>H4 Test</h4>
+        <div class="h4 test">
+
+        </div>
+
+        <h5>H5 Test</h5>
+        <div class="h5 test">
+
+        </div>
+
+        <h6>H6 Test</h6>
+        <div class="h6 test">
 
         </div>
 
         <section>
+          <select id="old">
+            <option value="1">Test 1</option>
+            <option value="2">Test 2</option>
+            <option value="3">Test 3</option>
+            <option value="4">Test 4</option>
+          </select>
+
           <chassis-control id="select">
             <label>Select Test</label>
-            <select>
+            <select placeholder="test placeholder">
               <option value="1">Test 1</option>
-              <option value="2">Test 2</option>
+              <option value="2" selected>Test 2</option>
               <option value="3">Test 3</option>
               <option value="4">Test 4</option>
             </select>
@@ -559,6 +592,8 @@
 
     <script type="text/javascript">
       window.addEventListener('DOMContentLoaded', function () {
+        window.old = document.getElementById('old')
+
         // var old = document.getElementById('heyyy')
         //
         // console.log(old);

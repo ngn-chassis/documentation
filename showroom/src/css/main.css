@@ -12,10 +12,38 @@
   @chassis import overrides;
   @chassis import layout;
 
-  & .custom-prop-test {
-    height: var(--root-line-height)em;
-    width: var(--root-line-height)em;
+  & .test {
     background: var(--blue);
+
+    &.h1 {
+      height: var(--h1-line-height)em;
+      width: var(--h1-line-height)em;
+    }
+
+    &.h2 {
+      height: var(--h2-line-height)em;
+      width: var(--h2-line-height)em;
+    }
+
+    &.h3 {
+      height: var(--h3-line-height)em;
+      width: var(--h3-line-height)em;
+    }
+
+    &.h4 {
+      height: var(--h4-line-height)em;
+      width: var(--h4-line-height)em;
+    }
+
+    &.h5 {
+      height: var(--h5-line-height)em;
+      width: var(--h5-line-height)em;
+    }
+
+    &.h6 {
+      height: var(--h6-line-height)em;
+      width: var(--h6-line-height)em;
+    }
   }
 
   & .ibl {

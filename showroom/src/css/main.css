@@ -13,6 +13,12 @@
   @chassis import layout;
 
   & .test {
+    height: var(--typography-scale-ratio)em;
+    width: var(--typography-scale-ratio)em;
+    background: red;
+  }
+
+  /* & .test {
     background: var(--blue);
 
     &.h1 {
@@ -44,7 +50,7 @@
       height: var(--h6-line-height)em;
       width: var(--h6-line-height)em;
     }
-  }
+  } */
 
   & .ibl {
     margin: var(--chassis-select-pill-padding-x);

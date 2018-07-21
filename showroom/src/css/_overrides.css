@@ -20,7 +20,7 @@
 
 & code {
 	@chassis extend tag {
-		@state default {
+		@state initial {
 			overflow: hidden;
 
 			background: color(var(--grey-n00) alpha(61.8%));

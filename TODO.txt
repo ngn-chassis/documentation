@@ -1,7 +1,15 @@
 * === done
 
+replace ".width-constraint" with ".constraint" and add ".width" and ".height" modifiers.
+
+-------------
+
 Add config option to log all custom properties and their values to the console
 on build
+
+-------------
+
+Add <progress> component
 
 -------------
 

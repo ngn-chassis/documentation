@@ -47,7 +47,7 @@ legend {
 
 components {
 	anchor {
-		@state default {
+		@state initial {
 			color: var(--blue);
 		}
 
@@ -67,7 +67,7 @@ components {
 	}
 
 	button {
-		@state default {
+		@state initial {
 			background: var(--blue);
 			border-radius: .236em;
 			color: white;
@@ -95,7 +95,7 @@ components {
 	}
 
 	anchor-button {
-		@state default {
+		@state initial {
 			background: var(--blue);
 			border-radius: .236em;
 			color: white;
@@ -119,7 +119,7 @@ components {
 	}
 
 	tag {
-		@state default {
+		@state initial {
 			background: var(--green);
 			border-radius: .236em;
 			color: white;
@@ -131,7 +131,7 @@ components {
 	}
 
 	table {
-		@state default {
+		@state initial {
 			border-collapse: separate;
 			border-spacing: .382em 0;
 
@@ -162,19 +162,19 @@ components {
 	}
 
 	overlay {
-		@state default {
+		@state initial {
 			background: black;
 		}
 	}
 
 	modal {
-		@state default {
+		@state initial {
 			background: white;
 		}
 	}
 
 	chassis-control {
-		@state default {}
+		@state initial {}
 
 		@state disabled {
 			opacity: .382;
@@ -182,7 +182,7 @@ components {
 	}
 
 	input {
-		@state default {
+		@state initial {
 			margin-top: 0;
 			box-shadow: inset 0 -2px 0 0 var(--grey-n04);
 		}
@@ -194,7 +194,7 @@ components {
 	}
 
 	textarea {
-		@state default {
+		@state initial {
 			box-shadow: 0 0 0 2px var(--grey-n04);
 		}
 
@@ -205,20 +205,20 @@ components {
 	}
 
 	chassis-optgroup-label {
-		@state default {
+		@state initial {
 			font-weight: 700;
 		}
 	}
 
 	chassis-optgroup {
-		@state default {
+		@state initial {
 			margin: 0 .618em .618em;
 			border: 1px solid var(--grey-n04);
 		}
 	}
 
 	chassis-select-title {
-		@state default {
+		@state initial {
 			align-items: center;
 			justify-content: space-between;
 
@@ -232,7 +232,7 @@ components {
 	}
 
 	chassis-options {
-		@state default {
+		@state initial {
 			max-height: 16.18em;
 
 			background: white;
@@ -245,7 +245,7 @@ components {
 	}
 
 	chassis-option {
-		@state default {}
+		@state initial {}
 
 		@state hover {
 			background: color(black alpha(6.18%));
@@ -253,7 +253,7 @@ components {
 	}
 
 	chassis-datalist {
-		@state default {
+		@state initial {
 			box-shadow: inset 0 -2px 0 0 var(--grey-n04);
 			transition: all ease-in-out .1s;
 		}
@@ -280,7 +280,7 @@ components {
 	}
 
 	chassis-select {
-		@state default {
+		@state initial {
 			box-shadow: inset 0 0 0 2px var(--grey-n04);
 			transition: all ease-in-out .1s;
 		}

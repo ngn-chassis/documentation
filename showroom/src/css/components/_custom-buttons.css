@@ -5,11 +5,11 @@
     }
 
     @state hover {
-      background: color(var(--green) lightness(42%));
+      background: color-mod(var(--green) lightness(42%));
     }
 
     @state active {
-      background: color(var(--green) lightness(38%));
+      background: color-mod(var(--green) lightness(38%));
     }
   }
 }
@@ -24,7 +24,7 @@
     }
 
     @state hover {
-      background: color(var(--grey-n00) alpha(.618));
+      background: color-mod(var(--grey-n00) alpha(.618));
       color: currentColor;
     }
 

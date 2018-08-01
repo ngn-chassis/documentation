@@ -21,11 +21,15 @@
     }
   }
 
-  @chassis viewport-width >= medium {
+  @chassis viewport-width from medium {
     padding-top: 2.36em;
 
-    & .width-constraint {
+    & .width.constraint {
       display: flex;
     }
   }
+
+  /* @chassis viewport-width from medium(+200) {
+    background: red;
+  } */
 }

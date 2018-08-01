@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width" />
 
     <title>Chassis Showroom</title>
 
@@ -11,8 +11,6 @@
 
     <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
-    <!-- <script src="polyfills/webcomponentsjs/custom-elements-es5-adapter.js"></script>
-    <script src="polyfills/webcomponentsjs/webcomponents-loader.js"></script> -->
 
     <script src="webcomponents/chassis-control-es5.js"></script>
     <script src="webcomponents/chassis-select-es5.js"></script>
@@ -23,8 +21,8 @@
   <body class="showroom">
 
     <header>
-      <div class="width-constraint">
-        <h1>NGN Chassis Docs</h1>
+      <div class="width constraint">
+        <h1>NGN Chassis Documentation</h1>
         <aside class="links">
           <h2 class="hidden">Navigation</h2>
           <a href="javascript:;">Showroom</a>
@@ -52,7 +50,7 @@
       </aside>
 
       <div class="content">
-        <div class="test">
+        <!-- <div class="test">
 
         </div>
 
@@ -152,13 +150,13 @@
             <option value="4">4</option>
             <option value="5">5</option>
           </datalist>
-        </section>
+        </section> -->
 
-        <section>
+        <!-- <section>
           <div class="ibl">
             Inline Block test
           </div>
-        </section>
+        </section> -->
 
         <section id="typography_section" class="typography">
           <header>
@@ -206,7 +204,7 @@
                 Constrain the width of an element to min and max values. <code>gutter</code> will apply padding to the left and right sides of the element. By default, <code>constrain-width</code> uses your min and max layout width values as well as your layout gutter. This allows you to create full-width container elements and constrain the width of the content inside.
               </p>
               <p>
-                Helper class <code>.width-constraint</code> applies this mixin with the default values.
+                Helper class <code>.width constraint</code> applies this mixin with the default values.
               </p>
             </section>
             <section class="inline-block-layout">
@@ -315,17 +313,27 @@
                     &lt;button&gt;Default Button&lt;/button&gt;
                   </code>
                   <div class="output">
-                    <button>
-                      <span>Default Button</span>
-                    </button>
-                    <button>
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="8" r="7"></circle>
-                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                      </svg>
-                      <span>Button with Icon</span>
-                    </button>
-                    <div>
+                    <div class="top row">
+                      <button>
+                        <span>Default Button</span>
+                      </button>
+                      <button>
+                        <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="8" r="7"></circle>
+                          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        <span>Button with Left Icon</span>
+                      </button>
+                      <button>
+                        <svg class="right icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="8" r="7"></circle>
+                          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        <span>Button with Right Icon</span>
+                      </button>
+                    </div>
+
+                    <div class="bottom row">
                       <button>
                         button text will wrap to the next line when it is too wide for the viewport
                       </button>
@@ -345,7 +353,7 @@
                   <code>&lt;button class="pill"&gt;Pill Button&lt;/a&gt;</code>
                   <div class="output">
                     <button class="pill">
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>
                         <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                       </svg>
@@ -365,21 +373,21 @@
                   </code>
                   <div class="output">
                     <a class="custom-1" href="javascript:;">
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>
                         <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                       </svg>
                       Custom Button
                     </a>
                     <a class="custom-2" href="javascript:;">
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <svg class="right icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>
                         <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                       </svg>
                       Custom Button
                     </a>
                     <a class="custom-3" href="javascript:;">
-                      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="8" r="7"></circle>
                         <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                       </svg>
@@ -397,14 +405,14 @@
               </header>
               <p>
                 <span class="tag">
-                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="8" r="7"></circle>
                     <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                   </svg>
                   Tags
                 </span> display inline with text and can have icons placed in them. They come in regular and
                 <span class="pill tag">
-                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="8" r="7"></circle>
                     <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                   </svg>
@@ -557,7 +565,7 @@
     </main>
 
     <footer>
-      <div class="width-constraint">
+      <div class="width constraint">
         <span class="label">Viewport:</span>
 
         <span class="below-min range">

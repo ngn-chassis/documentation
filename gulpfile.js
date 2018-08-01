@@ -40,13 +40,12 @@ gulp.task('css', ['clean-css'], (next) => {
       theme: path.resolve(`${SRC}/main.theme`),
       // legacy: false,
       // customProperties: {},
-    	// layout: {
-    	// 	minWidth: 320,
-    	// 	maxWidth: 1600
-    	// },
+    	layout: {
+    		// maxWidth: 1600
+    	},
       typography: {
-        // scaleRatio: 'golden ratio',
-        // baseFontSize: 12
+        scaleRatio: 'golden ratio'//,
+        // baseFontSize: 18
       }
     }))
     .pipe(sourcemaps.write('.'))

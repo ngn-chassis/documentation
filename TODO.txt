@@ -1,5 +1,13 @@
 * === done
 
+Currently, the font-size is limited by the max UI width. Max width maybe should
+not have an effect on the typography queries. OR, there should be an option
+to enable/disable that behavior.
+
+In conjunction, it may make sense to add min/max font-size config options.
+
+-------------
+
 * replace ".width-constraint" with ".constraint" and add ".width" and ".height" modifiers.
 
 -------------
@@ -74,14 +82,6 @@ dev to add that class to the html tag, maybe make it customizable
 
 ------------------
 
-media queries
-- Add calc function, ie:
-
-@chassis viewport-width < calc(medium + 200px)
-
-^ This should get the value of medium and add 200px to it. It should
-ideally be able to calculate different units as well, if possible.
-
 buttons
 * remove side margin. let user decide which side to put it on using @chassis apply
 
@@ -134,3 +134,6 @@ extension {
 
 Possible solution: Always add extension decls to the first rule in
 each state. That should theoretically work in all cases.
+
+Or, if possible, loop through each ruleset inside the state, check for spaces in
+the selector, and if there are none, add the rule to each.

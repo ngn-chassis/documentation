@@ -34,8 +34,10 @@ gulp.task('clean-css', ['clean'], (next) => {
 
 gulp.task('css', ['clean-css'], (next) => {
   return gulp.src(SRC_ASSETS.CSS)
-    .pipe(sourcemaps.init())
     .pipe(chassis({
+      minify: true,
+      sourceMap: true,
+      sourceMapPath: path.resolve(DEST),
       importBasePath: path.resolve(`${SRC}/css`),
       theme: path.resolve(`${SRC}/main.theme`),
       // legacy: false,
@@ -47,8 +49,7 @@ gulp.task('css', ['clean-css'], (next) => {
         scaleRatio: 'golden ratio'//,
         // baseFontSize: 18
       }
-    }))
-    .pipe(sourcemaps.write('.'))
+    })).on('error', err => console.error(`ERROR ${err.plugin}: ${err.message}`))
     .pipe(gulp.dest(DEST))
 })
 

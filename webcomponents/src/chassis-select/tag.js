@@ -453,6 +453,17 @@ class ChassisSelect extends HTMLElement {
     }
   }
 
+  remove (index = null) {
+    if (index === null) {
+      return super.remove()
+    }
+
+    _private.get(this).options.splice(index, 1)
+    _private.get(this).sourceEl.remove(index)
+
+    _private.get(this).optionsEl.remove(index)
+  }
+
   /**
    * [select description]
    * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method

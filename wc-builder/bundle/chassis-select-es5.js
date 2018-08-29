@@ -24,6 +24,10 @@ var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstru
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
+var _get2 = require('babel-runtime/helpers/get');
+
+var _get3 = _interopRequireDefault(_get2);
+
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
@@ -358,6 +362,15 @@ customElements.define('chassis-select', function () {
         document.body.addEventListener('click', _private.get(this).bodyClickHandler);document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler);document.body.addEventListener('touchend', _private.get(this).bodyClickHandler);if (!this.isOpen) {
           this.isOpen = true;
         }
+      }
+    }, {
+      key: 'remove',
+      value: function remove() {
+        var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+        if (index === null) {
+          return (0, _get3.default)(_class.prototype.__proto__ || (0, _getPrototypeOf2.default)(_class.prototype), 'remove', this).call(this);
+        }_private.get(this).options.splice(index, 1);_private.get(this).sourceEl.remove(index);_private.get(this).optionsEl.remove(index);
       } /**
          * [select description]
          * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method

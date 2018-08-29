@@ -1,10 +1,10 @@
 * === done
 
-Currently, the font-size is limited by the max UI width. Max width maybe should
+? Currently, the font-size is limited by the max UI width. Max width maybe should
 not have an effect on the typography queries. OR, there should be an option
 to enable/disable that behavior.
 
-In conjunction, it may make sense to add min/max font-size config options.
+it may make sense to add min/max font-size config options.
 
 -------------
 
@@ -46,6 +46,7 @@ First item is negative buffer, second is positive
 -----------
 
 * Add "truncate" helper class that applies ellipsis
+* Revise: Truncate modifier truncates, new "ellipsis" modifier adds ellipsis
 
 --------------
 

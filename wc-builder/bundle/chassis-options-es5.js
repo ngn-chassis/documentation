@@ -127,6 +127,20 @@ customElements.define('chassis-options', function () {
           this.removeChild(this.lastChild);
         }
       }
+    }, {
+      key: 'remove',
+      value: function remove() {
+        var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+        if (index === null) {
+          return;
+        }this.options.item(index).remove();
+      }
+    }, {
+      key: 'options',
+      get: function get() {
+        return this.querySelectorAll('chassis-option');
+      }
     }]);
     return _class;
   }(HTMLElement);

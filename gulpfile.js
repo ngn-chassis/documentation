@@ -35,7 +35,7 @@ gulp.task('clean-css', ['clean'], (next) => {
 gulp.task('css', ['clean-css'], (next) => {
   return gulp.src(SRC_ASSETS.CSS)
     .pipe(chassis({
-      minify: true,
+      minify: false,
       sourceMap: true,
       sourceMapPath: path.resolve(DEST),
       importBasePath: path.resolve(`${SRC}/css`),

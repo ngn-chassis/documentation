@@ -7,10 +7,22 @@ class ChassisOptions extends HTMLElement {
 
   }
 
+  get options () {
+    return this.querySelectorAll('chassis-option')
+  }
+
   clear () {
     while (this.lastChild) {
       this.removeChild(this.lastChild);
     }
+  }
+
+  remove (index = null) {
+    if (index === null) {
+      return
+    }
+
+    this.options.item(index).remove()
   }
 }
 

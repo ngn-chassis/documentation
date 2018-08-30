@@ -6,7 +6,6 @@ class ChassisSelect extends HTMLElement {
       'form',
       'labels',
       'willValidate',
-      'selectedOptions',
       'type',
       'validationMessage',
       'validity'
@@ -119,6 +118,16 @@ class ChassisSelect extends HTMLElement {
     }
 
     _private.get(this).optionsEl.selectedIndex = index
+  }
+
+  get selectedOptions () {
+    return _private.get(this).optionsEl.selectedOptions
+  }
+
+  set selectedOptions (value) {
+    return _private.get(this).throw('readonly', {
+      name: 'selectedOptions'
+    })
   }
 
   get sourceElement () {

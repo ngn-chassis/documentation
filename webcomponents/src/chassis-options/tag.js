@@ -17,11 +17,21 @@ class ChassisOptions extends HTMLElement {
     this.selectByIndex(index)
   }
 
+  get selectedOptions () {
+    let options = []
+
+    if (this.selectedOption) {
+      options.push(this.selectedOption.displayElement)
+    }
+
+    return options
+  }
+
   connectedCallback () {
 
   }
 
-  add (option, index) {
+  add (option, index, dest = this) {
     if (!customElements.get('chassis-option')) {
       console.error(`<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.`)
       return
@@ -85,7 +95,7 @@ class ChassisOptions extends HTMLElement {
     }
 
     if (index) {
-      this.insertBefore(chassisOption, this.children.item(index))
+      dest.insertBefore(chassisOption, dest.children.item(index))
 
       this.parent[`${index}`] = option.displayElement
       this.options.splice(index, 0, option)
@@ -98,7 +108,7 @@ class ChassisOptions extends HTMLElement {
       return
     }
 
-    this.appendChild(chassisOption)
+    dest.appendChild(chassisOption)
 
     this.parent[`${this.options.length}`] = option.displayElement
     this.options.push(option)
@@ -247,6 +257,10 @@ class ChassisOptions extends HTMLElement {
    * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
    */
   select (option) {
+    if (option === this.selectedOption) {
+      return
+    }
+
     option.sourceElement.selected = true
     this.selectedOptionEl.contents = option.displayElement.innerHTML
     this.selectedOption = option

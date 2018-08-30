@@ -175,7 +175,7 @@ customElements.define('chassis-select', function () {
           console.error(message);
         }
       });
-      _private.get(_this).addReadOnlyProps(['form', 'labels', 'willValidate', 'selectedOptions', 'type', 'validationMessage', 'validity']);_private.get(_this).title = '';_private.get(_this).placeholder = '';_private.get(_this).arrowKeydownHandler = function (evt) {
+      _private.get(_this).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);_private.get(_this).title = '';_private.get(_this).placeholder = '';_private.get(_this).arrowKeydownHandler = function (evt) {
         switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
             evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
             evt.preventDefault();console.log('select next option');break;default:
@@ -359,6 +359,14 @@ customElements.define('chassis-select', function () {
         if (index < 0) {
           return this.deselectAll();
         }_private.get(this).optionsEl.selectedIndex = index;
+      }
+    }, {
+      key: 'selectedOptions',
+      get: function get() {
+        return _private.get(this).optionsEl.selectedOptions;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'selectedOptions' });
       }
     }, {
       key: 'sourceElement',

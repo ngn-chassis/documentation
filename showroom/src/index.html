@@ -54,7 +54,7 @@
           <label>Select Test</label>
           <select placeholder="test placeholder">
             <option>Test 1</option>
-            <option id="test1">Test 2</option>
+            <option selected>Test 2</option>
             <option>Test 3</option>
             <option>Test 4</option>
           </select>
@@ -466,7 +466,7 @@
 
                   <chassis-control id="select_menu">
                     <label>Menu Label</label>
-                    <select name="name-test">
+                    <select name="name-test" placeholder="placeholder">
                       <option value="test1">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <circle cx="12" cy="8" r="7"></circle>
@@ -637,6 +637,10 @@
         // window.cycle = document.querySelector('chassis-cycle')
         window.select = document.getElementById('select').input
         window.select2 = document.getElementById('select2')
+
+        window.select.addEventListener('change', function () {
+          console.log('change event fired');
+        })
 
         // setTimeout(function () {
         //   var page = document.createElement('section')

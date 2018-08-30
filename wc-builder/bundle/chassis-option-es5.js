@@ -171,12 +171,77 @@ customElements.define('chassis-option', function () {
           console.error(message);
         }
       });
+      _this.optionEl = null;_this.parent = null;
       return _this;
     }
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
       value: function connectedCallback() {}
+    }, {
+      key: 'defaultSelected',
+      get: function get() {
+        return this.optionEl.defaultSelected;
+      },
+      set: function set(bool) {
+        this.optionEl.defaultSelected = bool;
+      }
+    }, {
+      key: 'disabled',
+      get: function get() {
+        return this.optionEl.disabled;
+      },
+      set: function set(bool) {
+        this.optionEl.disabled = bool;
+      }
+    }, {
+      key: 'form',
+      get: function get() {
+        return this.parent.form;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'form' });
+      }
+    }, {
+      key: 'index',
+      get: function get() {
+        return this.optionEl.index;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'index' });
+      }
+    }, {
+      key: 'label',
+      get: function get() {
+        return this.optionEl.label;
+      },
+      set: function set(value) {
+        this.optionEl.label = value;
+      }
+    }, {
+      key: 'selected',
+      get: function get() {
+        return this.optionEl.selected;
+      },
+      set: function set(bool) {
+        this.optionEl.selected = bool;
+      }
+    }, {
+      key: 'text',
+      get: function get() {
+        return this.optionEl.text;
+      },
+      set: function set(value) {
+        this.optionEl.text = value;
+      }
+    }, {
+      key: 'value',
+      get: function get() {
+        return this.optionEl.value;
+      },
+      set: function set(value) {
+        this.optionEl.value = value;
+      }
     }]);
     return _class;
   }(HTMLElement);

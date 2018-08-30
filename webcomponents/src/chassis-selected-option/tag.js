@@ -1,18 +1,18 @@
-class ChassisSelectTitle extends HTMLElement {
+class ChassisSelectedOption extends HTMLElement {
   constructor () {
     super()
   }
 
-  get title () {
-    return this.shadowRoot.querySelector('#title').innerHTML
+  get contents () {
+    return this.shadowRoot.querySelector('#contents').innerHTML
   }
 
-  set title (value) {
-    this.shadowRoot.querySelector('#title').innerHTML = value
+  set contents (value) {
+    this.shadowRoot.querySelector('#contents').innerHTML = value
   }
 
   clear () {
-    this.title = ''
+    this.contents = ''
   }
 
   connectedCallback () {
@@ -43,4 +43,4 @@ class ChassisSelectTitle extends HTMLElement {
   }
 }
 
-customElements.define('chassis-select-title', ChassisSelectTitle)
+customElements.define('chassis-selected-option', ChassisSelectedOption)

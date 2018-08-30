@@ -1,9 +1,5 @@
 'use strict';
 
-var _getIterator2 = require('babel-runtime/core-js/get-iterator');
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
 var _defineProperty = require('babel-runtime/core-js/object/define-property');
 
 var _defineProperty2 = _interopRequireDefault(_defineProperty);
@@ -54,7 +50,7 @@ customElements.define('chassis-select', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><slot name="title"></slot><slot name="aftertitle"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host ::slotted(chassis-options){position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}:host([open]) ::slotted(chassis-options){height:auto}chassis-select{display:inline-flex;flex-direction:column;width:100%;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}chassis-select chassis-options{position:absolute;top:100%;left:0;z-index:1;min-width:100%;height:0;overflow:hidden}chassis-select[open] chassis-options{height:auto}</style><slot name="afterbegin"></slot><slot name="beforeselectedoption"></slot><slot name="selectedoption"></slot><slot name="afterselectedoption"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -96,6 +92,63 @@ customElements.define('chassis-select', function () {
           return prefix ? prefix + '_' + id : id;
         },
 
+        getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
+          return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+        },
+
+        handleAttributeChange: function handleAttributeChange(attr, val) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          _this.setAttribute(attr, val);
+          _private.get(_this).sourceEl[attr] = val;
+        },
+
+        handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          var acceptableValues = ['true', 'false', '', null];
+
+          if (!acceptableValues.includes(value)) {
+            console.error('<' + _this.tagName.toLowerCase() + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          if (value === 'false' && _this.hasAttribute(attr)) {
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          _private.get(_this).sourceEl[attr] = _this.hasAttribute(attr);
+        },
+
+        handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
+          if (!bool) {
+            _this.removeAttribute(prop);
+            _private.get(_this).sourceEl[prop] = false;
+            return;
+          }
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
+            _this.setAttribute(prop, '');
+            _private.get(_this).sourceEl[prop] = true;
+          }
+        },
+
+        handlePropertyChange: function handlePropertyChange(prop, val) {
+          _private.get(_this).sourceEl[prop] = val;
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+            _this.setAttribute(prop, val);
+          }
+        },
+
         readonlyProperty: function readonlyProperty(name) {
           return {
             get: function get() {
@@ -122,7 +175,7 @@ customElements.define('chassis-select', function () {
           console.error(message);
         }
       });
-      _private.get(_this).addReadOnlyProps(['form', 'labels', 'options', 'willValidate', 'selectedOptions', 'type', 'validationMessage', 'validity']);_private.get(_this).options = [];_private.get(_this).title = '';_private.get(_this).selectedOption = null;_private.get(_this).placeholder = '';_private.get(_this).arrowKeydownHandler = function (evt) {
+      _private.get(_this).addReadOnlyProps(['form', 'labels', 'willValidate', 'selectedOptions', 'type', 'validationMessage', 'validity']);_private.get(_this).title = '';_private.get(_this).placeholder = '';_private.get(_this).arrowKeydownHandler = function (evt) {
         switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
             evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
             evt.preventDefault();console.log('select next option');break;default:
@@ -131,170 +184,14 @@ customElements.define('chassis-select', function () {
         if (evt.target === _this || _this.contains(evt.target)) {
           return;
         }_this.removeAttribute('open');
-      };_private.get(_this).generateChassisOptgroup = function (optgroup) {
-        if (!customElements.get('chassis-optgroup')) {
-          console.error('<chassis-select> requires <chassis-optgroup>. Please include it in this document\'s <head> element.');return;
-        }var fauxOptgroup = document.createElement('chassis-optgroup');fauxOptgroup.id = _private.get(_this).generateGuid('optgroup');var label = optgroup.getAttribute('label');if (!label || label.trim() === '') {
-          console.error('<optgroup> must have a label attribute!');return;
-        }fauxOptgroup.setAttribute('label', label);var options = optgroup.querySelectorAll('option');var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = (0, _getIterator3.default)(options), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var option = _step.value;
-
-            _this.add(_private.get(_this).generateOptionObject(option), null, fauxOptgroup);
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        return fauxOptgroup;
-      };_private.get(_this).generateOptionObject = function (optionEl) {
-        if (!customElements.get('chassis-option')) {
-          console.error('<chassis-select> requires <chassis-option>. Please include it in this document\'s <head> element.');return;
-        }var obj = { id: _private.get(_this).generateGuid(), attributes: {}, sourceElement: optionEl };var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = (0, _getIterator3.default)(optionEl.attributes), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var attr = _step2.value;
-
-            obj.attributes[attr.name] = attr.value;
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
-        }
-
-        return obj;
-      };_private.get(_this).getBooleanPropertyValue = function (prop) {
-        return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-      }, _private.get(_this).getOptionById = function (id) {
-        var options = _private.get(_this).options;var option = void 0;for (var i = 0; i < options.length; i++) {
-          if (options[i].id === id) {
-            option = options[i];break;
-          }
-        }return option;
-      };_private.get(_this).handleAttributeChange = function (attr, val) {
-        if (!_private.get(_this).sourceEl) {
-          return;
-        }_this.setAttribute(attr, val);_private.get(_this).sourceEl[attr] = val;
-      };_private.get(_this).handleBooleanAttributeChange = function (attr, value) {
-        if (!_private.get(_this).sourceEl) {
-          return;
-        }var acceptableValues = ['true', 'false', '', null];if (!acceptableValues.includes(value)) {
-          console.error('<chassis-select> "' + attr + '" attribute expected boolean but received "' + value + '"');_this.removeAttribute(attr);_private.get(_this).sourceEl[attr] = false;return;
-        }if (value === 'false' && _this.hasAttribute(attr)) {
-          _this.removeAttribute(attr);_private.get(_this).sourceEl[attr] = false;return;
-        }_private.get(_this).sourceEl[attr] = _this.hasAttribute(attr);
-      };_private.get(_this).handleBooleanPropertyChange = function (prop, bool) {
-        if (!bool) {
-          _this.removeAttribute(prop);_private.get(_this).sourceEl[prop] = false;return;
-        }if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
-          _this.setAttribute(prop, '');_private.get(_this).sourceEl[prop] = true;
-        }
-      };_private.get(_this).handlePropertyChange = function (prop, val) {
-        _private.get(_this).sourceEl[prop] = val;if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
-          _this.setAttribute(prop, val);
-        }
       };
       return _this;
     }
 
     (0, _createClass3.default)(_class, [{
-      key: 'addChildren',
-      value: function addChildren(children) {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
-
-        try {
-          for (var _iterator3 = (0, _getIterator3.default)(children), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-            var child = _step3.value;
-
-            var isElement = child instanceof HTMLElement;switch (child.nodeName) {case 'OPTION':
-                this.add(isElement ? _private.get(this).generateOptionObject(child) : child);break;case 'OPTGROUP':
-                this.addOptgroup(isElement ? _private.get(this).generateChassisOptgroup(child) : child);break;default:
-                console.warn(child.nodeName.toLowerCase() + ' is not a valid child element for <chassis-select>. Removing...');break;}
-          }
-        } catch (err) {
-          _didIteratorError3 = true;
-          _iteratorError3 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-              _iterator3.return();
-            }
-          } finally {
-            if (_didIteratorError3) {
-              throw _iteratorError3;
-            }
-          }
-        }
-      }
-    }, {
-      key: 'addOptgroup',
-      value: function addOptgroup(optgroup) {
-        var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _private.get(this).optionsEl;
-
-        var label = document.createElement('chassis-optgroup-label');label.innerHTML = optgroup.getAttribute('label');dest.appendChild(label);dest.appendChild(optgroup);
-      }
-    }, {
       key: 'add',
       value: function add(option, index) {
-        var _this2 = this;
-
-        var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _private.get(this).optionsEl;
-
-        if (!customElements.get('chassis-option')) {
-          console.error('<chassis-select> requires <chassis-option>. Please include it in this document\'s <head> element.');return;
-        }if (!option.hasOwnProperty('id')) {
-          option.id = _private.get(this).generateGuid();
-        }if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
-          var sourceEl = document.createElement('option');if (option.hasOwnProperty('innerHTML')) {
-            sourceEl.innerHTML = option.innerHTML;
-          }if (option.hasOwnProperty('label')) {
-            sourceEl.innerHTML = option.label;
-          }if (option.hasOwnProperty('value')) {
-            sourceEl.value = option.value;
-          }if (option.hasOwnProperty('disabled')) {
-            sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
-          }option.sourceElement = sourceEl;
-        }var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var value = option.sourceElement.getAttribute('value');var disabled = option.sourceElement.disabled;var selected = option.sourceElement.hasAttribute('selected');var chassisOption = document.createElement('chassis-option');chassisOption.addEventListener('click', function (evt) {
-          return _this2.select(chassisOption.key);
-        });chassisOption.key = option.id;chassisOption.innerHTML = option.sourceElement.innerHTML;option = { attributes: { disabled: disabled, label: label, selected: selected, value: value }, id: option.id, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
-          dest.insertBefore(chassisOption, dest.children.item(index));this['' + index] = option.sourceElement;_private.get(this).options.splice(index, 0, option);_private.get(this).sourceEl.add(option.sourceElement, index);if (selected) {
-            this.select(_private.get(this).options[index].id);
-          }return;
-        }dest.appendChild(chassisOption);this['' + _private.get(this).options.length] = option.sourceElement;_private.get(this).options.push(option);if (!_private.get(this).sourceEl[_private.get(this).options.length - 1]) {
-          _private.get(this).sourceEl.appendChild(option.sourceElement);
-        }if (selected) {
-          this.select(option.id);
-        }
+        _private.get(this).optionsEl.add(option, index);
       }
     }, {
       key: 'attributeChangedCallback',
@@ -314,7 +211,7 @@ customElements.define('chassis-select', function () {
     }, {
       key: 'clear',
       value: function clear() {
-        _private.get(this).optionsEl.clear();_private.get(this).titleEl.clear();
+        _private.get(this).optionsEl.clear();
       }
     }, {
       key: 'close',
@@ -326,35 +223,45 @@ customElements.define('chassis-select', function () {
     }, {
       key: 'connectedCallback',
       value: function connectedCallback() {
-        var _this3 = this;
+        var _this2 = this;
 
         this.addEventListener('click', function (evt) {
-          _this3.hasAttribute('open') ? _this3.removeAttribute('open') : _this3.setAttribute('open', '');
+          _this2.hasAttribute('open') ? _this2.removeAttribute('open') : _this2.setAttribute('open', '');
         });this.addEventListener('focus', function (evt) {
-          _this3.addEventListener('keydown', _private.get(_this3).arrowKeydownHandler);
+          _this2.addEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
         });this.addEventListener('blur', function (evt) {
-          _this3.removeEventListener('keydown', _private.get(_this3).arrowKeydownHandler);
+          _this2.removeEventListener('keydown', _private.get(_this2).arrowKeydownHandler);
         });setTimeout(function () {
-          if (!_this3.hasAttribute('tabindex')) {
-            _this3.setAttribute('tabindex', 0);
-          }if (_this3.autofocus) {
-            _this3.focus();
+          if (!_this2.hasAttribute('tabindex')) {
+            _this2.setAttribute('tabindex', 0);
+          }if (_this2.autofocus) {
+            _this2.focus();
           }
         }, 0);
       }
     }, {
       key: 'deselectAll',
       value: function deselectAll() {
-        _private.get(this).selectedOption = null;_private.get(this).sourceEl.selectedIndex = -1;_private.get(this).titleEl.title = _private.get(this).placeholder;_private.get(this).titleEl.setAttribute('placeholder', '');
+        _private.get(this).optionsEl.deselectAll();
       }
     }, {
       key: 'inject',
       value: function inject(select) {
-        _private.get(this).sourceEl = select;_private.get(this).titleEl = document.createElement('chassis-select-title');_private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).titleEl.slot = 'title';this.appendChild(_private.get(this).titleEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);_private.get(this).placeholder = this.getAttribute('placeholder');if (select.children.length > 0) {
-          this.addChildren(select.children);this.select(_private.get(this).options[0].id);
+        _private.get(this).optionsEl = document.createElement('chassis-options');_private.get(this).sourceEl = select;_private.get(this).optionsEl.parent = this;_private.get(this).optionsEl.selectedOptionEl = document.createElement('chassis-selected-option');_private.get(this).optionsEl.selectedOptionEl.slot = 'selectedoption';this.appendChild(_private.get(this).optionsEl.selectedOptionEl);_private.get(this).optionsEl.slot = 'options';this.appendChild(_private.get(this).optionsEl);_private.get(this).placeholder = this.getAttribute('placeholder');if (select.children.length > 0) {
+          _private.get(this).optionsEl.addChildren(select.children);_private.get(this).optionsEl.selectByIndex(this.selectedIndex);
         } else {
           this.deselectAll();
         }
+      }
+    }, {
+      key: 'item',
+      value: function item(index) {
+        return _private.get(this).optionsEl.item(index);
+      }
+    }, {
+      key: 'namedItem',
+      value: function namedItem(id) {
+        return _private.get(this).optionsEl.namedItem(id);
       }
     }, {
       key: 'open',
@@ -370,19 +277,12 @@ customElements.define('chassis-select', function () {
 
         if (index === null) {
           return (0, _get3.default)(_class.prototype.__proto__ || (0, _getPrototypeOf2.default)(_class.prototype), 'remove', this).call(this);
-        }_private.get(this).options.splice(index, 1);_private.get(this).sourceEl.remove(index);_private.get(this).optionsEl.remove(index);
-      } /**
-         * [select description]
-         * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
-         */
+        }_private.get(this).optionsEl.remove(index);
+      }
     }, {
       key: 'select',
-      value: function select(id) {
-        var option = _private.get(this).getOptionById(id);if (!option) {
-          console.error('Invalid option id "' + id + '"');return this.deselectAll();
-        }option.sourceElement.selected = true;_private.get(this).titleEl.title = option.displayElement.innerHTML;_private.get(this).selectedOption = option;_private.get(this).options.forEach(function (option) {
-          return option.displayElement.removeAttribute('selected');
-        });option.displayElement.setAttribute('selected', '');_private.get(this).titleEl.removeAttribute('placeholder');this.dispatchEvent(new Event('change', { bubbles: true }));
+      value: function select(index) {
+        _private.get(this).optionsEl.selectByIndex(index);
       }
     }, {
       key: 'setCustomValidity',
@@ -396,6 +296,14 @@ customElements.define('chassis-select', function () {
       },
       set: function set(bool) {
         _private.get(this).handleBooleanPropertyChange('autofocus', bool);
+      }
+    }, {
+      key: 'options',
+      get: function get() {
+        return _private.get(this).optionsEl.options;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'options' });
       }
     }, {
       key: 'disabled',
@@ -445,14 +353,12 @@ customElements.define('chassis-select', function () {
     }, {
       key: 'selectedIndex',
       get: function get() {
-        return _private.get(this).sourceEl.selectedIndex;
+        return _private.get(this).optionsEl.selectedIndex;
       },
       set: function set(index) {
         if (index < 0) {
           return this.deselectAll();
-        }var option = _private.get(this).options[index];if (!option) {
-          return console.error('No option at index ' + index);
-        }this.select(option.id);
+        }_private.get(this).optionsEl.selectedIndex = index;
       }
     }, {
       key: 'sourceElement',

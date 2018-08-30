@@ -30,7 +30,7 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-customElements.define('chassis-select-title', function () {
+customElements.define('chassis-selected-option', function () {
   var _private = new _weakMap2.default();
 
   return function (_HTMLElement) {
@@ -46,7 +46,7 @@ customElements.define('chassis-select-title', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-select-title{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-select-title *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><div class="title"><slot id="title"></slot></div><slot name="aftertitle"></slot><div class="beforeend"><slot name="beforeend"></slot></div></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-selected-option{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-selected-option *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforetitle"></slot><div class="title"><slot id="title"></slot></div><slot name="aftertitle"></slot><div class="beforeend"><slot name="beforeend"></slot></div></template>');
 
       var template = container.querySelector('template');
 
@@ -100,7 +100,7 @@ customElements.define('chassis-select-title', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-select-title> ';
+          var message = 'ERROR <chassis-selected-option> ';
 
           switch (type) {
             case 'readonly':

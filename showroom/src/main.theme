@@ -189,7 +189,7 @@ components {
 		}
 	}
 
-	chassis-select-title {
+	chassis-selected-option {
 		@state initial {
 			align-items: center;
 			justify-content: space-between;

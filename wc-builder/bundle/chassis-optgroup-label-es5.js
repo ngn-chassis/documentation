@@ -88,6 +88,63 @@ customElements.define('chassis-optgroup-label', function () {
           return prefix ? prefix + '_' + id : id;
         },
 
+        getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
+          return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+        },
+
+        handleAttributeChange: function handleAttributeChange(attr, val) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          _this.setAttribute(attr, val);
+          _private.get(_this).sourceEl[attr] = val;
+        },
+
+        handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          var acceptableValues = ['true', 'false', '', null];
+
+          if (!acceptableValues.includes(value)) {
+            console.error('<' + _this.tagName.toLowerCase() + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          if (value === 'false' && _this.hasAttribute(attr)) {
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          _private.get(_this).sourceEl[attr] = _this.hasAttribute(attr);
+        },
+
+        handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
+          if (!bool) {
+            _this.removeAttribute(prop);
+            _private.get(_this).sourceEl[prop] = false;
+            return;
+          }
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
+            _this.setAttribute(prop, '');
+            _private.get(_this).sourceEl[prop] = true;
+          }
+        },
+
+        handlePropertyChange: function handlePropertyChange(prop, val) {
+          _private.get(_this).sourceEl[prop] = val;
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+            _this.setAttribute(prop, val);
+          }
+        },
+
         readonlyProperty: function readonlyProperty(name) {
           return {
             get: function get() {

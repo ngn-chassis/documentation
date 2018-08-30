@@ -30,7 +30,7 @@ var _weakMap2 = _interopRequireDefault(_weakMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-customElements.define('chassis-layout', function () {
+customElements.define('chassis-selected-option', function () {
   var _private = new _weakMap2.default();
 
   return function (_HTMLElement) {
@@ -46,7 +46,7 @@ customElements.define('chassis-layout', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column}:host([fullscreen]){height:100vh;max-height:100%;width:100vw;max-width:100%;overflow:auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex;flex-direction:column}chassis-layout[fullscreen]{height:100vh;max-height:100%;width:100vw;max-width:100%;overflow:auto}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-selected-option{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-selected-option *{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforecontents"></slot><div class="contents"><slot id="contents"></slot></div><slot name="aftercontents"></slot><div class="beforeend"><slot name="beforeend"></slot></div></template>');
 
       var template = container.querySelector('template');
 
@@ -157,7 +157,7 @@ customElements.define('chassis-layout', function () {
         },
 
         throw: function _throw(type, vars) {
-          var message = 'ERROR <chassis-layout> ';
+          var message = 'ERROR <chassis-selected-option> ';
 
           switch (type) {
             case 'readonly':
@@ -171,14 +171,31 @@ customElements.define('chassis-layout', function () {
           console.error(message);
         }
       });
-      _private.set(_this, { children: [] });
       return _this;
     }
 
     (0, _createClass3.default)(_class, [{
+      key: 'clear',
+      value: function clear() {
+        this.contents = '';
+      }
+    }, {
       key: 'connectedCallback',
       value: function connectedCallback() {
-        console.log('Init chassis-layout');
+        this._appendCaret();
+      }
+    }, {
+      key: '_appendCaret',
+      value: function _appendCaret() {
+        var xmlns = 'http://www.w3.org/2000/svg';var width = 24;var height = 24;var caret = document.createElementNS(xmlns, 'svg');caret.slot = 'beforeend';caret.setAttributeNS(null, 'width', width);caret.setAttributeNS(null, 'height', height);caret.setAttributeNS(null, 'viewBox', '0 0 ' + width + ' ' + height);caret.setAttributeNS(null, 'fill', 'none');caret.setAttributeNS(null, 'stroke', 'currentColor');caret.setAttributeNS(null, 'stroke-width', '3');caret.setAttributeNS(null, 'stroke-linecap', 'square');caret.setAttributeNS(null, 'stroke-linejoin', 'miter');var shape = document.createElementNS(xmlns, 'polyline');shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');caret.appendChild(shape);this.appendChild(caret);
+      }
+    }, {
+      key: 'contents',
+      get: function get() {
+        return this.shadowRoot.querySelector('#contents').innerHTML;
+      },
+      set: function set(value) {
+        this.shadowRoot.querySelector('#contents').innerHTML = value;
       }
     }]);
     return _class;

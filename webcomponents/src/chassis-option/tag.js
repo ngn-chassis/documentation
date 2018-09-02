@@ -2,28 +2,14 @@ class ChassisOption extends HTMLElement {
   constructor () {
     super()
 
-    this.optionEl = null
     this.parent = null
-  }
 
-  get defaultSelected () {
-    return this.optionEl.defaultSelected
-  }
-
-  set defaultSelected (bool) {
-    this.optionEl.defaultSelected = bool
-  }
-
-  get disabled () {
-    return this.optionEl.disabled
-  }
-
-  set disabled (bool) {
-    this.optionEl.disabled = bool
-  }
-
-  get form () {
-    return this.parent.form
+    this.defaultSelected = false
+    this.disabled = false
+    this.label = ''
+    this.selected = false
+    this.text = ''
+    this.value = ''
   }
 
   set form (value) {
@@ -33,7 +19,7 @@ class ChassisOption extends HTMLElement {
   }
 
   get index () {
-    return this.optionEl.index
+    return this.parent.displayOptions.indexOf(this)
   }
 
   set index (value) {
@@ -42,40 +28,18 @@ class ChassisOption extends HTMLElement {
     })
   }
 
-  get label () {
-    return this.optionEl.label
-  }
-
-  set label (value) {
-    this.optionEl.label = value
-  }
-
-  get selected () {
-    return this.optionEl.selected
-  }
-
-  set selected (bool) {
-    this.optionEl.selected = bool
-  }
-
-  get text () {
-    return this.optionEl.text
-  }
-
-  set text (value) {
-    this.optionEl.text = value
-  }
-
-  get value () {
-    return this.optionEl.value
-  }
-
-  set value (value) {
-    this.optionEl.value = value
-  }
-
   connectedCallback () {
 
+  }
+
+  /**
+   * @method remove
+   * Remove this option from the DOM.
+   * @override
+   */
+  remove () {
+    this.parent.removeOptionByIndex(this.index, false)
+    super.remove()
   }
 }
 

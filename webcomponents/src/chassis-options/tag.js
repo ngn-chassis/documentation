@@ -4,9 +4,40 @@ class ChassisOptions extends HTMLElement {
 
     this.parent = null
 
-    this.options = []
     this.selectedOption = null
     this.selectedOptionEl = null
+
+    _private.get(this).options = []
+  }
+
+  get form () {
+    return this.parent.form
+  }
+
+  set form (value) {
+    return _private.get(this).throw('readonly', {
+      name: 'form'
+    })
+  }
+
+  get displayOptions () {
+    return this.options.map(option => option.displayElement)
+  }
+
+  set displayOptions (value) {
+    return _private.get(this).throw('readonly', {
+      name: 'displayOptions'
+    })
+  }
+
+  get options () {
+    return _private.get(this).options
+  }
+
+  set options (value) {
+    return _private.get(this).throw('readonly', {
+      name: 'options'
+    })
   }
 
   get selectedIndex () {
@@ -25,6 +56,12 @@ class ChassisOptions extends HTMLElement {
     }
 
     return options
+  }
+
+  set selectedOptions (value) {
+    return _private.get(this).throw('readonly', {
+      name: 'selectedOptions'
+    })
   }
 
   connectedCallback () {
@@ -71,21 +108,30 @@ class ChassisOptions extends HTMLElement {
       chassisOption.id = id
     }
 
+    chassisOption.label = label
+
     if (option.sourceElement.hasAttribute('label')) {
       chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'))
     }
+
+    chassisOption.value = value
 
     if (value) {
       chassisOption.setAttribute('value', value)
     }
 
+    chassisOption.disabled = disabled
+
     if (disabled) {
       chassisOption.setAttribute('disabled', '')
     }
 
+    chassisOption.defaultSelected = selected
+
     chassisOption.key = _private.get(this).generateGuid()
     chassisOption.addEventListener('click', (evt) => this.selectByKey(chassisOption.key))
     chassisOption.innerHTML = option.sourceElement.innerHTML
+    chassisOption.parent = dest
 
     option = {
       attributes: { disabled, id, label, selected, value },
@@ -240,14 +286,20 @@ class ChassisOptions extends HTMLElement {
     return query[query.length - 1].displayElement
   }
 
-  remove (index = null) {
+  /**
+   * @method removeOptionByIndex
+   * @param  {Number}  [index=null]
+   * Index of option to remove
+   * @param  {Boolean} [destroy=true]
+   */
+  removeOptionByIndex (index = null, destroy = true) {
     if (index === null) {
       return
     }
 
     let option = this.options[index]
     option.sourceElement.remove()
-    option.displayElement.remove()
+    destroy && option.displayElement.remove()
 
     this.options.splice(index, 1)
   }

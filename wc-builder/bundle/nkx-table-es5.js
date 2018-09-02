@@ -109,7 +109,7 @@ customElements.define('nkx-table', function () {
           var acceptableValues = ['true', 'false', '', null];
 
           if (!acceptableValues.includes(value)) {
-            console.error('<' + _this.tagName.toLowerCase() + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            console.error('<' + _this.localName + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
             _this.removeAttribute(attr);
             _private.get(_this).sourceEl[attr] = false;
             return;

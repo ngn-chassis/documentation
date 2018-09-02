@@ -67,7 +67,7 @@ customElements.define('{{TAG-NAME}}', (function () {
           let acceptableValues = ['true', 'false', '', null]
 
           if (!acceptableValues.includes(value)) {
-            console.error(`<${this.tagName.toLowerCase()}> "${attr}" attribute expected boolean but received "${value}"`)
+            console.error(`<${this.localName}> "${attr}" attribute expected boolean but received "${value}"`)
             this.removeAttribute(attr)
             _private.get(this).sourceEl[attr] = false
             return

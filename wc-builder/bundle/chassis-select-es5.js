@@ -113,7 +113,7 @@ customElements.define('chassis-select', function () {
           var acceptableValues = ['true', 'false', '', null];
 
           if (!acceptableValues.includes(value)) {
-            console.error('<' + _this.tagName.toLowerCase() + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            console.error('<' + _this.localName + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
             _this.removeAttribute(attr);
             _private.get(_this).sourceEl[attr] = false;
             return;
@@ -277,7 +277,7 @@ customElements.define('chassis-select', function () {
 
         if (index === null) {
           return (0, _get3.default)(_class.prototype.__proto__ || (0, _getPrototypeOf2.default)(_class.prototype), 'remove', this).call(this);
-        }_private.get(this).optionsEl.remove(index);
+        }_private.get(this).optionsEl.removeOptionByIndex(index);
       }
     }, {
       key: 'select',
@@ -296,14 +296,6 @@ customElements.define('chassis-select', function () {
       },
       set: function set(bool) {
         _private.get(this).handleBooleanPropertyChange('autofocus', bool);
-      }
-    }, {
-      key: 'options',
-      get: function get() {
-        return _private.get(this).optionsEl.options;
-      },
-      set: function set(value) {
-        return _private.get(this).throw('readonly', { name: 'options' });
       }
     }, {
       key: 'disabled',
@@ -333,6 +325,14 @@ customElements.define('chassis-select', function () {
       },
       set: function set(name) {
         _private.get(this).handlePropertyChange('name', name);
+      }
+    }, {
+      key: 'options',
+      get: function get() {
+        return _private.get(this).optionsEl.displayOptions;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'options' });
       }
     }, {
       key: 'placeholder',

@@ -54,16 +54,6 @@ class ChassisSelect extends HTMLElement {
     _private.get(this).handleBooleanPropertyChange('autofocus', bool)
   }
 
-  get options () {
-    return _private.get(this).optionsEl.options
-  }
-
-  set options (value) {
-    return _private.get(this).throw('readonly', {
-      name: 'options'
-    })
-  }
-
   get disabled () {
     return _private.get(this).getBooleanPropertyValue('disabled')
   }
@@ -90,6 +80,16 @@ class ChassisSelect extends HTMLElement {
 
   set name (name) {
     _private.get(this).handlePropertyChange('name', name)
+  }
+
+  get options () {
+    return _private.get(this).optionsEl.displayOptions
+  }
+
+  set options (value) {
+    return _private.get(this).throw('readonly', {
+      name: 'options'
+    })
   }
 
   get placeholder () {
@@ -256,7 +256,7 @@ class ChassisSelect extends HTMLElement {
       return super.remove()
     }
 
-    _private.get(this).optionsEl.remove(index)
+    _private.get(this).optionsEl.removeOptionByIndex(index)
   }
 
   select (index) {

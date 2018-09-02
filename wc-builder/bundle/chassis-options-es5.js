@@ -113,7 +113,7 @@ customElements.define('chassis-options', function () {
           var acceptableValues = ['true', 'false', '', null];
 
           if (!acceptableValues.includes(value)) {
-            console.error('<' + _this.tagName.toLowerCase() + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            console.error('<' + _this.localName + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
             _this.removeAttribute(attr);
             _private.get(_this).sourceEl[attr] = false;
             return;
@@ -175,7 +175,7 @@ customElements.define('chassis-options', function () {
           console.error(message);
         }
       });
-      _this.parent = null;_this.options = [];_this.selectedOption = null;_this.selectedOptionEl = null;
+      _this.parent = null;_this.selectedOption = null;_this.selectedOptionEl = null;_private.get(_this).options = [];
       return _this;
     }
 
@@ -203,15 +203,15 @@ customElements.define('chassis-options', function () {
           }option.sourceElement = sourceEl;
         }var disabled = option.sourceElement.disabled;var id = option.sourceElement.getAttribute('id');var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();var selected = option.sourceElement.hasAttribute('selected');var value = option.sourceElement.getAttribute('value');var chassisOption = document.createElement('chassis-option');if (id) {
           chassisOption.id = id;
-        }if (option.sourceElement.hasAttribute('label')) {
+        }chassisOption.label = label;if (option.sourceElement.hasAttribute('label')) {
           chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'));
-        }if (value) {
+        }chassisOption.value = value;if (value) {
           chassisOption.setAttribute('value', value);
-        }if (disabled) {
+        }chassisOption.disabled = disabled;if (disabled) {
           chassisOption.setAttribute('disabled', '');
-        }chassisOption.key = _private.get(this).generateGuid();chassisOption.addEventListener('click', function (evt) {
+        }chassisOption.defaultSelected = selected;chassisOption.key = _private.get(this).generateGuid();chassisOption.addEventListener('click', function (evt) {
           return _this2.selectByKey(chassisOption.key);
-        });chassisOption.innerHTML = option.sourceElement.innerHTML;option = { attributes: { disabled: disabled, id: id, label: label, selected: selected, value: value }, key: chassisOption.key, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
+        });chassisOption.innerHTML = option.sourceElement.innerHTML;chassisOption.parent = dest;option = { attributes: { disabled: disabled, id: id, label: label, selected: selected, value: value }, key: chassisOption.key, displayElement: chassisOption, sourceElement: option.sourceElement };if (index) {
           dest.insertBefore(chassisOption, dest.children.item(index));this.parent['' + index] = option.displayElement;this.options.splice(index, 0, option);this.parent.sourceEl.add(option.sourceElement, index);if (selected) {
             this.selectByIndex(index);
           }return;
@@ -357,15 +357,21 @@ customElements.define('chassis-options', function () {
         });if (!query.length) {
           return null;
         }return query[query.length - 1].displayElement;
-      }
+      } /**
+         * @method removeOptionByIndex
+         * @param  {Number}  [index=null]
+         * Index of option to remove
+         * @param  {Boolean} [destroy=true]
+         */
     }, {
-      key: 'remove',
-      value: function remove() {
+      key: 'removeOptionByIndex',
+      value: function removeOptionByIndex() {
         var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+        var destroy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         if (index === null) {
           return;
-        }var option = this.options[index];option.sourceElement.remove();option.displayElement.remove();this.options.splice(index, 1);
+        }var option = this.options[index];option.sourceElement.remove();destroy && option.displayElement.remove();this.options.splice(index, 1);
       } /**
          * [select description]
          * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
@@ -396,6 +402,32 @@ customElements.define('chassis-options', function () {
         }this.select(option);
       }
     }, {
+      key: 'form',
+      get: function get() {
+        return this.parent.form;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'form' });
+      }
+    }, {
+      key: 'displayOptions',
+      get: function get() {
+        return this.options.map(function (option) {
+          return option.displayElement;
+        });
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'displayOptions' });
+      }
+    }, {
+      key: 'options',
+      get: function get() {
+        return _private.get(this).options;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'options' });
+      }
+    }, {
       key: 'selectedIndex',
       get: function get() {
         return this.options.indexOf(this.selectedOption);
@@ -409,6 +441,9 @@ customElements.define('chassis-options', function () {
         var options = [];if (this.selectedOption) {
           options.push(this.selectedOption.displayElement);
         }return options;
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'selectedOptions' });
       }
     }]);
     return _class;

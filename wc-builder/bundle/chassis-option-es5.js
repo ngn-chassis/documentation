@@ -20,6 +20,10 @@ var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstru
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
+var _get2 = require('babel-runtime/helpers/get');
+
+var _get3 = _interopRequireDefault(_get2);
+
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
@@ -109,7 +113,7 @@ customElements.define('chassis-option', function () {
           var acceptableValues = ['true', 'false', '', null];
 
           if (!acceptableValues.includes(value)) {
-            console.error('<' + _this.tagName.toLowerCase() + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            console.error('<' + _this.localName + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
             _this.removeAttribute(attr);
             _private.get(_this).sourceEl[attr] = false;
             return;
@@ -171,76 +175,34 @@ customElements.define('chassis-option', function () {
           console.error(message);
         }
       });
-      _this.optionEl = null;_this.parent = null;
+      _this.parent = null;_this.defaultSelected = false;_this.disabled = false;_this.label = '';_this.selected = false;_this.text = '';_this.value = '';
       return _this;
     }
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
-      value: function connectedCallback() {}
+      value: function connectedCallback() {} /**
+                                              * @method remove
+                                              * Remove this option from the DOM.
+                                              * @override
+                                              */
     }, {
-      key: 'defaultSelected',
-      get: function get() {
-        return this.optionEl.defaultSelected;
-      },
-      set: function set(bool) {
-        this.optionEl.defaultSelected = bool;
-      }
-    }, {
-      key: 'disabled',
-      get: function get() {
-        return this.optionEl.disabled;
-      },
-      set: function set(bool) {
-        this.optionEl.disabled = bool;
+      key: 'remove',
+      value: function remove() {
+        this.parent.removeOptionByIndex(this.index, false);(0, _get3.default)(_class.prototype.__proto__ || (0, _getPrototypeOf2.default)(_class.prototype), 'remove', this).call(this);
       }
     }, {
       key: 'form',
-      get: function get() {
-        return this.parent.form;
-      },
       set: function set(value) {
         return _private.get(this).throw('readonly', { name: 'form' });
       }
     }, {
       key: 'index',
       get: function get() {
-        return this.optionEl.index;
+        return this.parent.displayOptions.indexOf(this);
       },
       set: function set(value) {
         return _private.get(this).throw('readonly', { name: 'index' });
-      }
-    }, {
-      key: 'label',
-      get: function get() {
-        return this.optionEl.label;
-      },
-      set: function set(value) {
-        this.optionEl.label = value;
-      }
-    }, {
-      key: 'selected',
-      get: function get() {
-        return this.optionEl.selected;
-      },
-      set: function set(bool) {
-        this.optionEl.selected = bool;
-      }
-    }, {
-      key: 'text',
-      get: function get() {
-        return this.optionEl.text;
-      },
-      set: function set(value) {
-        this.optionEl.text = value;
-      }
-    }, {
-      key: 'value',
-      get: function get() {
-        return this.optionEl.value;
-      },
-      set: function set(value) {
-        this.optionEl.value = value;
       }
     }]);
     return _class;

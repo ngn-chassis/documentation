@@ -23,7 +23,7 @@
 		@state initial {
 			overflow: hidden;
 
-			background: color(var(--grey-n00) alpha(61.8%));
+			background: color-mod(var(--grey-n00) alpha(61.8%));
 			box-shadow: inset 0 0 0 1px var(--grey-n01);
 			border-radius: .236em;
 

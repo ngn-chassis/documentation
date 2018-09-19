@@ -34,22 +34,22 @@ gulp.task('clean-css', ['clean'], (next) => {
 
 gulp.task('css', ['clean-css'], (next) => {
   return gulp.src(SRC_ASSETS.CSS)
-    .pipe(sourcemaps.init())
     .pipe(chassis({
+      minify: false,
+      sourceMap: true,
+      sourceMapPath: path.resolve(DEST),
       importBasePath: path.resolve(`${SRC}/css`),
       theme: path.resolve(`${SRC}/main.theme`),
       // legacy: false,
       // customProperties: {},
     	layout: {
-    		minWidth: 320,
-    		maxWidth: 1600
+    		// maxWidth: 1600
     	},
       typography: {
-        // scaleRatio: 'golden ratio',
-        // baseFontSize: 12
+        scaleRatio: 'golden ratio'//,
+        // baseFontSize: 18
       }
-    }))
-    .pipe(sourcemaps.write('.'))
+    })).on('error', err => console.error(`ERROR ${err.plugin}: ${err.message}`))
     .pipe(gulp.dest(DEST))
 })
 

@@ -7,13 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
     "build-webcomponents": "build-webcomponents webcomponents/src webcomponents/dist --es5",
-    "bundle-chassis-select": "bundle-webcomponent --name=chassis-select --components=chassis-select-title,chassis-options,chassis-option,chassis-optgroup,chassis-optgroup-label,chassis-select --dir=webcomponents/dist",
+    "bundle-chassis-select": "bundle-webcomponent --name=chassis-select --components=chassis-selected-option,chassis-options,chassis-option,chassis-optgroup,chassis-optgroup-label,chassis-select --dir=webcomponents/dist",
     "bundle-chassis-datalist": "bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist",
     "bundle-chassis-layout": "bundle-webcomponent --name=chassis-layout --components=chassis-layout-cell,chassis-layout --dir=webcomponents/dist",
     "bundle-webcomponents": "npm run bundle-chassis-select && npm run bundle-chassis-datalist && npm run bundle-chassis-layout",
     "build": "npm run link-chassis && npm run build-webcomponents && npm run bundle-webcomponents && gulp build",
-    "build2": "build-webcomponent webcomponents/src/chassis-cycle webcomponents/dist --es5 && gulp build",
-    "build-chassis-select": "build-webcomponent webcomponents/src/chassis-select webcomponents/dist --es5 && npm run bundle-chassis-select && gulp build"
+    "build-chassis-select": "build-webcomponent webcomponents/src/chassis-select webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-options webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-option webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-selected-option webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup webcomponents/dist --es5 && build-webcomponent webcomponents/src/chassis-optgroup-label webcomponents/dist --es5 && npm run bundle-chassis-select && gulp build"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",

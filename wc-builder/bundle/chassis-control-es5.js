@@ -50,7 +50,7 @@ customElements.define('chassis-control', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:layout style;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .label-wrapper{flex:1 1 auto;display:flex}:host([type=toggle]) .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}:host([type=select]){flex-direction:column}chassis-control{display:flex;contain:layout style;max-width:100%}:host :after,:host :before,chassis-control *{box-sizing:border-box}chassis-control .hidden{display:none;visibility:hidden;opacity:0}chassis-control[type=field]{flex-direction:column}chassis-control[type=toggle]{align-items:center}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .label-wrapper{flex:1 1 auto;display:flex}chassis-control[type=toggle] .input-wrapper{order:-1;display:flex;justify-content:center;align-items:center}chassis-control[type=select]{flex-direction:column}</style><slot name="afterbegin"></slot><slot name="beforelabelwrapper"></slot><div class="label-wrapper"><slot name="beforelabel"></slot><slot name="label"></slot><slot name="afterlabel"></slot></div><slot name="afterlabelwrapper"></slot><slot name="beforeinputwrapper"></slot><div class="input-wrapper"><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot></div><slot name="afterinputwrapper"></slot><slot name="beforeend"></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;contain:layout style;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host .label-wrapper{flex:1 1 auto;display:flex}:host .input-wrapper{display:flex;align-items:center}:host([type=toggle]) .input-wrapper{order:-1;justify-content:center}:host([type=select]){flex-direction:column}chassis-control{display:flex;contain:layout style;max-width:100%}:host :after,:host :before,chassis-control *{box-sizing:border-box}chassis-control .hidden{display:none;visibility:hidden;opacity:0}chassis-control[type=field]{flex-direction:column}chassis-control[type=toggle]{align-items:center}chassis-control .label-wrapper{flex:1 1 auto;display:flex}chassis-control .input-wrapper{display:flex;align-items:center}chassis-control[type=toggle] .input-wrapper{order:-1;justify-content:center}chassis-control[type=select]{flex-direction:column}</style><slot name="afterbegin"></slot><slot name="beforelabelwrapper"></slot><div class="label-wrapper"><slot name="beforelabel"></slot><slot name="label"></slot><slot name="afterlabel"></slot></div><slot name="afterlabelwrapper"></slot><slot name="beforeinputwrapper"></slot><div class="input-wrapper"><slot name="beforeinput"></slot><slot name="input"></slot><slot name="afterinput"></slot></div><slot name="afterinputwrapper"></slot><slot name="beforeend"></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -90,6 +90,63 @@ customElements.define('chassis-control', function () {
           });
 
           return prefix ? prefix + '_' + id : id;
+        },
+
+        getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
+          return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+        },
+
+        handleAttributeChange: function handleAttributeChange(attr, val) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          _this.setAttribute(attr, val);
+          _private.get(_this).sourceEl[attr] = val;
+        },
+
+        handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          var acceptableValues = ['true', 'false', '', null];
+
+          if (!acceptableValues.includes(value)) {
+            console.error('<' + _this.localName + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          if (value === 'false' && _this.hasAttribute(attr)) {
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          _private.get(_this).sourceEl[attr] = _this.hasAttribute(attr);
+        },
+
+        handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
+          if (!bool) {
+            _this.removeAttribute(prop);
+            _private.get(_this).sourceEl[prop] = false;
+            return;
+          }
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
+            _this.setAttribute(prop, '');
+            _private.get(_this).sourceEl[prop] = true;
+          }
+        },
+
+        handlePropertyChange: function handlePropertyChange(prop, val) {
+          _private.get(_this).sourceEl[prop] = val;
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+            _this.setAttribute(prop, val);
+          }
         },
 
         readonlyProperty: function readonlyProperty(name) {

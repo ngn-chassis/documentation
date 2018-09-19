@@ -48,6 +48,61 @@ customElements.define('{{TAG-NAME}}', (function () {
           return prefix ? `${prefix}_${id}` : id
         },
 
+        getBooleanPropertyValue: prop => this.hasAttribute(prop) && this.getAttribute(prop) !== 'false',
+
+        handleAttributeChange: (attr, val) => {
+          if (!_private.get(this).sourceEl) {
+            return
+          }
+
+          this.setAttribute(attr, val)
+          _private.get(this).sourceEl[attr] = val
+        },
+
+        handleBooleanAttributeChange: (attr, value) => {
+          if (!_private.get(this).sourceEl) {
+            return
+          }
+
+          let acceptableValues = ['true', 'false', '', null]
+
+          if (!acceptableValues.includes(value)) {
+            console.error(`<${this.localName}> "${attr}" attribute expected boolean but received "${value}"`)
+            this.removeAttribute(attr)
+            _private.get(this).sourceEl[attr] = false
+            return
+          }
+
+          if (value === 'false' && this.hasAttribute(attr)) {
+            this.removeAttribute(attr)
+            _private.get(this).sourceEl[attr] = false
+            return
+          }
+
+          _private.get(this).sourceEl[attr] = this.hasAttribute(attr)
+        },
+
+        handleBooleanPropertyChange: (prop, bool) => {
+          if (!bool) {
+            this.removeAttribute(prop)
+            _private.get(this).sourceEl[prop] = false
+            return
+          }
+
+          if (!this.hasAttribute(prop) || this.getAttribute(prop) !== 'true') {
+            this.setAttribute(prop, '')
+            _private.get(this).sourceEl[prop] = true
+          }
+        },
+
+        handlePropertyChange: (prop, val) => {
+          _private.get(this).sourceEl[prop] = val
+
+          if (!this.hasAttribute(prop) || this.getAttribute(prop) !== val) {
+            this.setAttribute(prop, val)
+          }
+        },
+
         readonlyProperty: (name) => ({
           get: () => _private.get(this).sourceEl[name],
           set: () => _private.get(this).throw('readonly', {name})

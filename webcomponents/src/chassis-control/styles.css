@@ -26,21 +26,19 @@
   align-items: center;
 }
 
-:host([type="toggle"]) .label-wrapper {
+:host .label-wrapper {
   flex: 1 1 auto;
   display: flex;
 }
 
-:host([type="toggle"]) .label-wrapper {
-  flex: 1 1 auto;
+:host .input-wrapper {
   display: flex;
+  align-items: center;
 }
 
 :host([type="toggle"]) .input-wrapper {
   order: -1;
-  display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 :host([type="select"]) {

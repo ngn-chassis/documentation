@@ -1,6 +1,14 @@
 * === done
 
-replace ".width-constraint" with ".constraint" and add ".width" and ".height" modifiers.
+? Currently, the font-size is limited by the max UI width. Max width maybe should
+not have an effect on the typography queries. OR, there should be an option
+to enable/disable that behavior.
+
+it may make sense to add min/max font-size config options.
+
+-------------
+
+* replace ".width-constraint" with ".constraint" and add ".width" and ".height" modifiers.
 
 -------------
 
@@ -13,11 +21,11 @@ Add <progress> component
 
 -------------
 
-Add "invalid" state to inputs
+* Add "invalid" state to inputs
 
 ------------
 
-Add "buffer" to media queries:
+* Add "buffer" to media queries:
 
 @chassis viewport-width < medium buffer(+-200px) {
   ...
@@ -27,9 +35,18 @@ Can do "+" for "medium + 200px",
 "-" for "medium - 200px",
 or "+-" or "" for both
 
+or
+
+@chassis viewport-width < medium buffer(200px,200px) {
+  ...
+}
+
+First item is negative buffer, second is positive
+
 -----------
 
-Add "truncate" helper class that applies ellipsis
+* Add "truncate" helper class that applies ellipsis
+* Revise: Truncate modifier truncates, new "ellipsis" modifier adds ellipsis
 
 --------------
 
@@ -38,7 +55,8 @@ WIP: Math Functions:
 
 ----------------------
 
-Add mult() and rotate() functions to chassis apply mixin
+* Add mult() and rotate() functions to chassis apply mixin
+What was rotate() supposed to do again?
 
 -----------------------
 
@@ -52,24 +70,18 @@ Add mult() and rotate() functions to chassis apply mixin
 
 --------------------
 
-class namespacing needs to handle class names added to the html tag. For example, right now,
+* class namespacing needs to handle class names added to the html tag. For example, right now,
 
 <html class="project">
 
 will be namespaced ".chassis .project". It needs to be ".chassis.project"
 
+-----------------------
+
 consider adding a config option for namespace class. Instead of using "chassis" and forcing the
 dev to add that class to the html tag, maybe make it customizable
 
 ------------------
-
-media queries
-- Add calc function, ie:
-
-@chassis viewport-width < calc(medium + 200px)
-
-^ This should get the value of medium and add 200px to it. It should
-ideally be able to calculate different units as well, if possible.
 
 buttons
 * remove side margin. let user decide which side to put it on using @chassis apply
@@ -86,10 +98,10 @@ chassis-select
 - "label" attribute should override innerHTML as this is
   the default <select> behavior
 - Missing HTMLSelectElement methods:
-  - .add()
-  - .item()
-  - .namedItem()
-  - .remove()
+  * - .add()
+  * - .item()
+  * - .namedItem()
+  * - .remove()
 - Complete arrow key functions
 
 Spec Sheets still don't fully support nesting
@@ -123,3 +135,6 @@ extension {
 
 Possible solution: Always add extension decls to the first rule in
 each state. That should theoretically work in all cases.
+
+Or, if possible, loop through each ruleset inside the state, check for spaces in
+the selector, and if there are none, add the rule to each.

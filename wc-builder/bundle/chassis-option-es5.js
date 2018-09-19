@@ -20,6 +20,10 @@ var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstru
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
+var _get2 = require('babel-runtime/helpers/get');
+
+var _get3 = _interopRequireDefault(_get2);
+
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
@@ -88,6 +92,63 @@ customElements.define('chassis-option', function () {
           return prefix ? prefix + '_' + id : id;
         },
 
+        getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
+          return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+        },
+
+        handleAttributeChange: function handleAttributeChange(attr, val) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          _this.setAttribute(attr, val);
+          _private.get(_this).sourceEl[attr] = val;
+        },
+
+        handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+          if (!_private.get(_this).sourceEl) {
+            return;
+          }
+
+          var acceptableValues = ['true', 'false', '', null];
+
+          if (!acceptableValues.includes(value)) {
+            console.error('<' + _this.localName + '> "' + attr + '" attribute expected boolean but received "' + value + '"');
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          if (value === 'false' && _this.hasAttribute(attr)) {
+            _this.removeAttribute(attr);
+            _private.get(_this).sourceEl[attr] = false;
+            return;
+          }
+
+          _private.get(_this).sourceEl[attr] = _this.hasAttribute(attr);
+        },
+
+        handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
+          if (!bool) {
+            _this.removeAttribute(prop);
+            _private.get(_this).sourceEl[prop] = false;
+            return;
+          }
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
+            _this.setAttribute(prop, '');
+            _private.get(_this).sourceEl[prop] = true;
+          }
+        },
+
+        handlePropertyChange: function handlePropertyChange(prop, val) {
+          _private.get(_this).sourceEl[prop] = val;
+
+          if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+            _this.setAttribute(prop, val);
+          }
+        },
+
         readonlyProperty: function readonlyProperty(name) {
           return {
             get: function get() {
@@ -114,12 +175,35 @@ customElements.define('chassis-option', function () {
           console.error(message);
         }
       });
+      _this.parent = null;_this.defaultSelected = false;_this.disabled = false;_this.label = '';_this.selected = false;_this.text = '';_this.value = '';
       return _this;
     }
 
     (0, _createClass3.default)(_class, [{
       key: 'connectedCallback',
-      value: function connectedCallback() {}
+      value: function connectedCallback() {} /**
+                                              * @method remove
+                                              * Remove this option from the DOM.
+                                              * @override
+                                              */
+    }, {
+      key: 'remove',
+      value: function remove() {
+        this.parent.removeOptionByIndex(this.index, false);(0, _get3.default)(_class.prototype.__proto__ || (0, _getPrototypeOf2.default)(_class.prototype), 'remove', this).call(this);
+      }
+    }, {
+      key: 'form',
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'form' });
+      }
+    }, {
+      key: 'index',
+      get: function get() {
+        return this.parent.displayOptions.indexOf(this);
+      },
+      set: function set(value) {
+        return _private.get(this).throw('readonly', { name: 'index' });
+      }
     }]);
     return _class;
   }(HTMLElement);

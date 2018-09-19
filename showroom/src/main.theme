@@ -17,34 +17,6 @@ custom-properties {
   --footer-border-color: var(--grey-n00);
 }
 
-h1 {
-	font-weight: 700;
-}
-
-h2 {
-	font-weight: 700;
-}
-
-h3 {
-	font-weight: 700;
-}
-
-h4 {
-	font-weight: 700;
-}
-
-h5 {
-	font-weight: 700;
-}
-
-h6 {
-	font-weight: 700;
-}
-
-legend {
-	font-weight: 700;
-}
-
 components {
 	anchor {
 		@state initial {
@@ -52,12 +24,12 @@ components {
 		}
 
 		@state hover {
-			color: color(var(--blue) lightness(50%));
+			color: color-mod(var(--blue) lightness(50%));
 			text-decoration: underline;
 		}
 
 		@state active {
-			color: color(var(--blue) lightness(44%));
+			color: color-mod(var(--blue) lightness(44%));
 		}
 
 		@state disabled {
@@ -78,11 +50,11 @@ components {
 		}
 
 		@state hover {
-			background: color(var(--blue) lightness(55%));
+			background: color-mod(var(--blue) lightness(55%));
 		}
 
 		@state active {
-			background: color(var(--blue) lightness(44%));
+			background: color-mod(var(--blue) lightness(44%));
 		}
 
 		@state disabled {
@@ -106,11 +78,11 @@ components {
 		}
 
 		@state hover {
-			background: color(var(--blue) lightness(55%));
+			background: color-mod(var(--blue) lightness(55%));
 		}
 
 		@state active {
-			background: color(var(--blue) lightness(44%));
+			background: color-mod(var(--blue) lightness(44%));
 		}
 
 		@state disabled {
@@ -217,7 +189,7 @@ components {
 		}
 	}
 
-	chassis-select-title {
+	chassis-selected-option {
 		@state initial {
 			align-items: center;
 			justify-content: space-between;
@@ -239,7 +211,7 @@ components {
 			box-shadow:
 				inset 2px 0 0 0 var(--grey-n04),
 				inset -2px -2px 0 0 var(--grey-n04),
-				0 .236em 1em 0 color(black alpha(10%))
+				0 .236em 1em 0 color-mod(black alpha(10%))
 			;
 		}
 	}
@@ -248,7 +220,7 @@ components {
 		@state initial {}
 
 		@state hover {
-			background: color(black alpha(6.18%));
+			background: color-mod(black alpha(6.18%));
 		}
 	}
 
@@ -265,7 +237,7 @@ components {
 				box-shadow:
 					inset 2px 0 0 0 var(--blue),
 					inset -2px -2px 0 0 var(--blue),
-					0 .236em 1em 0 color(black alpha(10%))
+					0 .236em 1em 0 color-mod(black alpha(10%))
 				;
 			}
 		}
@@ -292,7 +264,7 @@ components {
 				box-shadow:
 					inset 2px 0 0 0 var(--blue),
 					inset -2px -2px 0 0 var(--blue),
-					0 .236em 1em 0 color(black alpha(10%))
+					0 .236em 1em 0 color-mod(black alpha(10%))
 				;
 			}
 		}

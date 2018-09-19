@@ -1,0 +1,62 @@
+@chassis init;
+@chassis include all;
+
+/* :root {
+  --test: 3;
+} */
+
+.showroom {
+  transition: all ease-in-out .382s;
+
+  @chassis import components;
+  @chassis import overrides;
+  @chassis import layout;
+
+  & .test {
+    height: var(--typography-scale-ratio)em;
+    width: var(--typography-scale-ratio)em;
+    background: red;
+  }
+
+  /* & .test {
+    background: var(--blue);
+
+    &.h1 {
+      height: var(--h1-line-height)em;
+      width: var(--h1-line-height)em;
+    }
+
+    &.h2 {
+      height: var(--h2-line-height)em;
+      width: var(--h2-line-height)em;
+    }
+
+    &.h3 {
+      height: var(--h3-line-height)em;
+      width: var(--h3-line-height)em;
+    }
+
+    &.h4 {
+      height: var(--h4-line-height)em;
+      width: var(--h4-line-height)em;
+    }
+
+    &.h5 {
+      height: var(--h5-line-height)em;
+      width: var(--h5-line-height)em;
+    }
+
+    &.h6 {
+      height: var(--h6-line-height)em;
+      width: var(--h6-line-height)em;
+    }
+  } */
+
+  & .ibl {
+    margin: var(--chassis-select-pill-padding-x);
+    background: var(--blue);
+    /* @chassis apply inline-block; */
+    z-index: var(--test);
+    /* @chassis z-index max; */
+  }
+}

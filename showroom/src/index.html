@@ -50,6 +50,54 @@
       </aside>
 
       <div class="content">
+        <chassis-cycle id="cycle">
+          <section active>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </section>
+
+          <section>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+          </section>
+
+          <section>
+            Page 3
+          </section>
+        </chassis-cycle>
+
+        <script type="text/javascript">
+          let cycle = document.getElementById('cycle')
+
+          cycle.beforeChange = function (active, next, cont) {
+            console.log('Running beforeChange() middleware');
+            this.setAttribute('transition', '')
+            active.element.setAttribute('fade-out', '')
+            setTimeout(() => cont(), 500)
+          }
+
+          cycle.afterChange = function (previous, active) {
+            console.log('Running afterChange() middleware');
+            this.removeAttribute('transition')
+            previous.element.removeAttribute('fade-out')
+            active.element.setAttribute('fade-in', '')
+            setTimeout(() => active.element.removeAttribute('fade-in'), 1000)
+          }
+
+          cycle.addEventListener('page-change', evt => {
+            console.log('page-change fired');
+          })
+
+          cycle.addEventListener('page-changed', evt => {
+            console.log('page-changed fired');
+          })
+        </script>
+
         <chassis-control id="select">
           <label>Select Test</label>
           <select placeholder="test placeholder">

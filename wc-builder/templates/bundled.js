@@ -32,12 +32,18 @@ customElements.define('{{TAG-NAME}}', (function () {
       }
 
       _private.set(this, {
-        addReadOnlyProp: (prop) => {
+        addPrivateProps: props => {
+          for (let prop in props) {
+            _private.get(this)[prop] = props[prop]
+          }
+        },
+
+        addReadOnlyProp: prop => {
           Object.defineProperty(this, prop, _private.get(this).readonlyProperty(prop))
         },
 
-        addReadOnlyProps: (props) => {
-          props.forEach((prop) => _private.get(this).addReadOnlyProp(prop))
+        addReadOnlyProps: props => {
+          props.forEach(prop => _private.get(this).addReadOnlyProp(prop))
         },
 
         generateGuid: (prefix = null) => {
@@ -103,7 +109,7 @@ customElements.define('{{TAG-NAME}}', (function () {
           }
         },
 
-        readonlyProperty: (name) => ({
+        readonlyProperty: name => ({
           get: () => _private.get(this).sourceEl[name],
           set: () => _private.get(this).throw('readonly', {name})
         }),

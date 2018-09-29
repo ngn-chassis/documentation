@@ -72,6 +72,12 @@ customElements.define('chassis-datalist', function () {
       }
 
       _private.set(_this, {
+        addPrivateProps: function addPrivateProps(props) {
+          for (var prop in props) {
+            _private.get(_this)[prop] = props[prop];
+          }
+        },
+
         addReadOnlyProp: function addReadOnlyProp(prop) {
           (0, _defineProperty2.default)(_this, prop, _private.get(_this).readonlyProperty(prop));
         },

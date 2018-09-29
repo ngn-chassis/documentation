@@ -11,35 +11,37 @@ class ChassisSelect extends HTMLElement {
       'validity'
     ])
 
-    _private.get(this).title = ''
-    _private.get(this).placeholder = ''
+    _private.get(this).addPrivateProps({
+      title: '',
+      placeholder: '',
 
-    _private.get(this).arrowKeydownHandler = evt => {
-      switch (evt[this.keySource]) {
-        case 38:
-        case 'ArrowUp':
-          evt.preventDefault()
-          console.log('select previous option');
-          break
+      arrowKeydownHandler: evt => {
+        switch (evt[this.keySource]) {
+          case 38:
+          case 'ArrowUp':
+            evt.preventDefault()
+            console.log('select previous option');
+            break
 
-        case 40:
-        case 'ArrowDown':
-          evt.preventDefault()
-          console.log('select next option');
-          break
+          case 40:
+          case 'ArrowDown':
+            evt.preventDefault()
+            console.log('select next option');
+            break
 
-        default:
+          default:
+            return
+        }
+      },
+
+      bodyClickHandler: evt => {
+        if (evt.target === this || this.contains(evt.target)) {
           return
-      }
-    }
+        }
 
-    _private.get(this).bodyClickHandler = evt => {
-      if (evt.target === this || this.contains(evt.target)) {
-        return
+        this.removeAttribute('open')
       }
-
-      this.removeAttribute('open')
-    }
+    })
   }
 
   static get observedAttributes () {

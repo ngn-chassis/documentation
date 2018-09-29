@@ -50,7 +50,7 @@ customElements.define('chassis-cycle', function () {
       _this.attachShadow({ mode: 'open' });
 
       var container = document.createElement('div');
-      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>');
+      container.insertAdjacentHTML('afterbegin', '<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>');
 
       var template = container.querySelector('template');
 
@@ -72,6 +72,12 @@ customElements.define('chassis-cycle', function () {
       }
 
       _private.set(_this, {
+        addPrivateProps: function addPrivateProps(props) {
+          for (var prop in props) {
+            _private.get(_this)[prop] = props[prop];
+          }
+        },
+
         addReadOnlyProp: function addReadOnlyProp(prop) {
           (0, _defineProperty2.default)(_this, prop, _private.get(_this).readonlyProperty(prop));
         },
@@ -175,27 +181,45 @@ customElements.define('chassis-cycle', function () {
           console.error(message);
         }
       });
-      _private.get(_this).dummyEl = document.createElement('div');_private.get(_this).hideChild = function (child) {
-        child.removeAttribute('active', '');child.style.setProperty('display', 'none', 'important');
-      };_private.get(_this).showChild = function (child) {
-        if (_this.activeIndex >= 0) {
-          _private.get(_this).hideChild(_this.children.item(_this.activeIndex || 0));
-        }child.setAttribute('active', '');child.style.removeProperty('display');
-      };_private.get(_this).showChildByIndex = function (index) {
-        if (_this.activeIndex === index || index >= _this.children.length || index < 0) {
-          return;
-        }_private.get(_this).showChild(_this.children.item(index));
-      };_private.get(_this).showChildBySelector = function (query) {
-        var nodes = _this.querySelectorAll(query);if (!nodes.length) {
-          return;
-        }if (nodes.length > 1) {
-          console.warn('<chassis-cycle> found multiple nodes matching "' + query + '". Displaying first result...');
-        }_private.get(_this).showChild(nodes.item(0));
-      };_private.get(_this).replaceDeprecatedAttributes = function (child) {
-        if (child.hasAttribute('selected')) {
-          console.warn('<chassis-cycle> \'selected\' attribute is deprecated. Please use \'active\' instead.');child.removeAttribute('selected');_private.get(_this).showChild(child);
-        }
-      };
+      _private.get(_this).addPrivateProps({ dummyEl: document.createElement('div'), middleWare: { beforeChange: null, afterChange: null }, getChildIndex: function getChildIndex(child) {
+          return [].slice.call(_this.children).indexOf(child);
+        }, getNextActiveChild: function getNextActiveChild(child) {
+          var nextIndex = _private.get(_this).getChildIndex(child);return { element: child, index: nextIndex, page: nextIndex + 1 };
+        }, hideChild: function hideChild(child) {
+          return child.removeAttribute('active', '');
+        }, showChild: function showChild(child) {
+          var _private$get = _private.get(_this),
+              getChildIndex = _private$get.getChildIndex,
+              getNextActiveChild = _private$get.getNextActiveChild,
+              hideChild = _private$get.hideChild,
+              middleWare = _private$get.middleWare;
+
+          var previous = _this.active;var next = getNextActiveChild(child);_this.dispatchEvent(new CustomEvent('page-change', { detail: { active: _this.active, next: next } }));var completeChange = function completeChange() {
+            if (_this.activeIndex >= 0) {
+              hideChild(_this.children.item(_this.activeIndex || 0));
+            }child.setAttribute('active', '');_this.dispatchEvent(new CustomEvent('page-changed', { detail: { previous: previous, active: _this.active } }));if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
+              middleWare.afterChange(previous, _this.active);
+            }
+          };if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
+            middleWare.beforeChange(_this.active, next, completeChange);
+          } else {
+            completeChange();
+          }
+        }, showChildByIndex: function showChildByIndex(index) {
+          if (_this.activeIndex === index || index >= _this.children.length || index < 0) {
+            return;
+          }_private.get(_this).showChild(_this.children.item(index));
+        }, showChildBySelector: function showChildBySelector(query) {
+          var nodes = _this.querySelectorAll(query);if (!nodes.length) {
+            return;
+          }if (nodes.length > 1) {
+            console.warn('<chassis-cycle> found multiple nodes matching "' + query + '". Displaying first result...');
+          }_private.get(_this).showChild(nodes.item(0));
+        }, replaceDeprecatedAttributes: function replaceDeprecatedAttributes(child) {
+          if (child.hasAttribute('selected')) {
+            console.warn('<chassis-cycle> \'selected\' attribute is deprecated. Please use \'active\' instead.');child.removeAttribute('selected');_private.get(_this).showChild(child);
+          }
+        } });
       return _this;
     }
 
@@ -216,7 +240,8 @@ customElements.define('chassis-cycle', function () {
                   return;
                 }var node = addedNodes.item(0);if (node.nodeType !== Node.ELEMENT_NODE) {
                   return;
-                }_private.get(_this2).replaceDeprecatedAttributes(node);return node.hasAttribute('active') ? _private.get(_this2).showChild(node) : _private.get(_this2).hideChild(node);default:
+                }_private.get(_this2).replaceDeprecatedAttributes(node);break; // return node.hasAttribute('active') ? _private.get(this).showChild(node) : _private.get(this).hideChild(node)
+              default:
                 return;}
           });
         });observer.observe(this, { attributes: false, childList: true, characterData: false });setTimeout(function () {
@@ -231,8 +256,8 @@ customElements.define('chassis-cycle', function () {
           }
         }, 0);
       } /**
-         * @method hideActive
-         * Deactivate the currently active page.
+         * @method hide
+         * Deactivate a page.
          * @deprecated
          */
     }, {
@@ -262,6 +287,16 @@ customElements.define('chassis-cycle', function () {
             continue;
           }_private.get(this).hideChild(child);
         }
+      }
+    }, {
+      key: 'indexOf',
+      value: function indexOf(child) {
+        return _private.get(this).getChildIndex(child);
+      }
+    }, {
+      key: 'pageNumberOf',
+      value: function pageNumberOf(child) {
+        return _private.get(this).getChildIndex(child) + 1;
       } /**
          * @method insertAdjacentHTML
          * Override this.prototype.insertAdjacentHTML and replace with
@@ -418,10 +453,20 @@ customElements.define('chassis-cycle', function () {
       get: function get() {
         console.warn('<chassis-cycle> \'selectedIndex\' property is deprecated. Please use \'activeIndex\' for zero-based indexing or \'activePage\' for 1-based indexing instead.');return this.activePage;
       }
+    }, {
+      key: 'beforeChange',
+      set: function set(func) {
+        _private.get(this).middleWare.beforeChange = func.bind(this);
+      }
+    }, {
+      key: 'afterChange',
+      set: function set(func) {
+        _private.get(this).middleWare.afterChange = func.bind(this);
+      }
     }], [{
       key: 'observedAttributes',
       get: function get() {
-        return [];
+        return ['mode'];
       }
     }]);
     return _class;

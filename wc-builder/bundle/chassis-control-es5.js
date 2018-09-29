@@ -72,6 +72,12 @@ customElements.define('chassis-control', function () {
       }
 
       _private.set(_this, {
+        addPrivateProps: function addPrivateProps(props) {
+          for (var prop in props) {
+            _private.get(_this)[prop] = props[prop];
+          }
+        },
+
         addReadOnlyProp: function addReadOnlyProp(prop) {
           (0, _defineProperty2.default)(_this, prop, _private.get(_this).readonlyProperty(prop));
         },
@@ -175,115 +181,115 @@ customElements.define('chassis-control', function () {
           console.error(message);
         }
       });
-      _private.get(_this).fieldInputTypes = ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'];_private.get(_this).toggleInputTypes = ['checkbox', 'radio'];_private.get(_this).supportedTypes = ['field', 'toggle', 'select'];_private.get(_this).input = null;_private.get(_this).initDatalist = function (input, datalist) {
-        _this.type = 'field';if (!customElements.get('chassis-datalist')) {
-          // Setup defaults
-          return;
-        }var placeholder = document.createElement('chassis-datalist');placeholder.slot = 'input';var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = (0, _getIterator3.default)(datalist.attributes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var attr = _step.value;
-
-            if (attr.specified) {
-              placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
-                datalist.removeAttribute(attr.name);
-              }
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        _this.removeChild(datalist);_this.removeChild(input);placeholder.inject(input, datalist, _private.get(_this).guid);_this.appendChild(placeholder);_private.get(_this).input = placeholder;
-      };_private.get(_this).initInput = function (input) {
-        input.slot = input.slot || 'input';_private.get(_this).input = input;input.id = _private.get(_this).guid;if (_private.get(_this).fieldInputTypes.indexOf(input.type) >= 0) {
-          _this.type = 'field';
-        }if (_private.get(_this).toggleInputTypes.indexOf(input.type) >= 0) {
-          _this.type = 'toggle';
-        }
-      };_private.get(_this).initLabel = function (label) {
-        _this.label = label;label.slot = label.slot || 'label';label.htmlFor = _private.get(_this).guid;if (_this.type === 'select') {
-          _this.label.addEventListener('click', function (evt) {
-            _this.input.focus();
-          });
-        }
-      };_private.get(_this).initSelectMenu = function (select) {
-        _this.type = 'select';if (!customElements.get('chassis-select')) {
-          select.id = _private.get(_this).guid;select.slot = select.slot || 'input';select.setAttribute('role', 'menu');_private.get(_this).input = select;var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
-            return select.removeChild(el);
-          });var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+      _private.get(_this).addPrivateProps({ fieldInputTypes: ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'], toggleInputTypes: ['checkbox', 'radio'], supportedTypes: ['field', 'toggle', 'select'], input: null, initDatalist: function initDatalist(input, datalist) {
+          _this.type = 'field';if (!customElements.get('chassis-datalist')) {
+            // Setup defaults
+            return;
+          }var placeholder = document.createElement('chassis-datalist');placeholder.slot = 'input';var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
 
           try {
-            for (var _iterator2 = (0, _getIterator3.default)(select.options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var option = _step2.value;
+            for (var _iterator = (0, _getIterator3.default)(datalist.attributes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var attr = _step.value;
 
-              if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
-                option.removeAttribute('label');
+              if (attr.specified) {
+                placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
+                  datalist.removeAttribute(attr.name);
+                }
               }
             }
           } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
+            _didIteratorError = true;
+            _iteratorError = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
               }
             } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
+              if (_didIteratorError) {
+                throw _iteratorError;
               }
             }
           }
 
-          return;
-        }var placeholder = document.createElement('chassis-select');placeholder.slot = 'input';placeholder.id = _private.get(_this).guid;var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
+          _this.removeChild(datalist);_this.removeChild(input);placeholder.inject(input, datalist, _private.get(_this).guid);_this.appendChild(placeholder);_private.get(_this).input = placeholder;
+        }, initInput: function initInput(input) {
+          input.slot = input.slot || 'input';_private.get(_this).input = input;input.id = _private.get(_this).guid;if (_private.get(_this).fieldInputTypes.indexOf(input.type) >= 0) {
+            _this.type = 'field';
+          }if (_private.get(_this).toggleInputTypes.indexOf(input.type) >= 0) {
+            _this.type = 'toggle';
+          }
+        }, initLabel: function initLabel(label) {
+          _this.label = label;label.slot = label.slot || 'label';label.htmlFor = _private.get(_this).guid;if (_this.type === 'select') {
+            _this.label.addEventListener('click', function (evt) {
+              _this.input.focus();
+            });
+          }
+        }, initSelectMenu: function initSelectMenu(select) {
+          _this.type = 'select';if (!customElements.get('chassis-select')) {
+            select.id = _private.get(_this).guid;select.slot = select.slot || 'input';select.setAttribute('role', 'menu');_private.get(_this).input = select;var titleEls = select.querySelectorAll('option[title]');titleEls.forEach(function (el) {
+              return select.removeChild(el);
+            });var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
-        try {
-          for (var _iterator3 = (0, _getIterator3.default)(select.attributes), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-            var attr = _step3.value;
+            try {
+              for (var _iterator2 = (0, _getIterator3.default)(select.options), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var option = _step2.value;
 
-            if (attr.specified) {
-              placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
-                select.removeAttribute(attr.name);
+                if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
+                  option.removeAttribute('label');
+                }
+              }
+            } catch (err) {
+              _didIteratorError2 = true;
+              _iteratorError2 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                  _iterator2.return();
+                }
+              } finally {
+                if (_didIteratorError2) {
+                  throw _iteratorError2;
+                }
               }
             }
-          }
-        } catch (err) {
-          _didIteratorError3 = true;
-          _iteratorError3 = err;
-        } finally {
+
+            return;
+          }var placeholder = document.createElement('chassis-select');placeholder.slot = 'input';placeholder.id = _private.get(_this).guid;var _iteratorNormalCompletion3 = true;
+          var _didIteratorError3 = false;
+          var _iteratorError3 = undefined;
+
           try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-              _iterator3.return();
+            for (var _iterator3 = (0, _getIterator3.default)(select.attributes), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              var attr = _step3.value;
+
+              if (attr.specified) {
+                placeholder.setAttribute(attr.name, attr.value);if (attr.name === 'autofocus') {
+                  select.removeAttribute(attr.name);
+                }
+              }
             }
+          } catch (err) {
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
           } finally {
-            if (_didIteratorError3) {
-              throw _iteratorError3;
+            try {
+              if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
+              }
+            } finally {
+              if (_didIteratorError3) {
+                throw _iteratorError3;
+              }
             }
           }
-        }
 
-        _this.removeChild(select);placeholder.inject(select);_this.appendChild(placeholder);_private.get(_this).input = placeholder;
-      };
+          _this.removeChild(select);placeholder.inject(select);_this.appendChild(placeholder);_private.get(_this).input = placeholder;
+        } });
       return _this;
     }
 

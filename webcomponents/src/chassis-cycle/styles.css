@@ -10,6 +10,6 @@
   box-sizing: border-box;
 }
 
-/* :host > ::slotted(*:not([active])) {
+:host(:not([mode="custom"])) > ::slotted(:not([active])) {
   display: none !important;
-} */
+}

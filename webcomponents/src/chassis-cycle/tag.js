@@ -2,56 +2,107 @@ class ChassisCycle extends HTMLElement {
   constructor () {
     super()
 
-    _private.get(this).dummyEl = document.createElement('div')
+    _private.get(this).addPrivateProps({
+      dummyEl: document.createElement('div'),
 
-    _private.get(this).hideChild = child => {
-      child.removeAttribute('active', '')
-      child.style.setProperty('display', 'none', 'important')
-    }
+      middleWare: {
+        beforeChange: null,
+        afterChange: null
+      },
 
-    _private.get(this).showChild = child => {
-      if (this.activeIndex >= 0) {
-        _private.get(this).hideChild(this.children.item(this.activeIndex || 0))
+      getChildIndex: child => [].slice.call(this.children).indexOf(child),
+
+      getNextActiveChild: child => {
+        let nextIndex = _private.get(this).getChildIndex(child)
+
+        return {
+          element: child,
+          index: nextIndex,
+          page: nextIndex + 1
+        }
+      },
+
+      hideChild: child => child.removeAttribute('active', ''),
+
+      showChild: child => {
+        let {
+          getChildIndex,
+          getNextActiveChild,
+          hideChild,
+          middleWare
+        } = _private.get(this)
+
+        let previous = this.active
+        let next = getNextActiveChild(child)
+
+        this.dispatchEvent(new CustomEvent('page-change', {
+          detail: {
+            active: this.active,
+            next
+          }
+        }))
+
+        let completeChange = () => {
+          if (this.activeIndex >= 0) {
+            hideChild(this.children.item(this.activeIndex || 0))
+          }
+
+          child.setAttribute('active', '')
+
+          this.dispatchEvent(new CustomEvent('page-changed', {
+            detail: {
+              previous,
+              active: this.active
+            }
+          }))
+
+          if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
+            middleWare.afterChange(previous, this.active)
+          }
+        }
+
+        if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
+          middleWare.beforeChange(this.active, next, completeChange)
+        } else {
+          completeChange()
+        }
+      },
+
+      showChildByIndex: index => {
+        if (this.activeIndex === index || index >= this.children.length || index < 0) {
+          return
+        }
+
+        _private.get(this).showChild(this.children.item(index))
+      },
+
+      showChildBySelector: query => {
+        let nodes = this.querySelectorAll(query)
+
+        if (!nodes.length) {
+          return
+        }
+
+        if (nodes.length > 1) {
+          console.warn(`<chassis-cycle> found multiple nodes matching "${query}". Displaying first result...`)
+        }
+
+        _private.get(this).showChild(nodes.item(0))
+      },
+
+      replaceDeprecatedAttributes: child => {
+        if (child.hasAttribute('selected')) {
+          console.warn(`<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.`);
+          child.removeAttribute('selected')
+
+          _private.get(this).showChild(child)
+        }
       }
-
-      child.setAttribute('active', '')
-      child.style.removeProperty('display')
-    }
-
-    _private.get(this).showChildByIndex = index => {
-      if (this.activeIndex === index || index >= this.children.length || index < 0) {
-        return
-      }
-
-      _private.get(this).showChild(this.children.item(index))
-    }
-
-    _private.get(this).showChildBySelector = query => {
-      let nodes = this.querySelectorAll(query)
-
-      if (!nodes.length) {
-        return
-      }
-
-      if (nodes.length > 1) {
-        console.warn(`<chassis-cycle> found multiple nodes matching "${query}". Displaying first result...`)
-      }
-
-      _private.get(this).showChild(nodes.item(0))
-    }
-
-    _private.get(this).replaceDeprecatedAttributes = child => {
-      if (child.hasAttribute('selected')) {
-        console.warn(`<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.`);
-        child.removeAttribute('selected')
-
-        _private.get(this).showChild(child)
-      }
-    }
+    })
   }
 
   static get observedAttributes () {
-    return []
+    return ['mode']
   }
 
   /**
@@ -139,6 +190,14 @@ class ChassisCycle extends HTMLElement {
     return this.activePage
   }
 
+  set beforeChange (func) {
+    _private.get(this).middleWare.beforeChange = func.bind(this)
+  }
+
+  set afterChange (func) {
+    _private.get(this).middleWare.afterChange = func.bind(this)
+  }
+
   connectedCallback () {
     let observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
@@ -162,7 +221,8 @@ class ChassisCycle extends HTMLElement {
 
             _private.get(this).replaceDeprecatedAttributes(node)
 
-            return node.hasAttribute('active') ? _private.get(this).showChild(node) : _private.get(this).hideChild(node)
+            break
+            // return node.hasAttribute('active') ? _private.get(this).showChild(node) : _private.get(this).hideChild(node)
 
           default: return
         }
@@ -197,8 +257,8 @@ class ChassisCycle extends HTMLElement {
   }
 
   /**
-   * @method hideActive
-   * Deactivate the currently active page.
+   * @method hide
+   * Deactivate a page.
    * @deprecated
    */
   hide (child) {
@@ -234,6 +294,14 @@ class ChassisCycle extends HTMLElement {
 
       _private.get(this).hideChild(child)
     }
+  }
+
+  indexOf (child) {
+    return _private.get(this).getChildIndex(child)
+  }
+
+  pageNumberOf (child) {
+    return _private.get(this).getChildIndex(child) + 1
   }
 
   /**

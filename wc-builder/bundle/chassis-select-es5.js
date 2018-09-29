@@ -72,6 +72,12 @@ customElements.define('chassis-select', function () {
       }
 
       _private.set(_this, {
+        addPrivateProps: function addPrivateProps(props) {
+          for (var prop in props) {
+            _private.get(_this)[prop] = props[prop];
+          }
+        },
+
         addReadOnlyProp: function addReadOnlyProp(prop) {
           (0, _defineProperty2.default)(_this, prop, _private.get(_this).readonlyProperty(prop));
         },
@@ -175,16 +181,16 @@ customElements.define('chassis-select', function () {
           console.error(message);
         }
       });
-      _private.get(_this).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);_private.get(_this).title = '';_private.get(_this).placeholder = '';_private.get(_this).arrowKeydownHandler = function (evt) {
-        switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
-            evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
-            evt.preventDefault();console.log('select next option');break;default:
-            return;}
-      };_private.get(_this).bodyClickHandler = function (evt) {
-        if (evt.target === _this || _this.contains(evt.target)) {
-          return;
-        }_this.removeAttribute('open');
-      };
+      _private.get(_this).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);_private.get(_this).addPrivateProps({ title: '', placeholder: '', arrowKeydownHandler: function arrowKeydownHandler(evt) {
+          switch (evt[_this.keySource]) {case 38:case 'ArrowUp':
+              evt.preventDefault();console.log('select previous option');break;case 40:case 'ArrowDown':
+              evt.preventDefault();console.log('select next option');break;default:
+              return;}
+        }, bodyClickHandler: function bodyClickHandler(evt) {
+          if (evt.target === _this || _this.contains(evt.target)) {
+            return;
+          }_this.removeAttribute('open');
+        } });
       return _this;
     }
 

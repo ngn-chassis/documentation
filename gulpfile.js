@@ -43,7 +43,7 @@ gulp.task('css', ['clean-css'], (next) => {
       // legacy: false,
       // customProperties: {},
     	layout: {
-    		// maxWidth: 1600
+    		maxWidth: 1600
     	},
       typography: {
         scaleRatio: 'golden ratio'//,

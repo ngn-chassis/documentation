@@ -12,7 +12,7 @@
   "author": "Graham Butler",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "fs-extra": "^5.0.0",
-    "yargs": "^11.0.0"
+    "fs-extra": "^7.0.0",
+    "yargs": "^12.0.2"
   }
 }

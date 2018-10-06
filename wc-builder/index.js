@@ -1,16 +1,17 @@
 const fs = require('fs-extra')
 const path = require('path')
+
 const TaskRunner = require('shortbus')
 const webpack = require('webpack')
 
-let CleanCSS = require('clean-css')
+const babel = require ('@babel/core')
+const parser = require('@babel/parser')
+
 const postcss = require('postcss')
-const SelectorParser = require('postcss-selector-parser')
-const babel = require("babel-core")
-const babylon = require('babylon')
-const cleanCss = new CleanCSS()
-const minifyHtml = require('html-minifier').minify
+const cleanCss = new (require('clean-css'))()
+
 const uglify = require('uglify-js').minify
+const minifyHtml = require('html-minifier').minify
 
 module.exports = class {
   constructor (cfg) {
@@ -75,15 +76,8 @@ module.exports = class {
           let file = {
             name: `${this.filename}-es5`,
             contents: babel.transform(files[0].contents, {
-              presets: ['env'],
-              "plugins": [[
-                "transform-runtime", {
-                  "helpers": true,
-                  "polyfill": true,
-                  "regenerator": true,
-                  "moduleName": "babel-runtime"
-                }]
-              ]
+              presets: [require("@babel/preset-env")],
+              "plugins": ["@babel/plugin-transform-runtime"]
             }).code
           }
 
@@ -165,7 +159,7 @@ module.exports = class {
     let input = this._readFile(this.src.js)
     let output = this._readFile(this.templates.bundled)
 
-    let ast = babylon.parse(input, {sourceType: this.sourceType})
+    let ast = parser.parse(input, {sourceType: this.sourceType})
 
     let inputClassDecl = ast.program.body.find((node) => {
       return node.type === 'ClassDeclaration'
@@ -200,7 +194,7 @@ module.exports = class {
       .replace(/{{TAG-NAME}}/gi, tagName)
 
     let methods = []
-    let parsed = babylon.parse(output)
+    let parsed = parser.parse(output)
 
     let outputClassExpression = parsed.program.body[0].expression.arguments[1].callee.body.body[1].argument
 

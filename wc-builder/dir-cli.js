@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // USAGE:
-// builde-webcomponents {{SRC}} {{DEST}} {{FLAGS}}
+// build-webcomponents {{SRC}} {{DEST}} {{FLAGS}}
 
 const Utils = {
   fs: require('fs'),

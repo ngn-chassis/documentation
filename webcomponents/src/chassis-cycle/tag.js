@@ -2,7 +2,7 @@ class ChassisCycle extends HTMLElement {
   constructor () {
     super()
 
-    _private.get(this).addPrivateProps({
+    _.get(this).addPrivateProps({
       dummyEl: document.createElement('div'),
 
       middleWare: {
@@ -13,7 +13,7 @@ class ChassisCycle extends HTMLElement {
       getChildIndex: child => [].slice.call(this.children).indexOf(child),
 
       getNextActiveChild: child => {
-        let nextIndex = _private.get(this).getChildIndex(child)
+        let nextIndex = _.get(this).getChildIndex(child)
 
         return {
           element: child,
@@ -30,7 +30,7 @@ class ChassisCycle extends HTMLElement {
           getNextActiveChild,
           hideChild,
           middleWare
-        } = _private.get(this)
+        } = _.get(this)
 
         let previous = this.active
         let next = getNextActiveChild(child)
@@ -73,7 +73,7 @@ class ChassisCycle extends HTMLElement {
           return
         }
 
-        _private.get(this).showChild(this.children.item(index))
+        _.get(this).showChild(this.children.item(index))
       },
 
       showChildBySelector: query => {
@@ -87,7 +87,7 @@ class ChassisCycle extends HTMLElement {
           console.warn(`<chassis-cycle> found multiple nodes matching "${query}". Displaying first result...`)
         }
 
-        _private.get(this).showChild(nodes.item(0))
+        _.get(this).showChild(nodes.item(0))
       },
 
       replaceDeprecatedAttributes: child => {
@@ -95,7 +95,7 @@ class ChassisCycle extends HTMLElement {
           console.warn(`<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.`);
           child.removeAttribute('selected')
 
-          _private.get(this).showChild(child)
+          _.get(this).showChild(child)
         }
       }
     })
@@ -191,11 +191,11 @@ class ChassisCycle extends HTMLElement {
   }
 
   set beforeChange (func) {
-    _private.get(this).middleWare.beforeChange = func.bind(this)
+    _.get(this).middleWare.beforeChange = func.bind(this)
   }
 
   set afterChange (func) {
-    _private.get(this).middleWare.afterChange = func.bind(this)
+    _.get(this).middleWare.afterChange = func.bind(this)
   }
 
   connectedCallback () {
@@ -219,10 +219,10 @@ class ChassisCycle extends HTMLElement {
               return
             }
 
-            _private.get(this).replaceDeprecatedAttributes(node)
+            _.get(this).replaceDeprecatedAttributes(node)
 
             break
-            // return node.hasAttribute('active') ? _private.get(this).showChild(node) : _private.get(this).hideChild(node)
+            // return node.hasAttribute('active') ? _.get(this).showChild(node) : _.get(this).hideChild(node)
 
           default: return
         }
@@ -247,10 +247,10 @@ class ChassisCycle extends HTMLElement {
           continue
         }
 
-        _private.get(this).replaceDeprecatedAttributes(child)
+        _.get(this).replaceDeprecatedAttributes(child)
 
         if (child !== this.activeElement) {
-          _private.get(this).hideChild(child)
+          _.get(this).hideChild(child)
         }
       }
     }, 0)
@@ -263,7 +263,7 @@ class ChassisCycle extends HTMLElement {
    */
   hide (child) {
     console.warn(`<chassis-cycle> "hide()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.`);
-    _private.get(this).hideChild(child)
+    _.get(this).hideChild(child)
   }
 
   /**
@@ -273,7 +273,7 @@ class ChassisCycle extends HTMLElement {
    */
   hideActive () {
     console.warn(`<chassis-cycle> "hideActive()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.`);
-    _private.get(this).hideChild(this.activeElement)
+    _.get(this).hideChild(this.activeElement)
   }
 
   /**
@@ -292,16 +292,16 @@ class ChassisCycle extends HTMLElement {
         continue
       }
 
-      _private.get(this).hideChild(child)
+      _.get(this).hideChild(child)
     }
   }
 
   indexOf (child) {
-    return _private.get(this).getChildIndex(child)
+    return _.get(this).getChildIndex(child)
   }
 
   pageNumberOf (child) {
-    return _private.get(this).getChildIndex(child) + 1
+    return _.get(this).getChildIndex(child) + 1
   }
 
   /**
@@ -319,11 +319,11 @@ class ChassisCycle extends HTMLElement {
         return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text)
 
       default:
-        _private.get(this).dummyEl.insertAdjacentHTML(position, text)
-        let node = _private.get(this).dummyEl.children.item(0)
+        _.get(this).dummyEl.insertAdjacentHTML(position, text)
+        let node = _.get(this).dummyEl.children.item(0)
 
-        while (_private.get(this).dummyEl.firstChild) {
-          _private.get(this).dummyEl.removeChild(_private.get(this).dummyEl.firstChild)
+        while (_.get(this).dummyEl.firstChild) {
+          _.get(this).dummyEl.removeChild(_.get(this).dummyEl.firstChild)
         }
 
         return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild)
@@ -401,21 +401,21 @@ class ChassisCycle extends HTMLElement {
    */
   show (query) {
     if (!query) {
-      return _private.get(this).showChildByIndex(0)
+      return _.get(this).showChildByIndex(0)
     }
 
     switch ((typeof query).toLowerCase()) {
       case 'number':
-        return _private.get(this).showChildByIndex(query - 1)
+        return _.get(this).showChildByIndex(query - 1)
 
       case 'string':
         return isNaN(parseInt(query))
-          ? _private.get(this).showChildBySelector(query)
-          : _private.get(this).showChildByIndex(parseInt(query) - 1)
+          ? _.get(this).showChildBySelector(query)
+          : _.get(this).showChildByIndex(parseInt(query) - 1)
 
       default:
         return query instanceof HTMLElement
-          ? _private.get(this).showChild(query)
+          ? _.get(this).showChild(query)
           : console.error(`<chassis-cycle>: Invalid query "${query}"`)
     }
   }

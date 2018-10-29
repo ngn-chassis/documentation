@@ -1,5 +1,5 @@
 customElements.define('{{TAG-NAME}}', (function () {
-  let _private = new WeakMap()
+  let _ = new WeakMap()
 
   return class extends {{SUPER-CLASS}} {
     constructor () {
@@ -31,19 +31,19 @@ customElements.define('{{TAG-NAME}}', (function () {
         this.crypto = msCrypto
       }
 
-      _private.set(this, {
+      _.set(this, {
         addPrivateProps: props => {
           for (let prop in props) {
-            _private.get(this)[prop] = props[prop]
+            _.get(this)[prop] = props[prop]
           }
         },
 
         addReadOnlyProp: prop => {
-          Object.defineProperty(this, prop, _private.get(this).readonlyProperty(prop))
+          Object.defineProperty(this, prop, _.get(this).readonlyProperty(prop))
         },
 
         addReadOnlyProps: props => {
-          props.forEach(prop => _private.get(this).addReadOnlyProp(prop))
+          props.forEach(prop => _.get(this).addReadOnlyProp(prop))
         },
 
         generateGuid: (prefix = null) => {
@@ -57,16 +57,16 @@ customElements.define('{{TAG-NAME}}', (function () {
         getBooleanPropertyValue: prop => this.hasAttribute(prop) && this.getAttribute(prop) !== 'false',
 
         handleAttributeChange: (attr, val) => {
-          if (!_private.get(this).sourceEl) {
+          if (!_.get(this).sourceEl) {
             return
           }
 
           this.setAttribute(attr, val)
-          _private.get(this).sourceEl[attr] = val
+          _.get(this).sourceEl[attr] = val
         },
 
         handleBooleanAttributeChange: (attr, value) => {
-          if (!_private.get(this).sourceEl) {
+          if (!_.get(this).sourceEl) {
             return
           }
 
@@ -75,34 +75,34 @@ customElements.define('{{TAG-NAME}}', (function () {
           if (!acceptableValues.includes(value)) {
             console.error(`<${this.localName}> "${attr}" attribute expected boolean but received "${value}"`)
             this.removeAttribute(attr)
-            _private.get(this).sourceEl[attr] = false
+            _.get(this).sourceEl[attr] = false
             return
           }
 
           if (value === 'false' && this.hasAttribute(attr)) {
             this.removeAttribute(attr)
-            _private.get(this).sourceEl[attr] = false
+            _.get(this).sourceEl[attr] = false
             return
           }
 
-          _private.get(this).sourceEl[attr] = this.hasAttribute(attr)
+          _.get(this).sourceEl[attr] = this.hasAttribute(attr)
         },
 
         handleBooleanPropertyChange: (prop, bool) => {
           if (!bool) {
             this.removeAttribute(prop)
-            _private.get(this).sourceEl[prop] = false
+            _.get(this).sourceEl[prop] = false
             return
           }
 
           if (!this.hasAttribute(prop) || this.getAttribute(prop) !== 'true') {
             this.setAttribute(prop, '')
-            _private.get(this).sourceEl[prop] = true
+            _.get(this).sourceEl[prop] = true
           }
         },
 
         handlePropertyChange: (prop, val) => {
-          _private.get(this).sourceEl[prop] = val
+          _.get(this).sourceEl[prop] = val
 
           if (!this.hasAttribute(prop) || this.getAttribute(prop) !== val) {
             this.setAttribute(prop, val)
@@ -110,8 +110,8 @@ customElements.define('{{TAG-NAME}}', (function () {
         },
 
         readonlyProperty: name => ({
-          get: () => _private.get(this).sourceEl[name],
-          set: () => _private.get(this).throw('readonly', {name})
+          get: () => _.get(this).sourceEl[name],
+          set: () => _.get(this).throw('readonly', {name})
         }),
 
         throw: (type, vars) => {

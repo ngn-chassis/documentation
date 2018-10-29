@@ -2,7 +2,7 @@ class ChassisFormControl extends HTMLElement {
   constructor () {
     super()
 
-    _private.get(this).addPrivateProps({
+    _.get(this).addPrivateProps({
       fieldInputTypes: [
         'color',
         'date',
@@ -43,16 +43,32 @@ class ChassisFormControl extends HTMLElement {
         this.type = 'field'
 
         if (!customElements.get('chassis-datalist')) {
-          // Setup defaults
+          console.dir(input);
+          input.id = _.get(this).guid
+          datalist.id = `${input.id}_datalist`
+          input.setAttribute('list', datalist.id)
+          input.slot = input.slot || 'input'
+          // select.setAttribute('role', 'menu')
+          _.get(this).input = input
+
+          let titleEls = datalist.querySelectorAll('option[title]')
+          titleEls.forEach(el => select.removeChild(el))
+
+          for (let option of datalist.options) {
+            if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
+              option.removeAttribute('label')
+            }
+          }
+
           return
         }
 
-        let placeholder = document.createElement('chassis-datalist')
-        placeholder.slot = 'input'
+        let surrogate = document.createElement('chassis-datalist')
+        surrogate.slot = 'input'
 
         for (let attr of datalist.attributes) {
           if (attr.specified) {
-            placeholder.setAttribute(attr.name, attr.value)
+            surrogate.setAttribute(attr.name, attr.value)
 
             if (attr.name === 'autofocus') {
               datalist.removeAttribute(attr.name)
@@ -63,21 +79,21 @@ class ChassisFormControl extends HTMLElement {
         this.removeChild(datalist)
         this.removeChild(input)
 
-        placeholder.inject(input, datalist, _private.get(this).guid)
-        this.appendChild(placeholder)
-        _private.get(this).input = placeholder
+        surrogate.inject(input, datalist, _.get(this).guid)
+        this.appendChild(surrogate)
+        _.get(this).input = surrogate
       },
 
       initInput: input => {
         input.slot = input.slot || 'input'
-        _private.get(this).input = input
-        input.id = _private.get(this).guid
+        _.get(this).input = input
+        input.id = _.get(this).guid
 
-        if (_private.get(this).fieldInputTypes.indexOf(input.type) >= 0) {
+        if (_.get(this).fieldInputTypes.indexOf(input.type) >= 0) {
           this.type = 'field'
         }
 
-        if (_private.get(this).toggleInputTypes.indexOf(input.type) >= 0) {
+        if (_.get(this).toggleInputTypes.indexOf(input.type) >= 0) {
           this.type = 'toggle'
         }
       },
@@ -85,7 +101,7 @@ class ChassisFormControl extends HTMLElement {
       initLabel: label => {
         this.label = label
         label.slot = label.slot || 'label'
-        label.htmlFor = _private.get(this).guid
+        label.htmlFor = _.get(this).guid
 
         if (this.type === 'select') {
           this.label.addEventListener('click', (evt) => {
@@ -94,46 +110,61 @@ class ChassisFormControl extends HTMLElement {
         }
       },
 
+      initDefaultSelect: select => {
+        select.id = _.get(this).guid
+        select.slot = select.slot || 'input'
+        select.setAttribute('role', 'menu')
+        _.get(this).input = select
+
+        let titleEls = select.querySelectorAll('option[title]')
+        titleEls.forEach(el => select.removeChild(el))
+
+        for (let option of select.options) {
+          if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
+            option.removeAttribute('label')
+          }
+        }
+      },
+
+      initSelectSurrogate: (original, surrogate) => {
+        surrogate.slot = 'input'
+        surrogate.id = _.get(this).guid
+
+        for (let attr of original.attributes) {
+          if (attr.specified) {
+            surrogate.setAttribute(attr.name, attr.value)
+
+            if (attr.name === 'autofocus') {
+              original.removeAttribute(attr.name)
+            }
+          }
+        }
+
+        this.removeChild(original)
+        surrogate.inject(original)
+
+        this.appendChild(surrogate)
+        _.get(this).input = surrogate
+      },
+
       initSelectMenu: select => {
         this.type = 'select'
 
         if (!customElements.get('chassis-select')) {
-          select.id = _private.get(this).guid
-          select.slot = select.slot || 'input'
-          select.setAttribute('role', 'menu')
-          _private.get(this).input = select
-
-          let titleEls = select.querySelectorAll('option[title]')
-          titleEls.forEach((el) => select.removeChild(el))
-
-          for (let option of select.options) {
-            if (option.hasAttribute('label') && option.getAttribute('label').trim() === '') {
-              option.removeAttribute('label')
-            }
-          }
-
-          return
+          return _.get(this).initDefaultSelect(select)
         }
 
-        let placeholder = document.createElement('chassis-select')
-        placeholder.slot = 'input'
-        placeholder.id = _private.get(this).guid
+        _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
+      },
 
-        for (let attr of select.attributes) {
-          if (attr.specified) {
-            placeholder.setAttribute(attr.name, attr.value)
+      initMultipleSelectMenu: select => {
+        this.type = 'select'
 
-            if (attr.name === 'autofocus') {
-              select.removeAttribute(attr.name)
-            }
-          }
+        if (!customElements.get('chassis-select')) {
+          return _.get(this).initDefaultSelect(select)
         }
 
-        this.removeChild(select)
-
-        placeholder.inject(select)
-        this.appendChild(placeholder)
-        _private.get(this).input = placeholder
+        _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
       }
     })
   }
@@ -143,7 +174,7 @@ class ChassisFormControl extends HTMLElement {
   }
 
   get input () {
-    return _private.get(this).input
+    return _.get(this).input
   }
 
   set input (input) {
@@ -152,7 +183,7 @@ class ChassisFormControl extends HTMLElement {
       return
     }
 
-    _private.get(this).input = input
+    _.get(this).input = input
   }
 
   get type () {
@@ -164,27 +195,51 @@ class ChassisFormControl extends HTMLElement {
   }
 
   connectedCallback () {
-    _private.get(this).guid = _private.get(this).generateGuid('control')
+    _.get(this).guid = _.get(this).generateGuid('control')
 
-    setTimeout(() => {
-      let label = this.querySelector('label')
-      let input = this.querySelector('input')
-      let textarea = this.querySelector('textarea')
-      let select = this.querySelector('select')
-      let datalist = this.querySelector('datalist')
+    let observer = new MutationObserver((mutations, observer) => {
+      let filtered = mutations.filter(record => record.addedNodes.item(0).nodeType !== 3)
 
-      textarea && _private.get(this).initInput(textarea)
-      select && _private.get(this).initSelectMenu(select)
+      filtered.forEach((record, index, array) => {
+        let node = record.addedNodes.item(0)
 
-      if (input) {
-        if (datalist) {
-          _private.get(this).initDatalist(input, datalist)
-        } else {
-          _private.get(this).initInput(input)
+        switch (node.nodeName) {
+          case 'LABEL':
+            return _.get(this).initLabel(node)
+
+          case 'INPUT':
+            // Check if there is an additional element adjacent to the input
+            if (array[index + 1] === void 0) {
+              return _.get(this).initInput(node)
+            }
+
+            let adjacentElement = array[index + 1].addedNodes.item(0)
+
+            if (!adjacentElement || adjacentElement.nodeName !== 'DATALIST') {
+              return _.get(this).initInput(node)
+            }
+
+            return _.get(this).initDatalist(node, adjacentElement)
+
+          case 'TEXTAREA':
+            return _.get(this).initInput(node)
+
+          case 'SELECT':
+            if (!node.multiple) {
+              return _.get(this).initSelectMenu(node)
+            }
+
+            return _.get(this).initMultipleSelectMenu(node)
+
+          default: return
         }
-      }
+      })
 
-      label && _private.get(this).initLabel(label)
+      observer.disconnect()
+    })
+
+    observer.observe(this, {
+      childList: true
     })
   }
 }

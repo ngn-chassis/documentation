@@ -18,7 +18,7 @@
     <script src="webcomponents/chassis-cycle-es5.js"></script>
   </head>
 
-  <body class="showroom">
+  <body class="authorio showroom">
 
     <header>
       <div class="width constraint">
@@ -50,6 +50,24 @@
       </aside>
 
       <div class="content">
+        <section class="test">
+          <select multiple>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+          </select>
+
+          <chassis-control>
+            <label>Multiple Select</label>
+            <select multiple>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+          </chassis-control>
+        </section>
+
+
         <section class="intro">
           <p>
             Chassis is a CSS pre-processor and UI framework for modern responsive UI development.
@@ -635,7 +653,7 @@
 
       document.addEventListener('WebComponentsReady', function () {
         // window.cycle = document.querySelector('chassis-cycle')
-        // window.select = document.getElementById('select').input
+        window.select = document.getElementById('select_menu').input
         // window.option = window.select[2]
         //
         // window.select2 = document.getElementById('select2')

@@ -1,5 +1,12 @@
 * === done
 
+WEB COMPONENTS
+Add ARIA roles for accessibility
+
+Add @chassis apply block margin/padding
+and @chassis apply nested-block margin/padding;
+
+
 ? Currently, the font-size is limited by the max UI width. Max width maybe should
 not have an effect on the typography queries. OR, there should be an option
 to enable/disable that behavior.

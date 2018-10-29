@@ -7,7 +7,7 @@ class ChassisOptions extends HTMLElement {
     this.selectedOption = null
     this.selectedOptionEl = null
 
-    _private.get(this).options = []
+    _.get(this).options = []
   }
 
   get form () {
@@ -15,7 +15,7 @@ class ChassisOptions extends HTMLElement {
   }
 
   set form (value) {
-    return _private.get(this).throw('readonly', {
+    return _.get(this).throw('readonly', {
       name: 'form'
     })
   }
@@ -25,17 +25,17 @@ class ChassisOptions extends HTMLElement {
   }
 
   set displayOptions (value) {
-    return _private.get(this).throw('readonly', {
+    return _.get(this).throw('readonly', {
       name: 'displayOptions'
     })
   }
 
   get options () {
-    return _private.get(this).options
+    return _.get(this).options
   }
 
   set options (value) {
-    return _private.get(this).throw('readonly', {
+    return _.get(this).throw('readonly', {
       name: 'options'
     })
   }
@@ -59,7 +59,7 @@ class ChassisOptions extends HTMLElement {
   }
 
   set selectedOptions (value) {
-    return _private.get(this).throw('readonly', {
+    return _.get(this).throw('readonly', {
       name: 'selectedOptions'
     })
   }
@@ -128,7 +128,7 @@ class ChassisOptions extends HTMLElement {
 
     chassisOption.defaultSelected = selected
 
-    chassisOption.key = _private.get(this).generateGuid()
+    chassisOption.key = _.get(this).generateGuid()
     chassisOption.addEventListener('click', (evt) => this.selectByKey(chassisOption.key))
     chassisOption.innerHTML = option.sourceElement.innerHTML
     chassisOption.parent = dest
@@ -217,7 +217,7 @@ class ChassisOptions extends HTMLElement {
     }
 
     let fauxOptgroup = document.createElement('chassis-optgroup')
-    fauxOptgroup.id = _private.get(this).generateGuid('optgroup')
+    fauxOptgroup.id = _.get(this).generateGuid('optgroup')
 
     let label = optgroup.getAttribute('label')
 
@@ -244,7 +244,7 @@ class ChassisOptions extends HTMLElement {
     }
 
     let obj = {
-      id: _private.get(this).generateGuid(),
+      id: _.get(this).generateGuid(),
       attributes: {},
       sourceElement: optionEl
     }

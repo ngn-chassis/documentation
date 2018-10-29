@@ -4,12 +4,12 @@ class ChassisDatalist extends HTMLElement {
 
     this.clickCount = 0
 
-    _private.get(this).addReadOnlyProp('options')
+    _.get(this).addReadOnlyProp('options')
 
-    _private.get(this).options = []
+    _.get(this).options = []
 
-    _private.get(this).find = query => {
-      return _private.get(this).options.filter(option => {
+    _.get(this).find = query => {
+      return _.get(this).options.filter(option => {
         let value = this.hasAttribute('case-sensitive') ? option.sourceElement.value : option.sourceElement.value.toLowerCase()
         let text = this.hasAttribute('case-sensitive') ? option.sourceElement.text : option.sourceElement.text.toLowerCase()
         query = this.hasAttribute('case-sensitive') ? query : query.toLowerCase()
@@ -18,33 +18,33 @@ class ChassisDatalist extends HTMLElement {
       })
     }
 
-    _private.get(this).clear = () => {
-      _private.get(this).options.forEach(option => option.displayElement.style.display = 'none')
+    _.get(this).clear = () => {
+      _.get(this).options.forEach(option => option.displayElement.style.display = 'none')
     }
 
-    _private.get(this).showAllOptions = () => {
-      _private.get(this).options.forEach(option => option.displayElement.style.display = '')
+    _.get(this).showAllOptions = () => {
+      _.get(this).options.forEach(option => option.displayElement.style.display = '')
     }
 
-    _private.get(this).clickHandler = evt => {
+    _.get(this).clickHandler = evt => {
       this.clickCount++
 
       if (this.clickCount === 2) {
-        _private.get(this).showAllOptions()
+        _.get(this).showAllOptions()
         this.open()
       }
     }
 
-    _private.get(this).keydownHandler = evt => {
+    _.get(this).keydownHandler = evt => {
       if (!this.isOpen) {
-        _private.get(this).showAllOptions()
+        _.get(this).showAllOptions()
         return this.open()
       }
 
       switch (evt[this.keySource]) {
         case 27:
         case 'Escape':
-          _private.get(this).clear()
+          _.get(this).clear()
           this.close()
           break
 
@@ -65,15 +65,15 @@ class ChassisDatalist extends HTMLElement {
       }
     }
 
-    _private.get(this).inputHandler = evt => {
-      _private.get(this).clear()
-      let query = _private.get(this).inputEl.value
+    _.get(this).inputHandler = evt => {
+      _.get(this).clear()
+      let query = _.get(this).inputEl.value
 
       if (!query) {
         return
       }
 
-      let results = _private.get(this).find(query)
+      let results = _.get(this).find(query)
 
       if (results.length) {
         results.forEach(result => result.displayElement.style.display = '')
@@ -85,10 +85,10 @@ class ChassisDatalist extends HTMLElement {
         this.removeAttribute('open')
       }
 
-      _private.get(this).clear()
+      _.get(this).clear()
     }
 
-    _private.get(this).bodyClickHandler = evt => {
+    _.get(this).bodyClickHandler = evt => {
       if (evt.target === this || this.contains(evt.target)) {
         return
       }
@@ -96,8 +96,8 @@ class ChassisDatalist extends HTMLElement {
       this.removeAttribute('open')
     }
 
-    _private.get(this).getOptionById = (id) => {
-      let options = _private.get(this).options
+    _.get(this).getOptionById = (id) => {
+      let options = _.get(this).options
       let option
 
       for (let i = 0; i < options.length; i++) {
@@ -110,14 +110,14 @@ class ChassisDatalist extends HTMLElement {
       return option
     }
 
-    _private.get(this).generateOptionObject = optionEl => {
+    _.get(this).generateOptionObject = optionEl => {
       if (!customElements.get('chassis-option')) {
         console.error(`chassis-datalist requires chassis-option. Please include it in this document's <head> element.`)
         return
       }
 
       let obj = {
-        id: _private.get(this).generateGuid('option'),
+        id: _.get(this).generateGuid('option'),
         attributes: {},
         sourceElement: optionEl
       }
@@ -143,21 +143,21 @@ class ChassisDatalist extends HTMLElement {
   }
 
   get value () {
-    return _private.get(this).inputEl.value
+    return _.get(this).inputEl.value
   }
 
   connectedCallback () {
-    _private.get(this).inputEl.addEventListener('focus', evt => {
-      this.addEventListener('keydown', _private.get(this).keydownHandler)
+    _.get(this).inputEl.addEventListener('focus', evt => {
+      this.addEventListener('keydown', _.get(this).keydownHandler)
     })
 
-    _private.get(this).inputEl.addEventListener('input', _private.get(this).inputHandler)
+    _.get(this).inputEl.addEventListener('input', _.get(this).inputHandler)
 
-    _private.get(this).inputEl.addEventListener('click', _private.get(this).clickHandler)
+    _.get(this).inputEl.addEventListener('click', _.get(this).clickHandler)
 
-    _private.get(this).inputEl.addEventListener('blur', evt => {
+    _.get(this).inputEl.addEventListener('blur', evt => {
       this.clickCount = 0
-      this.removeEventListener('keydown', _private.get(this).keydownHandler)
+      this.removeEventListener('keydown', _.get(this).keydownHandler)
     })
 
     setTimeout(() => {
@@ -173,18 +173,18 @@ class ChassisDatalist extends HTMLElement {
 
   addChildren (children) {
     for (let child of children) {
-      this.addOption(child instanceof HTMLElement ? _private.get(this).generateOptionObject(child) : child)
+      this.addOption(child instanceof HTMLElement ? _.get(this).generateOptionObject(child) : child)
     }
   }
 
-  addOption (option, index, dest = _private.get(this).optionsEl) {
+  addOption (option, index, dest = _.get(this).optionsEl) {
     if (!customElements.get('chassis-option')) {
       console.error(`chassis-datalist requires chassis-option. Please include it in this document's <head> element.`)
       return
     }
 
     if (!option.hasOwnProperty('id')) {
-      option.id = _private.get(this).generateGuid('option')
+      option.id = _.get(this).generateGuid('option')
     }
 
     if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
@@ -230,12 +230,12 @@ class ChassisDatalist extends HTMLElement {
 
     if (index) {
       this[`${index}`] = option.sourceElement
-      _private.get(this).options.splice(index, 0, option)
+      _.get(this).options.splice(index, 0, option)
       return
     }
 
-    this[`${_private.get(this).options.length}`] = option.sourceElement
-    _private.get(this).options.push(option)
+    this[`${_.get(this).options.length}`] = option.sourceElement
+    _.get(this).options.push(option)
   }
 
   attributeChangedCallback (attr, oldValue, newValue) {
@@ -249,12 +249,12 @@ class ChassisDatalist extends HTMLElement {
       case 'autofocus':
       case 'disabled':
         console.log(attr);
-        // _private.get(this).handleBooleanAttributeChange(attr, newValue)
+        // _.get(this).handleBooleanAttributeChange(attr, newValue)
         break
 
       case 'name':
         console.log(attr);
-        // _private.get(this).handleAttributeChange(attr, newValue)
+        // _.get(this).handleAttributeChange(attr, newValue)
         break
 
       case 'open':
@@ -264,9 +264,9 @@ class ChassisDatalist extends HTMLElement {
   }
 
   close () {
-    document.body.removeEventListener('click', _private.get(this).bodyClickHandler)
-    document.body.removeEventListener('touchcancel', _private.get(this).bodyClickHandler)
-    document.body.removeEventListener('touchend', _private.get(this).bodyClickHandler)
+    document.body.removeEventListener('click', _.get(this).bodyClickHandler)
+    document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler)
+    document.body.removeEventListener('touchend', _.get(this).bodyClickHandler)
 
     if (this.isOpen) {
       this.isOpen = false
@@ -274,9 +274,9 @@ class ChassisDatalist extends HTMLElement {
   }
 
   open () {
-    document.body.addEventListener('click', _private.get(this).bodyClickHandler)
-    document.body.addEventListener('touchcancel', _private.get(this).bodyClickHandler)
-    document.body.addEventListener('touchend', _private.get(this).bodyClickHandler)
+    document.body.addEventListener('click', _.get(this).bodyClickHandler)
+    document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler)
+    document.body.addEventListener('touchend', _.get(this).bodyClickHandler)
 
     if (!this.isOpen) {
       this.isOpen = true
@@ -284,29 +284,29 @@ class ChassisDatalist extends HTMLElement {
   }
 
   inject (input, datalist, guid) {
-    _private.get(this).sourceEl = datalist
-    _private.get(this).inputEl = input
-    _private.get(this).inputEl.slot = 'input'
-    _private.get(this).inputEl.id = guid
-    this.appendChild(_private.get(this).inputEl)
+    _.get(this).sourceEl = datalist
+    _.get(this).inputEl = input
+    _.get(this).inputEl.slot = 'input'
+    _.get(this).inputEl.id = guid
+    this.appendChild(_.get(this).inputEl)
 
-    _private.get(this).optionsEl = document.createElement('chassis-options')
-    _private.get(this).optionsEl.slot = 'options'
+    _.get(this).optionsEl = document.createElement('chassis-options')
+    _.get(this).optionsEl.slot = 'options'
 
-    this.appendChild(_private.get(this).optionsEl)
+    this.appendChild(_.get(this).optionsEl)
 
     this.addChildren(datalist.options)
   }
 
   select (id) {
-    let option = _private.get(this).getOptionById(id)
+    let option = _.get(this).getOptionById(id)
 
     if (option) {
       option.sourceElement.selected = true
-      _private.get(this).inputEl.value = option.displayElement.innerHTML
-      _private.get(this).selectedOption = option
+      _.get(this).inputEl.value = option.displayElement.innerHTML
+      _.get(this).selectedOption = option
 
-      _private.get(this).options.forEach(option => option.displayElement.removeAttribute('selected'))
+      _.get(this).options.forEach(option => option.displayElement.removeAttribute('selected'))
       option.displayElement.setAttribute('selected', '')
 
       this.dispatchEvent(new Event('input', {

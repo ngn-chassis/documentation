@@ -2,7 +2,7 @@ class ChassisLayout extends HTMLElement {
   constructor () {
     super()
 
-    _private.set(this, {
+    _.set(this, {
       children: []
     })
   }

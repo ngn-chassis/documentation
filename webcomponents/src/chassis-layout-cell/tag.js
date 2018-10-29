@@ -2,7 +2,7 @@ class ChassisLayoutCell extends HTMLElement {
   constructor () {
     super()
 
-    _private.set(this, {
+    _.set(this, {
       children: [],
       styleSheet: null,
       sizeRule: null,
@@ -16,11 +16,11 @@ class ChassisLayoutCell extends HTMLElement {
 
   connectedCallback () {
     setTimeout(() => {
-      _private.get(this).styleSheet = this.shadowRoot.styleSheets[0]
+      _.get(this).styleSheet = this.shadowRoot.styleSheets[0]
 
-      let sheetLength = _private.get(this).styleSheet.cssRules.length
-      _private.get(this).styleSheet.insertRule(':host([size]) {}', sheetLength)
-      _private.get(this).sizeRule = _private.get(this).styleSheet.cssRules[sheetLength]
+      let sheetLength = _.get(this).styleSheet.cssRules.length
+      _.get(this).styleSheet.insertRule(':host([size]) {}', sheetLength)
+      _.get(this).sizeRule = _.get(this).styleSheet.cssRules[sheetLength]
 
       if (this.hasAttribute('size')) {
         this.size = this.getAttribute('size')
@@ -37,7 +37,7 @@ class ChassisLayoutCell extends HTMLElement {
 
     switch (attr) {
       case 'size':
-        if (_private.get(this).size !== newValue) {
+        if (_.get(this).size !== newValue) {
           this.size = newValue
         }
         break
@@ -51,12 +51,12 @@ class ChassisLayoutCell extends HTMLElement {
   }
 
   set size (val) {
-    if (!_private.get(this).sizeRule) {
+    if (!_.get(this).sizeRule) {
       return
     }
 
-    _private.get(this).size = val
-    _private.get(this).sizeRule.style.setProperty('flex-basis', val)
+    _.get(this).size = val
+    _.get(this).sizeRule.style.setProperty('flex-basis', val)
     this.setAttribute('size', val)
   }
 }

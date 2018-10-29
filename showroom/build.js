@@ -2,8 +2,6 @@ const path = require('path')
 const fs = require('fs-extra')
 
 const ProductionLine = require('productionline-web')
-const TaskRunner = require('shortbus')
-
 const Chassis = require('@chassis/core')
 
 class CustomProductionLine extends ProductionLine {
@@ -12,7 +10,7 @@ class CustomProductionLine extends ProductionLine {
   }
 
   buildCSS (minify = true, cb) {
-    let tasks = new TaskRunner()
+    let tasks = new this.TaskRunner()
 
     this.walk(this.CSS).forEach(filepath => {
       tasks.add(`Process ${this.localDirectory(filepath)}`, next => {
@@ -20,7 +18,6 @@ class CustomProductionLine extends ProductionLine {
           minify,
           sourceMap: minify,
           sourceMapPath: path.dirname(this.outputDirectory(filepath)),
-          importBasePath: path.resolve(`${this.SOURCE}/css`),
           theme: path.resolve(`${this.SOURCE}/css/main.theme`),
 
           layout: {
@@ -39,7 +36,7 @@ class CustomProductionLine extends ProductionLine {
           }
 
           this.writeFile(this.outputDirectory(filepath), processed.css, next)
-        }, filepath)
+        })
       })
     })
 
@@ -47,56 +44,54 @@ class CustomProductionLine extends ProductionLine {
     tasks.run()
   }
 
-  buildJavaScript (transpile = true, minify = true, createsourcemaps = true) {
+  buildJavaScript (transpile = true, minify = true, createsourcemaps = true, cb) {
     if (createsourcemaps && this.PRIVATE.SOURCEMAPURL === null) {
       createsourcemaps = false
     }
 
-    this.tasks.add('Build JavaScript', next => {
-      let transpiler = new this.TaskRunner()
+    let transpiler = new this.TaskRunner()
 
-      this.walk(this.JAVASCRIPT).forEach(filepath => {
-        transpiler.add(`Transpile ${this.localDirectory(filepath)}`, cont => {
-          // Handle transpilation
-          let transpiled = transpile ? this.transpile(filepath) : { code: fs.readFileSync(filepath), map: null }
+    this.walk(this.JAVASCRIPT).forEach(filepath => {
+      transpiler.add(`Transpile ${this.localDirectory(filepath)}`, cont => {
+        // Handle transpilation
+        let transpiled = transpile ? this.transpile(filepath) : { code: fs.readFileSync(filepath), map: null }
 
-          // Sourcemap configuration
-          let createmap = createsourcemaps
+        // Sourcemap configuration
+        let createmap = createsourcemaps
 
-          if (!createsourcemaps) {
-            transpiled.map = null
-          } else if (this.PRIVATE.IGNOREDSOURCEMAPS.length > 0) {
-            for (let i = 0; i < this.PRIVATE.IGNOREDSOURCEMAPS.length; i++) {
-              if (this.minimatch(filepath, path.join(this.SOURCE, this.PRIVATE.IGNOREDSOURCEMAPS[i]))) {
-                createmap = false
-                transpiled.map = null
-                this.warn('     - Skipped sourcemap creation for ' + this.localDirectory(filepath) + ' (EXPLICITLY IGNORED)')
-                break
-              }
+        if (!createsourcemaps) {
+          transpiled.map = null
+        } else if (this.PRIVATE.IGNOREDSOURCEMAPS.length > 0) {
+          for (let i = 0; i < this.PRIVATE.IGNOREDSOURCEMAPS.length; i++) {
+            if (this.minimatch(filepath, path.join(this.SOURCE, this.PRIVATE.IGNOREDSOURCEMAPS[i]))) {
+              createmap = false
+              transpiled.map = null
+              this.warn('     - Skipped sourcemap creation for ' + this.localDirectory(filepath) + ' (EXPLICITLY IGNORED)')
+              break
             }
           }
+        }
 
-          // Handle minification
-          let minified = minify ? this.minify(transpiled.code, this.localDirectory(filepath), transpiled.map) : transpiled
+        // Handle minification
+        let minified = minify ? this.minify(transpiled.code, this.localDirectory(filepath), transpiled.map) : transpiled
 
-          // Apply comment header & footer
-          let content = this.applyHeader(minified.code, 'js')
-          content = this.applyFooter(minified.code, 'js')
+        // Apply comment header & footer
+        let content = this.applyHeader(minified.code, 'js')
+        content = this.applyFooter(minified.code, 'js')
 
-          // Create sourcemaps
-          if (createmap && minified.map !== null) {
-            let mappath = path.join(this.sourcemapDirectory(filepath), path.basename(filepath) + '.map')
-            this.writeFileSync(mappath, minified.map)
-            this.subtle('     + SourceMap created:', this.localDirectory(mappath))
-          }
+        // Create sourcemaps
+        if (createmap && minified.map !== null) {
+          let mappath = path.join(this.sourcemapDirectory(filepath), path.basename(filepath) + '.map')
+          this.writeFileSync(mappath, minified.map)
+          this.subtle('     + SourceMap created:', this.localDirectory(mappath))
+        }
 
-          this.writeFile(this.outputDirectory(filepath), content, cont)
-        })
+        this.writeFile(this.outputDirectory(filepath), content, cont)
       })
-
-      transpiler.on('complete', next)
-      transpiler.run()
     })
+
+    transpiler.on('complete', cb)
+    transpiler.run()
   }
 
   copyWebcomponents (cb) {
@@ -121,7 +116,7 @@ class CustomProductionLine extends ProductionLine {
     this.addTask('Copy Webcomponents', next => this.copyWebcomponents(next))
     this.addTask('Copy Polyfills', next => this.copyPolyfills(next))
     this.buildHTML()
-    this.buildJavaScript()
+    // this.addTask('Build JavaScript', next => this.buildJavaScript(!dev, !dev, !dev, next))
     this.addTask('Build CSS', next => this.buildCSS(!dev, next))
   }
 }

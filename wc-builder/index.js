@@ -1,10 +1,11 @@
 const fs = require('fs-extra')
 const path = require('path')
+const rimraf = require('rimraf')
 
 const TaskRunner = require('shortbus')
 const webpack = require('webpack')
 
-const babel = require ('@babel/core')
+const babel = require('@babel/core')
 const parser = require('@babel/parser')
 
 const postcss = require('postcss')
@@ -53,6 +54,15 @@ module.exports = class {
   }
 
   build () {
+    let tempDirs = {
+      bundled: path.resolve(__dirname, 'bundled'),
+      transpiled: path.resolve(__dirname, 'transpiled')
+    }
+
+    for (let dir in tempDirs) {
+      this._mkdirp(tempDirs[dir])
+    }
+
     let processor = new TaskRunner()
 
     console.info(`Building "${this.filename}" component...`)
@@ -72,26 +82,22 @@ module.exports = class {
       let compiler = new TaskRunner()
 
       if (this.addTranspiledVersion) {
-        compiler.add('Generating ES5 Version...', (next) => {
+        compiler.add('Generating ES5 Version...', next => {
           let file = {
             name: `${this.filename}-es5`,
-            contents: babel.transform(files[0].contents, {
+            contents: babel.transformSync(files[0].contents, {
               presets: [require("@babel/preset-env")],
               "plugins": ["@babel/plugin-transform-runtime"]
-            }).code
+            })
           }
 
-          let bundlesDir = path.resolve(__dirname, 'bundle')
-
-          this._mkdirp(bundlesDir)
-
-          fs.writeFileSync(path.join(bundlesDir, `${file.name}.js`), file.contents);
+          fs.writeFileSync(path.join(tempDirs.transpiled, `${file.name}.js`), file.contents.code);
 
           let bundler = webpack({
             devtool: 'source-map',
-            entry: path.join(bundlesDir, `${file.name}.js`),
+            entry: path.join(tempDirs.transpiled, `${file.name}.js`),
             output: {
-              path: bundlesDir,
+              path: tempDirs.bundled,
               filename: `${file.name}-bundle.js`
             },
             plugins: [
@@ -104,7 +110,7 @@ module.exports = class {
           })
 
           bundler.run((err, stats) => {
-            let bundled = fs.readFileSync(path.join(bundlesDir, `${file.name}-bundle.js`));
+            let bundled = fs.readFileSync(path.join(tempDirs.bundled, `${file.name}-bundle.js`));
             file.contents = bundled.toString()
             files.push(file)
             next()
@@ -129,7 +135,15 @@ module.exports = class {
 
       compiler.on('stepstarted', (task) => console.info(task.name))
 
-      compiler.on('complete', () => this._writeFiles(files, () => console.info(`Done.`)))
+      compiler.on('complete', () => {
+        this._writeFiles(files, () => {
+          console.info(`Done.`)
+
+          // for (let dir in tempDirs) {
+          //   rimraf(tempDirs[dir], () => {})
+          // }
+        })
+      })
 
       compiler.run(true)
     })
@@ -290,7 +304,7 @@ module.exports = class {
 
     console.info(`Writing to ${outputDirectory}`)
 
-    files.forEach((file) => this._writeFile(file, outputDirectory))
+    files.forEach(file => this._writeFile(file, outputDirectory))
 
     cb && cb()
   }

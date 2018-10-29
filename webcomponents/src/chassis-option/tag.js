@@ -13,7 +13,7 @@ class ChassisOption extends HTMLElement {
   }
 
   set form (value) {
-    return _private.get(this).throw('readonly', {
+    return _.get(this).throw('readonly', {
       name: 'form'
     })
   }
@@ -23,7 +23,7 @@ class ChassisOption extends HTMLElement {
   }
 
   set index (value) {
-    return _private.get(this).throw('readonly', {
+    return _.get(this).throw('readonly', {
       name: 'index'
     })
   }

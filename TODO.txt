@@ -6,6 +6,11 @@ Add ARIA roles for accessibility
 Add @chassis apply block margin/padding
 and @chassis apply nested-block margin/padding;
 
+Instead of a separate chassis-multiple-select component,
+just combine chassis-select[multiple] with chassis-tagbin.
+
+For svg icons inside select menus, ie arrow icon, add config property to build. 
+
 
 ? Currently, the font-size is limited by the max UI width. Max width maybe should
 not have an effect on the typography queries. OR, there should be an option

@@ -51,8 +51,34 @@
 
       <div class="content">
         <section class="test">
-          <select multiple>
-            <option value="1">Option 1</option>
+          <chassis-control id="chassis-select">
+            <label>Menu Label</label>
+            <select name="name-test" placeholder="placeholder">
+              <option value="test1" checked>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="7"></circle>
+                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                </svg>
+                Option 1
+              </option>
+              <option label=" " value="test2">Option 2</option>
+              <option value="test3">Option 3 is long and should wrap to the next line</option>
+              <!-- <option value="test4">Option 4</option>
+              <optgroup label="Option Group 1">
+                <option value="test5">Grouped Option</option>
+                <option value="test6">Grouped Option</option>
+                <option value="test7">Grouped Option</option>
+              </optgroup>
+              <optgroup label="Option Group 2">
+                <option value="test8">Grouped Option</option>
+                <option value="test9">Grouped Option</option>
+                <option value="test10">Grouped Option</option>
+              </optgroup> -->
+            </select>
+          </chassis-control>
+
+          <select id="default-select">
+            <option id="test-option" value="1">Option 1</option>
             <option value="2">Option 2</option>
             <option value="3">Option 3</option>
           </select>
@@ -441,31 +467,7 @@
                 <fieldset class="select-menu">
                   <h4>Select Menu</h4>
 
-                  <chassis-control id="select_menu">
-                    <label>Menu Label</label>
-                    <select name="name-test" placeholder="placeholder">
-                      <option value="test1">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <circle cx="12" cy="8" r="7"></circle>
-                          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-                        </svg>
-                        Option 1
-                      </option>
-                      <option label=" " value="test2">Option 2</option>
-                      <option value="test3">Option 3 is long and should wrap to the next line</option>
-                      <option value="test4">Option 4</option>
-                      <optgroup label="Option Group 1">
-                        <option value="test5">Grouped Option</option>
-                        <option value="test6">Grouped Option</option>
-                        <option value="test7">Grouped Option</option>
-                      </optgroup>
-                      <optgroup label="Option Group 2">
-                        <option value="test8">Grouped Option</option>
-                        <option value="test9">Grouped Option</option>
-                        <option value="test10">Grouped Option</option>
-                      </optgroup>
-                    </select>
-                  </chassis-control>
+
 
                   <!-- <chassis-control id="select">
                     <label>Select Test</label>
@@ -653,7 +655,8 @@
 
       document.addEventListener('WebComponentsReady', function () {
         // window.cycle = document.querySelector('chassis-cycle')
-        window.select = document.getElementById('select_menu').input
+        window.select = document.getElementById('default-select')
+        window.chassisSelect = document.getElementById('chassis-select').input
         // window.option = window.select[2]
         //
         // window.select2 = document.getElementById('select2')

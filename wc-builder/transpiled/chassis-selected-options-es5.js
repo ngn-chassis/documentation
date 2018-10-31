@@ -163,13 +163,36 @@ customElements.define('chassis-selected-options', function () {
           }
         });
 
+        _this.parent = null;
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).contentsEl = _this.shadowRoot.querySelector('#contents');
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options = [];
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateList = function () {
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).contentsEl.innerHTML = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options.map(function (option) {
+            return option.displayElement.text;
+          }).join(', ');
+        };
+
         return _this;
       }
 
       (0, _createClass2.default)(_class, [{
+        key: "add",
+        value: function add(option) {
+          if (this.parent.multiple) {
+            _.get(this).options.push(option);
+          } else {
+            _.get(this).options = [option];
+          }
+
+          _.get(this).generateList();
+        }
+      }, {
         key: "clear",
         value: function clear() {
-          this.contents = '';
+          _.get(this).options = [];
+
+          _.get(this).generateList();
         }
       }, {
         key: "connectedCallback",
@@ -196,14 +219,6 @@ customElements.define('chassis-selected-options', function () {
           shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');
           caret.appendChild(shape);
           this.appendChild(caret);
-        }
-      }, {
-        key: "contents",
-        get: function get() {
-          return this.shadowRoot.querySelector('#contents').innerHTML;
-        },
-        set: function set(value) {
-          this.shadowRoot.querySelector('#contents').innerHTML = value;
         }
       }]);
       return _class;

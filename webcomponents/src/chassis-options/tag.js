@@ -4,10 +4,46 @@ class ChassisOptions extends HTMLElement {
 
     this.parent = null
 
-    this.selectedOption = null
-    this.selectedOptionEl = null
+    this.selectedOptionsEl = null
 
     _.get(this).options = []
+
+    _.get(this).ChassisHTMLCollection = function () {
+      let _p = new WeakMap()
+
+      return class ChassisHTMLCollection {
+        constructor (arr) {
+          _p.set(this, {arr})
+          arr.forEach((node, index) => this[index] = node)
+        }
+
+        get length () {
+          return _p.get(this).arr.length
+        }
+
+        item (index) {
+          return _p.get(this).arr[index]
+        }
+
+        namedItem (name) {
+          let matches = _p.get(this).arr.filter(item => item.id === name || item.name === name)
+          return matches.length > 0 ? matches[0] : null
+        }
+      }
+    }
+
+    _.get(this).ChassisOptionsCollection = () => {
+      let _p = new WeakMap()
+
+      return class ChassisOptionsCollection extends _.get(this).ChassisHTMLCollection() {
+        constructor (arr, selectedIndex = -1, add, remove) {
+          super(arr)
+          this.selectedIndex = selectedIndex
+          this.add = add
+          this.remove = remove
+        }
+      }
+    }
   }
 
   get form () {
@@ -21,7 +57,9 @@ class ChassisOptions extends HTMLElement {
   }
 
   get displayOptions () {
-    return this.options.map(option => option.displayElement)
+    return new (_.get(this).ChassisOptionsCollection())(this.options.map(option => option.displayElement), this.selectedIndex, (element, before) => {
+      this.add(this.generateOptionObject(element), before)
+    }, index => this.removeOptionByIndex(index))
   }
 
   set displayOptions (value) {
@@ -41,7 +79,7 @@ class ChassisOptions extends HTMLElement {
   }
 
   get selectedIndex () {
-    return this.options.indexOf(this.selectedOption)
+    return this.options.findIndex(option => option.displayElement === this.selectedOptions.item(0))
   }
 
   set selectedIndex (index) {
@@ -49,13 +87,8 @@ class ChassisOptions extends HTMLElement {
   }
 
   get selectedOptions () {
-    let options = []
-
-    if (this.selectedOption) {
-      options.push(this.selectedOption.displayElement)
-    }
-
-    return options
+    let nodes = this.querySelectorAll('[selected]')
+    return new (_.get(this).ChassisHTMLCollection())(nodes)
   }
 
   set selectedOptions (value) {
@@ -108,19 +141,13 @@ class ChassisOptions extends HTMLElement {
       chassisOption.id = id
     }
 
-    chassisOption.label = label
-
     if (option.sourceElement.hasAttribute('label')) {
       chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'))
     }
 
-    chassisOption.value = value
-
     if (value) {
       chassisOption.setAttribute('value', value)
     }
-
-    chassisOption.disabled = disabled
 
     if (disabled) {
       chassisOption.setAttribute('disabled', '')
@@ -129,7 +156,7 @@ class ChassisOptions extends HTMLElement {
     chassisOption.defaultSelected = selected
 
     chassisOption.key = _.get(this).generateGuid()
-    chassisOption.addEventListener('click', (evt) => this.selectByKey(chassisOption.key))
+    chassisOption.addEventListener('click', evt => this.selectByKey(chassisOption.key))
     chassisOption.innerHTML = option.sourceElement.innerHTML
     chassisOption.parent = dest
 
@@ -140,12 +167,12 @@ class ChassisOptions extends HTMLElement {
       sourceElement: option.sourceElement
     }
 
-    if (index) {
+    if (index !== null) {
       dest.insertBefore(chassisOption, dest.children.item(index))
 
       this.parent[`${index}`] = option.displayElement
       this.options.splice(index, 0, option)
-      this.parent.sourceEl.add(option.sourceElement, index)
+      this.parent.sourceElement.add(option.sourceElement, index)
 
       if (selected) {
         this.selectByIndex(index)
@@ -204,10 +231,14 @@ class ChassisOptions extends HTMLElement {
   }
 
   deselectAll () {
-    this.selectedOption = null
     this.parent.sourceElement.selectedIndex = -1
-    this.selectedOptionEl.contents = this.parent.placeholder
-    this.selectedOptionEl.setAttribute('placeholder', '')
+    this.selectedOptionsEl.contents = this.parent.placeholder
+    this.selectedOptionsEl.setAttribute('placeholder', '')
+
+    this.options.forEach(option => {
+      option.displayElement.removeAttribute('selected')
+      option.sourceElement.selected = false
+    })
   }
 
   generateOptgroup (optgroup) {
@@ -293,7 +324,7 @@ class ChassisOptions extends HTMLElement {
    * @param  {Boolean} [destroy=true]
    */
   removeOptionByIndex (index = null, destroy = true) {
-    if (index === null) {
+    if (index === null || index >= this.options.length) {
       return
     }
 
@@ -313,18 +344,17 @@ class ChassisOptions extends HTMLElement {
       return
     }
 
-    option.sourceElement.selected = true
-    this.selectedOptionEl.contents = option.displayElement.innerHTML
-    this.selectedOption = option
+    if (!this.parent.multiple) {
+      this.deselectAll()
+    }
 
-    this.options.forEach(option => option.displayElement.removeAttribute('selected'))
+    option.sourceElement.selected = true
     option.displayElement.setAttribute('selected', '')
 
-    this.selectedOptionEl.removeAttribute('placeholder')
+    this.selectedOptionsEl.add(option)
 
-    this.dispatchEvent(new Event('change', {
-      bubbles: true
-    }))
+    this.selectedOptionsEl.removeAttribute('placeholder')
+    this.dispatchChangeEvent()
   }
 
   selectByKey (key) {

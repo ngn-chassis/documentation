@@ -3,13 +3,19 @@ class ChassisOption extends HTMLElement {
     super()
 
     this.parent = null
-
     this.defaultSelected = false
-    this.disabled = false
-    this.label = ''
-    this.selected = false
-    this.text = ''
-    this.value = ''
+  }
+
+  static get observedAttributes () {
+    return ['disabled', 'label', 'selected', 'value']
+  }
+
+  get disabled () {
+    return _.get(this).getBooleanPropertyValue('disabled')
+  }
+
+  set disabled (bool) {
+    _.get(this).handleBooleanPropertyChange('disabled', bool)
   }
 
   set form (value) {
@@ -19,13 +25,65 @@ class ChassisOption extends HTMLElement {
   }
 
   get index () {
-    return this.parent.displayOptions.indexOf(this)
+    return this.parent.options.findIndex(option => option.displayElement === this)
   }
 
   set index (value) {
     return _.get(this).throw('readonly', {
       name: 'index'
     })
+  }
+
+  get label () {
+    return _.get(this).sourceEl.label
+  }
+
+  set label (label) {
+    _.get(this).handlePropertyChange('label', label)
+  }
+
+  get selected () {
+    return _.get(this).getBooleanPropertyValue('selected')
+  }
+
+  set selected (bool) {
+    _.get(this).handleBooleanPropertyChange('selected', bool)
+  }
+
+  get text () {
+    return this.innerHTML
+  }
+
+  set text (content) {
+    this.innerHTML = content
+  }
+
+  get value () {
+    return _.get(this).sourceEl.value
+  }
+
+  set value (value) {
+    _.get(this).handlePropertyChange('value', value)
+  }
+
+  attributeChangedCallback (attr, oldValue, newValue) {
+    attr = attr.toLowerCase()
+
+    if (newValue === oldValue) {
+      return
+    }
+
+    switch (attr) {
+      case 'disabled':
+      case 'selected':
+        return _.get(this).handleBooleanAttributeChange(attr, newValue)
+
+      case 'label':
+      case 'value':
+        return _.get(this).handleAttributeChange(attr, newValue)
+
+      default: return
+    }
   }
 
   connectedCallback () {

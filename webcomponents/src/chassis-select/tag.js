@@ -20,12 +20,22 @@ class ChassisSelect extends HTMLElement {
           case 38:
           case 'ArrowUp':
             evt.preventDefault()
+
+            if (!this.isOpen) {
+              return this.open()
+            }
+
             console.log('select previous option');
             break
 
           case 40:
           case 'ArrowDown':
             evt.preventDefault()
+
+            if (!this.isOpen) {
+              return this.open()
+            }
+
             console.log('select next option');
             break
 
@@ -244,13 +254,21 @@ class ChassisSelect extends HTMLElement {
   }
 
   inject (select) {
-    _.get(this).optionsEl = document.createElement('chassis-options')
     _.get(this).sourceEl = select
-    _.get(this).optionsEl.parent = this
-    _.get(this).optionsEl.selectedOptionEl = document.createElement('chassis-selected-options')
 
-    _.get(this).optionsEl.selectedOptionEl.slot = 'selectedoptions'
-    this.appendChild(_.get(this).optionsEl.selectedOptionEl)
+    _.get(this).optionsEl = document.createElement('chassis-options')
+    _.get(this).optionsEl.parent = this
+    _.get(this).optionsEl.dispatchChangeEvent = () => {
+      this.dispatchEvent(new Event('change', {
+        bubbles: true
+      }))
+    }
+
+    _.get(this).optionsEl.selectedOptionsEl = document.createElement('chassis-selected-options')
+    _.get(this).optionsEl.selectedOptionsEl.parent = this
+
+    _.get(this).optionsEl.selectedOptionsEl.slot = 'selectedoptions'
+    this.appendChild(_.get(this).optionsEl.selectedOptionsEl)
 
     _.get(this).optionsEl.slot = 'options'
     this.appendChild(_.get(this).optionsEl)
@@ -285,6 +303,34 @@ class ChassisSelect extends HTMLElement {
     if (!this.isOpen) {
       this.isOpen = true
     }
+  }
+
+  /**
+   * method querySelector
+   * @param  {string} selector
+   * @return {HTMLElement}
+   * @override
+   */
+  querySelector (selector) {
+    if (selector !== ':checked') {
+      return super.querySelector(selector)
+    }
+
+    return this.selectedOptions.length > 0 ? this.selectedOptions[0] : null
+  }
+
+  /**
+   * method querySelectorAll
+   * @param  {string} selector
+   * @return {NodeList}
+   * @override
+   */
+  querySelectorAll (selector) {
+    if (selector !== ':checked') {
+      return super.querySelectorAll(selector)
+    }
+
+    return _.get(this).optionsEl.querySelectorAll('[selected]')
   }
 
   remove (index = null) {

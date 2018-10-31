@@ -1,18 +1,32 @@
 class ChassisSelectedOptions extends HTMLElement {
   constructor () {
     super()
+
+    this.parent = null
+
+    _.get(this).contentsEl = this.shadowRoot.querySelector('#contents')
+    _.get(this).options = []
+
+    _.get(this).generateList = () => {
+      _.get(this).contentsEl.innerHTML = _.get(this).options.map(option => {
+        return option.displayElement.text
+      }).join(', ')
+    }
   }
 
-  get contents () {
-    return this.shadowRoot.querySelector('#contents').innerHTML
-  }
+  add (option) {
+    if (this.parent.multiple) {
+      _.get(this).options.push(option)
+    } else {
+      _.get(this).options = [option]
+    }
 
-  set contents (value) {
-    this.shadowRoot.querySelector('#contents').innerHTML = value
+    _.get(this).generateList()
   }
 
   clear () {
-    this.contents = ''
+    _.get(this).options = []
+    _.get(this).generateList()
   }
 
   connectedCallback () {

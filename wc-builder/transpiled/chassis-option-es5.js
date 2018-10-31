@@ -167,15 +167,32 @@ customElements.define('chassis-option', function () {
 
         _this.parent = null;
         _this.defaultSelected = false;
-        _this.disabled = false;
-        _this.label = '';
-        _this.selected = false;
-        _this.text = '';
-        _this.value = '';
         return _this;
       }
 
       (0, _createClass2.default)(_class, [{
+        key: "attributeChangedCallback",
+        value: function attributeChangedCallback(attr, oldValue, newValue) {
+          attr = attr.toLowerCase();
+
+          if (newValue === oldValue) {
+            return;
+          }
+
+          switch (attr) {
+            case 'disabled':
+            case 'selected':
+              return _.get(this).handleBooleanAttributeChange(attr, newValue);
+
+            case 'label':
+            case 'value':
+              return _.get(this).handleAttributeChange(attr, newValue);
+
+            default:
+              return;
+          }
+        }
+      }, {
         key: "connectedCallback",
         value: function connectedCallback() {}
         /**
@@ -191,6 +208,14 @@ customElements.define('chassis-option', function () {
           (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "remove", this).call(this);
         }
       }, {
+        key: "disabled",
+        get: function get() {
+          return _.get(this).getBooleanPropertyValue('disabled');
+        },
+        set: function set(bool) {
+          _.get(this).handleBooleanPropertyChange('disabled', bool);
+        }
+      }, {
         key: "form",
         set: function set(value) {
           return _.get(this).throw('readonly', {
@@ -200,12 +225,53 @@ customElements.define('chassis-option', function () {
       }, {
         key: "index",
         get: function get() {
-          return this.parent.displayOptions.indexOf(this);
+          var _this2 = this;
+
+          return this.parent.options.findIndex(function (option) {
+            return option.displayElement === _this2;
+          });
         },
         set: function set(value) {
           return _.get(this).throw('readonly', {
             name: 'index'
           });
+        }
+      }, {
+        key: "label",
+        get: function get() {
+          return _.get(this).sourceEl.label;
+        },
+        set: function set(label) {
+          _.get(this).handlePropertyChange('label', label);
+        }
+      }, {
+        key: "selected",
+        get: function get() {
+          return _.get(this).getBooleanPropertyValue('selected');
+        },
+        set: function set(bool) {
+          _.get(this).handleBooleanPropertyChange('selected', bool);
+        }
+      }, {
+        key: "text",
+        get: function get() {
+          return this.innerHTML;
+        },
+        set: function set(content) {
+          this.innerHTML = content;
+        }
+      }, {
+        key: "value",
+        get: function get() {
+          return _.get(this).sourceEl.value;
+        },
+        set: function set(value) {
+          _.get(this).handlePropertyChange('value', value);
+        }
+      }], [{
+        key: "observedAttributes",
+        get: function get() {
+          return ['disabled', 'label', 'selected', 'value'];
         }
       }]);
       return _class;

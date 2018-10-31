@@ -21,7 +21,52 @@
   }
 }
 
+button,
+.button {
+  &.pill {
+    @chassis apply-variation pill;
+  }
+}
+
+/* WIP */
+chassis-select.pill {
+  @chassis apply-variation pill radius;
+
+  & chassis-selected-options {
+  	@chassis apply-variation pill radius;
+  }
+
+  & chassis-options {
+    @chassis apply-variation pill radius-bottom;
+  }
+
+  & chassis-selected-options,
+  & chassis-option,
+  & chassis-optgroup-label {
+    @chassis apply-variation pill padding-x;
+  }
+
+  &[open] {
+    border-radius: 0;
+
+    & chassis-selected-options,
+    & chassis-options {
+      border-radius: 0;
+    }
+  }
+}
+
 .showroom {
+  & .test span {
+    color: white;
+    background: var(--blue);
+    @chassis apply-variation pill;
+  }
+
+  & option:checked {
+    color: red;
+  }
+
   & #cycle {
     height: auto;
     max-height: 1000px;

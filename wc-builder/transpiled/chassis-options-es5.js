@@ -164,9 +164,81 @@ customElements.define('chassis-options', function () {
         });
 
         _this.parent = null;
-        _this.selectedOption = null;
-        _this.selectedOptionEl = null;
+        _this.selectedOptionsEl = null;
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options = [];
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection = function () {
+          var _p = new WeakMap();
+
+          return (
+            /*#__PURE__*/
+            function () {
+              function ChassisHTMLCollection(arr) {
+                var _this2 = this;
+
+                (0, _classCallCheck2.default)(this, ChassisHTMLCollection);
+
+                _p.set(this, {
+                  arr: arr
+                });
+
+                arr.forEach(function (node, index) {
+                  return _this2[index] = node;
+                });
+              }
+
+              (0, _createClass2.default)(ChassisHTMLCollection, [{
+                key: "item",
+                value: function item(index) {
+                  return _p.get(this).arr[index];
+                }
+              }, {
+                key: "namedItem",
+                value: function namedItem(name) {
+                  var matches = _p.get(this).arr.filter(function (item) {
+                    return item.id === name || item.name === name;
+                  });
+
+                  return matches.length > 0 ? matches[0] : null;
+                }
+              }, {
+                key: "length",
+                get: function get() {
+                  return _p.get(this).arr.length;
+                }
+              }]);
+              return ChassisHTMLCollection;
+            }()
+          );
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisOptionsCollection = function () {
+          var _p = new WeakMap();
+
+          return (
+            /*#__PURE__*/
+            function (_$get$ChassisHTMLColl) {
+              (0, _inherits2.default)(ChassisOptionsCollection, _$get$ChassisHTMLColl);
+
+              function ChassisOptionsCollection(arr) {
+                var _this3;
+
+                var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+                var add = arguments.length > 2 ? arguments[2] : undefined;
+                var remove = arguments.length > 3 ? arguments[3] : undefined;
+                (0, _classCallCheck2.default)(this, ChassisOptionsCollection);
+                _this3 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisOptionsCollection).call(this, arr));
+                _this3.selectedIndex = selectedIndex;
+                _this3.add = add;
+                _this3.remove = remove;
+                return _this3;
+              }
+
+              return ChassisOptionsCollection;
+            }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection())
+          );
+        };
+
         return _this;
       }
 
@@ -176,7 +248,7 @@ customElements.define('chassis-options', function () {
       }, {
         key: "add",
         value: function add(option, index) {
-          var _this2 = this;
+          var _this4 = this;
 
           var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this;
 
@@ -218,19 +290,13 @@ customElements.define('chassis-options', function () {
             chassisOption.id = id;
           }
 
-          chassisOption.label = label;
-
           if (option.sourceElement.hasAttribute('label')) {
             chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'));
           }
 
-          chassisOption.value = value;
-
           if (value) {
             chassisOption.setAttribute('value', value);
           }
-
-          chassisOption.disabled = disabled;
 
           if (disabled) {
             chassisOption.setAttribute('disabled', '');
@@ -239,7 +305,7 @@ customElements.define('chassis-options', function () {
           chassisOption.defaultSelected = selected;
           chassisOption.key = _.get(this).generateGuid();
           chassisOption.addEventListener('click', function (evt) {
-            return _this2.selectByKey(chassisOption.key);
+            return _this4.selectByKey(chassisOption.key);
           });
           chassisOption.innerHTML = option.sourceElement.innerHTML;
           chassisOption.parent = dest;
@@ -256,11 +322,11 @@ customElements.define('chassis-options', function () {
             sourceElement: option.sourceElement
           };
 
-          if (index) {
+          if (index !== null) {
             dest.insertBefore(chassisOption, dest.children.item(index));
             this.parent["".concat(index)] = option.displayElement;
             this.options.splice(index, 0, option);
-            this.parent.sourceEl.add(option.sourceElement, index);
+            this.parent.sourceElement.add(option.sourceElement, index);
 
             if (selected) {
               this.selectByIndex(index);
@@ -340,10 +406,13 @@ customElements.define('chassis-options', function () {
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          this.selectedOption = null;
           this.parent.sourceElement.selectedIndex = -1;
-          this.selectedOptionEl.contents = this.parent.placeholder;
-          this.selectedOptionEl.setAttribute('placeholder', '');
+          this.selectedOptionsEl.contents = this.parent.placeholder;
+          this.selectedOptionsEl.setAttribute('placeholder', '');
+          this.options.forEach(function (option) {
+            option.displayElement.removeAttribute('selected');
+            option.sourceElement.selected = false;
+          });
         }
       }, {
         key: "generateOptgroup",
@@ -475,7 +544,7 @@ customElements.define('chassis-options', function () {
           var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
           var destroy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-          if (index === null) {
+          if (index === null || index >= this.options.length) {
             return;
           }
 
@@ -496,17 +565,15 @@ customElements.define('chassis-options', function () {
             return;
           }
 
+          if (!this.parent.multiple) {
+            this.deselectAll();
+          }
+
           option.sourceElement.selected = true;
-          this.selectedOptionEl.contents = option.displayElement.innerHTML;
-          this.selectedOption = option;
-          this.options.forEach(function (option) {
-            return option.displayElement.removeAttribute('selected');
-          });
           option.displayElement.setAttribute('selected', '');
-          this.selectedOptionEl.removeAttribute('placeholder');
-          this.dispatchEvent(new Event('change', {
-            bubbles: true
-          }));
+          this.selectedOptionsEl.add(option);
+          this.selectedOptionsEl.removeAttribute('placeholder');
+          this.dispatchChangeEvent();
         }
       }, {
         key: "selectByKey",
@@ -548,8 +615,14 @@ customElements.define('chassis-options', function () {
       }, {
         key: "displayOptions",
         get: function get() {
-          return this.options.map(function (option) {
+          var _this5 = this;
+
+          return new (_.get(this).ChassisOptionsCollection())(this.options.map(function (option) {
             return option.displayElement;
+          }), this.selectedIndex, function (element, before) {
+            _this5.add(_this5.generateOptionObject(element), before);
+          }, function (index) {
+            return _this5.removeOptionByIndex(index);
           });
         },
         set: function set(value) {
@@ -570,7 +643,11 @@ customElements.define('chassis-options', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          return this.options.indexOf(this.selectedOption);
+          var _this6 = this;
+
+          return this.options.findIndex(function (option) {
+            return option.displayElement === _this6.selectedOptions.item(0);
+          });
         },
         set: function set(index) {
           this.selectByIndex(index);
@@ -578,13 +655,8 @@ customElements.define('chassis-options', function () {
       }, {
         key: "selectedOptions",
         get: function get() {
-          var options = [];
-
-          if (this.selectedOption) {
-            options.push(this.selectedOption.displayElement);
-          }
-
-          return options;
+          var nodes = this.querySelectorAll('[selected]');
+          return new (_.get(this).ChassisHTMLCollection())(nodes);
         },
         set: function set(value) {
           return _.get(this).throw('readonly', {

@@ -175,12 +175,22 @@ customElements.define('chassis-select', function () {
               case 38:
               case 'ArrowUp':
                 evt.preventDefault();
+
+                if (!_this.isOpen) {
+                  return _this.open();
+                }
+
                 console.log('select previous option');
                 break;
 
               case 40:
               case 'ArrowDown':
                 evt.preventDefault();
+
+                if (!_this.isOpen) {
+                  return _this.open();
+                }
+
                 console.log('select next option');
                 break;
 
@@ -292,12 +302,22 @@ customElements.define('chassis-select', function () {
       }, {
         key: "inject",
         value: function inject(select) {
-          _.get(this).optionsEl = document.createElement('chassis-options');
+          var _this3 = this;
+
           _.get(this).sourceEl = select;
+          _.get(this).optionsEl = document.createElement('chassis-options');
           _.get(this).optionsEl.parent = this;
-          _.get(this).optionsEl.selectedOptionEl = document.createElement('chassis-selected-options');
-          _.get(this).optionsEl.selectedOptionEl.slot = 'selectedoptions';
-          this.appendChild(_.get(this).optionsEl.selectedOptionEl);
+
+          _.get(this).optionsEl.dispatchChangeEvent = function () {
+            _this3.dispatchEvent(new Event('change', {
+              bubbles: true
+            }));
+          };
+
+          _.get(this).optionsEl.selectedOptionsEl = document.createElement('chassis-selected-options');
+          _.get(this).optionsEl.selectedOptionsEl.parent = this;
+          _.get(this).optionsEl.selectedOptionsEl.slot = 'selectedoptions';
+          this.appendChild(_.get(this).optionsEl.selectedOptionsEl);
           _.get(this).optionsEl.slot = 'options';
           this.appendChild(_.get(this).optionsEl);
           _.get(this).placeholder = this.getAttribute('placeholder');
@@ -334,6 +354,38 @@ customElements.define('chassis-select', function () {
           if (!this.isOpen) {
             this.isOpen = true;
           }
+        }
+        /**
+         * method querySelector
+         * @param  {string} selector
+         * @return {HTMLElement}
+         * @override
+         */
+
+      }, {
+        key: "querySelector",
+        value: function querySelector(selector) {
+          if (selector !== ':checked') {
+            return (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "querySelector", this).call(this, selector);
+          }
+
+          return this.selectedOptions.length > 0 ? this.selectedOptions[0] : null;
+        }
+        /**
+         * method querySelectorAll
+         * @param  {string} selector
+         * @return {NodeList}
+         * @override
+         */
+
+      }, {
+        key: "querySelectorAll",
+        value: function querySelectorAll(selector) {
+          if (selector !== ':checked') {
+            return (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "querySelectorAll", this).call(this, selector);
+          }
+
+          return _.get(this).optionsEl.querySelectorAll('[selected]');
         }
       }, {
         key: "remove",

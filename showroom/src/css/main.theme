@@ -224,6 +224,9 @@ components {
 			transition: all ease-in-out .1s;
 
 			chassis-options {
+				position: absolute;
+				top: 100%;
+				left: 0;
 				height: 0;
 				max-height: 16.18em;
 				min-width: 100%;
@@ -276,7 +279,7 @@ components {
 
 				background: white;
 				box-shadow:
-					inset 2px 2px 0 0 var(--grey-n04),
+					inset 2px 0 0 0 var(--grey-n04),
 					inset -2px -2px 0 0 var(--grey-n04),
 					0 .236em 1em 0 color-mod(black alpha(10%))
 				;
@@ -313,6 +316,12 @@ components {
 		@state multiple {
 			chassis-options {
 				height: auto;
+
+				box-shadow:
+					inset 2px 2px 0 0 var(--grey-n04),
+					inset -2px -2px 0 0 var(--grey-n04),
+					inset 0 0 1em 0 color-mod(black alpha(10%))
+				;
 			}
 
 			chassis-selected-options {

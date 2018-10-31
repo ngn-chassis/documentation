@@ -167,6 +167,56 @@ customElements.define('chassis-options', function () {
         _this.selectedOptionsEl = null;
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options = [];
 
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement = function (option) {
+          var chassisOption = document.createElement('chassis-option');
+
+          if (option.attributes.id) {
+            chassisOption.id = option.attributes.id;
+          }
+
+          if (option.sourceElement.hasAttribute('label')) {
+            chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'));
+          }
+
+          if (option.attributes.value) {
+            chassisOption.setAttribute('value', option.attributes.value);
+          }
+
+          if (option.attributes.disabled) {
+            chassisOption.setAttribute('disabled', '');
+          }
+
+          chassisOption.defaultSelected = option.attributes.selected;
+          chassisOption.key = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid();
+          chassisOption.addEventListener('click', function (evt) {
+            return _this.selectByKey(chassisOption.key);
+          });
+          chassisOption.innerHTML = option.sourceElement.innerHTML;
+          return chassisOption;
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateSourceOptionElement = function (option) {
+          var sourceEl = document.createElement('option');
+
+          if (option.hasOwnProperty('innerHTML')) {
+            sourceEl.innerHTML = option.innerHTML;
+          }
+
+          if (option.hasOwnProperty('label')) {
+            sourceEl.innerHTML = option.label;
+          }
+
+          if (option.hasOwnProperty('value')) {
+            sourceEl.value = option.value;
+          }
+
+          if (option.hasOwnProperty('disabled')) {
+            sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
+          }
+
+          return sourceEl;
+        };
+
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection = function () {
           var _p = new WeakMap();
 
@@ -247,9 +297,8 @@ customElements.define('chassis-options', function () {
         value: function connectedCallback() {}
       }, {
         key: "add",
-        value: function add(option, index) {
-          var _this4 = this;
-
+        value: function add(option) {
+          var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
           var dest = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this;
 
           if (!customElements.get('chassis-option')) {
@@ -258,77 +307,33 @@ customElements.define('chassis-options', function () {
           }
 
           if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
-            var sourceEl = document.createElement('option');
-
-            if (option.hasOwnProperty('innerHTML')) {
-              sourceEl.innerHTML = option.innerHTML;
-            }
-
-            if (option.hasOwnProperty('label')) {
-              sourceEl.innerHTML = option.label;
-            }
-
-            if (option.hasOwnProperty('value')) {
-              sourceEl.value = option.value;
-            }
-
-            if (option.hasOwnProperty('disabled')) {
-              sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
-            }
-
-            option.sourceElement = sourceEl;
+            option.sourceElement = _.get(this).generateSourceOptionElement(option);
           }
 
-          var disabled = option.sourceElement.disabled;
-          var id = option.sourceElement.getAttribute('id');
-          var label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim();
-          var selected = option.sourceElement.hasAttribute('selected');
-          var value = option.sourceElement.getAttribute('value');
-          var chassisOption = document.createElement('chassis-option');
-
-          if (id) {
-            chassisOption.id = id;
-          }
-
-          if (option.sourceElement.hasAttribute('label')) {
-            chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'));
-          }
-
-          if (value) {
-            chassisOption.setAttribute('value', value);
-          }
-
-          if (disabled) {
-            chassisOption.setAttribute('disabled', '');
-          }
-
-          chassisOption.defaultSelected = selected;
-          chassisOption.key = _.get(this).generateGuid();
-          chassisOption.addEventListener('click', function (evt) {
-            return _this4.selectByKey(chassisOption.key);
-          });
-          chassisOption.innerHTML = option.sourceElement.innerHTML;
-          chassisOption.parent = dest;
           option = {
             attributes: {
-              disabled: disabled,
-              id: id,
-              label: label,
-              selected: selected,
-              value: value
+              disabled: option.sourceElement.disabled,
+              id: option.sourceElement.getAttribute('id'),
+              label: option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim(),
+              selected: option.sourceElement.hasAttribute('selected'),
+              value: option.sourceElement.getAttribute('value')
             },
-            key: chassisOption.key,
-            displayElement: chassisOption,
             sourceElement: option.sourceElement
           };
 
-          if (index !== null) {
+          var chassisOption = _.get(this).generateDisplayOptionElement(option);
+
+          chassisOption.parent = dest;
+          option.displayElement = chassisOption;
+          option.key = chassisOption.key;
+
+          if (index) {
             dest.insertBefore(chassisOption, dest.children.item(index));
             this.parent["".concat(index)] = option.displayElement;
             this.options.splice(index, 0, option);
             this.parent.sourceElement.add(option.sourceElement, index);
 
-            if (selected) {
+            if (option.attributes.selected) {
               this.selectByIndex(index);
             }
 
@@ -343,7 +348,7 @@ customElements.define('chassis-options', function () {
             this.parent.sourceElement.appendChild(option.sourceElement);
           }
 
-          if (selected) {
+          if (option.attributes.selected) {
             this.selectByKey(option.key);
           }
         }
@@ -615,14 +620,14 @@ customElements.define('chassis-options', function () {
       }, {
         key: "displayOptions",
         get: function get() {
-          var _this5 = this;
+          var _this4 = this;
 
           return new (_.get(this).ChassisOptionsCollection())(this.options.map(function (option) {
             return option.displayElement;
           }), this.selectedIndex, function (element, before) {
-            _this5.add(_this5.generateOptionObject(element), before);
+            _this4.add(_this4.generateOptionObject(element), before);
           }, function (index) {
-            return _this5.removeOptionByIndex(index);
+            return _this4.removeOptionByIndex(index);
           });
         },
         set: function set(value) {
@@ -643,10 +648,10 @@ customElements.define('chassis-options', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          var _this6 = this;
+          var _this5 = this;
 
           return this.options.findIndex(function (option) {
-            return option.displayElement === _this6.selectedOptions.item(0);
+            return option.displayElement === _this5.selectedOptions.item(0);
           });
         },
         set: function set(index) {

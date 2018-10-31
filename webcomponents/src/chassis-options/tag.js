@@ -8,6 +8,56 @@ class ChassisOptions extends HTMLElement {
 
     _.get(this).options = []
 
+    _.get(this).generateDisplayOptionElement = option => {
+      let chassisOption = document.createElement('chassis-option')
+
+      if (option.attributes.id) {
+        chassisOption.id = option.attributes.id
+      }
+
+      if (option.sourceElement.hasAttribute('label')) {
+        chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'))
+      }
+
+      if (option.attributes.value) {
+        chassisOption.setAttribute('value', option.attributes.value)
+      }
+
+      if (option.attributes.disabled) {
+        chassisOption.setAttribute('disabled', '')
+      }
+
+      chassisOption.defaultSelected = option.attributes.selected
+
+      chassisOption.key = _.get(this).generateGuid()
+      chassisOption.addEventListener('click', evt => this.selectByKey(chassisOption.key))
+      chassisOption.innerHTML = option.sourceElement.innerHTML
+
+      return chassisOption
+    }
+
+    _.get(this).generateSourceOptionElement = option => {
+      let sourceEl = document.createElement('option')
+
+      if (option.hasOwnProperty('innerHTML')) {
+        sourceEl.innerHTML = option.innerHTML
+      }
+
+      if (option.hasOwnProperty('label')) {
+        sourceEl.innerHTML = option.label
+      }
+
+      if (option.hasOwnProperty('value')) {
+        sourceEl.value = option.value
+      }
+
+      if (option.hasOwnProperty('disabled')) {
+        sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled
+      }
+
+      return sourceEl
+    }
+
     _.get(this).ChassisHTMLCollection = function () {
       let _p = new WeakMap()
 
@@ -101,80 +151,41 @@ class ChassisOptions extends HTMLElement {
 
   }
 
-  add (option, index, dest = this) {
+  add (option, index = null, dest = this) {
     if (!customElements.get('chassis-option')) {
       console.error(`<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.`)
       return
     }
 
     if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
-      let sourceEl = document.createElement('option')
-
-      if (option.hasOwnProperty('innerHTML')) {
-        sourceEl.innerHTML = option.innerHTML
-      }
-
-      if (option.hasOwnProperty('label')) {
-        sourceEl.innerHTML = option.label
-      }
-
-      if (option.hasOwnProperty('value')) {
-        sourceEl.value = option.value
-      }
-
-      if (option.hasOwnProperty('disabled')) {
-        sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled
-      }
-
-      option.sourceElement = sourceEl
+      option.sourceElement = _.get(this).generateSourceOptionElement(option)
     }
-
-    let disabled = option.sourceElement.disabled
-    let id = option.sourceElement.getAttribute('id')
-    let label = option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim()
-    let selected = option.sourceElement.hasAttribute('selected')
-    let value = option.sourceElement.getAttribute('value')
-
-    let chassisOption = document.createElement('chassis-option')
-
-    if (id) {
-      chassisOption.id = id
-    }
-
-    if (option.sourceElement.hasAttribute('label')) {
-      chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'))
-    }
-
-    if (value) {
-      chassisOption.setAttribute('value', value)
-    }
-
-    if (disabled) {
-      chassisOption.setAttribute('disabled', '')
-    }
-
-    chassisOption.defaultSelected = selected
-
-    chassisOption.key = _.get(this).generateGuid()
-    chassisOption.addEventListener('click', evt => this.selectByKey(chassisOption.key))
-    chassisOption.innerHTML = option.sourceElement.innerHTML
-    chassisOption.parent = dest
 
     option = {
-      attributes: { disabled, id, label, selected, value },
-      key: chassisOption.key,
-      displayElement: chassisOption,
+      attributes: {
+        disabled: option.sourceElement.disabled,
+        id: option.sourceElement.getAttribute('id'),
+        label: option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim(),
+        selected: option.sourceElement.hasAttribute('selected'),
+        value: option.sourceElement.getAttribute('value')
+      },
       sourceElement: option.sourceElement
     }
 
-    if (index !== null) {
+    let chassisOption = _.get(this).generateDisplayOptionElement(option)
+    chassisOption.parent = dest
+
+    option.displayElement = chassisOption
+    option.key = chassisOption.key
+
+    if (index) {
       dest.insertBefore(chassisOption, dest.children.item(index))
 
       this.parent[`${index}`] = option.displayElement
       this.options.splice(index, 0, option)
       this.parent.sourceElement.add(option.sourceElement, index)
 
-      if (selected) {
+      if (option.attributes.selected) {
         this.selectByIndex(index)
       }
 
@@ -190,7 +201,7 @@ class ChassisOptions extends HTMLElement {
       this.parent.sourceElement.appendChild(option.sourceElement)
     }
 
-    if (selected) {
+    if (option.attributes.selected) {
       this.selectByKey(option.key)
     }
   }

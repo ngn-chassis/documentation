@@ -76,7 +76,7 @@ class ChassisSelect extends HTMLElement {
         if (evt.target === this || this.contains(evt.target)) {
           return
         }
-        console.log('hey');
+        
         this.removeAttribute('open')
       }
     })

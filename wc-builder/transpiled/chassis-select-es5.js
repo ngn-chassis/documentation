@@ -230,8 +230,6 @@ customElements.define('chassis-select', function () {
               return;
             }
 
-            console.log('hey');
-
             _this.removeAttribute('open');
           }
         });

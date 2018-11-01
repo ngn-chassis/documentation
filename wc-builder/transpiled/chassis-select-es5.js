@@ -171,7 +171,6 @@ customElements.define('chassis-select', function () {
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProps({
-          placeholder: '',
           title: '',
           arrowKeydownHandler: function arrowKeydownHandler(evt) {
             var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
@@ -182,6 +181,11 @@ customElements.define('chassis-select', function () {
               case 32:
               case ' ':
                 evt.preventDefault();
+
+                if (_this.hoveredIndex === _this.selectedIndex) {
+                  return _this.close();
+                }
+
                 return _this.select(_this.hoveredIndex);
 
               case 38:
@@ -198,7 +202,7 @@ customElements.define('chassis-select', function () {
                     return;
 
                   default:
-                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionsEl.hoverOption(startIndex - 1);
+                    return _this.optionsElement.hoverOption(startIndex - 1);
                 }
 
                 break;
@@ -216,7 +220,7 @@ customElements.define('chassis-select', function () {
                     return;
 
                   default:
-                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionsEl.hoverOption(startIndex + 1);
+                    return _this.optionsElement.hoverOption(startIndex + 1);
                 }
 
                 break;
@@ -240,7 +244,7 @@ customElements.define('chassis-select', function () {
       (0, _createClass2.default)(_class, [{
         key: "add",
         value: function add(option, index) {
-          _.get(this).optionsEl.add(option, index);
+          this.optionsElement.add(option, index);
         }
       }, {
         key: "attributeChangedCallback",
@@ -281,12 +285,13 @@ customElements.define('chassis-select', function () {
       }, {
         key: "checkValidity",
         value: function checkValidity() {
-          return _.get(this).sourceEl.checkValidity();
+          return this.sourceElement.checkValidity();
         }
       }, {
         key: "clear",
         value: function clear() {
-          _.get(this).optionsEl.clear();
+          this.optionsElement.clear();
+          this.selectedOptionsElement.clear();
         }
       }, {
         key: "close",
@@ -315,7 +320,7 @@ customElements.define('chassis-select', function () {
             _this2.removeEventListener('keydown', _.get(_this2).arrowKeydownHandler);
           });
           document.body.addEventListener('mouseup', function (evt) {
-            return _.get(_this2).optionsEl.mousedown = false;
+            return _this2.optionsElement.mousedown = false;
           });
           setTimeout(function () {
             if (!_this2.hasAttribute('tabindex')) {
@@ -330,7 +335,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          _.get(this).optionsEl.deselectAll();
+          this.optionsElement.deselectAll();
         }
       }, {
         key: "inject",
@@ -338,22 +343,18 @@ customElements.define('chassis-select', function () {
           Object.assign(_.get(this), {
             sourceEl: select,
             optionsEl: document.createElement('chassis-options'),
-            placeholder: this.getAttribute('placeholder')
+            selectedOptionsEl: document.createElement('chassis-selected-options')
           });
-
-          var _$get = _.get(this),
-              optionsEl = _$get.optionsEl;
-
-          optionsEl.parent = this;
-          this.selectedOptionsEl = document.createElement('chassis-selected-options');
-          this.selectedOptionsEl.parent = this;
-          this.selectedOptionsEl.slot = 'selectedoptions';
-          this.appendChild(this.selectedOptionsEl);
-          optionsEl.slot = 'options';
-          this.appendChild(optionsEl);
+          this.placeholder = this.getAttribute('placeholder');
+          this.optionsElement.parent = this;
+          this.selectedOptionsElement.parent = this;
+          this.selectedOptionsElement.slot = 'selectedoptions';
+          this.appendChild(this.selectedOptionsElement);
+          this.optionsElement.slot = 'options';
+          this.appendChild(this.optionsElement);
 
           if (select.children.length > 0) {
-            optionsEl.addChildren(select.children);
+            this.optionsElement.addChildren(select.children);
             this.select(this.selectedIndex);
           } else {
             this.deselectAll();
@@ -362,12 +363,12 @@ customElements.define('chassis-select', function () {
       }, {
         key: "item",
         value: function item(index) {
-          return _.get(this).optionsEl.item(index);
+          return this.optionsElement.item(index);
         }
       }, {
         key: "namedItem",
         value: function namedItem(id) {
-          return _.get(this).optionsEl.namedItem(id);
+          return this.optionsElement.namedItem(id);
         }
       }, {
         key: "open",
@@ -414,7 +415,7 @@ customElements.define('chassis-select', function () {
             return (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "querySelectorAll", this).call(this, selector);
           }
 
-          return _.get(this).optionsEl.querySelectorAll('[selected]');
+          return this.optionsElement.querySelectorAll('[selected]');
         }
       }, {
         key: "remove",
@@ -425,17 +426,17 @@ customElements.define('chassis-select', function () {
             return (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "remove", this).call(this);
           }
 
-          _.get(this).optionsEl.removeOptionByIndex(index);
+          this.optionsElement.removeOptionByIndex(index);
         }
       }, {
         key: "select",
         value: function select(index) {
-          _.get(this).optionsEl.select(index);
+          this.optionsElement.select(index);
         }
       }, {
         key: "setCustomValidity",
         value: function setCustomValidity(string) {
-          _.get(this).sourceEl.setCustomValidity(string);
+          this.sourceElement.setCustomValidity(string);
         }
       }, {
         key: "autofocus",
@@ -456,7 +457,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "hoveredIndex",
         get: function get() {
-          return _.get(this).optionsEl.hoveredIndex;
+          return this.optionsElement.hoveredIndex;
         },
         set: function set(index) {
           return _.get(this).throw('readonly', {
@@ -482,7 +483,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "length",
         get: function get() {
-          return _.get(this).sourceEl.length;
+          return this.sourceElement.length;
         }
       }, {
         key: "multiple",
@@ -499,7 +500,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "name",
         get: function get() {
-          return _.get(this).sourceEl.name;
+          return this.sourceElement.name;
         },
         set: function set(name) {
           _.get(this).handlePropertyChange('name', name);
@@ -507,7 +508,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "options",
         get: function get() {
-          return _.get(this).optionsEl.displayOptions;
+          return this.optionsElement.displayOptions;
         },
         set: function set(value) {
           return _.get(this).throw('readonly', {
@@ -515,12 +516,14 @@ customElements.define('chassis-select', function () {
           });
         }
       }, {
-        key: "placeholder",
+        key: "optionsElement",
         get: function get() {
-          return _.get(this).placeholder;
+          return _.get(this).optionsEl;
         },
-        set: function set(text) {
-          _.get(this).placeholder = text;
+        set: function set(el) {
+          return _.get(this).throw('readonly', {
+            name: 'optionsElement'
+          });
         }
       }, {
         key: "required",
@@ -533,19 +536,19 @@ customElements.define('chassis-select', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          return _.get(this).optionsEl ? _.get(this).optionsEl.selectedIndex : null;
+          return this.optionsElement ? this.optionsElement.selectedIndex : null;
         },
         set: function set(index) {
           if (index < 0) {
             return this.deselectAll();
           }
 
-          _.get(this).optionsEl.selectedIndex = index;
+          this.optionsElement.selectedIndex = index;
         }
       }, {
         key: "selectedOptions",
         get: function get() {
-          return _.get(this).optionsEl ? _.get(this).optionsEl.selectedOptions : null;
+          return this.optionsElement ? this.optionsElement.selectedOptions : null;
         },
         set: function set(value) {
           return _.get(this).throw('readonly', {
@@ -556,11 +559,26 @@ customElements.define('chassis-select', function () {
         key: "sourceElement",
         get: function get() {
           return _.get(this).sourceEl;
+        },
+        set: function set(el) {
+          return _.get(this).throw('readonly', {
+            name: 'sourceElement'
+          });
+        }
+      }, {
+        key: "selectedOptionsElement",
+        get: function get() {
+          return _.get(this).selectedOptionsEl;
+        },
+        set: function set(el) {
+          return _.get(this).throw('readonly', {
+            name: 'selectedOptionsElement'
+          });
         }
       }, {
         key: "value",
         get: function get() {
-          return _.get(this).sourceEl.value;
+          return this.sourceElement.value;
         }
       }], [{
         key: "observedAttributes",

@@ -16,7 +16,6 @@ class ChassisSelect extends HTMLElement {
     ])
 
     _.get(this).addPrivateProps({
-      placeholder: '',
       title: '',
 
       arrowKeydownHandler: evt => {
@@ -28,6 +27,11 @@ class ChassisSelect extends HTMLElement {
           case 32:
           case ' ':
             evt.preventDefault()
+
+            if (this.hoveredIndex === this.selectedIndex) {
+              return this.close()
+            }
+
             return this.select(this.hoveredIndex)
 
           case 38:
@@ -44,7 +48,7 @@ class ChassisSelect extends HTMLElement {
                 return
 
               default:
-                return _.get(this).optionsEl.hoverOption(startIndex - 1)
+                return this.optionsElement.hoverOption(startIndex - 1)
             }
 
             break
@@ -62,7 +66,7 @@ class ChassisSelect extends HTMLElement {
                 return
 
               default:
-                return _.get(this).optionsEl.hoverOption(startIndex + 1)
+                return this.optionsElement.hoverOption(startIndex + 1)
             }
 
             break
@@ -76,7 +80,7 @@ class ChassisSelect extends HTMLElement {
         if (evt.target === this || this.contains(evt.target)) {
           return
         }
-        
+
         this.removeAttribute('open')
       }
     })
@@ -103,7 +107,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get hoveredIndex () {
-    return _.get(this).optionsEl.hoveredIndex
+    return this.optionsElement.hoveredIndex
   }
 
   set hoveredIndex (index) {
@@ -129,7 +133,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get length () {
-    return _.get(this).sourceEl.length
+    return this.sourceElement.length
   }
 
   get multiple () {
@@ -145,7 +149,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get name () {
-    return _.get(this).sourceEl.name
+    return this.sourceElement.name
   }
 
   set name (name) {
@@ -153,7 +157,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get options () {
-    return _.get(this).optionsEl.displayOptions
+    return this.optionsElement.displayOptions
   }
 
   set options (value) {
@@ -162,12 +166,14 @@ class ChassisSelect extends HTMLElement {
     })
   }
 
-  get placeholder () {
-    return _.get(this).placeholder
+  get optionsElement () {
+    return _.get(this).optionsEl
   }
 
-  set placeholder (text) {
-    _.get(this).placeholder = text
+  set optionsElement (el) {
+    return _.get(this).throw('readonly', {
+      name: 'optionsElement'
+    })
   }
 
   get required () {
@@ -179,7 +185,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get selectedIndex () {
-    return _.get(this).optionsEl ? _.get(this).optionsEl.selectedIndex : null
+    return this.optionsElement ? this.optionsElement.selectedIndex : null
   }
 
   set selectedIndex (index) {
@@ -187,11 +193,11 @@ class ChassisSelect extends HTMLElement {
       return this.deselectAll()
     }
 
-    _.get(this).optionsEl.selectedIndex = index
+    this.optionsElement.selectedIndex = index
   }
 
   get selectedOptions () {
-    return _.get(this).optionsEl ? _.get(this).optionsEl.selectedOptions : null
+    return this.optionsElement ? this.optionsElement.selectedOptions : null
   }
 
   set selectedOptions (value) {
@@ -204,12 +210,28 @@ class ChassisSelect extends HTMLElement {
     return _.get(this).sourceEl
   }
 
+  set sourceElement (el) {
+    return _.get(this).throw('readonly', {
+      name: 'sourceElement'
+    })
+  }
+
+  get selectedOptionsElement () {
+    return _.get(this).selectedOptionsEl
+  }
+
+  set selectedOptionsElement (el) {
+    return _.get(this).throw('readonly', {
+      name: 'selectedOptionsElement'
+    })
+  }
+
   get value () {
-    return _.get(this).sourceEl.value
+    return this.sourceElement.value
   }
 
   add (option, index) {
-    _.get(this).optionsEl.add(option, index)
+    this.optionsElement.add(option, index)
   }
 
   attributeChangedCallback (attr, oldValue, newValue) {
@@ -248,11 +270,12 @@ class ChassisSelect extends HTMLElement {
   }
 
   checkValidity () {
-    return _.get(this).sourceEl.checkValidity()
+    return this.sourceElement.checkValidity()
   }
 
   clear () {
-    _.get(this).optionsEl.clear()
+    this.optionsElement.clear()
+    this.selectedOptionsElement.clear()
   }
 
   close () {
@@ -278,7 +301,7 @@ class ChassisSelect extends HTMLElement {
       this.removeEventListener('keydown', _.get(this).arrowKeydownHandler)
     })
 
-    document.body.addEventListener('mouseup', evt => _.get(this).optionsEl.mousedown = false)
+    document.body.addEventListener('mouseup', evt => this.optionsElement.mousedown = false)
 
     setTimeout(() => {
       if (!this.hasAttribute('tabindex')) {
@@ -292,31 +315,29 @@ class ChassisSelect extends HTMLElement {
   }
 
   deselectAll () {
-    _.get(this).optionsEl.deselectAll()
+    this.optionsElement.deselectAll()
   }
 
   inject (select) {
     Object.assign(_.get(this), {
       sourceEl: select,
       optionsEl: document.createElement('chassis-options'),
-      placeholder: this.getAttribute('placeholder')
+      selectedOptionsEl: document.createElement('chassis-selected-options')
     })
 
-    let { optionsEl } = _.get(this)
+    this.placeholder = this.getAttribute('placeholder')
 
-    optionsEl.parent = this
+    this.optionsElement.parent = this
+    this.selectedOptionsElement.parent = this
 
-    this.selectedOptionsEl = document.createElement('chassis-selected-options')
-    this.selectedOptionsEl.parent = this
+    this.selectedOptionsElement.slot = 'selectedoptions'
+    this.appendChild(this.selectedOptionsElement)
 
-    this.selectedOptionsEl.slot = 'selectedoptions'
-    this.appendChild(this.selectedOptionsEl)
-
-    optionsEl.slot = 'options'
-    this.appendChild(optionsEl)
+    this.optionsElement.slot = 'options'
+    this.appendChild(this.optionsElement)
 
     if (select.children.length > 0) {
-      optionsEl.addChildren(select.children)
+      this.optionsElement.addChildren(select.children)
       this.select(this.selectedIndex)
     } else {
       this.deselectAll()
@@ -324,11 +345,11 @@ class ChassisSelect extends HTMLElement {
   }
 
   item (index) {
-    return _.get(this).optionsEl.item(index)
+    return this.optionsElement.item(index)
   }
 
   namedItem (id) {
-    return _.get(this).optionsEl.namedItem(id)
+    return this.optionsElement.namedItem(id)
   }
 
   open () {
@@ -370,7 +391,7 @@ class ChassisSelect extends HTMLElement {
       return super.querySelectorAll(selector)
     }
 
-    return _.get(this).optionsEl.querySelectorAll('[selected]')
+    return this.optionsElement.querySelectorAll('[selected]')
   }
 
   remove (index = null) {
@@ -378,15 +399,15 @@ class ChassisSelect extends HTMLElement {
       return super.remove()
     }
 
-    _.get(this).optionsEl.removeOptionByIndex(index)
+    this.optionsElement.removeOptionByIndex(index)
   }
 
   select (index) {
-    _.get(this).optionsEl.select(index)
+    this.optionsElement.select(index)
   }
 
   setCustomValidity (string) {
-    _.get(this).sourceEl.setCustomValidity(string)
+    this.sourceElement.setCustomValidity(string)
   }
 }
 

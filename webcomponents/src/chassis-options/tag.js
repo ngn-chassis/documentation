@@ -418,11 +418,11 @@ class ChassisOptions extends HTMLElement {
 
   deselect (option) {
     option.selected = false
-    this.parent.selectedOptionsEl.remove(option)
+    this.parent.selectedOptionsElement.remove(option)
   }
 
   deselectAll () {
-    this.parent.selectedOptionsEl.clear()
+    this.parent.selectedOptionsElement.clear()
     this.options.forEach(option => this.deselect(option))
   }
 
@@ -489,7 +489,7 @@ class ChassisOptions extends HTMLElement {
     }
 
     option.selected = true
-    this.parent.selectedOptionsEl.add(option)
+    this.parent.selectedOptionsElement.add(option)
     this.parent.dispatchEvent(new Event('change', {
       bubbles: true
     }))

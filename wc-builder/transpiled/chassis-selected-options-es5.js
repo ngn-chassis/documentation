@@ -201,9 +201,7 @@ customElements.define('chassis-selected-options', function () {
             return _.get(this).generateList();
           }
 
-          if (this.parent.placeholder) {
-            _.get(this).contentsEl.innerHTML = this.parent.placeholder;
-          }
+          _.get(this).contentsEl.innerHTML = this.parent.placeholder || '';
         }
       }, {
         key: "clear",

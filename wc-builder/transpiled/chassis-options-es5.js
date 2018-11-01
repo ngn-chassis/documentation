@@ -636,14 +636,14 @@ customElements.define('chassis-options', function () {
         key: "deselect",
         value: function deselect(option) {
           option.selected = false;
-          this.parent.selectedOptionsEl.remove(option);
+          this.parent.selectedOptionsElement.remove(option);
         }
       }, {
         key: "deselectAll",
         value: function deselectAll() {
           var _this5 = this;
 
-          this.parent.selectedOptionsEl.clear();
+          this.parent.selectedOptionsElement.clear();
           this.options.forEach(function (option) {
             return _this5.deselect(option);
           });
@@ -723,7 +723,7 @@ customElements.define('chassis-options', function () {
           }
 
           option.selected = true;
-          this.parent.selectedOptionsEl.add(option);
+          this.parent.selectedOptionsElement.add(option);
           this.parent.dispatchEvent(new Event('change', {
             bubbles: true
           }));

@@ -1,0 +1,9 @@
+- Add middleware onOptionSelected() and afterOptionSelected()
+- Figure out a way to insert custom svg icons for chassis-selected-options
+
+MULTIPLE SELECT
+- Handle shift-click
+- Handle click and drag over options
+- Handle focusing of options panel on click
+
+- Write Unit Tests

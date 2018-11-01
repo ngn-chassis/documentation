@@ -5,13 +5,24 @@ class ChassisOption extends HTMLElement {
     this.parent = null
     this.defaultSelected = false
 
-    this.addEventListener('click', evt => {
-      console.log('chassis-option');
+    // this.addEventListener('click', evt => {
+    //   console.log('chassis-option');
+    // })
+
+    this.addEventListener('mouseover', evt => {
+      if (this.parent.mousedown) {
+        return console.log('select me');
+      }
+
+      this.parent.hoverOption(this.index)
     })
+
+    this.addEventListener('mousemove', evt => this.parent.hoverOption(this.index))
+    this.addEventListener('mouseout', evt => this.parent.unHoverOption(this.index))
   }
 
   static get observedAttributes () {
-    return ['disabled', 'label', 'selected', 'value']
+    return ['disabled', 'hovered', 'label', 'selected', 'value']
   }
 
   get disabled () {
@@ -70,6 +81,14 @@ class ChassisOption extends HTMLElement {
     _.get(this).handlePropertyChange('value', value)
   }
 
+  get hovered () {
+    return this.hasAttribute('hover')
+  }
+
+  set hovered (bool) {
+    bool ? this.setAttribute('hover', '') : this.removeAttribute('hover')
+  }
+
   attributeChangedCallback (attr, oldValue, newValue) {
     attr = attr.toLowerCase()
 
@@ -80,6 +99,7 @@ class ChassisOption extends HTMLElement {
     switch (attr) {
       case 'disabled':
       case 'selected':
+      case 'hovered':
         return _.get(this).handleBooleanAttributeChange(attr, newValue)
 
       case 'label':
@@ -90,17 +110,15 @@ class ChassisOption extends HTMLElement {
     }
   }
 
-  connectedCallback () {
-
-  }
+  connectedCallback () {}
 
   /**
    * @method remove
    * Remove this option from the DOM.
    * @override
    */
-  remove () {
-    this.parent.removeOptionByIndex(this.index, false)
+  remove (native = true) {
+    this.parent.options.splice(this.index, 1)
     super.remove()
   }
 }

@@ -333,9 +333,9 @@ components {
 				;
 			}
 
-			chassis-selected-options {
+			/* chassis-selected-options {
 				display: none;
-			}
+			} */
 		}
 	}
 }

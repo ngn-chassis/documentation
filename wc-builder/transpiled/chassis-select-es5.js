@@ -163,11 +163,10 @@ customElements.define('chassis-select', function () {
 
             console.error(message);
           }
-        });
+        }); // this.addEventListener('click', evt => {
+        //   console.log('chassis-select');
+        // })
 
-        _this.addEventListener('click', function (evt) {
-          console.log('chassis-select');
-        });
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);
 
@@ -175,27 +174,51 @@ customElements.define('chassis-select', function () {
           placeholder: '',
           title: '',
           arrowKeydownHandler: function arrowKeydownHandler(evt) {
+            var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
+
             switch (evt[_this.keySource]) {
+              case 13:
+              case 'Enter':
+              case 32:
+              case ' ':
+                evt.preventDefault();
+                return _this.select(_this.hoveredIndex);
+
               case 38:
               case 'ArrowUp':
                 evt.preventDefault();
 
-                if (!_this.isOpen) {
+                if (!_this.multiple && !_this.isOpen) {
                   return _this.open();
                 }
 
-                console.log('select previous option');
+                switch (startIndex) {
+                  case -1:
+                  case 0:
+                    return;
+
+                  default:
+                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionsEl.hoverOption(startIndex - 1);
+                }
+
                 break;
 
               case 40:
               case 'ArrowDown':
                 evt.preventDefault();
 
-                if (!_this.isOpen) {
+                if (!_this.multiple && !_this.isOpen) {
                   return _this.open();
                 }
 
-                console.log(_this.options);
+                switch (startIndex) {
+                  case _this.options.length - 1:
+                    return;
+
+                  default:
+                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionsEl.hoverOption(startIndex + 1);
+                }
+
                 break;
 
               default:
@@ -206,6 +229,8 @@ customElements.define('chassis-select', function () {
             if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
               return;
             }
+
+            console.log('hey');
 
             _this.removeAttribute('open');
           }
@@ -285,18 +310,14 @@ customElements.define('chassis-select', function () {
         value: function connectedCallback() {
           var _this2 = this;
 
-          this.addEventListener('click', function (evt) {
-            if (_this2.multiple) {
-              return;
-            }
-
-            _this2.hasAttribute('open') ? _this2.removeAttribute('open') : _this2.setAttribute('open', '');
-          });
           this.addEventListener('focus', function (evt) {
             _this2.addEventListener('keydown', _.get(_this2).arrowKeydownHandler);
           });
           this.addEventListener('blur', function (evt) {
             _this2.removeEventListener('keydown', _.get(_this2).arrowKeydownHandler);
+          });
+          document.body.addEventListener('mouseup', function (evt) {
+            return _.get(_this2).optionsEl.mousedown = false;
           });
           setTimeout(function () {
             if (!_this2.hasAttribute('tabindex')) {
@@ -316,29 +337,25 @@ customElements.define('chassis-select', function () {
       }, {
         key: "inject",
         value: function inject(select) {
-          var _this3 = this;
+          Object.assign(_.get(this), {
+            sourceEl: select,
+            optionsEl: document.createElement('chassis-options'),
+            placeholder: this.getAttribute('placeholder')
+          });
 
-          _.get(this).sourceEl = select;
-          _.get(this).optionsEl = document.createElement('chassis-options');
-          _.get(this).optionsEl.parent = this;
+          var _$get = _.get(this),
+              optionsEl = _$get.optionsEl;
 
-          _.get(this).optionsEl.dispatchChangeEvent = function () {
-            _this3.dispatchEvent(new Event('change', {
-              bubbles: true
-            }));
-          };
-
+          optionsEl.parent = this;
           this.selectedOptionsEl = document.createElement('chassis-selected-options');
           this.selectedOptionsEl.parent = this;
           this.selectedOptionsEl.slot = 'selectedoptions';
           this.appendChild(this.selectedOptionsEl);
-          _.get(this).optionsEl.slot = 'options';
-          this.appendChild(_.get(this).optionsEl);
-          _.get(this).placeholder = this.getAttribute('placeholder');
+          optionsEl.slot = 'options';
+          this.appendChild(optionsEl);
 
           if (select.children.length > 0) {
-            _.get(this).optionsEl.addChildren(select.children);
-
+            optionsEl.addChildren(select.children);
             this.select(this.selectedIndex);
           } else {
             this.deselectAll();
@@ -439,6 +456,16 @@ customElements.define('chassis-select', function () {
           _.get(this).handleBooleanPropertyChange('disabled', bool);
         }
       }, {
+        key: "hoveredIndex",
+        get: function get() {
+          return _.get(this).optionsEl.hoveredIndex;
+        },
+        set: function set(index) {
+          return _.get(this).throw('readonly', {
+            name: 'hoveredIndex'
+          });
+        }
+      }, {
         key: "isOpen",
         get: function get() {
           if (this.multiple) {
@@ -508,7 +535,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          return _.get(this).optionsEl.selectedIndex;
+          return _.get(this).optionsEl ? _.get(this).optionsEl.selectedIndex : null;
         },
         set: function set(index) {
           if (index < 0) {

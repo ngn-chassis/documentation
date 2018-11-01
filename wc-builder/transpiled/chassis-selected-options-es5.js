@@ -185,20 +185,46 @@ customElements.define('chassis-selected-options', function () {
             _.get(this).options = [option];
           }
 
-          _.get(this).generateList();
+          this.update();
+        }
+      }, {
+        key: "remove",
+        value: function remove(option) {
+          _.get(this).options.splice(_.get(this).options.indexOf(option), 1);
+
+          this.update();
+        }
+      }, {
+        key: "update",
+        value: function update() {
+          if (_.get(this).options.length > 0) {
+            return _.get(this).generateList();
+          }
+
+          if (this.parent.placeholder) {
+            _.get(this).contentsEl.innerHTML = this.parent.placeholder;
+          }
         }
       }, {
         key: "clear",
         value: function clear() {
           _.get(this).options = [];
-          this.setAttribute('placeholder', '');
-
-          _.get(this).generateList();
+          this.update();
         }
       }, {
         key: "connectedCallback",
         value: function connectedCallback() {
+          var _this2 = this;
+
           this._appendCaret();
+
+          this.addEventListener('mousedown', function (evt) {
+            if (_this2.parent.isOpen) {
+              return _this2.parent.removeAttribute('open');
+            }
+
+            _this2.parent.setAttribute('open', '');
+          });
         }
       }, {
         key: "_appendCaret",

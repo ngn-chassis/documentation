@@ -3,10 +3,7 @@ class ChassisOptions extends HTMLElement {
     super()
 
     this.parent = null
-
-    this.addEventListener('click', evt => {
-      console.log('chassis-options');
-    })
+    this.mousedown = false
 
     _.get(this).options = []
 
@@ -23,7 +20,6 @@ class ChassisOptions extends HTMLElement {
 
           this.defaultSelected = sourceElement.selected
           this.form = form
-          this.index = null
 
           _p.set(this, {
             attributes: {
@@ -59,6 +55,10 @@ class ChassisOptions extends HTMLElement {
           this.setAttr('disabled', bool)
         }
 
+        get index () {
+          return this.sourceElement.index
+        }
+
         get selected () {
           return _p.get(this).attributes.selected
         }
@@ -91,6 +91,11 @@ class ChassisOptions extends HTMLElement {
           this.setAttr('value', value)
         }
 
+        remove () {
+          this.sourceElement.remove()
+          this.displayElement.remove()
+        }
+
         setAttr (name, value) {
           this.sourceElement[name] = value
 
@@ -111,15 +116,15 @@ class ChassisOptions extends HTMLElement {
         return
       }
 
-      return new (_.get(this).optionConstructor())(_.get(this).generateGuid(), sourceElement, _.get(this).generateDisplayOptionElement(this), this.form)
+      return new (_.get(this).optionConstructor())(_.get(this).generateGuid(), sourceElement, _.get(this).generateDisplayOptionElement(), this.form)
     }
 
-    _.get(this).generateDisplayOptionElement = parent => {
+    _.get(this).generateDisplayOptionElement = () => {
       let chassisOption = document.createElement('chassis-option')
       chassisOption.key = _.get(this).generateGuid()
-      chassisOption.parent = parent
+      chassisOption.parent = this
 
-      chassisOption.addEventListener('click', evt => {
+      chassisOption.addEventListener('mouseup', evt => {
         _.get(this).selectByKey(chassisOption.key, this.parent.multiple, {
           shift: evt.shiftKey,
           ctrl: evt.ctrlKey,
@@ -253,6 +258,20 @@ class ChassisOptions extends HTMLElement {
 
       this.select(option, multiple, keys)
     }
+
+    // this.addEventListener('click', evt => {
+    //   console.log('chassis-options');
+    // })
+
+    this.addEventListener('mousedown', evt => {
+      this.mousedown = true
+      console.log('mouse down');
+    })
+
+    this.addEventListener('mouseup', evt => {
+      this.mousedown = false
+      console.log('mouse up');
+    })
   }
 
   get form () {
@@ -306,9 +325,30 @@ class ChassisOptions extends HTMLElement {
     })
   }
 
-  connectedCallback () {
-
+  get hoveredIndex () {
+    return this.options.findIndex(option => option.displayElement.hovered)
   }
+
+  set hoveredIndex (index) {
+    return _.get(this).throw('readonly', {
+      name: 'hoveredIndex'
+    })
+  }
+
+  hoverOption (index) {
+    this.unHoverAllOptions()
+    this.options[index].displayElement.hovered = true
+  }
+
+  unHoverOption (index) {
+    this.options[index].displayElement.hovered = false
+  }
+
+  unHoverAllOptions () {
+    this.options.forEach((option, index) => this.unHoverOption(index))
+  }
+
+  connectedCallback () {}
 
   add (option, index = null, dest = this) {
     if (!customElements.get('chassis-option')) {
@@ -320,29 +360,21 @@ class ChassisOptions extends HTMLElement {
       option = _.get(this).generateOptionObject(option)
     }
 
+    this.parent[`${option.index}`] = option.displayElement
+
     if (index) {
-      option.index = index
       dest.insertBefore(option.displayElement, dest.children.item(index))
 
-      this.parent[`${index}`] = option.displayElement
       this.options.splice(index, 0, option)
       this.parent.sourceElement.add(option.sourceElement, index)
 
-      if (option.selected) {
-        _.get(this).selectByIndex(index)
+    } else {
+      dest.appendChild(option.displayElement)
+      this.options.push(option)
+
+      if (!this.parent.sourceElement[this.options.length - 1]) {
+        this.parent.sourceElement.appendChild(option.sourceElement)
       }
-
-      return
-    }
-
-    dest.appendChild(option.displayElement)
-
-    option.index = this.options.length
-    this.parent[`${this.options.length}`] = option.displayElement
-    this.options.push(option)
-
-    if (!this.parent.sourceElement[this.options.length - 1]) {
-      this.parent.sourceElement.appendChild(option.sourceElement)
     }
 
     if (option.selected) {
@@ -386,6 +418,7 @@ class ChassisOptions extends HTMLElement {
 
   deselect (option) {
     option.selected = false
+    this.parent.selectedOptionsEl.remove(option)
   }
 
   deselectAll () {
@@ -416,16 +449,12 @@ class ChassisOptions extends HTMLElement {
    * Index of option to remove
    * @param  {Boolean} [destroy=true]
    */
-  removeOptionByIndex (index = null, destroy = true) {
+  removeOptionByIndex (index = null) {
     if (index === null || index >= this.options.length) {
       return
     }
 
-    let option = this.options[index]
-    option.sourceElement.remove()
-    destroy && option.displayElement.remove()
-
-    this.options.splice(index, 1)
+    this.options[index].remove()
   }
 
   /**
@@ -461,8 +490,13 @@ class ChassisOptions extends HTMLElement {
 
     option.selected = true
     this.parent.selectedOptionsEl.add(option)
-    this.parent.selectedOptionsEl.removeAttribute('placeholder') // TODO: Handle this in chassis-selected-options
-    this.dispatchChangeEvent()
+    this.parent.dispatchEvent(new Event('change', {
+      bubbles: true
+    }))
+
+    if (!this.parent.multiple) {
+      this.parent.close()
+    }
   }
 }
 

@@ -166,10 +166,24 @@ customElements.define('chassis-option', function () {
         });
 
         _this.parent = null;
-        _this.defaultSelected = false;
+        _this.defaultSelected = false; // this.addEventListener('click', evt => {
+        //   console.log('chassis-option');
+        // })
 
-        _this.addEventListener('click', function (evt) {
-          console.log('chassis-option');
+        _this.addEventListener('mouseover', function (evt) {
+          if (_this.parent.mousedown) {
+            return console.log('select me');
+          }
+
+          _this.parent.hoverOption(_this.index);
+        });
+
+        _this.addEventListener('mousemove', function (evt) {
+          return _this.parent.hoverOption(_this.index);
+        });
+
+        _this.addEventListener('mouseout', function (evt) {
+          return _this.parent.unHoverOption(_this.index);
         });
 
         return _this;
@@ -187,6 +201,7 @@ customElements.define('chassis-option', function () {
           switch (attr) {
             case 'disabled':
             case 'selected':
+            case 'hovered':
               return _.get(this).handleBooleanAttributeChange(attr, newValue);
 
             case 'label':
@@ -209,7 +224,8 @@ customElements.define('chassis-option', function () {
       }, {
         key: "remove",
         value: function remove() {
-          this.parent.removeOptionByIndex(this.index, false);
+          var native = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+          this.parent.options.splice(this.index, 1);
           (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "remove", this).call(this);
         }
       }, {
@@ -273,10 +289,18 @@ customElements.define('chassis-option', function () {
         set: function set(value) {
           _.get(this).handlePropertyChange('value', value);
         }
+      }, {
+        key: "hovered",
+        get: function get() {
+          return this.hasAttribute('hover');
+        },
+        set: function set(bool) {
+          bool ? this.setAttribute('hover', '') : this.removeAttribute('hover');
+        }
       }], [{
         key: "observedAttributes",
         get: function get() {
-          return ['disabled', 'label', 'selected', 'value'];
+          return ['disabled', 'hovered', 'label', 'selected', 'value'];
         }
       }]);
       return _class;

@@ -21,17 +21,39 @@ class ChassisSelectedOptions extends HTMLElement {
       _.get(this).options = [option]
     }
 
-    _.get(this).generateList()
+    this.update()
+  }
+
+  remove (option) {
+    _.get(this).options.splice(_.get(this).options.indexOf(option), 1)
+    this.update()
+  }
+
+  update () {
+    if (_.get(this).options.length > 0) {
+      return _.get(this).generateList()
+    }
+
+    if (this.parent.placeholder) {
+      _.get(this).contentsEl.innerHTML = this.parent.placeholder
+    }
   }
 
   clear () {
     _.get(this).options = []
-    this.setAttribute('placeholder', '')
-    _.get(this).generateList()
+    this.update()
   }
 
   connectedCallback () {
     this._appendCaret()
+
+    this.addEventListener('mousedown', evt => {
+      if (this.parent.isOpen) {
+        return this.parent.removeAttribute('open')
+      }
+
+      this.parent.setAttribute('open', '')
+    })
   }
 
   _appendCaret () {

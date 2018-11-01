@@ -2,9 +2,9 @@ class ChassisSelect extends HTMLElement {
   constructor () {
     super()
 
-    this.addEventListener('click', evt => {
-      console.log('chassis-select');
-    })
+    // this.addEventListener('click', evt => {
+    //   console.log('chassis-select');
+    // })
 
     _.get(this).addReadOnlyProps([
       'form',
@@ -20,27 +20,51 @@ class ChassisSelect extends HTMLElement {
       title: '',
 
       arrowKeydownHandler: evt => {
+        let startIndex = this.hoveredIndex > -1 ? this.hoveredIndex : this.selectedIndex > -1 ? this.selectedIndex : -1
+
         switch (evt[this.keySource]) {
+          case 13:
+          case 'Enter':
+          case 32:
+          case ' ':
+            evt.preventDefault()
+            return this.select(this.hoveredIndex)
+
           case 38:
           case 'ArrowUp':
             evt.preventDefault()
 
-            if (!this.isOpen) {
+            if (!this.multiple && !this.isOpen) {
               return this.open()
             }
 
-            console.log('select previous option');
+            switch (startIndex) {
+              case -1:
+              case 0:
+                return
+
+              default:
+                return _.get(this).optionsEl.hoverOption(startIndex - 1)
+            }
+
             break
 
           case 40:
           case 'ArrowDown':
             evt.preventDefault()
 
-            if (!this.isOpen) {
+            if (!this.multiple && !this.isOpen) {
               return this.open()
             }
 
-            console.log(this.options);
+            switch (startIndex) {
+              case this.options.length - 1:
+                return
+
+              default:
+                return _.get(this).optionsEl.hoverOption(startIndex + 1)
+            }
+
             break
 
           default:
@@ -52,7 +76,7 @@ class ChassisSelect extends HTMLElement {
         if (evt.target === this || this.contains(evt.target)) {
           return
         }
-
+        console.log('hey');
         this.removeAttribute('open')
       }
     })
@@ -76,6 +100,16 @@ class ChassisSelect extends HTMLElement {
 
   set disabled (bool) {
     _.get(this).handleBooleanPropertyChange('disabled', bool)
+  }
+
+  get hoveredIndex () {
+    return _.get(this).optionsEl.hoveredIndex
+  }
+
+  set hoveredIndex (index) {
+    return _.get(this).throw('readonly', {
+      name: 'hoveredIndex'
+    })
   }
 
   get isOpen () {
@@ -145,7 +179,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get selectedIndex () {
-    return _.get(this).optionsEl.selectedIndex
+    return _.get(this).optionsEl ? _.get(this).optionsEl.selectedIndex : null
   }
 
   set selectedIndex (index) {
@@ -236,14 +270,6 @@ class ChassisSelect extends HTMLElement {
   }
 
   connectedCallback () {
-    this.addEventListener('click', (evt) => {
-      if (this.multiple) {
-        return
-      }
-
-      this.hasAttribute('open') ? this.removeAttribute('open') : this.setAttribute('open', '')
-    })
-
     this.addEventListener('focus', (evt) => {
       this.addEventListener('keydown', _.get(this).arrowKeydownHandler)
     })
@@ -251,6 +277,8 @@ class ChassisSelect extends HTMLElement {
     this.addEventListener('blur', (evt) => {
       this.removeEventListener('keydown', _.get(this).arrowKeydownHandler)
     })
+
+    document.body.addEventListener('mouseup', evt => _.get(this).optionsEl.mousedown = false)
 
     setTimeout(() => {
       if (!this.hasAttribute('tabindex')) {
@@ -268,16 +296,15 @@ class ChassisSelect extends HTMLElement {
   }
 
   inject (select) {
-    _.get(this).sourceEl = select
+    Object.assign(_.get(this), {
+      sourceEl: select,
+      optionsEl: document.createElement('chassis-options'),
+      placeholder: this.getAttribute('placeholder')
+    })
 
-    _.get(this).optionsEl = document.createElement('chassis-options')
-    _.get(this).optionsEl.parent = this
+    let { optionsEl } = _.get(this)
 
-    _.get(this).optionsEl.dispatchChangeEvent = () => {
-      this.dispatchEvent(new Event('change', {
-        bubbles: true
-      }))
-    }
+    optionsEl.parent = this
 
     this.selectedOptionsEl = document.createElement('chassis-selected-options')
     this.selectedOptionsEl.parent = this
@@ -285,13 +312,11 @@ class ChassisSelect extends HTMLElement {
     this.selectedOptionsEl.slot = 'selectedoptions'
     this.appendChild(this.selectedOptionsEl)
 
-    _.get(this).optionsEl.slot = 'options'
-    this.appendChild(_.get(this).optionsEl)
-
-    _.get(this).placeholder = this.getAttribute('placeholder')
+    optionsEl.slot = 'options'
+    this.appendChild(optionsEl)
 
     if (select.children.length > 0) {
-      _.get(this).optionsEl.addChildren(select.children)
+      optionsEl.addChildren(select.children)
       this.select(this.selectedIndex)
     } else {
       this.deselectAll()

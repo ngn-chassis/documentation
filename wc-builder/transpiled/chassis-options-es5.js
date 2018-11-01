@@ -164,11 +164,7 @@ customElements.define('chassis-options', function () {
         });
 
         _this.parent = null;
-
-        _this.addEventListener('click', function (evt) {
-          console.log('chassis-options');
-        });
-
+        _this.mousedown = false;
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options = [];
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor = function () {
@@ -185,7 +181,6 @@ customElements.define('chassis-options', function () {
                 this.sourceElement = sourceElement;
                 this.defaultSelected = sourceElement.selected;
                 this.form = form;
-                this.index = null;
 
                 _p.set(this, {
                   attributes: {
@@ -234,6 +229,12 @@ customElements.define('chassis-options', function () {
               }
 
               (0, _createClass2.default)(ChassisOptionObject, [{
+                key: "remove",
+                value: function remove() {
+                  this.sourceElement.remove();
+                  this.displayElement.remove();
+                }
+              }, {
                 key: "setAttr",
                 value: function setAttr(name, value) {
                   this.sourceElement[name] = value;
@@ -253,6 +254,11 @@ customElements.define('chassis-options', function () {
                 },
                 set: function set(bool) {
                   this.setAttr('disabled', bool);
+                }
+              }, {
+                key: "index",
+                get: function get() {
+                  return this.sourceElement.index;
                 }
               }, {
                 key: "selected",
@@ -298,14 +304,14 @@ customElements.define('chassis-options', function () {
             return;
           }
 
-          return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor())(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))), _this.form);
+          return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor())(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement(), _this.form);
         };
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement = function (parent) {
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement = function () {
           var chassisOption = document.createElement('chassis-option');
           chassisOption.key = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid();
-          chassisOption.parent = parent;
-          chassisOption.addEventListener('click', function (evt) {
+          chassisOption.parent = (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this));
+          chassisOption.addEventListener('mouseup', function (evt) {
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByKey(chassisOption.key, _this.parent.multiple, {
               shift: evt.shiftKey,
               ctrl: evt.ctrlKey,
@@ -495,12 +501,45 @@ customElements.define('chassis-options', function () {
           }
 
           _this.select(option, multiple, keys);
-        };
+        }; // this.addEventListener('click', evt => {
+        //   console.log('chassis-options');
+        // })
+
+
+        _this.addEventListener('mousedown', function (evt) {
+          _this.mousedown = true;
+          console.log('mouse down');
+        });
+
+        _this.addEventListener('mouseup', function (evt) {
+          _this.mousedown = false;
+          console.log('mouse up');
+        });
 
         return _this;
       }
 
       (0, _createClass2.default)(_class, [{
+        key: "hoverOption",
+        value: function hoverOption(index) {
+          this.unHoverAllOptions();
+          this.options[index].displayElement.hovered = true;
+        }
+      }, {
+        key: "unHoverOption",
+        value: function unHoverOption(index) {
+          this.options[index].displayElement.hovered = false;
+        }
+      }, {
+        key: "unHoverAllOptions",
+        value: function unHoverAllOptions() {
+          var _this4 = this;
+
+          this.options.forEach(function (option, index) {
+            return _this4.unHoverOption(index);
+          });
+        }
+      }, {
         key: "connectedCallback",
         value: function connectedCallback() {}
       }, {
@@ -518,27 +557,19 @@ customElements.define('chassis-options', function () {
             option = _.get(this).generateOptionObject(option);
           }
 
+          this.parent["".concat(option.index)] = option.displayElement;
+
           if (index) {
-            option.index = index;
             dest.insertBefore(option.displayElement, dest.children.item(index));
-            this.parent["".concat(index)] = option.displayElement;
             this.options.splice(index, 0, option);
             this.parent.sourceElement.add(option.sourceElement, index);
+          } else {
+            dest.appendChild(option.displayElement);
+            this.options.push(option);
 
-            if (option.selected) {
-              _.get(this).selectByIndex(index);
+            if (!this.parent.sourceElement[this.options.length - 1]) {
+              this.parent.sourceElement.appendChild(option.sourceElement);
             }
-
-            return;
-          }
-
-          dest.appendChild(option.displayElement);
-          option.index = this.options.length;
-          this.parent["".concat(this.options.length)] = option.displayElement;
-          this.options.push(option);
-
-          if (!this.parent.sourceElement[this.options.length - 1]) {
-            this.parent.sourceElement.appendChild(option.sourceElement);
           }
 
           if (option.selected) {
@@ -605,15 +636,16 @@ customElements.define('chassis-options', function () {
         key: "deselect",
         value: function deselect(option) {
           option.selected = false;
+          this.parent.selectedOptionsEl.remove(option);
         }
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          var _this4 = this;
+          var _this5 = this;
 
           this.parent.selectedOptionsEl.clear();
           this.options.forEach(function (option) {
-            return _this4.deselect(option);
+            return _this5.deselect(option);
           });
         }
       }, {
@@ -646,16 +678,12 @@ customElements.define('chassis-options', function () {
         key: "removeOptionByIndex",
         value: function removeOptionByIndex() {
           var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-          var destroy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
           if (index === null || index >= this.options.length) {
             return;
           }
 
-          var option = this.options[index];
-          option.sourceElement.remove();
-          destroy && option.displayElement.remove();
-          this.options.splice(index, 1);
+          this.options[index].remove();
         }
         /**
          * [select description]
@@ -696,9 +724,13 @@ customElements.define('chassis-options', function () {
 
           option.selected = true;
           this.parent.selectedOptionsEl.add(option);
-          this.parent.selectedOptionsEl.removeAttribute('placeholder'); // TODO: Handle this in chassis-selected-options
+          this.parent.dispatchEvent(new Event('change', {
+            bubbles: true
+          }));
 
-          this.dispatchChangeEvent();
+          if (!this.parent.multiple) {
+            this.parent.close();
+          }
         }
       }, {
         key: "form",
@@ -713,14 +745,14 @@ customElements.define('chassis-options', function () {
       }, {
         key: "displayOptions",
         get: function get() {
-          var _this5 = this;
+          var _this6 = this;
 
           return new (_.get(this).ChassisOptionsCollection())(this.options.map(function (option) {
             return option.displayElement;
           }), this.selectedIndex, function (element, before) {
-            _this5.add(_.get(_this5).generateOptionObject(element), before);
+            _this6.add(_.get(_this6).generateOptionObject(element), before);
           }, function (index) {
-            return _this5.removeOptionByIndex(index);
+            return _this6.removeOptionByIndex(index);
           });
         },
         set: function set(value) {
@@ -741,10 +773,10 @@ customElements.define('chassis-options', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          var _this6 = this;
+          var _this7 = this;
 
           return this.options.findIndex(function (option) {
-            return option.displayElement === _this6.selectedOptions.item(0);
+            return option.displayElement === _this7.selectedOptions.item(0);
           });
         },
         set: function set(index) {
@@ -759,6 +791,18 @@ customElements.define('chassis-options', function () {
         set: function set(value) {
           return _.get(this).throw('readonly', {
             name: 'selectedOptions'
+          });
+        }
+      }, {
+        key: "hoveredIndex",
+        get: function get() {
+          return this.options.findIndex(function (option) {
+            return option.displayElement.hovered;
+          });
+        },
+        set: function set(index) {
+          return _.get(this).throw('readonly', {
+            name: 'hoveredIndex'
           });
         }
       }]);

@@ -164,34 +164,154 @@ customElements.define('chassis-options', function () {
         });
 
         _this.parent = null;
-        _this.selectedOptionsEl = null;
+
+        _this.addEventListener('click', function (evt) {
+          console.log('chassis-options');
+        });
+
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options = [];
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement = function (option) {
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor = function () {
+          var _p = new WeakMap();
+
+          return (
+            /*#__PURE__*/
+            function () {
+              function ChassisOptionObject(id, sourceElement, displayElement, form) {
+                (0, _classCallCheck2.default)(this, ChassisOptionObject);
+                this.id = id;
+                this.key = displayElement.key;
+                this.displayElement = displayElement;
+                this.sourceElement = sourceElement;
+                this.defaultSelected = sourceElement.selected;
+                this.form = form;
+                this.index = null;
+
+                _p.set(this, {
+                  attributes: {
+                    disabled: sourceElement.disabled,
+                    id: sourceElement.getAttribute('id'),
+                    label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
+                    selected: sourceElement.selected,
+                    value: sourceElement.getAttribute('value'),
+                    text: sourceElement.text
+                  }
+                });
+
+                this.displayElement.innerHTML = this.sourceElement.innerHTML; // Add additional attributes
+
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                  for (var _iterator = sourceElement.attributes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var attr = _step.value;
+
+                    if (!_p.get(this).attributes.hasOwnProperty(attr.name)) {
+                      if (typeof attr.value === 'boolean') {
+                        attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
+                        continue;
+                      }
+
+                      this.displayElement.setAttribute(attr.name, attr.value);
+                    }
+                  }
+                } catch (err) {
+                  _didIteratorError = true;
+                  _iteratorError = err;
+                } finally {
+                  try {
+                    if (!_iteratorNormalCompletion && _iterator.return != null) {
+                      _iterator.return();
+                    }
+                  } finally {
+                    if (_didIteratorError) {
+                      throw _iteratorError;
+                    }
+                  }
+                }
+              }
+
+              (0, _createClass2.default)(ChassisOptionObject, [{
+                key: "setAttr",
+                value: function setAttr(name, value) {
+                  this.sourceElement[name] = value;
+
+                  if (typeof value === 'boolean') {
+                    value ? this.displayElement.setAttribute(name, '') : this.displayElement.removeAttribute(name);
+                  } else {
+                    this.displayElement.setAttribute(name, value);
+                  }
+
+                  _p.get(this).attributes[name] = value;
+                }
+              }, {
+                key: "disabled",
+                get: function get() {
+                  return _p.get(this).attributes.disabled;
+                },
+                set: function set(bool) {
+                  this.setAttr('disabled', bool);
+                }
+              }, {
+                key: "selected",
+                get: function get() {
+                  return _p.get(this).attributes.selected;
+                },
+                set: function set(bool) {
+                  this.setAttr('selected', bool);
+                }
+              }, {
+                key: "label",
+                get: function get() {
+                  return _p.get(this).attributes.label;
+                },
+                set: function set(label) {
+                  this.setAttr('label', label);
+                }
+              }, {
+                key: "text",
+                get: function get() {
+                  return _p.get(this).attributes.text;
+                },
+                set: function set(text) {
+                  this.setAttr('text', text);
+                }
+              }, {
+                key: "value",
+                get: function get() {
+                  return _p.get(this).attributes.value;
+                },
+                set: function set(value) {
+                  this.setAttr('value', value);
+                }
+              }]);
+              return ChassisOptionObject;
+            }()
+          );
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject = function (sourceElement) {
+          if (!customElements.get('chassis-option')) {
+            console.error("<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.");
+            return;
+          }
+
+          return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor())(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))), _this.form);
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateDisplayOptionElement = function (parent) {
           var chassisOption = document.createElement('chassis-option');
-
-          if (option.attributes.id) {
-            chassisOption.id = option.attributes.id;
-          }
-
-          if (option.sourceElement.hasAttribute('label')) {
-            chassisOption.setAttribute('label', option.sourceElement.getAttribute('label'));
-          }
-
-          if (option.attributes.value) {
-            chassisOption.setAttribute('value', option.attributes.value);
-          }
-
-          if (option.attributes.disabled) {
-            chassisOption.setAttribute('disabled', '');
-          }
-
-          chassisOption.defaultSelected = option.attributes.selected;
           chassisOption.key = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid();
+          chassisOption.parent = parent;
           chassisOption.addEventListener('click', function (evt) {
-            return _this.selectByKey(chassisOption.key);
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByKey(chassisOption.key, _this.parent.multiple, {
+              shift: evt.shiftKey,
+              ctrl: evt.ctrlKey,
+              cmd: evt.metaKey
+            });
           });
-          chassisOption.innerHTML = option.sourceElement.innerHTML;
           return chassisOption;
         };
 
@@ -215,6 +335,64 @@ customElements.define('chassis-options', function () {
           }
 
           return sourceEl;
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptgroup = function (optgroup) {
+          if (!customElements.get('chassis-optgroup')) {
+            console.error("<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.");
+            return;
+          }
+
+          var surrogate = document.createElement('chassis-optgroup');
+          surrogate.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid('optgroup');
+          var label = optgroup.getAttribute('label');
+
+          if (!label || label.trim() === '') {
+            console.error('<optgroup> must have a label attribute!');
+            return;
+          }
+
+          surrogate.setAttribute('label', label);
+          var options = optgroup.querySelectorAll('option');
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = options[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var option = _step2.value;
+
+              _this.add(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject(option), null, surrogate);
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
+          }
+
+          return surrogate;
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getOptionByKey = function (key) {
+          var option;
+
+          for (var i = 0; i < _this.options.length; i++) {
+            if (_this.options[i].key === key) {
+              option = _this.options[i];
+              break;
+            }
+          }
+
+          return option;
         };
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection = function () {
@@ -289,6 +467,36 @@ customElements.define('chassis-options', function () {
           );
         };
 
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByKey = function (key) {
+          var multiple = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+          var keys = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+          var option = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getOptionByKey(key);
+
+          if (!option) {
+            console.error("Invalid option key \"".concat(key, "\""));
+            return _this.deselectAll();
+          }
+
+          _this.select(option, multiple, keys);
+        };
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByIndex = function (index) {
+          var multiple = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+          var keys = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+          var option = _this.options[index];
+
+          if (!option) {
+            if (index >= 0) {
+              return console.error("No option at index ".concat(index));
+            }
+
+            return _this.deselectAll();
+          }
+
+          _this.select(option, multiple, keys);
+        };
+
         return _this;
       }
 
@@ -306,41 +514,26 @@ customElements.define('chassis-options', function () {
             return;
           }
 
-          if (!option.hasOwnProperty('sourceElement') || !(option.sourceElement instanceof HTMLElement)) {
-            option.sourceElement = _.get(this).generateSourceOptionElement(option);
+          if (option instanceof Option) {
+            option = _.get(this).generateOptionObject(option);
           }
 
-          option = {
-            attributes: {
-              disabled: option.sourceElement.disabled,
-              id: option.sourceElement.getAttribute('id'),
-              label: option.sourceElement.getAttribute('label') || option.sourceElement.textContent.trim(),
-              selected: option.sourceElement.hasAttribute('selected'),
-              value: option.sourceElement.getAttribute('value')
-            },
-            sourceElement: option.sourceElement
-          };
-
-          var chassisOption = _.get(this).generateDisplayOptionElement(option);
-
-          chassisOption.parent = dest;
-          option.displayElement = chassisOption;
-          option.key = chassisOption.key;
-
           if (index) {
-            dest.insertBefore(chassisOption, dest.children.item(index));
+            option.index = index;
+            dest.insertBefore(option.displayElement, dest.children.item(index));
             this.parent["".concat(index)] = option.displayElement;
             this.options.splice(index, 0, option);
             this.parent.sourceElement.add(option.sourceElement, index);
 
-            if (option.attributes.selected) {
-              this.selectByIndex(index);
+            if (option.selected) {
+              _.get(this).selectByIndex(index);
             }
 
             return;
           }
 
-          dest.appendChild(chassisOption);
+          dest.appendChild(option.displayElement);
+          option.index = this.options.length;
           this.parent["".concat(this.options.length)] = option.displayElement;
           this.options.push(option);
 
@@ -348,29 +541,29 @@ customElements.define('chassis-options', function () {
             this.parent.sourceElement.appendChild(option.sourceElement);
           }
 
-          if (option.attributes.selected) {
-            this.selectByKey(option.key);
+          if (option.selected) {
+            _.get(this).selectByKey(option.key);
           }
         }
       }, {
         key: "addChildren",
         value: function addChildren(children) {
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+          var _iteratorNormalCompletion3 = true;
+          var _didIteratorError3 = false;
+          var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator = children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var child = _step.value;
+            for (var _iterator3 = children[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              var child = _step3.value;
               var isElement = child instanceof HTMLElement;
 
               switch (child.nodeName) {
                 case 'OPTION':
-                  this.add(isElement ? this.generateOptionObject(child) : child);
+                  this.add(isElement ? _.get(this).generateOptionObject(child) : child);
                   break;
 
                 case 'OPTGROUP':
-                  this.addOptgroup(isElement ? this.generateOptgroup(child) : child);
+                  this.addOptgroup(isElement ? _.get(this).generateOptgroup(child) : child);
                   break;
 
                 default:
@@ -379,16 +572,16 @@ customElements.define('chassis-options', function () {
               }
             }
           } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion && _iterator.return != null) {
-                _iterator.return();
+              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                _iterator3.return();
               }
             } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
+              if (_didIteratorError3) {
+                throw _iteratorError3;
               }
             }
           }
@@ -409,113 +602,19 @@ customElements.define('chassis-options', function () {
           }
         }
       }, {
+        key: "deselect",
+        value: function deselect(option) {
+          option.selected = false;
+        }
+      }, {
         key: "deselectAll",
         value: function deselectAll() {
-          this.parent.sourceElement.selectedIndex = -1;
-          this.selectedOptionsEl.contents = this.parent.placeholder;
-          this.selectedOptionsEl.setAttribute('placeholder', '');
+          var _this4 = this;
+
+          this.parent.selectedOptionsEl.clear();
           this.options.forEach(function (option) {
-            option.displayElement.removeAttribute('selected');
-            option.sourceElement.selected = false;
+            return _this4.deselect(option);
           });
-        }
-      }, {
-        key: "generateOptgroup",
-        value: function generateOptgroup(optgroup) {
-          if (!customElements.get('chassis-optgroup')) {
-            console.error("<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.");
-            return;
-          }
-
-          var fauxOptgroup = document.createElement('chassis-optgroup');
-          fauxOptgroup.id = _.get(this).generateGuid('optgroup');
-          var label = optgroup.getAttribute('label');
-
-          if (!label || label.trim() === '') {
-            console.error('<optgroup> must have a label attribute!');
-            return;
-          }
-
-          fauxOptgroup.setAttribute('label', label);
-          var options = optgroup.querySelectorAll('option');
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
-
-          try {
-            for (var _iterator2 = options[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var option = _step2.value;
-              this.add(this.generateOptionObject(option), null, fauxOptgroup);
-            }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
-            }
-          }
-
-          return fauxOptgroup;
-        }
-      }, {
-        key: "generateOptionObject",
-        value: function generateOptionObject(optionEl) {
-          if (!customElements.get('chassis-option')) {
-            console.error("<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.");
-            return;
-          }
-
-          var obj = {
-            id: _.get(this).generateGuid(),
-            attributes: {},
-            sourceElement: optionEl
-          };
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
-
-          try {
-            for (var _iterator3 = optionEl.attributes[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var attr = _step3.value;
-              obj.attributes[attr.name] = attr.value;
-            }
-          } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
-              }
-            } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
-              }
-            }
-          }
-
-          return obj;
-        }
-      }, {
-        key: "getOptionByKey",
-        value: function getOptionByKey(key) {
-          var option;
-
-          for (var i = 0; i < this.options.length; i++) {
-            if (this.options[i].key === key) {
-              option = this.options[i];
-              break;
-            }
-          }
-
-          return option;
         }
       }, {
         key: "item",
@@ -566,46 +665,40 @@ customElements.define('chassis-options', function () {
       }, {
         key: "select",
         value: function select(option) {
-          if (option === this.selectedOption) {
+          var multiple = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+          var keys = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+          if (typeof option === 'number') {
+            return _.get(this).selectByIndex(option);
+          }
+
+          var deselectAll = true;
+
+          if (multiple) {
+            if (keys.shift) {
+              console.log('shift key held');
+            }
+
+            if (keys.cmd || keys.ctrl) {
+              if (option.selected) {
+                return this.deselect(option);
+              }
+
+              deselectAll = false;
+            }
+          } else if (option.selected) {
             return;
           }
 
-          if (!this.parent.multiple) {
+          if (deselectAll) {
             this.deselectAll();
           }
 
-          option.sourceElement.selected = true;
-          option.displayElement.setAttribute('selected', '');
-          this.selectedOptionsEl.add(option);
-          this.selectedOptionsEl.removeAttribute('placeholder');
+          option.selected = true;
+          this.parent.selectedOptionsEl.add(option);
+          this.parent.selectedOptionsEl.removeAttribute('placeholder'); // TODO: Handle this in chassis-selected-options
+
           this.dispatchChangeEvent();
-        }
-      }, {
-        key: "selectByKey",
-        value: function selectByKey(key) {
-          var option = this.getOptionByKey(key);
-
-          if (!option) {
-            console.error("Invalid option key \"".concat(key, "\""));
-            return this.deselectAll();
-          }
-
-          this.select(option);
-        }
-      }, {
-        key: "selectByIndex",
-        value: function selectByIndex(index) {
-          var option = this.options[index];
-
-          if (!option) {
-            if (index >= 0) {
-              return console.error("No option at index ".concat(index));
-            }
-
-            return this.deselectAll();
-          }
-
-          this.select(option);
         }
       }, {
         key: "form",
@@ -620,14 +713,14 @@ customElements.define('chassis-options', function () {
       }, {
         key: "displayOptions",
         get: function get() {
-          var _this4 = this;
+          var _this5 = this;
 
           return new (_.get(this).ChassisOptionsCollection())(this.options.map(function (option) {
             return option.displayElement;
           }), this.selectedIndex, function (element, before) {
-            _this4.add(_this4.generateOptionObject(element), before);
+            _this5.add(_.get(_this5).generateOptionObject(element), before);
           }, function (index) {
-            return _this4.removeOptionByIndex(index);
+            return _this5.removeOptionByIndex(index);
           });
         },
         set: function set(value) {
@@ -648,14 +741,14 @@ customElements.define('chassis-options', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          var _this5 = this;
+          var _this6 = this;
 
           return this.options.findIndex(function (option) {
-            return option.displayElement === _this5.selectedOptions.item(0);
+            return option.displayElement === _this6.selectedOptions.item(0);
           });
         },
         set: function set(index) {
-          this.selectByIndex(index);
+          _.get(this).selectByIndex(index);
         }
       }, {
         key: "selectedOptions",

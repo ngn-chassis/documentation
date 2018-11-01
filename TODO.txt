@@ -1,5 +1,7 @@
 * === done
 
+Add @variation support to components
+
 WEB COMPONENTS
 Add ARIA roles for accessibility
 
@@ -9,7 +11,7 @@ and @chassis apply nested-block margin/padding;
 Instead of a separate chassis-multiple-select component,
 just combine chassis-select[multiple] with chassis-tagbin.
 
-For svg icons inside select menus, ie arrow icon, add config property to build. 
+For svg icons inside select menus, ie arrow icon, add config property to build.
 
 
 ? Currently, the font-size is limited by the max UI width. Max width maybe should

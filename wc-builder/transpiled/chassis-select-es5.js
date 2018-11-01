@@ -165,6 +165,10 @@ customElements.define('chassis-select', function () {
           }
         });
 
+        _this.addEventListener('click', function (evt) {
+          console.log('chassis-select');
+        });
+
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProps({
@@ -191,7 +195,7 @@ customElements.define('chassis-select', function () {
                   return _this.open();
                 }
 
-                console.log('select next option');
+                console.log(_this.options);
                 break;
 
               default:
@@ -227,8 +231,18 @@ customElements.define('chassis-select', function () {
           switch (attr) {
             case 'autofocus':
             case 'disabled':
-            case 'multiple':
               return _.get(this).handleBooleanAttributeChange(attr, newValue);
+
+            case 'multiple':
+              _.get(this).handleBooleanAttributeChange(attr, newValue);
+
+              if (!newValue && this.selectedOptions) {
+                var index = this.selectedIndex;
+                this.deselectAll();
+                this.select(index);
+              }
+
+              break;
 
             case 'name':
               return _.get(this).handleAttributeChange(attr, newValue);
@@ -314,10 +328,10 @@ customElements.define('chassis-select', function () {
             }));
           };
 
-          _.get(this).optionsEl.selectedOptionsEl = document.createElement('chassis-selected-options');
-          _.get(this).optionsEl.selectedOptionsEl.parent = this;
-          _.get(this).optionsEl.selectedOptionsEl.slot = 'selectedoptions';
-          this.appendChild(_.get(this).optionsEl.selectedOptionsEl);
+          this.selectedOptionsEl = document.createElement('chassis-selected-options');
+          this.selectedOptionsEl.parent = this;
+          this.selectedOptionsEl.slot = 'selectedoptions';
+          this.appendChild(this.selectedOptionsEl);
           _.get(this).optionsEl.slot = 'options';
           this.appendChild(_.get(this).optionsEl);
           _.get(this).placeholder = this.getAttribute('placeholder');
@@ -325,7 +339,7 @@ customElements.define('chassis-select', function () {
           if (select.children.length > 0) {
             _.get(this).optionsEl.addChildren(select.children);
 
-            _.get(this).optionsEl.selectByIndex(this.selectedIndex);
+            this.select(this.selectedIndex);
           } else {
             this.deselectAll();
           }
@@ -401,7 +415,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "select",
         value: function select(index) {
-          _.get(this).optionsEl.selectByIndex(index);
+          _.get(this).optionsEl.select(index);
         }
       }, {
         key: "setCustomValidity",
@@ -506,7 +520,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "selectedOptions",
         get: function get() {
-          return _.get(this).optionsEl.selectedOptions;
+          return _.get(this).optionsEl ? _.get(this).optionsEl.selectedOptions : null;
         },
         set: function set(value) {
           return _.get(this).throw('readonly', {

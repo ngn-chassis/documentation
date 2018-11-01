@@ -2,6 +2,10 @@ class ChassisSelect extends HTMLElement {
   constructor () {
     super()
 
+    this.addEventListener('click', evt => {
+      console.log('chassis-select');
+    })
+
     _.get(this).addReadOnlyProps([
       'form',
       'labels',
@@ -36,7 +40,7 @@ class ChassisSelect extends HTMLElement {
               return this.open()
             }
 
-            console.log('select next option');
+            console.log(this.options);
             break
 
           default:
@@ -153,7 +157,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get selectedOptions () {
-    return _.get(this).optionsEl.selectedOptions
+    return _.get(this).optionsEl ? _.get(this).optionsEl.selectedOptions : null
   }
 
   set selectedOptions (value) {
@@ -184,8 +188,18 @@ class ChassisSelect extends HTMLElement {
     switch (attr) {
       case 'autofocus':
       case 'disabled':
-      case 'multiple':
         return _.get(this).handleBooleanAttributeChange(attr, newValue)
+
+      case 'multiple':
+        _.get(this).handleBooleanAttributeChange(attr, newValue)
+
+        if (!newValue && this.selectedOptions) {
+          let index = this.selectedIndex
+          this.deselectAll()
+          this.select(index)
+        }
+
+        break
 
       case 'name':
         return _.get(this).handleAttributeChange(attr, newValue)
@@ -258,17 +272,18 @@ class ChassisSelect extends HTMLElement {
 
     _.get(this).optionsEl = document.createElement('chassis-options')
     _.get(this).optionsEl.parent = this
+
     _.get(this).optionsEl.dispatchChangeEvent = () => {
       this.dispatchEvent(new Event('change', {
         bubbles: true
       }))
     }
 
-    _.get(this).optionsEl.selectedOptionsEl = document.createElement('chassis-selected-options')
-    _.get(this).optionsEl.selectedOptionsEl.parent = this
+    this.selectedOptionsEl = document.createElement('chassis-selected-options')
+    this.selectedOptionsEl.parent = this
 
-    _.get(this).optionsEl.selectedOptionsEl.slot = 'selectedoptions'
-    this.appendChild(_.get(this).optionsEl.selectedOptionsEl)
+    this.selectedOptionsEl.slot = 'selectedoptions'
+    this.appendChild(this.selectedOptionsEl)
 
     _.get(this).optionsEl.slot = 'options'
     this.appendChild(_.get(this).optionsEl)
@@ -277,7 +292,7 @@ class ChassisSelect extends HTMLElement {
 
     if (select.children.length > 0) {
       _.get(this).optionsEl.addChildren(select.children)
-      _.get(this).optionsEl.selectByIndex(this.selectedIndex)
+      this.select(this.selectedIndex)
     } else {
       this.deselectAll()
     }
@@ -342,7 +357,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   select (index) {
-    _.get(this).optionsEl.selectByIndex(index)
+    _.get(this).optionsEl.select(index)
   }
 
   setCustomValidity (string) {

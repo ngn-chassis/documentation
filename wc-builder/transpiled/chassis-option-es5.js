@@ -167,6 +167,11 @@ customElements.define('chassis-option', function () {
 
         _this.parent = null;
         _this.defaultSelected = false;
+
+        _this.addEventListener('click', function (evt) {
+          console.log('chassis-option');
+        });
+
         return _this;
       }
 

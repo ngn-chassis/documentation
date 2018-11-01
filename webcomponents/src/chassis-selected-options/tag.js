@@ -26,6 +26,7 @@ class ChassisSelectedOptions extends HTMLElement {
 
   clear () {
     _.get(this).options = []
+    this.setAttribute('placeholder', '')
     _.get(this).generateList()
   }
 

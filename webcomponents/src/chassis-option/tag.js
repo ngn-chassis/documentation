@@ -4,6 +4,10 @@ class ChassisOption extends HTMLElement {
 
     this.parent = null
     this.defaultSelected = false
+
+    this.addEventListener('click', evt => {
+      console.log('chassis-option');
+    })
   }
 
   static get observedAttributes () {

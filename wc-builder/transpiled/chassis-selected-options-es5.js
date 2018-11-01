@@ -191,6 +191,7 @@ customElements.define('chassis-selected-options', function () {
         key: "clear",
         value: function clear() {
           _.get(this).options = [];
+          this.setAttribute('placeholder', '');
 
           _.get(this).generateList();
         }

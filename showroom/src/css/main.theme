@@ -284,6 +284,11 @@ components {
 					0 .236em 1em 0 color-mod(black alpha(10%))
 				;
 			}
+
+			chassis-option[selected] {
+				background: var(--blue);
+				color: white;
+			}
 		}
 
 		@state open {
@@ -307,6 +312,10 @@ components {
 
 		@state focus {
 			box-shadow: inset 0 0 0 2px var(--blue);
+
+			chassis-options {
+				box-shadow: inset 0 0 0 2px var(--blue);
+			}
 		}
 
 		@state disabled {

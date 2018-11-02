@@ -8,7 +8,6 @@ class ChassisSelect extends HTMLElement {
 
     _.get(this).addReadOnlyProps([
       'form',
-      'labels',
       'willValidate',
       'type',
       'validationMessage',
@@ -71,8 +70,7 @@ class ChassisSelect extends HTMLElement {
 
             break
 
-          default:
-            return
+          default: return
         }
       },
 
@@ -133,7 +131,17 @@ class ChassisSelect extends HTMLElement {
   }
 
   get length () {
-    return this.sourceElement.length
+    return this.options.length
+  }
+
+  get labels () {
+    return _.get(this).labels
+  }
+
+  set labels (elements) {
+    return _.get(this).throw('readonly', {
+      name: 'labels'
+    })
   }
 
   get multiple () {
@@ -149,7 +157,7 @@ class ChassisSelect extends HTMLElement {
   }
 
   get name () {
-    return this.sourceElement.name
+    return this.getAttribute('name')
   }
 
   set name (name) {
@@ -227,7 +235,12 @@ class ChassisSelect extends HTMLElement {
   }
 
   get value () {
-    return this.sourceElement.value
+    if (this.selectedOptions.length === 0) {
+      return null
+    }
+
+    let selectedOption = this.selectedOptions.item(0)
+    return selectedOption ? selectedOption.value || selectedOption.text : null
   }
 
   add (option, index) {
@@ -318,11 +331,12 @@ class ChassisSelect extends HTMLElement {
     this.optionsElement.deselectAll()
   }
 
-  inject (select) {
+  inject (select, labels) {
     Object.assign(_.get(this), {
       sourceEl: select,
       optionsEl: document.createElement('chassis-options'),
-      selectedOptionsEl: document.createElement('chassis-selected-options')
+      selectedOptionsEl: document.createElement('chassis-selected-options'),
+      labels
     })
 
     this.placeholder = this.getAttribute('placeholder')

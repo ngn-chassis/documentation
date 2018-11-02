@@ -188,8 +188,8 @@ customElements.define('chassis-options', function () {
                     id: sourceElement.getAttribute('id'),
                     label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
                     selected: sourceElement.selected,
-                    value: sourceElement.getAttribute('value'),
-                    text: sourceElement.text
+                    value: sourceElement.getAttribute('value').trim(),
+                    text: sourceElement.text.trim()
                   }
                 });
 
@@ -203,14 +203,12 @@ customElements.define('chassis-options', function () {
                   for (var _iterator = sourceElement.attributes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var attr = _step.value;
 
-                    if (!_p.get(this).attributes.hasOwnProperty(attr.name)) {
-                      if (typeof attr.value === 'boolean') {
-                        attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
-                        continue;
-                      }
-
-                      this.displayElement.setAttribute(attr.name, attr.value);
+                    if (typeof attr.value === 'boolean') {
+                      attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
+                      continue;
                     }
+
+                    this.displayElement.setAttribute(attr.name, attr.value);
                   }
                 } catch (err) {
                   _didIteratorError = true;
@@ -436,6 +434,28 @@ customElements.define('chassis-options', function () {
                   return matches.length > 0 ? matches[0] : null;
                 }
               }, {
+                key: Symbol.iterator,
+                value: function value() {
+                  var _this3 = this;
+
+                  var index = 0;
+                  return {
+                    next: function next() {
+                      var result = {
+                        value: _p.get(_this3).arr[index],
+                        done: !(index in _p.get(_this3).arr)
+                      };
+                      index++;
+                      return result;
+                    }
+                  };
+                }
+              }, {
+                key: Symbol.toStringTag,
+                value: function value() {
+                  return 'ChassisHTMLCollection';
+                }
+              }, {
                 key: "length",
                 get: function get() {
                   return _p.get(this).arr.length;
@@ -446,29 +466,40 @@ customElements.define('chassis-options', function () {
           );
         };
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisOptionsCollection = function () {
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLOptionsCollection = function () {
           var _p = new WeakMap();
 
           return (
             /*#__PURE__*/
             function (_$get$ChassisHTMLColl) {
-              (0, _inherits2.default)(ChassisOptionsCollection, _$get$ChassisHTMLColl);
+              (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
 
-              function ChassisOptionsCollection(arr) {
-                var _this3;
+              function ChassisHTMLOptionsCollection(arr) {
+                var _this4;
 
                 var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
                 var add = arguments.length > 2 ? arguments[2] : undefined;
                 var remove = arguments.length > 3 ? arguments[3] : undefined;
-                (0, _classCallCheck2.default)(this, ChassisOptionsCollection);
-                _this3 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisOptionsCollection).call(this, arr));
-                _this3.selectedIndex = selectedIndex;
-                _this3.add = add;
-                _this3.remove = remove;
-                return _this3;
+                (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
+                _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
+                _this4.selectedIndex = selectedIndex;
+                _this4.add = add;
+                _this4.remove = remove;
+
+                _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this4)), {
+                  arr: arr
+                });
+
+                return _this4;
               }
 
-              return ChassisOptionsCollection;
+              (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
+                key: Symbol.toStringTag,
+                value: function value() {
+                  return 'ChassisHTMLOptionsCollection';
+                }
+              }]);
+              return ChassisHTMLOptionsCollection;
             }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection())
           );
         };
@@ -533,10 +564,10 @@ customElements.define('chassis-options', function () {
       }, {
         key: "unHoverAllOptions",
         value: function unHoverAllOptions() {
-          var _this4 = this;
+          var _this5 = this;
 
           this.options.forEach(function (option, index) {
-            return _this4.unHoverOption(index);
+            return _this5.unHoverOption(index);
           });
         }
       }, {
@@ -641,11 +672,11 @@ customElements.define('chassis-options', function () {
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          var _this5 = this;
+          var _this6 = this;
 
           this.parent.selectedOptionsElement.clear();
           this.options.forEach(function (option) {
-            return _this5.deselect(option);
+            return _this6.deselect(option);
           });
         }
       }, {
@@ -745,14 +776,14 @@ customElements.define('chassis-options', function () {
       }, {
         key: "displayOptions",
         get: function get() {
-          var _this6 = this;
+          var _this7 = this;
 
-          return new (_.get(this).ChassisOptionsCollection())(this.options.map(function (option) {
+          return new (_.get(this).ChassisHTMLOptionsCollection())(this.options.map(function (option) {
             return option.displayElement;
           }), this.selectedIndex, function (element, before) {
-            _this6.add(_.get(_this6).generateOptionObject(element), before);
+            _this7.add(_.get(_this7).generateOptionObject(element), before);
           }, function (index) {
-            return _this6.removeOptionByIndex(index);
+            return _this7.removeOptionByIndex(index);
           });
         },
         set: function set(value) {
@@ -773,10 +804,10 @@ customElements.define('chassis-options', function () {
       }, {
         key: "selectedIndex",
         get: function get() {
-          var _this7 = this;
+          var _this8 = this;
 
           return this.options.findIndex(function (option) {
-            return option.displayElement === _this7.selectedOptions.item(0);
+            return option.displayElement === _this8.selectedOptions.item(0);
           });
         },
         set: function set(index) {

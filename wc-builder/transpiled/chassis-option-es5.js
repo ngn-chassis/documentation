@@ -244,6 +244,14 @@ customElements.define('chassis-option', function () {
           });
         }
       }, {
+        key: "id",
+        get: function get() {
+          return this.getAttribute('id');
+        },
+        set: function set(value) {
+          _.get(this).handlePropertyChange('id', value);
+        }
+      }, {
         key: "index",
         get: function get() {
           var _this2 = this;
@@ -260,7 +268,7 @@ customElements.define('chassis-option', function () {
       }, {
         key: "label",
         get: function get() {
-          return _.get(this).sourceEl.label;
+          return this.getAttribute('label');
         },
         set: function set(label) {
           _.get(this).handlePropertyChange('label', label);
@@ -284,7 +292,7 @@ customElements.define('chassis-option', function () {
       }, {
         key: "value",
         get: function get() {
-          return _.get(this).sourceEl.value;
+          return this.getAttribute('value');
         },
         set: function set(value) {
           _.get(this).handlePropertyChange('value', value);

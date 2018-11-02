@@ -27,8 +27,8 @@ class ChassisOptions extends HTMLElement {
               id: sourceElement.getAttribute('id'),
               label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
               selected: sourceElement.selected,
-              value: sourceElement.getAttribute('value'),
-              text: sourceElement.text
+              value: sourceElement.getAttribute('value').trim(),
+              text: sourceElement.text.trim()
             }
           })
 
@@ -36,14 +36,12 @@ class ChassisOptions extends HTMLElement {
 
           // Add additional attributes
           for (let attr of sourceElement.attributes) {
-            if (!_p.get(this).attributes.hasOwnProperty(attr.name)) {
-              if (typeof attr.value === 'boolean') {
-                attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name)
-                continue
-              }
-
-              this.displayElement.setAttribute(attr.name, attr.value)
+            if (typeof attr.value === 'boolean') {
+              attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name)
+              continue
             }
+
+            this.displayElement.setAttribute(attr.name, attr.value)
           }
         }
 
@@ -218,18 +216,45 @@ class ChassisOptions extends HTMLElement {
           let matches = _p.get(this).arr.filter(item => item.id === name || item.name === name)
           return matches.length > 0 ? matches[0] : null
         }
+
+        [Symbol.iterator] () {
+          let index = 0
+
+          return {
+            next: () => {
+              let result = {
+                value: _p.get(this).arr[index],
+                done: !(index in _p.get(this).arr)
+              }
+
+              index++
+
+              return result
+            }
+          }
+        }
+
+        [Symbol.toStringTag] () {
+          return 'ChassisHTMLCollection'
+        }
       }
     }
 
-    _.get(this).ChassisOptionsCollection = () => {
+    _.get(this).ChassisHTMLOptionsCollection = () => {
       let _p = new WeakMap()
 
-      return class ChassisOptionsCollection extends _.get(this).ChassisHTMLCollection() {
+      return class ChassisHTMLOptionsCollection extends _.get(this).ChassisHTMLCollection() {
         constructor (arr, selectedIndex = -1, add, remove) {
           super(arr)
           this.selectedIndex = selectedIndex
           this.add = add
           this.remove = remove
+
+          _p.set(this, {arr})
+        }
+
+        [Symbol.toStringTag] () {
+          return 'ChassisHTMLOptionsCollection'
         }
       }
     }
@@ -285,7 +310,7 @@ class ChassisOptions extends HTMLElement {
   }
 
   get displayOptions () {
-    return new (_.get(this).ChassisOptionsCollection())(this.options.map(option => option.displayElement), this.selectedIndex, (element, before) => {
+    return new (_.get(this).ChassisHTMLOptionsCollection())(this.options.map(option => option.displayElement), this.selectedIndex, (element, before) => {
       this.add(_.get(this).generateOptionObject(element), before)
     }, index => this.removeOptionByIndex(index))
   }

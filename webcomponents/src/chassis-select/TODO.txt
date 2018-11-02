@@ -1,3 +1,5 @@
+- Make sure validation works properly
+- Handle "size" attribute
 - Add middleware onOptionSelected() and afterOptionSelected()
 - Figure out a way to insert custom svg icons for chassis-selected-options
 

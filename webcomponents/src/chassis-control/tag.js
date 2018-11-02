@@ -116,6 +116,7 @@ class ChassisFormControl extends HTMLElement {
         select.setAttribute('role', 'menu')
         _.get(this).input = select
 
+        // Purge incompatible attributes
         let titleEls = select.querySelectorAll('option[title]')
         titleEls.forEach(el => select.removeChild(el))
 
@@ -141,7 +142,7 @@ class ChassisFormControl extends HTMLElement {
         }
 
         this.removeChild(original)
-        surrogate.inject(original)
+        surrogate.inject(original, this.querySelectorAll('label'))
 
         this.appendChild(surrogate)
         _.get(this).input = surrogate

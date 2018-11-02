@@ -284,7 +284,8 @@ customElements.define('chassis-control', function () {
             select.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).guid;
             select.slot = select.slot || 'input';
             select.setAttribute('role', 'menu');
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).input = select;
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).input = select; // Purge incompatible attributes
+
             var titleEls = select.querySelectorAll('option[title]');
             titleEls.forEach(function (el) {
               return select.removeChild(el);
@@ -352,7 +353,7 @@ customElements.define('chassis-control', function () {
 
             _this.removeChild(original);
 
-            surrogate.inject(original);
+            surrogate.inject(original, _this.querySelectorAll('label'));
 
             _this.appendChild(surrogate);
 

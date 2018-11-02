@@ -39,6 +39,14 @@ class ChassisOption extends HTMLElement {
     })
   }
 
+  get id () {
+    return this.getAttribute('id')
+  }
+
+  set id (value) {
+    _.get(this).handlePropertyChange('id', value)
+  }
+
   get index () {
     return this.parent.options.findIndex(option => option.displayElement === this)
   }
@@ -50,7 +58,7 @@ class ChassisOption extends HTMLElement {
   }
 
   get label () {
-    return _.get(this).sourceEl.label
+    return this.getAttribute('label')
   }
 
   set label (label) {
@@ -74,7 +82,7 @@ class ChassisOption extends HTMLElement {
   }
 
   get value () {
-    return _.get(this).sourceEl.value
+    return this.getAttribute('value')
   }
 
   set value (value) {

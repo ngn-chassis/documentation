@@ -168,7 +168,7 @@ customElements.define('chassis-select', function () {
         // })
 
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProps(['form', 'labels', 'willValidate', 'type', 'validationMessage', 'validity']);
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProps(['form', 'willValidate', 'type', 'validationMessage', 'validity']);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProps({
           title: '',
@@ -339,11 +339,12 @@ customElements.define('chassis-select', function () {
         }
       }, {
         key: "inject",
-        value: function inject(select) {
+        value: function inject(select, labels) {
           Object.assign(_.get(this), {
             sourceEl: select,
             optionsEl: document.createElement('chassis-options'),
-            selectedOptionsEl: document.createElement('chassis-selected-options')
+            selectedOptionsEl: document.createElement('chassis-selected-options'),
+            labels: labels
           });
           this.placeholder = this.getAttribute('placeholder');
           this.optionsElement.parent = this;
@@ -483,7 +484,17 @@ customElements.define('chassis-select', function () {
       }, {
         key: "length",
         get: function get() {
-          return this.sourceElement.length;
+          return this.options.length;
+        }
+      }, {
+        key: "labels",
+        get: function get() {
+          return _.get(this).labels;
+        },
+        set: function set(elements) {
+          return _.get(this).throw('readonly', {
+            name: 'labels'
+          });
         }
       }, {
         key: "multiple",
@@ -500,7 +511,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "name",
         get: function get() {
-          return this.sourceElement.name;
+          return this.getAttribute('name');
         },
         set: function set(name) {
           _.get(this).handlePropertyChange('name', name);
@@ -578,7 +589,12 @@ customElements.define('chassis-select', function () {
       }, {
         key: "value",
         get: function get() {
-          return this.sourceElement.value;
+          if (this.selectedOptions.length === 0) {
+            return null;
+          }
+
+          var selectedOption = this.selectedOptions.item(0);
+          return selectedOption ? selectedOption.value || selectedOption.text : null;
         }
       }], [{
         key: "observedAttributes",

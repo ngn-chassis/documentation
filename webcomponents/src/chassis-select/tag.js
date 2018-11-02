@@ -1,4 +1,4 @@
-class ChassisSelect extends HTMLElement {
+class ChassisSelectElement extends HTMLElement {
   constructor () {
     super()
 
@@ -61,8 +61,7 @@ class ChassisSelect extends HTMLElement {
             }
 
             switch (startIndex) {
-              case this.options.length - 1:
-                return
+              case this.options.length - 1: return
 
               default:
                 return this.optionsElement.hoverOption(startIndex + 1)
@@ -423,6 +422,10 @@ class ChassisSelect extends HTMLElement {
   setCustomValidity (string) {
     this.sourceElement.setCustomValidity(string)
   }
+
+  [Symbol.toStringTag] () {
+    return 'ChassisSelectElement'
+  }
 }
 
-customElements.define('chassis-select', ChassisSelect)
+customElements.define('chassis-select', ChassisSelectElement)

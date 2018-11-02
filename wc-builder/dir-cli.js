@@ -5,7 +5,8 @@
 
 const Utils = {
   fs: require('fs'),
-  path: require('path')
+  path: require('path'),
+  args: require('yargs').argv
 }
 
 const Builder = require('./index')
@@ -35,12 +36,13 @@ Utils.fs.lstat(src, (err, stats) => {
     if (readErr) {
       return console.error(readErr)
     }
-    
+
     components.forEach(component => {
       let builder = new Builder({
         src: Utils.path.join(src, component),
         dest,
-        transpile: flags.includes('--es5')
+        transpile: flags.includes('--es5'),
+        reservedNames: Utils.args.reservedNames.split(',')
       })
 
       builder.build()

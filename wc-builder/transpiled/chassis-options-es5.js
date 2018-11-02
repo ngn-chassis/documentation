@@ -415,7 +415,11 @@ customElements.define('chassis-options', function () {
                 });
 
                 arr.forEach(function (node, index) {
-                  return _this2[index] = node;
+                  _this2[index] = node;
+
+                  if (node.id) {
+                    _this2[node.id] = node;
+                  }
                 });
               }
 
@@ -469,39 +473,40 @@ customElements.define('chassis-options', function () {
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLOptionsCollection = function () {
           var _p = new WeakMap();
 
-          return (
-            /*#__PURE__*/
-            function (_$get$ChassisHTMLColl) {
-              (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
+          var ChassisHTMLOptionsCollection =
+          /*#__PURE__*/
+          function (_$get$ChassisHTMLColl) {
+            (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
 
-              function ChassisHTMLOptionsCollection(arr) {
-                var _this4;
+            function ChassisHTMLOptionsCollection(arr) {
+              var _this4;
 
-                var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
-                var add = arguments.length > 2 ? arguments[2] : undefined;
-                var remove = arguments.length > 3 ? arguments[3] : undefined;
-                (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
-                _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
-                _this4.selectedIndex = selectedIndex;
-                _this4.add = add;
-                _this4.remove = remove;
+              var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+              var add = arguments.length > 2 ? arguments[2] : undefined;
+              var remove = arguments.length > 3 ? arguments[3] : undefined;
+              (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
+              _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
+              _this4.selectedIndex = selectedIndex;
+              _this4.add = add;
+              _this4.remove = remove;
 
-                _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this4)), {
-                  arr: arr
-                });
+              _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this4)), {
+                arr: arr
+              });
 
-                return _this4;
+              return _this4;
+            }
+
+            (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
+              key: Symbol.toStringTag,
+              value: function value() {
+                return 'ChassisHTMLOptionsCollection';
               }
+            }]);
+            return ChassisHTMLOptionsCollection;
+          }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection());
 
-              (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
-                key: Symbol.toStringTag,
-                value: function value() {
-                  return 'ChassisHTMLOptionsCollection';
-                }
-              }]);
-              return ChassisHTMLOptionsCollection;
-            }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection())
-          );
+          return ChassisHTMLOptionsCollection;
         };
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByKey = function (key) {
@@ -538,13 +543,11 @@ customElements.define('chassis-options', function () {
 
 
         _this.addEventListener('mousedown', function (evt) {
-          _this.mousedown = true;
-          console.log('mouse down');
+          return _this.mousedown = true;
         });
 
         _this.addEventListener('mouseup', function (evt) {
-          _this.mousedown = false;
-          console.log('mouse up');
+          return _this.mousedown = false;
         });
 
         return _this;

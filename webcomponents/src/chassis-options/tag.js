@@ -201,7 +201,13 @@ class ChassisOptions extends HTMLElement {
       return class ChassisHTMLCollection {
         constructor (arr) {
           _p.set(this, {arr})
-          arr.forEach((node, index) => this[index] = node)
+          arr.forEach((node, index) => {
+            this[index] = node
+
+            if (node.id) {
+              this[node.id] = node
+            }
+          })
         }
 
         get length () {
@@ -243,7 +249,7 @@ class ChassisOptions extends HTMLElement {
     _.get(this).ChassisHTMLOptionsCollection = () => {
       let _p = new WeakMap()
 
-      return class ChassisHTMLOptionsCollection extends _.get(this).ChassisHTMLCollection() {
+      let ChassisHTMLOptionsCollection = class ChassisHTMLOptionsCollection extends _.get(this).ChassisHTMLCollection() {
         constructor (arr, selectedIndex = -1, add, remove) {
           super(arr)
           this.selectedIndex = selectedIndex
@@ -257,6 +263,8 @@ class ChassisOptions extends HTMLElement {
           return 'ChassisHTMLOptionsCollection'
         }
       }
+
+      return ChassisHTMLOptionsCollection
     }
 
     _.get(this).selectByKey = (key, multiple = false, keys = {}) => {
@@ -288,15 +296,8 @@ class ChassisOptions extends HTMLElement {
     //   console.log('chassis-options');
     // })
 
-    this.addEventListener('mousedown', evt => {
-      this.mousedown = true
-      console.log('mouse down');
-    })
-
-    this.addEventListener('mouseup', evt => {
-      this.mousedown = false
-      console.log('mouse up');
-    })
+    this.addEventListener('mousedown', evt => this.mousedown = true)
+    this.addEventListener('mouseup', evt => this.mousedown = false)
   }
 
   get form () {

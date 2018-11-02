@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
-    "build-webcomponents": "cd wc-builder/ && build-webcomponents ../webcomponents/src ../webcomponents/dist --es5 && cd ..",
+    "build-webcomponents": "cd wc-builder/ && build-webcomponents ../webcomponents/src ../webcomponents/dist --es5 --reservedNames=ChassisHTMLCollection,ChassisHTMLOptionsCollection && cd ..",
     "bundle-chassis-select": "bundle-webcomponent --name=chassis-select --components=chassis-selected-options,chassis-options,chassis-option,chassis-optgroup,chassis-optgroup-label,chassis-select --dir=webcomponents/dist",
     "bundle-chassis-datalist": "bundle-webcomponent --name=chassis-datalist --components=chassis-options,chassis-option,chassis-datalist --dir=webcomponents/dist",
     "bundle-chassis-layout": "bundle-webcomponent --name=chassis-layout --components=chassis-layout-cell,chassis-layout --dir=webcomponents/dist",

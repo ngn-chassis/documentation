@@ -80,7 +80,7 @@
           <label for="default-select">test</label>
           <select id="default-select">
             <option id="test-option" value="1">Option 1</option>
-            <option value="2">Option 2</option>
+            <option id="test-option2" value="2">Option 2</option>
             <option value="3">Option 3</option>
           </select>
 
@@ -642,6 +642,8 @@
 
     <script type="text/javascript">
       window.addEventListener('DOMContentLoaded', function () {
+        window.select = document.getElementById('default-select')
+        window.chassisSelect = document.getElementById('chassis-select').input
         // window.old = document.getElementById('old')
 
         // var old = document.getElementById('heyyy')
@@ -662,9 +664,6 @@
         select.addEventListener('change', evt => console.log(evt))
         chassisSelect.addEventListener('change', evt => console.log(evt))
 
-        chassisSelect.addEventListener('initialized', evt => {
-          console.log('works');
-        })
         // window.option = window.select[2]
         //
         // window.select2 = document.getElementById('select2')

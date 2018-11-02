@@ -440,6 +440,11 @@ customElements.define('chassis-select', function () {
           this.sourceElement.setCustomValidity(string);
         }
       }, {
+        key: Symbol.toStringTag,
+        value: function value() {
+          return 'ChassisSelectElement';
+        }
+      }, {
         key: "autofocus",
         get: function get() {
           return _.get(this).getBooleanPropertyValue('autofocus');

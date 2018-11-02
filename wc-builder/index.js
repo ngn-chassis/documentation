@@ -38,6 +38,8 @@ module.exports = class {
 
     this.dest = cfg.dest || null
 
+    this.reservedNames = cfg.reservedNames || []
+
     this.templates = {
       bundled: path.resolve(__dirname, 'templates/bundled.js'),
       import: path.resolve(__dirname, 'templates/import.js')
@@ -67,11 +69,11 @@ module.exports = class {
 
     console.info(`Building "${this.filename}" component...`)
 
-    processor.add('Processing JavaScript...', (next) => this.processJs(next))
-    processor.add('Processing CSS...', (next) => this.processCss(next))
-    processor.add('Processing Template...', (next) => this.processTemplate(next))
+    processor.add('Processing JavaScript...', next => this.processJs(next))
+    processor.add('Processing CSS...', next => this.processCss(next))
+    processor.add('Processing Template...', next => this.processTemplate(next))
 
-    processor.on('stepstarted', (task) => console.info(task.name))
+    processor.on('stepstarted', task => console.info(task.name))
 
     processor.on('complete', () => {
       let files = [{
@@ -106,7 +108,10 @@ module.exports = class {
                   'NODE_ENV': JSON.stringify('production')
                 }
               })
-            ]
+            ],
+            optimization: {
+              minimize: false
+            }
           })
 
           bundler.run((err, stats) => {
@@ -118,10 +123,14 @@ module.exports = class {
         })
       }
 
-      compiler.add('Compressing...', (next) => {
-        files.forEach((file) => {
+      compiler.add('Compressing...', next => {
+        files.forEach(file => {
           if (file.name.endsWith('-es5')) {
-            file.contents = uglify(file.contents).code
+            file.contents = uglify(file.contents, {
+              mangle: {
+                reserved: this.reservedNames
+              }
+            }).code
             return
           }
 
@@ -133,12 +142,13 @@ module.exports = class {
         next()
       })
 
-      compiler.on('stepstarted', (task) => console.info(task.name))
+      compiler.on('stepstarted', task => console.info(task.name))
 
       compiler.on('complete', () => {
         this._writeFiles(files, () => {
           console.info(`Done.`)
 
+          // TODO: Find out why this doesn't work synchronously
           // for (let dir in tempDirs) {
           //   rimraf(tempDirs[dir], () => {})
           // }
@@ -175,11 +185,11 @@ module.exports = class {
 
     let ast = parser.parse(input, {sourceType: this.sourceType})
 
-    let inputClassDecl = ast.program.body.find((node) => {
+    let inputClassDecl = ast.program.body.find(node => {
       return node.type === 'ClassDeclaration'
     })
 
-    let elDefinition = ast.program.body.find((node) => {
+    let elDefinition = ast.program.body.find(node => {
       return node.type === 'ExpressionStatement'
         && node.expression.callee.object.name === 'customElements'
         && node.expression.callee.property.name === 'define'
@@ -213,17 +223,17 @@ module.exports = class {
     let outputClassExpression = parsed.program.body[0].expression.arguments[1].callee.body.body[1].argument
 
 
-    // let inputConstructor = inputClassDecl.body.body.find((node) => {
+    // let inputConstructor = inputClassDecl.body.body.find(node => {
     //   return node.key.name === 'constructor'
     // })
 
-    let outputConstructor = outputClassExpression.body.body.find((node) => {
+    let outputConstructor = outputClassExpression.body.body.find(node => {
       return node.key.name === 'constructor'
     })
 
-    inputClassDecl.body.body.forEach((method) => {
+    inputClassDecl.body.body.forEach(method => {
       if (method.key.name === 'constructor') {
-        method.body.body.forEach((node) => {
+        method.body.body.forEach(node => {
           if (node.hasOwnProperty('expression') && node.expression.hasOwnProperty('callee') && node.expression.callee.type === 'Super') {
             return
           }

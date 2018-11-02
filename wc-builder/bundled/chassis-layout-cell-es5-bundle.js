@@ -1,2 +1,583 @@
-!function(t){var e={};function o(n){if(e[n])return e[n].exports;var r=e[n]={i:n,l:!1,exports:{}};return t[n].call(r.exports,r,r.exports,o),r.l=!0,r.exports}o.m=t,o.c=e,o.d=function(t,e,n){o.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},o.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},o.t=function(t,e){if(1&e&&(t=o(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(o.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var r in t)o.d(n,r,function(e){return t[e]}.bind(null,r));return n},o.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return o.d(e,"a",e),e},o.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},o.p="",o(o.s=3)}([function(t,e){function o(e,n){return t.exports=o=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t},o(e,n)}t.exports=o},function(t,e){t.exports=function(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}},function(t,e){function o(e){return t.exports=o=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)},o(e)}t.exports=o},function(t,e,o){"use strict";var n=o(4),r=n(o(5)),u=n(o(6)),i=n(o(7)),l=n(o(2)),a=n(o(9)),c=n(o(1)),f=n(o(10));customElements.define("chassis-layout-cell",function(){var t=new WeakMap;return function(e){function o(){var e;(0,r.default)(this,o),(e=(0,i.default)(this,(0,l.default)(o).call(this))).keySource="key"in KeyboardEvent.prototype?"key":"keyIdentifier"in KeyboardEvent.prototype?"keyIdentifier":"keyCode",e.attachShadow({mode:"open"});var n=document.createElement("div");n.insertAdjacentHTML("afterbegin",'<template><style>@charset UTF-8; @charset "UTF-8";:host{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host *,:host :after,:host :before{box-sizing:border-box}:host([stretch]){flex:1 1 auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout-cell{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host :after,:host :before,chassis-layout-cell *{box-sizing:border-box}chassis-layout-cell[stretch]{flex:1 1 auto}chassis-layout-cell[orientation=horizontal]{flex-direction:row}chassis-layout-cell[orientation=vertical]{flex-direction:column}</style><slot></slot></template>');var u=n.querySelector("template");"content"in u?e.shadowRoot.appendChild(u.content.cloneNode(!0)):u.childNodes.forEach(function(t){e.shadowRoot.appendChild(t.cloneNode(!0))}),u=null,e.crypto=null;try{e.crypto=crypto}catch(t){e.crypto=msCrypto}return t.set((0,c.default)((0,c.default)(e)),{addPrivateProps:function(o){for(var n in o)t.get((0,c.default)((0,c.default)(e)))[n]=o[n]},addReadOnlyProp:function(o){Object.defineProperty((0,c.default)((0,c.default)(e)),o,t.get((0,c.default)((0,c.default)(e))).readonlyProperty(o))},addReadOnlyProps:function(o){o.forEach(function(o){return t.get((0,c.default)((0,c.default)(e))).addReadOnlyProp(o)})},generateGuid:function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,o=([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,function(t){return(t^e.crypto.getRandomValues(new Uint8Array(1))[0]&15>>t/4).toString(16)});return t?"".concat(t,"_").concat(o):o},getBooleanPropertyValue:function(t){return e.hasAttribute(t)&&"false"!==e.getAttribute(t)},handleAttributeChange:function(o,n){t.get((0,c.default)((0,c.default)(e))).sourceEl&&(e.setAttribute(o,n),t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=n)},handleBooleanAttributeChange:function(o,n){if(t.get((0,c.default)((0,c.default)(e))).sourceEl){return["true","false","",null].includes(n)?"false"===n&&e.hasAttribute(o)?(e.removeAttribute(o),void(t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=!1)):void(t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=e.hasAttribute(o)):(console.error("<".concat(e.localName,'> "').concat(o,'" attribute expected boolean but received "').concat(n,'"')),e.removeAttribute(o),void(t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=!1))}},handleBooleanPropertyChange:function(o,n){if(!n)return e.removeAttribute(o),void(t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=!1);e.hasAttribute(o)&&"true"===e.getAttribute(o)||(e.setAttribute(o,""),t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=!0)},handlePropertyChange:function(o,n){t.get((0,c.default)((0,c.default)(e))).sourceEl[o]=n,e.hasAttribute(o)&&e.getAttribute(o)===n||e.setAttribute(o,n)},readonlyProperty:function(o){return{get:function(){return t.get((0,c.default)((0,c.default)(e))).sourceEl[o]},set:function(){return t.get((0,c.default)((0,c.default)(e))).throw("readonly",{name:o})}}},throw:function(t,e){var o="ERROR <chassis-layout-cell> ";switch(t){case"readonly":o+='Cannot set read-only property "'.concat(e.name,'".');break;default:o=o.trim()}console.error(o)}}),t.set((0,c.default)((0,c.default)(e)),{children:[],styleSheet:null,sizeRule:null,size:null}),e}return(0,a.default)(o,e),(0,u.default)(o,[{key:"connectedCallback",value:function(){var e=this;setTimeout(function(){t.get(e).styleSheet=e.shadowRoot.styleSheets[0];var o=t.get(e).styleSheet.cssRules.length;t.get(e).styleSheet.insertRule(":host([size]) {}",o),t.get(e).sizeRule=t.get(e).styleSheet.cssRules[o],e.hasAttribute("size")&&(e.size=e.getAttribute("size"))},0)}},{key:"attributeChangedCallback",value:function(e,o,n){if(e=e.toLowerCase(),n!==o)switch(e){case"size":t.get(this).size!==n&&(this.size=n);break;default:return}}},{key:"size",get:function(){return this.hasAttribute("size")?this.getAttribute("size"):"auto"},set:function(e){t.get(this).sizeRule&&(t.get(this).size=e,t.get(this).sizeRule.style.setProperty("flex-basis",e),this.setAttribute("size",e))}}],[{key:"observedAttributes",get:function(){return["size"]}}]),o}((0,f.default)(HTMLElement))}())},function(t,e){t.exports=function(t){return t&&t.__esModule?t:{default:t}}},function(t,e){t.exports=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}},function(t,e){function o(t,e){for(var o=0;o<e.length;o++){var n=e[o];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}t.exports=function(t,e,n){return e&&o(t.prototype,e),n&&o(t,n),t}},function(t,e,o){var n=o(8),r=o(1);t.exports=function(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?r(t):e}},function(t,e){function o(t){return(o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function n(e){return"function"==typeof Symbol&&"symbol"===o(Symbol.iterator)?t.exports=n=function(t){return o(t)}:t.exports=n=function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":o(t)},n(e)}t.exports=n},function(t,e,o){var n=o(0);t.exports=function(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&n(t,e)}},function(t,e,o){var n=o(2),r=o(0),u=o(11),i=o(12);function l(e){var o="function"==typeof Map?new Map:void 0;return t.exports=l=function(t){if(null===t||!u(t))return t;if("function"!=typeof t)throw new TypeError("Super expression must either be null or a function");if(void 0!==o){if(o.has(t))return o.get(t);o.set(t,e)}function e(){return i(t,arguments,n(this).constructor)}return e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),r(e,t)},l(e)}t.exports=l},function(t,e){t.exports=function(t){return-1!==Function.toString.call(t).indexOf("[native code]")}},function(t,e,o){var n=o(0);function r(e,o,u){return!function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],function(){})),!0}catch(t){return!1}}()?t.exports=r=function(t,e,o){var r=[null];r.push.apply(r,e);var u=new(Function.bind.apply(t,r));return o&&n(u,o.prototype),u}:t.exports=r=Reflect.construct,r.apply(null,arguments)}t.exports=r}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+module.exports = _setPrototypeOf;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(4);
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(6));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(7));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(2));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(9));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(1));
+
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(10));
+
+customElements.define('chassis-layout-cell', function () {
+  var _ = new WeakMap();
+
+  return (
+    /*#__PURE__*/
+    function (_HTMLElement) {
+      (0, _inherits2.default)(_class, _HTMLElement);
+
+      function _class() {
+        var _this;
+
+        (0, _classCallCheck2.default)(this, _class);
+        _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this));
+        _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
+
+        _this.attachShadow({
+          mode: 'open'
+        });
+
+        var container = document.createElement('div');
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host *,:host :after,:host :before{box-sizing:border-box}:host([stretch]){flex:1 1 auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout-cell{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host :after,:host :before,chassis-layout-cell *{box-sizing:border-box}chassis-layout-cell[stretch]{flex:1 1 auto}chassis-layout-cell[orientation=horizontal]{flex-direction:row}chassis-layout-cell[orientation=vertical]{flex-direction:column}</style><slot></slot></template>");
+        var template = container.querySelector('template');
+
+        if ('content' in template) {
+          _this.shadowRoot.appendChild(template.content.cloneNode(true));
+        } else {
+          template.childNodes.forEach(function (child) {
+            _this.shadowRoot.appendChild(child.cloneNode(true));
+          });
+        }
+
+        template = null;
+        _this.crypto = null;
+
+        try {
+          _this.crypto = crypto;
+        } catch (e) {
+          _this.crypto = msCrypto;
+        }
+
+        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+          addPrivateProps: function addPrivateProps(props) {
+            for (var prop in props) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = props[prop];
+            }
+          },
+          addReadOnlyProp: function addReadOnlyProp(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).readonlyProperty(prop));
+          },
+          addReadOnlyProps: function addReadOnlyProps(props) {
+            props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProp(prop);
+            });
+          },
+          generateGuid: function generateGuid() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+            });
+            return prefix ? "".concat(prefix, "_").concat(id) : id;
+          },
+          getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
+            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+          },
+          handleAttributeChange: function handleAttributeChange(attr, val) {
+            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
+              return;
+            }
+
+            _this.setAttribute(attr, val);
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = val;
+          },
+          handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
+              return;
+            }
+
+            var acceptableValues = ['true', 'false', '', null];
+
+            if (!acceptableValues.includes(value)) {
+              console.error("<".concat(_this.localName, "> \"").concat(attr, "\" attribute expected boolean but received \"").concat(value, "\""));
+
+              _this.removeAttribute(attr);
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
+              return;
+            }
+
+            if (value === 'false' && _this.hasAttribute(attr)) {
+              _this.removeAttribute(attr);
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
+              return;
+            }
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = _this.hasAttribute(attr);
+          },
+          handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
+            if (!bool) {
+              _this.removeAttribute(prop);
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = false;
+              return;
+            }
+
+            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
+              _this.setAttribute(prop, '');
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = true;
+            }
+          },
+          handlePropertyChange: function handlePropertyChange(prop, val) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = val;
+
+            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+              _this.setAttribute(prop, val);
+            }
+          },
+          readonlyProperty: function readonlyProperty(name) {
+            return {
+              get: function get() {
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[name];
+              },
+              set: function set() {
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).throw('readonly', {
+                  name: name
+                });
+              }
+            };
+          },
+          throw: function _throw(type, vars) {
+            var message = 'ERROR <chassis-layout-cell> ';
+
+            switch (type) {
+              case 'readonly':
+                message += "Cannot set read-only property \"".concat(vars.name, "\".");
+                break;
+
+              default:
+                message = message.trim();
+            }
+
+            console.error(message);
+          }
+        });
+
+        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+          children: [],
+          styleSheet: null,
+          sizeRule: null,
+          size: null
+        });
+
+        return _this;
+      }
+
+      (0, _createClass2.default)(_class, [{
+        key: "connectedCallback",
+        value: function connectedCallback() {
+          var _this2 = this;
+
+          setTimeout(function () {
+            _.get(_this2).styleSheet = _this2.shadowRoot.styleSheets[0];
+
+            var sheetLength = _.get(_this2).styleSheet.cssRules.length;
+
+            _.get(_this2).styleSheet.insertRule(':host([size]) {}', sheetLength);
+
+            _.get(_this2).sizeRule = _.get(_this2).styleSheet.cssRules[sheetLength];
+
+            if (_this2.hasAttribute('size')) {
+              _this2.size = _this2.getAttribute('size');
+            }
+          }, 0);
+        }
+      }, {
+        key: "attributeChangedCallback",
+        value: function attributeChangedCallback(attr, oldValue, newValue) {
+          attr = attr.toLowerCase();
+
+          if (newValue === oldValue) {
+            return;
+          }
+
+          switch (attr) {
+            case 'size':
+              if (_.get(this).size !== newValue) {
+                this.size = newValue;
+              }
+
+              break;
+
+            default:
+              return;
+          }
+        }
+      }, {
+        key: "size",
+        get: function get() {
+          return this.hasAttribute('size') ? this.getAttribute('size') : 'auto';
+        },
+        set: function set(val) {
+          if (!_.get(this).sizeRule) {
+            return;
+          }
+
+          _.get(this).size = val;
+
+          _.get(this).sizeRule.style.setProperty('flex-basis', val);
+
+          this.setAttribute('size', val);
+        }
+      }], [{
+        key: "observedAttributes",
+        get: function get() {
+          return ['size'];
+        }
+      }]);
+      return _class;
+    }((0, _wrapNativeSuper2.default)(HTMLElement))
+  );
+}());
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+module.exports = _classCallCheck;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+module.exports = _createClass;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(8);
+
+var assertThisInitialized = __webpack_require__(1);
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return assertThisInitialized(self);
+}
+
+module.exports = _possibleConstructorReturn;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) setPrototypeOf(subClass, superClass);
+}
+
+module.exports = _inherits;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(2);
+
+var setPrototypeOf = __webpack_require__(0);
+
+var isNativeFunction = __webpack_require__(11);
+
+var construct = __webpack_require__(12);
+
+function _wrapNativeSuper(Class) {
+  var _cache = typeof Map === "function" ? new Map() : undefined;
+
+  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
+    if (Class === null || !isNativeFunction(Class)) return Class;
+
+    if (typeof Class !== "function") {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    if (typeof _cache !== "undefined") {
+      if (_cache.has(Class)) return _cache.get(Class);
+
+      _cache.set(Class, Wrapper);
+    }
+
+    function Wrapper() {
+      return construct(Class, arguments, getPrototypeOf(this).constructor);
+    }
+
+    Wrapper.prototype = Object.create(Class.prototype, {
+      constructor: {
+        value: Wrapper,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    return setPrototypeOf(Wrapper, Class);
+  };
+
+  return _wrapNativeSuper(Class);
+}
+
+module.exports = _wrapNativeSuper;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+function _isNativeFunction(fn) {
+  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+}
+
+module.exports = _isNativeFunction;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (isNativeReflectConstruct()) {
+    module.exports = _construct = Reflect.construct;
+  } else {
+    module.exports = _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+module.exports = _construct;
+
+/***/ })
+/******/ ]);
 //# sourceMappingURL=chassis-layout-cell-es5-bundle.js.map

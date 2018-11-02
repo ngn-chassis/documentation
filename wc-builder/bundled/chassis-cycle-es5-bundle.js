@@ -1,2 +1,969 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var i=t[r]={i:r,l:!1,exports:{}};return e[r].call(i.exports,i,i.exports,n),i.l=!0,i.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var i in e)n.d(r,i,function(t){return e[t]}.bind(null,i));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=4)}([function(e,t){function n(t,r){return e.exports=n=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e},n(t,r)}e.exports=n},function(e,t){function n(e){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function r(t){return"function"==typeof Symbol&&"symbol"===n(Symbol.iterator)?e.exports=r=function(e){return n(e)}:e.exports=r=function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":n(e)},r(t)}e.exports=r},function(e,t){e.exports=function(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}},function(e,t){function n(t){return e.exports=n=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)},n(t)}e.exports=n},function(e,t,n){"use strict";var r=n(5),i=r(n(1)),o=r(n(6)),a=r(n(7)),c=r(n(8)),u=r(n(3)),l=r(n(9)),s=r(n(2)),d=r(n(10));customElements.define("chassis-cycle",function(){var e=new WeakMap;return function(t){function n(){var t;(0,o.default)(this,n),(t=(0,c.default)(this,(0,u.default)(n).call(this))).keySource="key"in KeyboardEvent.prototype?"key":"keyIdentifier"in KeyboardEvent.prototype?"keyIdentifier":"keyCode",t.attachShadow({mode:"open"});var r=document.createElement("div");r.insertAdjacentHTML("afterbegin",'<template><style>@charset UTF-8; @charset "UTF-8";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>');var i=r.querySelector("template");"content"in i?t.shadowRoot.appendChild(i.content.cloneNode(!0)):i.childNodes.forEach(function(e){t.shadowRoot.appendChild(e.cloneNode(!0))}),i=null,t.crypto=null;try{t.crypto=crypto}catch(e){t.crypto=msCrypto}return e.set((0,s.default)((0,s.default)(t)),{addPrivateProps:function(n){for(var r in n)e.get((0,s.default)((0,s.default)(t)))[r]=n[r]},addReadOnlyProp:function(n){Object.defineProperty((0,s.default)((0,s.default)(t)),n,e.get((0,s.default)((0,s.default)(t))).readonlyProperty(n))},addReadOnlyProps:function(n){n.forEach(function(n){return e.get((0,s.default)((0,s.default)(t))).addReadOnlyProp(n)})},generateGuid:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:null,n=([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,function(e){return(e^t.crypto.getRandomValues(new Uint8Array(1))[0]&15>>e/4).toString(16)});return e?"".concat(e,"_").concat(n):n},getBooleanPropertyValue:function(e){return t.hasAttribute(e)&&"false"!==t.getAttribute(e)},handleAttributeChange:function(n,r){e.get((0,s.default)((0,s.default)(t))).sourceEl&&(t.setAttribute(n,r),e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=r)},handleBooleanAttributeChange:function(n,r){if(e.get((0,s.default)((0,s.default)(t))).sourceEl){return["true","false","",null].includes(r)?"false"===r&&t.hasAttribute(n)?(t.removeAttribute(n),void(e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=!1)):void(e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=t.hasAttribute(n)):(console.error("<".concat(t.localName,'> "').concat(n,'" attribute expected boolean but received "').concat(r,'"')),t.removeAttribute(n),void(e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=!1))}},handleBooleanPropertyChange:function(n,r){if(!r)return t.removeAttribute(n),void(e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=!1);t.hasAttribute(n)&&"true"===t.getAttribute(n)||(t.setAttribute(n,""),e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=!0)},handlePropertyChange:function(n,r){e.get((0,s.default)((0,s.default)(t))).sourceEl[n]=r,t.hasAttribute(n)&&t.getAttribute(n)===r||t.setAttribute(n,r)},readonlyProperty:function(n){return{get:function(){return e.get((0,s.default)((0,s.default)(t))).sourceEl[n]},set:function(){return e.get((0,s.default)((0,s.default)(t))).throw("readonly",{name:n})}}},throw:function(e,t){var n="ERROR <chassis-cycle> ";switch(e){case"readonly":n+='Cannot set read-only property "'.concat(t.name,'".');break;default:n=n.trim()}console.error(n)}}),e.get((0,s.default)((0,s.default)(t))).addPrivateProps({dummyEl:document.createElement("div"),middleWare:{beforeChange:null,afterChange:null},getChildIndex:function(e){return[].slice.call(t.children).indexOf(e)},getNextActiveChild:function(n){var r=e.get((0,s.default)((0,s.default)(t))).getChildIndex(n);return{element:n,index:r,page:r+1}},hideChild:function(e){return e.removeAttribute("active","")},showChild:function(n){var r=e.get((0,s.default)((0,s.default)(t))),i=(r.getChildIndex,r.getNextActiveChild),o=r.hideChild,a=r.middleWare,c=t.active,u=i(n);t.dispatchEvent(new CustomEvent("page-change",{detail:{active:t.active,next:u}}));var l=function(){t.activeIndex>=0&&o(t.children.item(t.activeIndex||0)),n.setAttribute("active",""),t.dispatchEvent(new CustomEvent("page-changed",{detail:{previous:c,active:t.active}})),a.afterChange&&"function"==typeof a.afterChange&&a.afterChange(c,t.active)};a.beforeChange&&"function"==typeof a.beforeChange?a.beforeChange(t.active,u,l):l()},showChildByIndex:function(n){t.activeIndex===n||n>=t.children.length||n<0||e.get((0,s.default)((0,s.default)(t))).showChild(t.children.item(n))},showChildBySelector:function(n){var r=t.querySelectorAll(n);r.length&&(r.length>1&&console.warn('<chassis-cycle> found multiple nodes matching "'.concat(n,'". Displaying first result...')),e.get((0,s.default)((0,s.default)(t))).showChild(r.item(0)))},replaceDeprecatedAttributes:function(n){n.hasAttribute("selected")&&(console.warn("<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead."),n.removeAttribute("selected"),e.get((0,s.default)((0,s.default)(t))).showChild(n))}}),t}return(0,l.default)(n,t),(0,a.default)(n,[{key:"connectedCallback",value:function(){var t=this;new MutationObserver(function(n){n.forEach(function(n){var r=n.addedNodes,i=n.removedNodes;switch(n.type){case"childList":if(i.length>0&&!t.activeElement)return t.previous();if(0===r.length||r.item(0).nodeType!==Node.ELEMENT_NODE)return;var o=r.item(0);if(o.nodeType!==Node.ELEMENT_NODE)return;e.get(t).replaceDeprecatedAttributes(o);break;default:return}})}).observe(this,{attributes:!1,childList:!0,characterData:!1}),setTimeout(function(){for(var n in t.children)if(t.children.hasOwnProperty(n)){var r=t.children.item(n);"object"===(0,i.default)(r)&&(e.get(t).replaceDeprecatedAttributes(r),r!==t.activeElement&&e.get(t).hideChild(r))}},0)}},{key:"hide",value:function(t){console.warn('<chassis-cycle> "hide()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.'),e.get(this).hideChild(t)}},{key:"hideActive",value:function(){console.warn('<chassis-cycle> "hideActive()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.'),e.get(this).hideChild(this.activeElement)}},{key:"hideAll",value:function(){for(var t in this.children)if(this.children.hasOwnProperty(t)){var n=this.children.item(t);"object"===(0,i.default)(n)&&e.get(this).hideChild(n)}}},{key:"indexOf",value:function(t){return e.get(this).getChildIndex(t)}},{key:"pageNumberOf",value:function(t){return e.get(this).getChildIndex(t)+1}},{key:"insertAdjacentHTML",value:function(t,n){switch(t){case"beforebegin":case"afterend":return HTMLElement.prototype.insertAdjacentHTML.call(this,t,n);default:e.get(this).dummyEl.insertAdjacentHTML(t,n);for(var r=e.get(this).dummyEl.children.item(0);e.get(this).dummyEl.firstChild;)e.get(this).dummyEl.removeChild(e.get(this).dummyEl.firstChild);return"beforeend"===t?this.appendChild(r):this.insertBefore(r,this.firstElementChild)}}},{key:"insertAdjacentElement",value:function(e,t){switch(e){case"beforeend":return this.appendChild(t);case"afterbegin":return this.insertBefore(t,this.firstElementChild);default:return HTMLElement.prototype.insertAdjacentElement.call(this,e,t)}}},{key:"first",value:function(){this.show(1)}},{key:"last",value:function(){this.show(this.children.length)}},{key:"next",value:function(e){this.show(this.activePage===this.children.length?1:this.activePage+1),e&&e(this.activeElement)}},{key:"previous",value:function(e){this.show(1===this.activePage?this.children.length:this.activePage-1),e&&e(this.activeElement)}},{key:"show",value:function(t){if(!t)return e.get(this).showChildByIndex(0);switch((0,i.default)(t).toLowerCase()){case"number":return e.get(this).showChildByIndex(t-1);case"string":return isNaN(parseInt(t))?e.get(this).showChildBySelector(t):e.get(this).showChildByIndex(parseInt(t)-1);default:return t instanceof HTMLElement?e.get(this).showChild(t):console.error('<chassis-cycle>: Invalid query "'.concat(t,'"'))}}},{key:"active",get:function(){return{element:this.activeElement,index:this.activeIndex,page:this.activePage}}},{key:"activeElement",get:function(){return null===this.activeIndex?null:this.children.item(this.activeIndex)}},{key:"activePage",get:function(){return this.activeIndex+1}},{key:"activeIndex",get:function(){for(var e in this.children)if(this.children.hasOwnProperty(e)){var t=this.children.item(e);if("object"===(0,i.default)(t)&&t.hasAttribute("active"))return parseInt(e)}return null}},{key:"selected",get:function(){return console.warn("<chassis-cycle> 'selected' property is deprecated. Please use 'activeElement' instead."),this.activeElement}},{key:"selectedIndex",get:function(){return console.warn("<chassis-cycle> 'selectedIndex' property is deprecated. Please use 'activeIndex' for zero-based indexing or 'activePage' for 1-based indexing instead."),this.activePage}},{key:"beforeChange",set:function(t){e.get(this).middleWare.beforeChange=t.bind(this)}},{key:"afterChange",set:function(t){e.get(this).middleWare.afterChange=t.bind(this)}}],[{key:"observedAttributes",get:function(){return["mode"]}}]),n}((0,d.default)(HTMLElement))}())},function(e,t){e.exports=function(e){return e&&e.__esModule?e:{default:e}}},function(e,t){e.exports=function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}},function(e,t){function n(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}e.exports=function(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),e}},function(e,t,n){var r=n(1),i=n(2);e.exports=function(e,t){return!t||"object"!==r(t)&&"function"!=typeof t?i(e):t}},function(e,t,n){var r=n(0);e.exports=function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&r(e,t)}},function(e,t,n){var r=n(3),i=n(0),o=n(11),a=n(12);function c(t){var n="function"==typeof Map?new Map:void 0;return e.exports=c=function(e){if(null===e||!o(e))return e;if("function"!=typeof e)throw new TypeError("Super expression must either be null or a function");if(void 0!==n){if(n.has(e))return n.get(e);n.set(e,t)}function t(){return a(e,arguments,r(this).constructor)}return t.prototype=Object.create(e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),i(t,e)},c(t)}e.exports=c},function(e,t){e.exports=function(e){return-1!==Function.toString.call(e).indexOf("[native code]")}},function(e,t,n){var r=n(0);function i(t,n,o){return!function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],function(){})),!0}catch(e){return!1}}()?e.exports=i=function(e,t,n){var i=[null];i.push.apply(i,t);var o=new(Function.bind.apply(e,i));return n&&r(o,n.prototype),o}:e.exports=i=Reflect.construct,i.apply(null,arguments)}e.exports=i}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+module.exports = _setPrototypeOf;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(5);
+
+var _typeof2 = _interopRequireDefault(__webpack_require__(1));
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(6));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(7));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(8));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(3));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(9));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
+
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(10));
+
+customElements.define('chassis-cycle', function () {
+  var _ = new WeakMap();
+
+  return (
+    /*#__PURE__*/
+    function (_HTMLElement) {
+      (0, _inherits2.default)(_class, _HTMLElement);
+
+      function _class() {
+        var _this;
+
+        (0, _classCallCheck2.default)(this, _class);
+        _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this));
+        _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
+
+        _this.attachShadow({
+          mode: 'open'
+        });
+
+        var container = document.createElement('div');
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>");
+        var template = container.querySelector('template');
+
+        if ('content' in template) {
+          _this.shadowRoot.appendChild(template.content.cloneNode(true));
+        } else {
+          template.childNodes.forEach(function (child) {
+            _this.shadowRoot.appendChild(child.cloneNode(true));
+          });
+        }
+
+        template = null;
+        _this.crypto = null;
+
+        try {
+          _this.crypto = crypto;
+        } catch (e) {
+          _this.crypto = msCrypto;
+        }
+
+        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+          addPrivateProps: function addPrivateProps(props) {
+            for (var prop in props) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = props[prop];
+            }
+          },
+          addReadOnlyProp: function addReadOnlyProp(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).readonlyProperty(prop));
+          },
+          addReadOnlyProps: function addReadOnlyProps(props) {
+            props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProp(prop);
+            });
+          },
+          generateGuid: function generateGuid() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+            });
+            return prefix ? "".concat(prefix, "_").concat(id) : id;
+          },
+          getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
+            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+          },
+          handleAttributeChange: function handleAttributeChange(attr, val) {
+            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
+              return;
+            }
+
+            _this.setAttribute(attr, val);
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = val;
+          },
+          handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
+            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
+              return;
+            }
+
+            var acceptableValues = ['true', 'false', '', null];
+
+            if (!acceptableValues.includes(value)) {
+              console.error("<".concat(_this.localName, "> \"").concat(attr, "\" attribute expected boolean but received \"").concat(value, "\""));
+
+              _this.removeAttribute(attr);
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
+              return;
+            }
+
+            if (value === 'false' && _this.hasAttribute(attr)) {
+              _this.removeAttribute(attr);
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
+              return;
+            }
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = _this.hasAttribute(attr);
+          },
+          handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
+            if (!bool) {
+              _this.removeAttribute(prop);
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = false;
+              return;
+            }
+
+            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
+              _this.setAttribute(prop, '');
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = true;
+            }
+          },
+          handlePropertyChange: function handlePropertyChange(prop, val) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = val;
+
+            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
+              _this.setAttribute(prop, val);
+            }
+          },
+          readonlyProperty: function readonlyProperty(name) {
+            return {
+              get: function get() {
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[name];
+              },
+              set: function set() {
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).throw('readonly', {
+                  name: name
+                });
+              }
+            };
+          },
+          throw: function _throw(type, vars) {
+            var message = 'ERROR <chassis-cycle> ';
+
+            switch (type) {
+              case 'readonly':
+                message += "Cannot set read-only property \"".concat(vars.name, "\".");
+                break;
+
+              default:
+                message = message.trim();
+            }
+
+            console.error(message);
+          }
+        });
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProps({
+          dummyEl: document.createElement('div'),
+          middleWare: {
+            beforeChange: null,
+            afterChange: null
+          },
+          getChildIndex: function getChildIndex(child) {
+            return [].slice.call(_this.children).indexOf(child);
+          },
+          getNextActiveChild: function getNextActiveChild(child) {
+            var nextIndex = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getChildIndex(child);
+
+            return {
+              element: child,
+              index: nextIndex,
+              page: nextIndex + 1
+            };
+          },
+          hideChild: function hideChild(child) {
+            return child.removeAttribute('active', '');
+          },
+          showChild: function showChild(child) {
+            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+                getChildIndex = _$get.getChildIndex,
+                getNextActiveChild = _$get.getNextActiveChild,
+                hideChild = _$get.hideChild,
+                middleWare = _$get.middleWare;
+
+            var previous = _this.active;
+            var next = getNextActiveChild(child);
+
+            _this.dispatchEvent(new CustomEvent('page-change', {
+              detail: {
+                active: _this.active,
+                next: next
+              }
+            }));
+
+            var completeChange = function completeChange() {
+              if (_this.activeIndex >= 0) {
+                hideChild(_this.children.item(_this.activeIndex || 0));
+              }
+
+              child.setAttribute('active', '');
+
+              _this.dispatchEvent(new CustomEvent('page-changed', {
+                detail: {
+                  previous: previous,
+                  active: _this.active
+                }
+              }));
+
+              if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
+                middleWare.afterChange(previous, _this.active);
+              }
+            };
+
+            if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
+              middleWare.beforeChange(_this.active, next, completeChange);
+            } else {
+              completeChange();
+            }
+          },
+          showChildByIndex: function showChildByIndex(index) {
+            if (_this.activeIndex === index || index >= _this.children.length || index < 0) {
+              return;
+            }
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(_this.children.item(index));
+          },
+          showChildBySelector: function showChildBySelector(query) {
+            var nodes = _this.querySelectorAll(query);
+
+            if (!nodes.length) {
+              return;
+            }
+
+            if (nodes.length > 1) {
+              console.warn("<chassis-cycle> found multiple nodes matching \"".concat(query, "\". Displaying first result..."));
+            }
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(nodes.item(0));
+          },
+          replaceDeprecatedAttributes: function replaceDeprecatedAttributes(child) {
+            if (child.hasAttribute('selected')) {
+              console.warn("<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.");
+              child.removeAttribute('selected');
+
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(child);
+            }
+          }
+        });
+
+        return _this;
+      }
+
+      (0, _createClass2.default)(_class, [{
+        key: "connectedCallback",
+        value: function connectedCallback() {
+          var _this2 = this;
+
+          var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+              var addedNodes = mutation.addedNodes,
+                  removedNodes = mutation.removedNodes,
+                  type = mutation.type;
+
+              switch (type) {
+                case 'childList':
+                  if (removedNodes.length > 0 && !_this2.activeElement) {
+                    return _this2.previous();
+                  }
+
+                  if (addedNodes.length === 0 || addedNodes.item(0).nodeType !== Node.ELEMENT_NODE) {
+                    return;
+                  }
+
+                  var node = addedNodes.item(0);
+
+                  if (node.nodeType !== Node.ELEMENT_NODE) {
+                    return;
+                  }
+
+                  _.get(_this2).replaceDeprecatedAttributes(node);
+
+                  break;
+                // return node.hasAttribute('active') ? _.get(this).showChild(node) : _.get(this).hideChild(node)
+
+                default:
+                  return;
+              }
+            });
+          });
+          observer.observe(this, {
+            attributes: false,
+            childList: true,
+            characterData: false
+          });
+          setTimeout(function () {
+            for (var index in _this2.children) {
+              if (!_this2.children.hasOwnProperty(index)) {
+                continue;
+              }
+
+              var child = _this2.children.item(index);
+
+              if ((0, _typeof2.default)(child) !== 'object') {
+                continue;
+              }
+
+              _.get(_this2).replaceDeprecatedAttributes(child);
+
+              if (child !== _this2.activeElement) {
+                _.get(_this2).hideChild(child);
+              }
+            }
+          }, 0);
+        }
+        /**
+         * @method hide
+         * Deactivate a page.
+         * @deprecated
+         */
+
+      }, {
+        key: "hide",
+        value: function hide(child) {
+          console.warn("<chassis-cycle> \"hide()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage active/inactive pages.");
+
+          _.get(this).hideChild(child);
+        }
+        /**
+         * @method hideActive
+         * Deactivate the currently active page.
+         * @deprecated
+         */
+
+      }, {
+        key: "hideActive",
+        value: function hideActive() {
+          console.warn("<chassis-cycle> \"hideActive()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage active/inactive pages.");
+
+          _.get(this).hideChild(this.activeElement);
+        }
+        /**
+         * @method hideAll
+         * Deactivate all pages.
+         */
+
+      }, {
+        key: "hideAll",
+        value: function hideAll() {
+          for (var index in this.children) {
+            if (!this.children.hasOwnProperty(index)) {
+              continue;
+            }
+
+            var child = this.children.item(index);
+
+            if ((0, _typeof2.default)(child) !== 'object') {
+              continue;
+            }
+
+            _.get(this).hideChild(child);
+          }
+        }
+      }, {
+        key: "indexOf",
+        value: function indexOf(child) {
+          return _.get(this).getChildIndex(child);
+        }
+      }, {
+        key: "pageNumberOf",
+        value: function pageNumberOf(child) {
+          return _.get(this).getChildIndex(child) + 1;
+        }
+        /**
+         * @method insertAdjacentHTML
+         * Override this.prototype.insertAdjacentHTML and replace with
+         * appendChild() or insertBefore()
+         * This is done because of bugs with insertAdjacentHTML() on web components
+         * in Firefox and IE11.
+         * @override
+         */
+
+      }, {
+        key: "insertAdjacentHTML",
+        value: function insertAdjacentHTML(position, text) {
+          switch (position) {
+            case 'beforebegin':
+            case 'afterend':
+              return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text);
+
+            default:
+              _.get(this).dummyEl.insertAdjacentHTML(position, text);
+
+              var node = _.get(this).dummyEl.children.item(0);
+
+              while (_.get(this).dummyEl.firstChild) {
+                _.get(this).dummyEl.removeChild(_.get(this).dummyEl.firstChild);
+              }
+
+              return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild);
+          }
+        }
+        /**
+         * @method insertAdjacentElement
+         * Override this.prototype.insertAdjacentElement and replace with
+         * appendChild() or insertBefore()
+         * This is done because of bugs with insertAdjacentElement() on web components
+         * in Firefox and IE11.
+         * @override
+         */
+
+      }, {
+        key: "insertAdjacentElement",
+        value: function insertAdjacentElement(position, node) {
+          switch (position) {
+            case 'beforeend':
+              return this.appendChild(node);
+
+            case 'afterbegin':
+              return this.insertBefore(node, this.firstElementChild);
+
+            default:
+              return HTMLElement.prototype.insertAdjacentElement.call(this, position, node);
+          }
+        }
+        /**
+         * @method first
+         * A helper method to display the first child element.
+         */
+
+      }, {
+        key: "first",
+        value: function first() {
+          this.show(1);
+        }
+        /**
+         * @method last
+         * A helper method to display the last child element.
+         */
+
+      }, {
+        key: "last",
+        value: function last() {
+          this.show(this.children.length);
+        }
+        /**
+         * @method next
+         * Deactivate the currently active child element and activate the one
+         * immediately adjacent to it.
+         * @param {function} callback
+         * Executed when the operation is complete.
+         */
+
+      }, {
+        key: "next",
+        value: function next(callback) {
+          this.show(this.activePage === this.children.length ? 1 : this.activePage + 1);
+          callback && callback(this.activeElement);
+        }
+        /**
+         * @method previous
+         * Deactivate the currently active child element and activate the one
+         * immediately preceding it.
+         * @param {function} callback
+         * Executed when the operation is complete.
+         */
+
+      }, {
+        key: "previous",
+        value: function previous(callback) {
+          this.show(this.activePage === 1 ? this.children.length : this.activePage - 1);
+          callback && callback(this.activeElement);
+        }
+        /**
+         * @method show
+         * Deactive the currently active element activate a different one.
+         * @param {number | string | HTMLElement} query
+         * 1-based index,
+         * Element selector string, or
+         * HTMLElement to make active
+         */
+
+      }, {
+        key: "show",
+        value: function show(query) {
+          if (!query) {
+            return _.get(this).showChildByIndex(0);
+          }
+
+          switch ((0, _typeof2.default)(query).toLowerCase()) {
+            case 'number':
+              return _.get(this).showChildByIndex(query - 1);
+
+            case 'string':
+              return isNaN(parseInt(query)) ? _.get(this).showChildBySelector(query) : _.get(this).showChildByIndex(parseInt(query) - 1);
+
+            default:
+              return query instanceof HTMLElement ? _.get(this).showChild(query) : console.error("<chassis-cycle>: Invalid query \"".concat(query, "\""));
+          }
+        }
+      }, {
+        key: "active",
+
+        /**
+         * @typedef {Object} ActiveElementProperties
+         * @property {HTMLElement} element The currently active page.
+         * @property {Number} index The zero-based index of the currently active page.
+         * @property {Number} page The 1-based index of the currently active page.
+         */
+
+        /**
+         * @property active
+         * Information about the currently active page.
+         * @return {ActiveElementProperties}
+         */
+        get: function get() {
+          return {
+            element: this.activeElement,
+            index: this.activeIndex,
+            page: this.activePage
+          };
+        }
+        /**
+         * @property activeElement
+         * The currently active page.
+         * @return {HTMLElement}
+         */
+
+      }, {
+        key: "activeElement",
+        get: function get() {
+          return this.activeIndex === null ? null : this.children.item(this.activeIndex);
+        }
+        /**
+         * @property activePage
+         * The 1-based index of the currently active page.
+         * @return {Number}
+         */
+
+      }, {
+        key: "activePage",
+        get: function get() {
+          return this.activeIndex + 1;
+        }
+        /**
+         * @property activeIndex
+         * The zero-based index of the currently active page.
+         * @return {Number}
+         */
+
+      }, {
+        key: "activeIndex",
+        get: function get() {
+          for (var index in this.children) {
+            if (!this.children.hasOwnProperty(index)) {
+              continue;
+            }
+
+            var child = this.children.item(index);
+
+            if ((0, _typeof2.default)(child) !== 'object') {
+              continue;
+            }
+
+            if (child.hasAttribute('active')) {
+              return parseInt(index);
+            }
+          }
+
+          return null;
+        }
+        /**
+         * @property selected
+         * The current active section.
+         * @return {HTMLElement}
+         * @deprecated
+         */
+
+      }, {
+        key: "selected",
+        get: function get() {
+          console.warn("<chassis-cycle> 'selected' property is deprecated. Please use 'activeElement' instead.");
+          return this.activeElement;
+        }
+        /**
+         * @property selectedIndex
+         * The index number of the current active section.
+         * @return {Number}
+         * @deprecated
+         */
+
+      }, {
+        key: "selectedIndex",
+        get: function get() {
+          console.warn("<chassis-cycle> 'selectedIndex' property is deprecated. Please use 'activeIndex' for zero-based indexing or 'activePage' for 1-based indexing instead.");
+          return this.activePage;
+        }
+      }, {
+        key: "beforeChange",
+        set: function set(func) {
+          _.get(this).middleWare.beforeChange = func.bind(this);
+        }
+      }, {
+        key: "afterChange",
+        set: function set(func) {
+          _.get(this).middleWare.afterChange = func.bind(this);
+        }
+      }], [{
+        key: "observedAttributes",
+        get: function get() {
+          return ['mode'];
+        }
+      }]);
+      return _class;
+    }((0, _wrapNativeSuper2.default)(HTMLElement))
+  );
+}());
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+module.exports = _classCallCheck;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+module.exports = _createClass;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(1);
+
+var assertThisInitialized = __webpack_require__(2);
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return assertThisInitialized(self);
+}
+
+module.exports = _possibleConstructorReturn;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) setPrototypeOf(subClass, superClass);
+}
+
+module.exports = _inherits;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(3);
+
+var setPrototypeOf = __webpack_require__(0);
+
+var isNativeFunction = __webpack_require__(11);
+
+var construct = __webpack_require__(12);
+
+function _wrapNativeSuper(Class) {
+  var _cache = typeof Map === "function" ? new Map() : undefined;
+
+  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
+    if (Class === null || !isNativeFunction(Class)) return Class;
+
+    if (typeof Class !== "function") {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    if (typeof _cache !== "undefined") {
+      if (_cache.has(Class)) return _cache.get(Class);
+
+      _cache.set(Class, Wrapper);
+    }
+
+    function Wrapper() {
+      return construct(Class, arguments, getPrototypeOf(this).constructor);
+    }
+
+    Wrapper.prototype = Object.create(Class.prototype, {
+      constructor: {
+        value: Wrapper,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    return setPrototypeOf(Wrapper, Class);
+  };
+
+  return _wrapNativeSuper(Class);
+}
+
+module.exports = _wrapNativeSuper;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+function _isNativeFunction(fn) {
+  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+}
+
+module.exports = _isNativeFunction;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (isNativeReflectConstruct()) {
+    module.exports = _construct = Reflect.construct;
+  } else {
+    module.exports = _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+module.exports = _construct;
+
+/***/ })
+/******/ ]);
 //# sourceMappingURL=chassis-cycle-es5-bundle.js.map

@@ -11,15 +11,30 @@ class ChassisOptions extends HTMLElement {
       let _p = new WeakMap()
 
       return class ChassisOptionObject {
-        constructor (id, sourceElement, displayElement, form) {
-          this.id = id
-          this.key = displayElement.key
+        constructor (parent, key, sourceElement, displayElement) {
+          this.key = key
+          this.form = parent.form
+          this.defaultSelected = sourceElement.selected
 
-          this.displayElement = displayElement
           this.sourceElement = sourceElement
 
-          this.defaultSelected = sourceElement.selected
-          this.form = form
+          this.displayElement = displayElement
+          this.displayElement.parent = parent
+          this.displayElement.defaultSelected = sourceElement.selected
+          this.displayElement.innerHTML = sourceElement.innerHTML
+          this.displayElement.addEventListener('mouseup', evt => {
+            parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey)
+          })
+
+          // Add additional attributes
+          for (let attr of sourceElement.attributes) {
+            if (typeof attr.value === 'boolean') {
+              attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name)
+              continue
+            }
+
+            this.displayElement.setAttribute(attr.name, attr.value)
+          }
 
           _p.set(this, {
             attributes: {
@@ -31,18 +46,6 @@ class ChassisOptions extends HTMLElement {
               text: sourceElement.text.trim()
             }
           })
-
-          this.displayElement.innerHTML = this.sourceElement.innerHTML
-
-          // Add additional attributes
-          for (let attr of sourceElement.attributes) {
-            if (typeof attr.value === 'boolean') {
-              attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name)
-              continue
-            }
-
-            this.displayElement.setAttribute(attr.name, attr.value)
-          }
         }
 
         get disabled () {
@@ -55,6 +58,14 @@ class ChassisOptions extends HTMLElement {
 
         get index () {
           return this.sourceElement.index
+        }
+
+        get id () {
+          return _p.get(this).attributes.id
+        }
+
+        set id (id) {
+          this.setAttr('id', id)
         }
 
         get selected () {
@@ -114,23 +125,7 @@ class ChassisOptions extends HTMLElement {
         return
       }
 
-      return new (_.get(this).optionConstructor())(_.get(this).generateGuid(), sourceElement, _.get(this).generateDisplayOptionElement(), this.form)
-    }
-
-    _.get(this).generateDisplayOptionElement = () => {
-      let chassisOption = document.createElement('chassis-option')
-      chassisOption.key = _.get(this).generateGuid()
-      chassisOption.parent = this
-
-      chassisOption.addEventListener('mouseup', evt => {
-        _.get(this).selectByKey(chassisOption.key, this.parent.multiple, {
-          shift: evt.shiftKey,
-          ctrl: evt.ctrlKey,
-          cmd: evt.metaKey
-        })
-      })
-
-      return chassisOption
+      return new (_.get(this).optionConstructor())(this, _.get(this).generateGuid(), sourceElement, document.createElement('chassis-option'))
     }
 
     _.get(this).generateSourceOptionElement = option => {
@@ -180,19 +175,6 @@ class ChassisOptions extends HTMLElement {
       }
 
       return surrogate
-    }
-
-    _.get(this).getOptionByKey = key => {
-      let option
-
-      for (let i = 0; i < this.options.length; i++) {
-        if (this.options[i].key === key) {
-          option = this.options[i]
-          break
-        }
-      }
-
-      return option
     }
 
     _.get(this).ChassisHTMLCollection = function () {
@@ -267,7 +249,7 @@ class ChassisOptions extends HTMLElement {
       return ChassisHTMLOptionsCollection
     }
 
-    _.get(this).selectByKey = (key, multiple = false, keys = {}) => {
+    _.get(this).selectByKey = (key, ...keys) => {
       let option = _.get(this).getOptionByKey(key)
 
       if (!option) {
@@ -275,10 +257,10 @@ class ChassisOptions extends HTMLElement {
         return this.deselectAll()
       }
 
-      this.select(option, multiple, keys)
+      this.select(option, ...keys)
     }
 
-    _.get(this).selectByIndex = (index, multiple = false, keys = {}) => {
+    _.get(this).selectByIndex = (index, ...keys) => {
       let option = this.options[index]
 
       if (!option) {
@@ -286,15 +268,29 @@ class ChassisOptions extends HTMLElement {
           return console.error(`No option at index ${index}`)
         }
 
-        return this.deselectAll()
+        return
       }
 
-      this.select(option, multiple, keys)
+      this.select(option, ...keys)
     }
 
-    // this.addEventListener('click', evt => {
-    //   console.log('chassis-options');
-    // })
+    _.get(this).selectByString = (string, ...keys) => {
+      let query
+
+      for (let option of this.options) {
+        if (option.key === string || option.id === string) {
+          query = option
+          break
+        }
+      }
+
+      if (!query) {
+        console.error(`Option matching query "${key}" not found`)
+        return
+      }
+
+      this.select(query, ...keys)
+    }
 
     this.addEventListener('mousedown', evt => this.mousedown = true)
     this.addEventListener('mouseup', evt => this.mousedown = false)
@@ -337,7 +333,7 @@ class ChassisOptions extends HTMLElement {
   }
 
   set selectedIndex (index) {
-    _.get(this).selectByIndex(index)
+    _.get(this).selectByIndex(index, false, false, false)
   }
 
   get selectedOptions () {
@@ -404,7 +400,7 @@ class ChassisOptions extends HTMLElement {
     }
 
     if (option.selected) {
-      _.get(this).selectByKey(option.key)
+      _.get(this).selectByString(option.key, false, false, false)
     }
   }
 
@@ -487,32 +483,46 @@ class ChassisOptions extends HTMLElement {
    * [select description]
    * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
    */
-  select (option, multiple = false, keys = {}) {
+  select (option, shiftKey = false, ctrlKey = false, metaKey = false) {
+    let keys = Array.prototype.slice.call(arguments, 1)
+
+    console.log(this.options);
+
+    if (Array.isArray(option)) {
+      return console.log('Handle array of indexes')
+    }
+
     if (typeof option === 'number') {
-      return _.get(this).selectByIndex(option)
+      return _.get(this).selectByIndex(option, ...keys)
+    }
+
+    if (typeof option === 'string') {
+      return _.get(this).selectByString(option, ...keys)
     }
 
     let deselectAll = true
 
-    if (multiple) {
-      if (keys.shift) {
-        console.log('shift key held');
-      }
-
-      if (keys.cmd || keys.ctrl) {
+    if (this.parent.multiple) {
+      if (ctrlKey || metaKey) {
         if (option.selected) {
           return this.deselect(option)
         }
 
         deselectAll = false
       }
+
+      // Shift trumps other keys
+      if (shiftKey) {
+        let currentSelection = this.selectedOptions.item(0)
+        deselectAll = false
+
+        console.log(currentSelection);
+      }
     } else if (option.selected) {
       return
     }
 
-    if (deselectAll) {
-      this.deselectAll()
-    }
+    deselectAll && this.deselectAll()
 
     option.selected = true
     this.parent.selectedOptionsElement.add(option)
@@ -523,6 +533,8 @@ class ChassisOptions extends HTMLElement {
     if (!this.parent.multiple) {
       this.parent.close()
     }
+
+    this.unHoverAllOptions()
   }
 }
 

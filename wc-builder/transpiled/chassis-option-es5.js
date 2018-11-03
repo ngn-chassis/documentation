@@ -178,6 +178,10 @@ customElements.define('chassis-option', function () {
           _this.parent.hoverOption(_this.index);
         });
 
+        _this.addEventListener('focus', function (evt) {
+          console.log('chassis-option');
+        });
+
         _this.addEventListener('mousemove', function (evt) {
           return _this.parent.hoverOption(_this.index);
         });

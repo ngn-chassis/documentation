@@ -182,11 +182,17 @@ customElements.define('chassis-select', function () {
               case ' ':
                 evt.preventDefault();
 
-                if (_this.hoveredIndex === _this.selectedIndex) {
-                  return _this.close();
+                if (!_this.multiple) {
+                  if (!_this.isOpen && (evt[_this.keySource] === 32 || evt[_this.keySource] === ' ')) {
+                    return _this.open();
+                  }
+
+                  if (_this.hoveredIndex === _this.selectedIndex || _this.hoveredIndex === -1) {
+                    return _this.close();
+                  }
                 }
 
-                return _this.select(_this.hoveredIndex);
+                return _this.optionsElement.select(_this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey);
 
               case 38:
               case 'ArrowUp':
@@ -296,6 +302,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "close",
         value: function close() {
+          // In case method is called directly by user
           if (this.multiple) {
             return;
           }
@@ -303,10 +310,7 @@ customElements.define('chassis-select', function () {
           document.body.removeEventListener('click', _.get(this).bodyClickHandler);
           document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler);
           document.body.removeEventListener('touchend', _.get(this).bodyClickHandler);
-
-          if (this.isOpen) {
-            this.isOpen = false;
-          }
+          this.isOpen = false;
         }
       }, {
         key: "connectedCallback",
@@ -314,10 +318,10 @@ customElements.define('chassis-select', function () {
           var _this2 = this;
 
           this.addEventListener('focus', function (evt) {
-            _this2.addEventListener('keydown', _.get(_this2).arrowKeydownHandler);
+            return _this2.addEventListener('keydown', _.get(_this2).arrowKeydownHandler);
           });
           this.addEventListener('blur', function (evt) {
-            _this2.removeEventListener('keydown', _.get(_this2).arrowKeydownHandler);
+            return _this2.removeEventListener('keydown', _.get(_this2).arrowKeydownHandler);
           });
           document.body.addEventListener('mouseup', function (evt) {
             return _this2.optionsElement.mousedown = false;
@@ -327,9 +331,7 @@ customElements.define('chassis-select', function () {
               _this2.setAttribute('tabindex', 0);
             }
 
-            if (_this2.autofocus) {
-              _this2.focus();
-            }
+            _this2.autofocus && _this2.focus();
           }, 0);
         }
       }, {
@@ -374,6 +376,7 @@ customElements.define('chassis-select', function () {
       }, {
         key: "open",
         value: function open() {
+          // In case method is called directly by user
           if (this.multiple) {
             return;
           }
@@ -381,10 +384,7 @@ customElements.define('chassis-select', function () {
           document.body.addEventListener('click', _.get(this).bodyClickHandler);
           document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler);
           document.body.addEventListener('touchend', _.get(this).bodyClickHandler);
-
-          if (!this.isOpen) {
-            this.isOpen = true;
-          }
+          this.isOpen = true;
         }
         /**
          * method querySelector
@@ -429,6 +429,11 @@ customElements.define('chassis-select', function () {
 
           this.optionsElement.removeOptionByIndex(index);
         }
+        /**
+         * @method select
+         * @param  {Number || Array} index
+         */
+
       }, {
         key: "select",
         value: function select(index) {

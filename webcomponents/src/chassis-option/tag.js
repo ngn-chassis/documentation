@@ -17,6 +17,10 @@ class ChassisOption extends HTMLElement {
       this.parent.hoverOption(this.index)
     })
 
+    this.addEventListener('focus', evt => {
+      console.log('chassis-option');
+    })
+
     this.addEventListener('mousemove', evt => this.parent.hoverOption(this.index))
     this.addEventListener('mouseout', evt => this.parent.unHoverOption(this.index))
   }

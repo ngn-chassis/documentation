@@ -27,11 +27,17 @@ class ChassisSelectElement extends HTMLElement {
           case ' ':
             evt.preventDefault()
 
-            if (this.hoveredIndex === this.selectedIndex) {
-              return this.close()
+            if (!this.multiple) {
+              if (!this.isOpen && (evt[this.keySource] === 32 || evt[this.keySource] === ' ')) {
+                return this.open()
+              }
+
+              if (this.hoveredIndex === this.selectedIndex || this.hoveredIndex === -1) {
+                return this.close()
+              }
             }
 
-            return this.select(this.hoveredIndex)
+            return this.optionsElement.select(this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey)
 
           case 38:
           case 'ArrowUp':
@@ -291,6 +297,7 @@ class ChassisSelectElement extends HTMLElement {
   }
 
   close () {
+    // In case method is called directly by user
     if (this.multiple) {
       return
     }
@@ -299,20 +306,12 @@ class ChassisSelectElement extends HTMLElement {
     document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler)
     document.body.removeEventListener('touchend', _.get(this).bodyClickHandler)
 
-    if (this.isOpen) {
-      this.isOpen = false
-    }
+    this.isOpen = false
   }
 
   connectedCallback () {
-    this.addEventListener('focus', (evt) => {
-      this.addEventListener('keydown', _.get(this).arrowKeydownHandler)
-    })
-
-    this.addEventListener('blur', (evt) => {
-      this.removeEventListener('keydown', _.get(this).arrowKeydownHandler)
-    })
-
+    this.addEventListener('focus', evt => this.addEventListener('keydown', _.get(this).arrowKeydownHandler))
+    this.addEventListener('blur', evt => this.removeEventListener('keydown', _.get(this).arrowKeydownHandler))
     document.body.addEventListener('mouseup', evt => this.optionsElement.mousedown = false)
 
     setTimeout(() => {
@@ -320,9 +319,7 @@ class ChassisSelectElement extends HTMLElement {
         this.setAttribute('tabindex', 0)
       }
 
-      if (this.autofocus) {
-        this.focus()
-      }
+      this.autofocus && this.focus()
     }, 0)
   }
 
@@ -366,6 +363,7 @@ class ChassisSelectElement extends HTMLElement {
   }
 
   open () {
+    // In case method is called directly by user
     if (this.multiple) {
       return
     }
@@ -374,9 +372,7 @@ class ChassisSelectElement extends HTMLElement {
     document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler)
     document.body.addEventListener('touchend', _.get(this).bodyClickHandler)
 
-    if (!this.isOpen) {
-      this.isOpen = true
-    }
+    this.isOpen = true
   }
 
   /**
@@ -415,6 +411,10 @@ class ChassisSelectElement extends HTMLElement {
     this.optionsElement.removeOptionByIndex(index)
   }
 
+  /**
+   * @method select
+   * @param  {Number || Array} index
+   */
   select (index) {
     this.optionsElement.select(index)
   }

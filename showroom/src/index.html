@@ -53,8 +53,8 @@
         <section class="test">
           <chassis-control id="chassis-select">
             <label>Menu Label</label>
-            <select name="name-test" placeholder="placeholder">
-              <option value="test1">
+            <select name="name-test" placeholder="placeholder" multiple>
+              <option value="test1" selected>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="7"></circle>
                   <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
@@ -78,7 +78,7 @@
           </chassis-control>
 
           <label for="default-select">test</label>
-          <select id="default-select">
+          <select id="default-select" multiple>
             <option id="test-option" value="1">Option 1</option>
             <option id="test-option2" value="2">Option 2</option>
             <option value="3">Option 3</option>
@@ -661,8 +661,8 @@
         window.select = document.getElementById('default-select')
         window.chassisSelect = document.getElementById('chassis-select').input
 
-        select.addEventListener('change', evt => console.log(evt))
-        chassisSelect.addEventListener('change', evt => console.log(evt))
+        // select.addEventListener('change', evt => console.log(evt))
+        // chassisSelect.addEventListener('change', evt => console.log(evt))
 
         // window.option = window.select[2]
         //

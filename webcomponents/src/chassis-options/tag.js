@@ -80,9 +80,6 @@ class ChassisOptionsElement extends HTMLElement {
             this.displayElement.parent = parent
             this.displayElement.defaultSelected = sourceElement.selected
             this.displayElement.innerHTML = sourceElement.innerHTML
-            this.displayElement.addEventListener('mousedown', evt => {
-              parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey)
-            })
 
             // Add additional attributes
             for (let attr of sourceElement.attributes) {
@@ -102,8 +99,14 @@ class ChassisOptionsElement extends HTMLElement {
                 selected: sourceElement.selected,
                 value: sourceElement.getAttribute('value').trim(),
                 text: sourceElement.text.trim()
+              },
+
+              selectionHandler: evt => {
+                parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey)
               }
             })
+
+            this.multipleMode = parent.multiple
           }
 
           get disabled () {
@@ -158,9 +161,25 @@ class ChassisOptionsElement extends HTMLElement {
             this.setAttr('value', value)
           }
 
+          set multipleMode (bool) {
+            if (bool) {
+              this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler)
+              this.displayElement.addEventListener('mousedown', _p.get(this).selectionHandler)
+            } else {
+              this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler)
+              this.displayElement.addEventListener('mouseup', _p.get(this).selectionHandler)
+            }
+          }
+
           remove () {
             this.sourceElement.remove()
             this.displayElement.remove()
+
+            if (parent.multiple) {
+              this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler)
+            } else {
+              this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler)
+            }
           }
 
           setAttr (name, value) {
@@ -495,10 +514,6 @@ class ChassisOptionsElement extends HTMLElement {
     this.options[index].remove()
   }
 
-  get start () {
-    return _.get(this).selectionStartIndex
-  }
-
   /**
    * [select description]
    * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
@@ -586,6 +601,10 @@ class ChassisOptionsElement extends HTMLElement {
     }
 
     this.unHoverAllOptions()
+  }
+
+  setOptionMultipleMode (multiple = false) {
+    this.options.forEach(option => option.multipleMode = multiple)
   }
 }
 

@@ -292,10 +292,7 @@ customElements.define('chassis-options', function () {
                   this.displayElement = displayElement;
                   this.displayElement.parent = parent;
                   this.displayElement.defaultSelected = sourceElement.selected;
-                  this.displayElement.innerHTML = sourceElement.innerHTML;
-                  this.displayElement.addEventListener('mousedown', function (evt) {
-                    parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey);
-                  }); // Add additional attributes
+                  this.displayElement.innerHTML = sourceElement.innerHTML; // Add additional attributes
 
                   var _iteratorNormalCompletion = true;
                   var _didIteratorError = false;
@@ -335,8 +332,13 @@ customElements.define('chassis-options', function () {
                       selected: sourceElement.selected,
                       value: sourceElement.getAttribute('value').trim(),
                       text: sourceElement.text.trim()
+                    },
+                    selectionHandler: function selectionHandler(evt) {
+                      parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey);
                     }
                   });
+
+                  this.multipleMode = parent.multiple;
                 }
 
                 (0, _createClass2.default)(ChassisOptionObject, [{
@@ -344,6 +346,12 @@ customElements.define('chassis-options', function () {
                   value: function remove() {
                     this.sourceElement.remove();
                     this.displayElement.remove();
+
+                    if (parent.multiple) {
+                      this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler);
+                    } else {
+                      this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler);
+                    }
                   }
                 }, {
                   key: "setAttr",
@@ -410,6 +418,17 @@ customElements.define('chassis-options', function () {
                   },
                   set: function set(value) {
                     this.setAttr('value', value);
+                  }
+                }, {
+                  key: "multipleMode",
+                  set: function set(bool) {
+                    if (bool) {
+                      this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler);
+                      this.displayElement.addEventListener('mousedown', _p.get(this).selectionHandler);
+                    } else {
+                      this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler);
+                      this.displayElement.addEventListener('mouseup', _p.get(this).selectionHandler);
+                    }
                   }
                 }]);
                 return ChassisOptionObject;
@@ -867,13 +886,13 @@ customElements.define('chassis-options', function () {
 
           this.options[index].remove();
         }
-      }, {
-        key: "select",
-
         /**
          * [select description]
          * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
          */
+
+      }, {
+        key: "select",
         value: function select(option) {
           var _this11 = this;
 
@@ -903,7 +922,8 @@ customElements.define('chassis-options', function () {
 
           if (this.parent.multiple) {
             var _$get3 = _.get(this),
-                selectionStartIndex = _$get3.selectionStartIndex;
+                selectionStartIndex = _$get3.selectionStartIndex; // TODO: Refactor to use bounding method
+
 
             if (shiftKey) {
               if (this.selectedOptions.length === 1) {
@@ -940,8 +960,7 @@ customElements.define('chassis-options', function () {
                     selection.append(this.options[_i3]);
                   }
                 }
-              } // return selection.options.forEach(option => console.log(option.displayElement))
-
+              }
             } else if (ctrlKey || metaKey) {
               _.get(this).selectionStartIndex = option.index;
 
@@ -971,6 +990,14 @@ customElements.define('chassis-options', function () {
           this.unHoverAllOptions();
         }
       }, {
+        key: "setOptionMultipleMode",
+        value: function setOptionMultipleMode() {
+          var multiple = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+          this.options.forEach(function (option) {
+            return option.multipleMode = multiple;
+          });
+        }
+      }, {
         key: "selectedIndex",
         get: function get() {
           var _this12 = this;
@@ -981,11 +1008,6 @@ customElements.define('chassis-options', function () {
         },
         set: function set(index) {
           this.select(index);
-        }
-      }, {
-        key: "start",
-        get: function get() {
-          return _.get(this).selectionStartIndex;
         }
       }]);
       return _class;

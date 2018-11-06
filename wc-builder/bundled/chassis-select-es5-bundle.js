@@ -480,14 +480,25 @@ customElements.define('chassis-select', function () {
 
           switch (attr) {
             case 'multiple':
-              if (newValue && this.hasAttribute('open')) {
-                this.removeAttribute('open');
+              if (!this.multiple) {
+                if (this.optionsElement) {
+                  this.optionsElement.setOptionMultipleMode(false);
+                }
+
+                if (this.selectedOptions) {
+                  this.deselectAll();
+                  this.select(this.selectedIndex);
+                }
+
+                return;
               }
 
-              if (!newValue && this.selectedOptions) {
-                var index = this.selectedIndex;
-                this.deselectAll();
-                this.select(index);
+              if (this.optionsElement) {
+                this.optionsElement.setOptionMultipleMode(true);
+              }
+
+              if (this.hasAttribute('open')) {
+                this.removeAttribute('open');
               }
 
               break;
@@ -541,7 +552,10 @@ customElements.define('chassis-select', function () {
               _this2.setAttribute('tabindex', 0);
             }
 
-            _this2.autofocus && _this2.focus(); // TEMP
+            _this2.autofocus && _this2.focus();
+
+            _this2.optionsElement.setOptionMultipleMode(_this2.multiple); // TEMP
+
 
             _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
           }, 0);

@@ -172,14 +172,25 @@ class ChassisSelectElement extends HTMLElement {
 
     switch (attr) {
       case 'multiple':
-        if (newValue && this.hasAttribute('open')) {
-          this.removeAttribute('open')
+        if (!this.multiple) {
+          if (this.optionsElement) {
+            this.optionsElement.setOptionMultipleMode(false)
+          }
+
+          if (this.selectedOptions) {
+            this.deselectAll()
+            this.select(this.selectedIndex)
+          }
+
+          return
         }
 
-        if (!newValue && this.selectedOptions) {
-          let index = this.selectedIndex
-          this.deselectAll()
-          this.select(index)
+        if (this.optionsElement) {
+          this.optionsElement.setOptionMultipleMode(true)
+        }
+
+        if (this.hasAttribute('open')) {
+          this.removeAttribute('open')
         }
 
         break
@@ -224,6 +235,7 @@ class ChassisSelectElement extends HTMLElement {
       }
 
       this.autofocus && this.focus()
+      this.optionsElement.setOptionMultipleMode(this.multiple)
 
       // TEMP
       this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)

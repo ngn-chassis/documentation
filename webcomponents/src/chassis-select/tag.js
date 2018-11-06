@@ -120,18 +120,43 @@ class ChassisSelectElement extends HTMLElement {
         }
       },
 
+      middleWare: {
+        beforeChange: null,
+        afterChange: null
+      },
+
       bodyClickHandler: evt => {
         if (evt.target === this || this.contains(evt.target)) {
           return
         }
 
         this.open = false
+      },
+
+      throwSizeAttributeWarning: () => {
+        console.warn('WARNING <chassis-select> "size" attribute is not supported. Please use CSS to set the height of the options panel instead.')
       }
     })
   }
 
   static get observedAttributes () {
-    return ['autofocus', 'disabled', 'multiple', 'name', 'open', 'tabindex']
+    return ['autofocus', 'disabled', 'multiple', 'name', 'open', 'placeholder', 'tabindex', 'size']
+  }
+
+  get afterChange () {
+    return _.get(this).middleWare.afterChange
+  }
+
+  set afterChange (func) {
+    _.get(this).middleWare.afterChange = func.bind(this)
+  }
+
+  get beforeChange () {
+    return _.get(this).middleWare.beforeChange
+  }
+
+  set beforeChange (func) {
+    _.get(this).middleWare.beforeChange = func.bind(this)
   }
 
   get length () {
@@ -148,6 +173,15 @@ class ChassisSelectElement extends HTMLElement {
     }
 
     this.optionsElement.selectedIndex = index
+  }
+
+  get size () {
+    _.get(this).throwSizeAttributeWarning()
+    return null
+  }
+
+  set size (value) {
+    _.get(this).throwSizeAttributeWarning()
   }
 
   get value () {
@@ -212,6 +246,21 @@ class ChassisSelectElement extends HTMLElement {
         document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler)
         document.body.addEventListener('touchend', _.get(this).bodyClickHandler)
         break
+
+      case 'placeholder':
+        this.placeholder = newValue
+
+        if (this.selectedOptionsElement) {
+          this.selectedOptionsElement.update()
+        }
+
+        break
+
+      case 'size':
+        _.get(this).throwSizeAttributeWarning()
+        break
+
+      default: return
     }
   }
 
@@ -238,7 +287,7 @@ class ChassisSelectElement extends HTMLElement {
       this.optionsElement.setOptionMultipleMode(this.multiple)
 
       // TEMP
-      this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
+      // this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
     }, 0)
   }
 

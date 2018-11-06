@@ -230,8 +230,8 @@ customElements.define('chassis-option', function () {
         });
 
         _this.addEventListener('mouseover', function (evt) {
-          if (_this.parent.mousedown) {
-            return console.log('select me');
+          if (_this.parent.multiple && _this.parent.mousedown) {
+            return _this.parent.select(_this.index, true);
           }
 
           _this.parent.hoverOption(_this.index);

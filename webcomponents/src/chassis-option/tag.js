@@ -33,8 +33,8 @@ class ChassisOptionElement extends HTMLElement {
     })
 
     this.addEventListener('mouseover', evt => {
-      if (this.parent.mousedown) {
-        return console.log('select me');
+      if (this.parent.multiple && this.parent.mousedown) {
+        return this.parent.select(this.index, true)
       }
 
       this.parent.hoverOption(this.index)

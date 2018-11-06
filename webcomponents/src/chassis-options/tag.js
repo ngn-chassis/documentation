@@ -29,6 +29,13 @@ class ChassisOptionsElement extends HTMLElement {
         }
       },
 
+      {
+        name: 'multiple',
+        get () {
+          return this.parent.multiple
+        }
+      },
+
       'options',
 
       {
@@ -372,9 +379,6 @@ class ChassisOptionsElement extends HTMLElement {
       selectOption: option => {
         option.selected = true
         this.parent.selectedOptionsElement.add(option)
-        this.parent.dispatchEvent(new Event('change', {
-          bubbles: true
-        }))
       }
     })
 
@@ -533,6 +537,10 @@ class ChassisOptionsElement extends HTMLElement {
       return _.get(this).selectByString(option, ...keys)
     }
 
+    if (typeof option !== 'object') {
+      return console.error(`ERROR <chassis-select> Cannot select option type "${typeof option}"`)
+    }
+
     let selection = new (_.get(this).selection)([option])
     let deselectAll = true
 
@@ -593,14 +601,33 @@ class ChassisOptionsElement extends HTMLElement {
       _.get(this).selectionStartIndex = option.index
     }
 
-    deselectAll && this.deselectAll()
-    selection.options.forEach(option => _.get(this).selectOption(option))
+    let completeChange = () => {
+      let previouslySelectedOptions = this.selectedOptions
 
-    if (!this.parent.multiple) {
-      this.parent.open = false
+      deselectAll && this.deselectAll()
+      selection.options.forEach(option => _.get(this).selectOption(option))
+
+      if (!this.parent.multiple) {
+        this.parent.open = false
+      }
+
+      this.unHoverAllOptions()
+
+      this.parent.dispatchEvent(new Event('change', {
+        bubbles: true
+      }))
+
+      if (this.parent.afterChange && typeof this.parent.afterChange === 'function') {
+        this.parent.afterChange(previouslySelectedOptions, this.selectedOptions)
+      }
     }
 
-    this.unHoverAllOptions()
+    if (this.parent.beforeChange && typeof this.parent.beforeChange === 'function') {
+      let collection = new (_.get(this).ChassisHTMLCollection())(selection.options.map(option => option.displayElement))
+      return this.parent.beforeChange(this.selectedOptions, collection, completeChange)
+    }
+
+    completeChange()
   }
 
   setOptionMultipleMode (multiple = false) {

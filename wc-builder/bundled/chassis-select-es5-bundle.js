@@ -452,12 +452,19 @@ customElements.define('chassis-select', function () {
                 return;
             }
           },
+          middleWare: {
+            beforeChange: null,
+            afterChange: null
+          },
           bodyClickHandler: function bodyClickHandler(evt) {
             if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
               return;
             }
 
             _this.open = false;
+          },
+          throwSizeAttributeWarning: function throwSizeAttributeWarning() {
+            console.warn('WARNING <chassis-select> "size" attribute is not supported. Please use CSS to set the height of the options panel instead.');
           }
         });
 
@@ -520,6 +527,23 @@ customElements.define('chassis-select', function () {
               document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler);
               document.body.addEventListener('touchend', _.get(this).bodyClickHandler);
               break;
+
+            case 'placeholder':
+              this.placeholder = newValue;
+
+              if (this.selectedOptionsElement) {
+                this.selectedOptionsElement.update();
+              }
+
+              break;
+
+            case 'size':
+              _.get(this).throwSizeAttributeWarning();
+
+              break;
+
+            default:
+              return;
           }
         }
       }, {
@@ -555,9 +579,8 @@ customElements.define('chassis-select', function () {
             _this2.autofocus && _this2.focus();
 
             _this2.optionsElement.setOptionMultipleMode(_this2.multiple); // TEMP
+            // this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
 
-
-            _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
           }, 0);
         }
       }, {
@@ -663,6 +686,22 @@ customElements.define('chassis-select', function () {
           return 'ChassisSelectElement';
         }
       }, {
+        key: "afterChange",
+        get: function get() {
+          return _.get(this).middleWare.afterChange;
+        },
+        set: function set(func) {
+          _.get(this).middleWare.afterChange = func.bind(this);
+        }
+      }, {
+        key: "beforeChange",
+        get: function get() {
+          return _.get(this).middleWare.beforeChange;
+        },
+        set: function set(func) {
+          _.get(this).middleWare.beforeChange = func.bind(this);
+        }
+      }, {
         key: "length",
         get: function get() {
           return this.options.length;
@@ -680,6 +719,16 @@ customElements.define('chassis-select', function () {
           this.optionsElement.selectedIndex = index;
         }
       }, {
+        key: "size",
+        get: function get() {
+          _.get(this).throwSizeAttributeWarning();
+
+          return null;
+        },
+        set: function set(value) {
+          _.get(this).throwSizeAttributeWarning();
+        }
+      }, {
         key: "value",
         get: function get() {
           if (this.selectedOptions.length === 0) {
@@ -692,7 +741,7 @@ customElements.define('chassis-select', function () {
       }], [{
         key: "observedAttributes",
         get: function get() {
-          return ['autofocus', 'disabled', 'multiple', 'name', 'open', 'tabindex'];
+          return ['autofocus', 'disabled', 'multiple', 'name', 'open', 'placeholder', 'tabindex', 'size'];
         }
       }]);
       return _class;

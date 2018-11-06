@@ -390,6 +390,11 @@ customElements.define('chassis-options', function () {
               return option.displayElement.hover;
             });
           }
+        }, {
+          name: 'multiple',
+          get: function get() {
+            return this.parent.multiple;
+          }
         }, 'options', {
           name: 'selectedOptions',
           get: function get() {
@@ -853,10 +858,6 @@ customElements.define('chassis-options', function () {
             option.selected = true;
 
             _this.parent.selectedOptionsElement.add(option);
-
-            _this.parent.dispatchEvent(new Event('change', {
-              bubbles: true
-            }));
           }
         });
 
@@ -1072,6 +1073,10 @@ customElements.define('chassis-options', function () {
             return (_$get2 = _.get(this)).selectByString.apply(_$get2, [option].concat((0, _toConsumableArray2.default)(keys)));
           }
 
+          if ((0, _typeof2.default)(option) !== 'object') {
+            return console.error("ERROR <chassis-select> Cannot select option type \"".concat((0, _typeof2.default)(option), "\""));
+          }
+
           var selection = new (_.get(this).selection)([option]);
           var deselectAll = true;
 
@@ -1133,16 +1138,36 @@ customElements.define('chassis-options', function () {
             _.get(this).selectionStartIndex = option.index;
           }
 
-          deselectAll && this.deselectAll();
-          selection.options.forEach(function (option) {
-            return _.get(_this11).selectOption(option);
-          });
+          var completeChange = function completeChange() {
+            var previouslySelectedOptions = _this11.selectedOptions;
+            deselectAll && _this11.deselectAll();
+            selection.options.forEach(function (option) {
+              return _.get(_this11).selectOption(option);
+            });
 
-          if (!this.parent.multiple) {
-            this.parent.open = false;
+            if (!_this11.parent.multiple) {
+              _this11.parent.open = false;
+            }
+
+            _this11.unHoverAllOptions();
+
+            _this11.parent.dispatchEvent(new Event('change', {
+              bubbles: true
+            }));
+
+            if (_this11.parent.afterChange && typeof _this11.parent.afterChange === 'function') {
+              _this11.parent.afterChange(previouslySelectedOptions, _this11.selectedOptions);
+            }
+          };
+
+          if (this.parent.beforeChange && typeof this.parent.beforeChange === 'function') {
+            var collection = new (_.get(this).ChassisHTMLCollection())(selection.options.map(function (option) {
+              return option.displayElement;
+            }));
+            return this.parent.beforeChange(this.selectedOptions, collection, completeChange);
           }
 
-          this.unHoverAllOptions();
+          completeChange();
         }
       }, {
         key: "setOptionMultipleMode",

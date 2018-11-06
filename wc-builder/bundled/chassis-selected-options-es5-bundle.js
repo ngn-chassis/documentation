@@ -365,10 +365,25 @@ customElements.define('chassis-selected-options', function () {
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           contentsEl: _this.shadowRoot.querySelector('#contents'),
           options: [],
-          update: function update() {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).contentsEl.innerHTML = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options.length > 0 ? _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options.map(function (option) {
-              return option.displayElement.text;
-            }).join(', ') : _this.parent.placeholder || '';
+          appendCaret: function appendCaret() {
+            var xmlns = 'http://www.w3.org/2000/svg';
+            var width = 24;
+            var height = 24;
+            var caret = document.createElementNS(xmlns, 'svg');
+            caret.slot = 'beforeend';
+            caret.setAttributeNS(null, 'width', width);
+            caret.setAttributeNS(null, 'height', height);
+            caret.setAttributeNS(null, 'viewBox', "0 0 ".concat(width, " ").concat(height));
+            caret.setAttributeNS(null, 'fill', 'none');
+            caret.setAttributeNS(null, 'stroke', 'currentColor');
+            caret.setAttributeNS(null, 'stroke-width', '3');
+            caret.setAttributeNS(null, 'stroke-linecap', 'square');
+            caret.setAttributeNS(null, 'stroke-linejoin', 'miter');
+            var shape = document.createElementNS(xmlns, 'polyline');
+            shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');
+            caret.appendChild(shape);
+
+            _this.appendChild(caret);
           }
         });
 
@@ -380,28 +395,27 @@ customElements.define('chassis-selected-options', function () {
         value: function add(option) {
           _.get(this).options.push(option);
 
-          _.get(this).update();
+          this.update();
         }
       }, {
         key: "remove",
         value: function remove(option) {
           _.get(this).options.splice(_.get(this).options.indexOf(option), 1);
 
-          _.get(this).update();
+          this.update();
         }
       }, {
         key: "clear",
         value: function clear() {
           _.get(this).options = [];
-
-          _.get(this).update();
+          this.update();
         }
       }, {
         key: "connectedCallback",
         value: function connectedCallback() {
           var _this2 = this;
 
-          this._appendCaret();
+          _.get(this).appendCaret();
 
           this.addEventListener('mousedown', function (evt) {
             if (_this2.parent.multiple) {
@@ -410,27 +424,19 @@ customElements.define('chassis-selected-options', function () {
 
             _this2.parent.open = !_this2.parent.open;
           });
+          this.update();
         }
       }, {
-        key: "_appendCaret",
-        value: function _appendCaret() {
-          var xmlns = 'http://www.w3.org/2000/svg';
-          var width = 24;
-          var height = 24;
-          var caret = document.createElementNS(xmlns, 'svg');
-          caret.slot = 'beforeend';
-          caret.setAttributeNS(null, 'width', width);
-          caret.setAttributeNS(null, 'height', height);
-          caret.setAttributeNS(null, 'viewBox', "0 0 ".concat(width, " ").concat(height));
-          caret.setAttributeNS(null, 'fill', 'none');
-          caret.setAttributeNS(null, 'stroke', 'currentColor');
-          caret.setAttributeNS(null, 'stroke-width', '3');
-          caret.setAttributeNS(null, 'stroke-linecap', 'square');
-          caret.setAttributeNS(null, 'stroke-linejoin', 'miter');
-          var shape = document.createElementNS(xmlns, 'polyline');
-          shape.setAttributeNS(null, 'points', '6 9 12 15 18 9');
-          caret.appendChild(shape);
-          this.appendChild(caret);
+        key: "update",
+        value: function update() {
+          _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0 ? this.list : this.parent.placeholder || '';
+        }
+      }, {
+        key: "list",
+        get: function get() {
+          return _.get(this).options.map(function (option) {
+            return option.displayElement.text;
+          }).join(', ');
         }
       }]);
       return _class;

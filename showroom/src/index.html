@@ -53,7 +53,7 @@
         <section class="test">
           <chassis-control id="chassis-select">
             <label>Menu Label</label>
-            <select name="name-test" placeholder="placeholder" multiple>
+            <select name="name-test" placeholder="placeholder" >
               <option value="test1">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="7"></circle>
@@ -80,7 +80,7 @@
             </select>
           </chassis-control>
 
-          <!-- <label for="default-select">test</label>
+          <label for="default-select">test</label>
           <select id="default-select" multiple>
             <option id="test-option" value="1">Option 1</option>
             <option id="test-option2" value="2">Option 2</option>
@@ -88,7 +88,7 @@
             <option value="4">Option 4</option>
             <option value="5">Option 5</option>
             <option value="6">Option 6</option>
-          </select> -->
+          </select>
 
           <!-- <chassis-control>
             <label>Multiple Select</label>
@@ -650,6 +650,28 @@
       window.addEventListener('DOMContentLoaded', function () {
         window.select = document.getElementById('default-select')
         window.chassisSelect = document.getElementById('chassis-select').input
+
+        select.addEventListener('change', evt => {
+          console.log('select change');
+        })
+
+        chassisSelect.beforeChange = function (current, selection, cb) {
+          console.log('before change');
+          console.log('current: ', current);
+          console.log('new selection: ', selection);
+          console.log('---------');
+          cb()
+        }
+
+        chassisSelect.afterChange = function (prev, current) {
+          console.log('after change');
+          console.log('previous: ', prev);
+          console.log('current: ', current);
+        }
+
+        chassisSelect.addEventListener('change', evt => {
+          console.log('chassisSelect change');
+        })
         // window.old = document.getElementById('old')
 
         // var old = document.getElementById('heyyy')

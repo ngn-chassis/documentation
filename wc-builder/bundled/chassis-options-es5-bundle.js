@@ -1054,12 +1054,13 @@ customElements.define('chassis-options', function () {
           }
 
           var selection = new (_.get(this).selection)([option]);
+          var deselectAll = true;
 
           if (this.parent.multiple) {
-            if (shiftKey) {
-              var _$get3 = _.get(this),
-                  selectionStartIndex = _$get3.selectionStartIndex;
+            var _$get3 = _.get(this),
+                selectionStartIndex = _$get3.selectionStartIndex;
 
+            if (shiftKey) {
               if (this.selectedOptions.length === 1) {
                 if (option.index === this.selectedIndex) {
                   return;
@@ -1080,53 +1081,31 @@ customElements.define('chassis-options', function () {
                 }
               }
 
-              if (this.selectedOptions.length > 1) {
-                if (option.index !== selectionStartIndex) {
-                  selection.clear();
+              if (this.selectedOptions.length > 1 && option.index !== selectionStartIndex) {
+                selection.clear();
 
-                  if (option.index < selectionStartIndex) {
-                    for (var _i2 = selectionStartIndex; _i2 >= option.index; _i2--) {
-                      selection.prepend(this.options[_i2]);
-                    }
+                if (option.index < selectionStartIndex) {
+                  for (var _i2 = selectionStartIndex; _i2 >= option.index; _i2--) {
+                    selection.prepend(this.options[_i2]);
                   }
+                }
 
-                  if (option.index > selectionStartIndex) {
-                    for (var _i3 = selectionStartIndex; _i3 <= option.index; _i3++) {
-                      selection.append(this.options[_i3]);
-                    }
+                if (option.index > selectionStartIndex) {
+                  for (var _i3 = selectionStartIndex; _i3 <= option.index; _i3++) {
+                    selection.append(this.options[_i3]);
                   }
                 }
               } // return selection.options.forEach(option => console.log(option.displayElement))
 
             } else if (ctrlKey || metaKey) {
+              _.get(this).selectionStartIndex = option.index;
+
               if (option.selected) {
                 return this.deselect(option);
               }
 
-              selection.append(option);
-            } // Shift trumps other keys
-            // if (shiftKey) {
-            //
-            //
-            //   // if (option.index < selectionStartIndex) {
-            //   //   let upperBound = selectionStartIndex
-            //   //
-            //   //   if (this.selectedOptions.length > 1) {
-            //   //     upperBound += this.selectedOptions.length
-            //   //   }
-            //   //
-            //   //   for (let i = upperBound; i >= option.index; i--) {
-            //   //     options.unshift(this.options[i])
-            //   //   }
-            //   // }
-            //   //
-            //   // if (option.index > selectionStartIndex) {
-            //   //   for (let i = selectionStartIndex; i <= option.index; i++) {
-            //   //     options.push(this.options[i])
-            //   //   }
-            //   // }
-            // }
-
+              deselectAll = false;
+            }
           } else if (option.selected) {
             return;
           }
@@ -1135,7 +1114,7 @@ customElements.define('chassis-options', function () {
             _.get(this).selectionStartIndex = option.index;
           }
 
-          this.deselectAll();
+          deselectAll && this.deselectAll();
           selection.options.forEach(function (option) {
             return _.get(_this11).selectOption(option);
           });

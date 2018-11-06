@@ -7,27 +7,5 @@ for(let a of d.attributes){if("boolean"==typeof a.value){a.value?this.displayEle
      */removeOptionByIndex(a=null){null===a||a>=this.options.length||this.options[a].remove()}get start(){return a.get(this).selectionStartIndex}/**
      * [select description]
      * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
-     */select(b,c=!1,d=!1,e=!1){let f=Array.prototype.slice.call(arguments,1);if(Array.isArray(b))return console.log("Handle array of indexes");if("number"==typeof b)return a.get(this).selectByIndex(b,...f);if("string"==typeof b)return a.get(this).selectByString(b,...f);let g=new(a.get(this).selection)([b]);if(this.parent.multiple){if(c){let{selectionStartIndex:c}=a.get(this);if(1===this.selectedOptions.length){if(b.index===this.selectedIndex)return;if(g.clear(),b.index<this.selectedIndex)for(let a=this.selectedIndex;a>=b.index;a--)g.prepend(this.options[a]);if(b.index>this.selectedIndex)for(let a=this.selectedIndex;a<=b.index;a++)g.append(this.options[a])}if(1<this.selectedOptions.length&&b.index!==c){if(g.clear(),b.index<c)for(let a=c;a>=b.index;a--)g.prepend(this.options[a]);if(b.index>c)for(let a=c;a<=b.index;a++)g.append(this.options[a])}// return selection.options.forEach(option => console.log(option.displayElement))
-}else if(d||e){if(b.selected)return this.deselect(b);g.append(b)}// Shift trumps other keys
-// if (shiftKey) {
-//
-//
-//   // if (option.index < selectionStartIndex) {
-//   //   let upperBound = selectionStartIndex
-//   //
-//   //   if (this.selectedOptions.length > 1) {
-//   //     upperBound += this.selectedOptions.length
-//   //   }
-//   //
-//   //   for (let i = upperBound; i >= option.index; i--) {
-//   //     options.unshift(this.options[i])
-//   //   }
-//   // }
-//   //
-//   // if (option.index > selectionStartIndex) {
-//   //   for (let i = selectionStartIndex; i <= option.index; i++) {
-//   //     options.push(this.options[i])
-//   //   }
-//   // }
-// }
-}else if(b.selected)return;1===g.length&&(a.get(this).selectionStartIndex=b.index),this.deselectAll(),g.options.forEach(b=>a.get(this).selectOption(b)),this.parent.multiple||(this.parent.open=!1),this.unHoverAllOptions()}}}());
+     */select(b,c=!1,d=!1,e=!1){let f=Array.prototype.slice.call(arguments,1);if(Array.isArray(b))return console.log("Handle array of indexes");if("number"==typeof b)return a.get(this).selectByIndex(b,...f);if("string"==typeof b)return a.get(this).selectByString(b,...f);let g=new(a.get(this).selection)([b]),h=!0;if(this.parent.multiple){let{selectionStartIndex:f}=a.get(this);if(c){if(1===this.selectedOptions.length){if(b.index===this.selectedIndex)return;if(g.clear(),b.index<this.selectedIndex)for(let a=this.selectedIndex;a>=b.index;a--)g.prepend(this.options[a]);if(b.index>this.selectedIndex)for(let a=this.selectedIndex;a<=b.index;a++)g.append(this.options[a])}if(1<this.selectedOptions.length&&b.index!==f){if(g.clear(),b.index<f)for(let a=f;a>=b.index;a--)g.prepend(this.options[a]);if(b.index>f)for(let a=f;a<=b.index;a++)g.append(this.options[a])}// return selection.options.forEach(option => console.log(option.displayElement))
+}else if(d||e){if(a.get(this).selectionStartIndex=b.index,b.selected)return this.deselect(b);h=!1}}else if(b.selected)return;1===g.length&&(a.get(this).selectionStartIndex=b.index),h&&this.deselectAll(),g.options.forEach(b=>a.get(this).selectOption(b)),this.parent.multiple||(this.parent.open=!1),this.unHoverAllOptions()}}}());

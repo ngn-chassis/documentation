@@ -287,7 +287,6 @@ customElements.define('chassis-option', function () {
       }, {
         key: "remove",
         value: function remove() {
-          var native = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
           this.parent.options.splice(this.index, 1);
           (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "remove", this).call(this);
         }

@@ -519,11 +519,13 @@ class ChassisOptionsElement extends HTMLElement {
     }
 
     let selection = new (_.get(this).selection)([option])
+    let deselectAll = true
 
     if (this.parent.multiple) {
-      if (shiftKey) {
-        let { selectionStartIndex } = _.get(this)
+      let { selectionStartIndex } = _.get(this)
 
+      // TODO: Refactor to use bounding method
+      if (shiftKey) {
         if (this.selectedOptions.length === 1) {
           if (option.index === this.selectedIndex) {
             return
@@ -544,55 +546,30 @@ class ChassisOptionsElement extends HTMLElement {
           }
         }
 
-        if (this.selectedOptions.length > 1) {
-          if (option.index !== selectionStartIndex) {
-            selection.clear()
+        if (this.selectedOptions.length > 1 && option.index !== selectionStartIndex) {
+          selection.clear()
 
-            if (option.index < selectionStartIndex) {
-              for (let i = selectionStartIndex; i >= option.index; i--) {
-                selection.prepend(this.options[i])
-              }
+          if (option.index < selectionStartIndex) {
+            for (let i = selectionStartIndex; i >= option.index; i--) {
+              selection.prepend(this.options[i])
             }
+          }
 
-            if (option.index > selectionStartIndex) {
-              for (let i = selectionStartIndex; i <= option.index; i++) {
-                selection.append(this.options[i])
-              }
+          if (option.index > selectionStartIndex) {
+            for (let i = selectionStartIndex; i <= option.index; i++) {
+              selection.append(this.options[i])
             }
           }
         }
-
-        // return selection.options.forEach(option => console.log(option.displayElement))
       } else if (ctrlKey || metaKey) {
+        _.get(this).selectionStartIndex = option.index
+
         if (option.selected) {
           return this.deselect(option)
         }
 
-        selection.append(option)
+        deselectAll = false
       }
-
-      // Shift trumps other keys
-      // if (shiftKey) {
-      //
-      //
-      //   // if (option.index < selectionStartIndex) {
-      //   //   let upperBound = selectionStartIndex
-      //   //
-      //   //   if (this.selectedOptions.length > 1) {
-      //   //     upperBound += this.selectedOptions.length
-      //   //   }
-      //   //
-      //   //   for (let i = upperBound; i >= option.index; i--) {
-      //   //     options.unshift(this.options[i])
-      //   //   }
-      //   // }
-      //   //
-      //   // if (option.index > selectionStartIndex) {
-      //   //   for (let i = selectionStartIndex; i <= option.index; i++) {
-      //   //     options.push(this.options[i])
-      //   //   }
-      //   // }
-      // }
     } else if (option.selected) {
       return
     }
@@ -601,7 +578,7 @@ class ChassisOptionsElement extends HTMLElement {
       _.get(this).selectionStartIndex = option.index
     }
 
-    this.deselectAll()
+    deselectAll && this.deselectAll()
     selection.options.forEach(option => _.get(this).selectOption(option))
 
     if (!this.parent.multiple) {

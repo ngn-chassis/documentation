@@ -386,13 +386,9 @@ customElements.define('chassis-select', function () {
               _this2.setAttribute('tabindex', 0);
             }
 
-            _this2.autofocus && _this2.focus();
+            _this2.autofocus && _this2.focus(); // TEMP
 
             _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
-
-            _.get(_this2).sourceElement.addEventListener('mousedown', function (evt) {
-              console.log(evt);
-            });
           }, 0);
         }
       }, {

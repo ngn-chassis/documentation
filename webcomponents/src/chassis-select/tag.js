@@ -225,10 +225,8 @@ class ChassisSelectElement extends HTMLElement {
 
       this.autofocus && this.focus()
 
+      // TEMP
       this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
-      _.get(this).sourceElement.addEventListener('mousedown', evt => {
-        console.log(evt);
-      })
     }, 0)
   }
 

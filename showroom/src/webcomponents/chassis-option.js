@@ -2,4 +2,4 @@ customElements.define("chassis-option",function(){let a=new WeakMap;return class
      * @method remove
      * Remove this option from the DOM.
      * @override
-     */remove(a=!0){this.parent.options.splice(this.index,1),super.remove()}}}());
+     */remove(){this.parent.options.splice(this.index,1),super.remove()}}}());

@@ -1,4 +1,4 @@
-class ChassisOption extends HTMLElement {
+class ChassisOptionElement extends HTMLElement {
   constructor () {
     super()
 
@@ -88,10 +88,10 @@ class ChassisOption extends HTMLElement {
    * Remove this option from the DOM.
    * @override
    */
-  remove (native = true) {
+  remove () {
     this.parent.options.splice(this.index, 1)
     super.remove()
   }
 }
 
-customElements.define('chassis-option', ChassisOption)
+customElements.define('chassis-option', ChassisOptionElement)

@@ -2,19 +2,56 @@ class ChassisSelectElement extends HTMLElement {
   constructor () {
     super()
 
-    // this.addEventListener('click', evt => {
-    //   console.log('chassis-select');
-    // })
-
-    _.get(this).addReadOnlyProps([
+    _.get(this).addReadOnlyProperties([
       'form',
-      'willValidate',
+
+      {
+        name: 'hoveredIndex',
+        get () {
+          return this.optionsElement.hoveredIndex
+        }
+      },
+
+      'labels',
+
+      {
+        name: 'options',
+        get () {
+          return this.optionsElement.displayOptions
+        }
+      },
+
+      'optionsElement',
+
+      {
+        name: 'selectedOptions',
+        get () {
+          return this.optionsElement ? this.optionsElement.selectedOptions : null
+        }
+      },
+
+      'selectedOptionsElement',
+      'sourceElement',
       'type',
+      'willValidate',
       'validationMessage',
       'validity'
     ])
 
-    _.get(this).addPrivateProps({
+    _.get(this).addAttributes([
+      'name',
+      'placeholder'
+    ])
+
+    _.get(this).addBooleanAttributes([
+      'autofocus',
+      'disabled',
+      'multiple',
+      'open',
+      'required'
+    ])
+
+    _.get(this).addPrivateProperties({
       title: '',
 
       arrowKeydownHandler: evt => {
@@ -28,12 +65,14 @@ class ChassisSelectElement extends HTMLElement {
             evt.preventDefault()
 
             if (!this.multiple) {
-              if (!this.isOpen && (evt[this.keySource] === 32 || evt[this.keySource] === ' ')) {
-                return this.open()
+              if (!this.open && (evt[this.keySource] === 32 || evt[this.keySource] === ' ')) {
+                this.open = true
+                return
               }
 
               if (this.hoveredIndex === this.selectedIndex || this.hoveredIndex === -1) {
-                return this.close()
+                this.open = false
+                return
               }
             }
 
@@ -43,8 +82,9 @@ class ChassisSelectElement extends HTMLElement {
           case 'ArrowUp':
             evt.preventDefault()
 
-            if (!this.multiple && !this.isOpen) {
-              return this.open()
+            if (!this.multiple && !this.open) {
+              this.open = true
+              return
             }
 
             switch (startIndex) {
@@ -62,8 +102,9 @@ class ChassisSelectElement extends HTMLElement {
           case 'ArrowDown':
             evt.preventDefault()
 
-            if (!this.multiple && !this.isOpen) {
-              return this.open()
+            if (!this.multiple && !this.open) {
+              this.open = true
+              return
             }
 
             switch (startIndex) {
@@ -84,7 +125,7 @@ class ChassisSelectElement extends HTMLElement {
           return
         }
 
-        this.removeAttribute('open')
+        this.open = false
       }
     })
   }
@@ -93,108 +134,8 @@ class ChassisSelectElement extends HTMLElement {
     return ['autofocus', 'disabled', 'multiple', 'name', 'open', 'tabindex']
   }
 
-  get autofocus () {
-    return _.get(this).getBooleanPropertyValue('autofocus')
-  }
-
-  set autofocus (bool) {
-    _.get(this).handleBooleanPropertyChange('autofocus', bool)
-  }
-
-  get disabled () {
-    return _.get(this).getBooleanPropertyValue('disabled')
-  }
-
-  set disabled (bool) {
-    _.get(this).handleBooleanPropertyChange('disabled', bool)
-  }
-
-  get hoveredIndex () {
-    return this.optionsElement.hoveredIndex
-  }
-
-  set hoveredIndex (index) {
-    return _.get(this).throw('readonly', {
-      name: 'hoveredIndex'
-    })
-  }
-
-  get isOpen () {
-    if (this.multiple) {
-      return null
-    }
-
-    return this.hasAttribute('open')
-  }
-
-  set isOpen (bool) {
-    if (this.multiple) {
-      return
-    }
-
-    bool ? this.setAttribute('open', '') : this.removeAttribute('open')
-  }
-
   get length () {
     return this.options.length
-  }
-
-  get labels () {
-    return _.get(this).labels
-  }
-
-  set labels (elements) {
-    return _.get(this).throw('readonly', {
-      name: 'labels'
-    })
-  }
-
-  get multiple () {
-    return _.get(this).getBooleanPropertyValue('multiple')
-  }
-
-  set multiple (bool) {
-    if (bool && this.hasAttribute('open')) {
-      this.removeAttribute('open')
-    }
-
-    _.get(this).handleBooleanPropertyChange('multiple', bool)
-  }
-
-  get name () {
-    return this.getAttribute('name')
-  }
-
-  set name (name) {
-    _.get(this).handlePropertyChange('name', name)
-  }
-
-  get options () {
-    return this.optionsElement.displayOptions
-  }
-
-  set options (value) {
-    return _.get(this).throw('readonly', {
-      name: 'options'
-    })
-  }
-
-  get optionsElement () {
-    return _.get(this).optionsEl
-  }
-
-  set optionsElement (el) {
-    return _.get(this).throw('readonly', {
-      name: 'optionsElement'
-    })
-  }
-
-  get required () {
-    return _.get(this).getBooleanPropertyValue('required')
-  }
-
-  set required (bool) {
-    _.get(this).handleBooleanPropertyChange('required', bool)
   }
 
   get selectedIndex () {
@@ -207,36 +148,6 @@ class ChassisSelectElement extends HTMLElement {
     }
 
     this.optionsElement.selectedIndex = index
-  }
-
-  get selectedOptions () {
-    return this.optionsElement ? this.optionsElement.selectedOptions : null
-  }
-
-  set selectedOptions (value) {
-    return _.get(this).throw('readonly', {
-      name: 'selectedOptions'
-    })
-  }
-
-  get sourceElement () {
-    return _.get(this).sourceEl
-  }
-
-  set sourceElement (el) {
-    return _.get(this).throw('readonly', {
-      name: 'sourceElement'
-    })
-  }
-
-  get selectedOptionsElement () {
-    return _.get(this).selectedOptionsEl
-  }
-
-  set selectedOptionsElement (el) {
-    return _.get(this).throw('readonly', {
-      name: 'selectedOptionsElement'
-    })
   }
 
   get value () {
@@ -260,12 +171,10 @@ class ChassisSelectElement extends HTMLElement {
     }
 
     switch (attr) {
-      case 'autofocus':
-      case 'disabled':
-        return _.get(this).handleBooleanAttributeChange(attr, newValue)
-
       case 'multiple':
-        _.get(this).handleBooleanAttributeChange(attr, newValue)
+        if (newValue && this.hasAttribute('open')) {
+          this.removeAttribute('open')
+        }
 
         if (!newValue && this.selectedOptions) {
           let index = this.selectedIndex
@@ -275,15 +184,23 @@ class ChassisSelectElement extends HTMLElement {
 
         break
 
-      case 'name':
-        return _.get(this).handleAttributeChange(attr, newValue)
-
       case 'open':
-        if (this.multiple) {
+        if (!this.open) {
+          document.body.removeEventListener('click', _.get(this).bodyClickHandler)
+          document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler)
+          document.body.removeEventListener('touchend', _.get(this).bodyClickHandler)
           return
         }
 
-        return this.isOpen ? this.open() : this.close()
+        if (this.multiple) {
+          console.warn('WARNING <chassis-select multiple> cannot be opened.')
+          return this.removeAttribute('open')
+        }
+
+        document.body.addEventListener('click', _.get(this).bodyClickHandler)
+        document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler)
+        document.body.addEventListener('touchend', _.get(this).bodyClickHandler)
+        break
     }
   }
 
@@ -294,19 +211,6 @@ class ChassisSelectElement extends HTMLElement {
   clear () {
     this.optionsElement.clear()
     this.selectedOptionsElement.clear()
-  }
-
-  close () {
-    // In case method is called directly by user
-    if (this.multiple) {
-      return
-    }
-
-    document.body.removeEventListener('click', _.get(this).bodyClickHandler)
-    document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler)
-    document.body.removeEventListener('touchend', _.get(this).bodyClickHandler)
-
-    this.isOpen = false
   }
 
   connectedCallback () {
@@ -320,6 +224,11 @@ class ChassisSelectElement extends HTMLElement {
       }
 
       this.autofocus && this.focus()
+
+      this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
+      _.get(this).sourceElement.addEventListener('mousedown', evt => {
+        console.log(evt);
+      })
     }, 0)
   }
 
@@ -329,9 +238,9 @@ class ChassisSelectElement extends HTMLElement {
 
   inject (select, labels) {
     Object.assign(_.get(this), {
-      sourceEl: select,
-      optionsEl: document.createElement('chassis-options'),
-      selectedOptionsEl: document.createElement('chassis-selected-options'),
+      sourceElement: select,
+      optionsElement: document.createElement('chassis-options'),
+      selectedOptionsElement: document.createElement('chassis-selected-options'),
       labels
     })
 
@@ -360,19 +269,6 @@ class ChassisSelectElement extends HTMLElement {
 
   namedItem (id) {
     return this.optionsElement.namedItem(id)
-  }
-
-  open () {
-    // In case method is called directly by user
-    if (this.multiple) {
-      return
-    }
-
-    document.body.addEventListener('click', _.get(this).bodyClickHandler)
-    document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler)
-    document.body.addEventListener('touchend', _.get(this).bodyClickHandler)
-
-    this.isOpen = true
   }
 
   /**

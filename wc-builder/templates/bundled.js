@@ -32,18 +32,118 @@ customElements.define('{{TAG-NAME}}', (function () {
       }
 
       _.set(this, {
-        addPrivateProps: props => {
-          for (let prop in props) {
-            _.get(this)[prop] = props[prop]
+        sourceElement: null,
+
+        addAttribute: prop => {
+          Object.defineProperty(this, prop, {
+            get () {
+              return this.getAttribute(prop)
+            },
+            set (value) {
+              _.get(this).setAttributeValue(prop, value)
+            }
+          })
+        },
+
+        addAttributes: props => props.forEach(prop => _.get(this).addAttribute(prop)),
+
+        setAttributeValue: (attr, val) => {
+          this.setAttribute(attr, val)
+
+          if (_.get(this).sourceElement) {
+            _.get(this).sourceElement[attr] = val
           }
         },
 
-        addReadOnlyProp: prop => {
-          Object.defineProperty(this, prop, _.get(this).readonlyProperty(prop))
+        addReadOnlyProperty: prop => {
+          let custom = typeof prop === 'object'
+
+          if (!custom && typeof prop !== 'string') {
+            return console.error('ERROR <{{TAG-NAME}}> Read-only property must be type "object" or "string"')
+          }
+
+          let props = {
+            set () {
+              _.get(this).throw('readonly', {prop: custom ? prop.name : prop})
+            }
+          }
+
+          if (custom && prop.hasOwnProperty('get')) {
+            props.get = prop.get
+          } else {
+            props.get = function () {
+              return _.get(this)[prop]
+            }
+          }
+
+          Object.defineProperty(this, custom ? prop.name : prop, props)
         },
 
-        addReadOnlyProps: props => {
-          props.forEach(prop => _.get(this).addReadOnlyProp(prop))
+        addReadOnlyProperties: props => props.forEach(prop => _.get(this).addReadOnlyProperty(prop)),
+
+        setReadOnlyPropertyValue: value => _.get(this)[prop] = value,
+
+        addBooleanAttribute: prop => {
+          Object.defineProperty(this, prop, {
+            get () {
+              return _.get(this).getBooleanAttributeValue(prop)
+            },
+            set (value) {
+              _.get(this).setBooleanAttributeValue(prop, value)
+            }
+          })
+        },
+
+        addBooleanAttributes: props => props.forEach(prop => _.get(this).addBooleanAttribute(prop)),
+
+        getBooleanAttributeValue: prop => this.hasAttribute(prop) && this.getAttribute(prop) !== 'false',
+
+        setBooleanAttributeValue: (attr, value) => {
+          if (typeof value === 'boolean') {
+            value = value.toString()
+          }
+
+          let acceptableValues = ['true', 'false', '', null]
+
+          if (!acceptableValues.includes(value)) {
+            console.error(`<${this.localName}> "${attr}" attribute expected boolean but received "${value}"`)
+            this.removeAttribute(attr)
+
+            if (_.get(this).sourceElement) {
+              _.get(this).sourceElement[attr] = false
+            }
+
+            return
+          }
+
+          switch (value) {
+            case 'false':
+            case null:
+              this.removeAttribute(attr)
+
+              if (_.get(this).sourceElement) {
+                _.get(this).sourceElement[attr] = false
+              }
+
+              break
+
+            case 'true':
+            case '':
+              this.setAttribute(attr, '')
+
+              if (_.get(this).sourceElement) {
+                _.get(this).sourceElement[attr] = true
+              }
+              break
+
+            default: return
+          }
+        },
+
+        addPrivateProperties: props => {
+          for (let prop in props) {
+            _.get(this)[prop] = props[prop]
+          }
         },
 
         generateGuid: (prefix = null) => {
@@ -54,72 +154,12 @@ customElements.define('{{TAG-NAME}}', (function () {
           return prefix ? `${prefix}_${id}` : id
         },
 
-        getBooleanPropertyValue: prop => this.hasAttribute(prop) && this.getAttribute(prop) !== 'false',
-
-        handleAttributeChange: (attr, val) => {
-          if (!_.get(this).sourceEl) {
-            return
-          }
-
-          this.setAttribute(attr, val)
-          _.get(this).sourceEl[attr] = val
-        },
-
-        handleBooleanAttributeChange: (attr, value) => {
-          if (!_.get(this).sourceEl) {
-            return
-          }
-
-          let acceptableValues = ['true', 'false', '', null]
-
-          if (!acceptableValues.includes(value)) {
-            console.error(`<${this.localName}> "${attr}" attribute expected boolean but received "${value}"`)
-            this.removeAttribute(attr)
-            _.get(this).sourceEl[attr] = false
-            return
-          }
-
-          if (value === 'false' && this.hasAttribute(attr)) {
-            this.removeAttribute(attr)
-            _.get(this).sourceEl[attr] = false
-            return
-          }
-
-          _.get(this).sourceEl[attr] = this.hasAttribute(attr)
-        },
-
-        handleBooleanPropertyChange: (prop, bool) => {
-          if (!bool) {
-            this.removeAttribute(prop)
-            _.get(this).sourceEl[prop] = false
-            return
-          }
-
-          if (!this.hasAttribute(prop) || this.getAttribute(prop) !== 'true') {
-            this.setAttribute(prop, '')
-            _.get(this).sourceEl[prop] = true
-          }
-        },
-
-        handlePropertyChange: (prop, val) => {
-          _.get(this).sourceEl[prop] = val
-
-          if (!this.hasAttribute(prop) || this.getAttribute(prop) !== val) {
-            this.setAttribute(prop, val)
-          }
-        },
-
-        readonlyProperty: name => ({
-          get: () => _.get(this).sourceEl[name],
-          set: () => _.get(this).throw('readonly', {name})
-        }),
-
         throw: (type, vars) => {
           let message = 'ERROR <{{TAG-NAME}}> '
 
           switch (type) {
             case 'readonly':
-              message += `Cannot set read-only property "${vars.name}".`
+              message += `Cannot set read-only property "${vars.prop}".`
               break
 
             default:

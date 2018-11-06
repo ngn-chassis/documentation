@@ -4,7 +4,7 @@ class ChassisDatalist extends HTMLElement {
 
     this.clickCount = 0
 
-    _.get(this).addReadOnlyProp('options')
+    _.get(this).addReadOnlyProperty('options')
 
     _.get(this).options = []
 
@@ -249,12 +249,12 @@ class ChassisDatalist extends HTMLElement {
       case 'autofocus':
       case 'disabled':
         console.log(attr);
-        // _.get(this).handleBooleanAttributeChange(attr, newValue)
+        // _.get(this).setBooleanAttributeValue(attr, newValue)
         break
 
       case 'name':
         console.log(attr);
-        // _.get(this).handleAttributeChange(attr, newValue)
+        // _.get(this).setAttributeValue(attr, newValue)
         break
 
       case 'open':

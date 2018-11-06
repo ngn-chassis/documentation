@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,6 +116,28 @@ module.exports = _setPrototypeOf;
 /* 2 */
 /***/ (function(module, exports) {
 
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -127,19 +149,21 @@ function _assertThisInitialized(self) {
 module.exports = _assertThisInitialized;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(4);
+var _interopRequireDefault = __webpack_require__(5);
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+var _typeof2 = _interopRequireDefault(__webpack_require__(2));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(6));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(6));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(7));
+var _createClass2 = _interopRequireDefault(__webpack_require__(7));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(8));
 
 var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(0));
 
@@ -147,7 +171,7 @@ var _get2 = _interopRequireDefault(__webpack_require__(9));
 
 var _inherits2 = _interopRequireDefault(__webpack_require__(11));
 
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(3));
 
 var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(12));
 
@@ -192,41 +216,83 @@ customElements.define('chassis-option', function () {
         }
 
         _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          addPrivateProps: function addPrivateProps(props) {
-            for (var prop in props) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = props[prop];
-            }
-          },
-          addReadOnlyProp: function addReadOnlyProp(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).readonlyProperty(prop));
-          },
-          addReadOnlyProps: function addReadOnlyProps(props) {
-            props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProp(prop);
+          sourceElement: null,
+          addAttribute: function addAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return this.getAttribute(prop);
+              },
+              set: function set(value) {
+                _.get(this).setAttributeValue(prop, value);
+              }
             });
           },
-          generateGuid: function generateGuid() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+          addAttributes: function addAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttribute(prop);
             });
-            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
-          getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
-            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-          },
-          handleAttributeChange: function handleAttributeChange(attr, val) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
-            }
-
+          setAttributeValue: function setAttributeValue(attr, val) {
             _this.setAttribute(attr, val);
 
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = val;
+            if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = val;
+            }
           },
-          handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
+          addReadOnlyProperty: function addReadOnlyProperty(prop) {
+            var custom = (0, _typeof2.default)(prop) === 'object';
+
+            if (!custom && typeof prop !== 'string') {
+              return console.error('ERROR <chassis-option> Read-only property must be type "object" or "string"');
+            }
+
+            var props = {
+              set: function set() {
+                _.get(this).throw('readonly', {
+                  prop: custom ? prop.name : prop
+                });
+              }
+            };
+
+            if (custom && prop.hasOwnProperty('get')) {
+              props.get = prop.get;
+            } else {
+              props.get = function () {
+                return _.get(this)[prop];
+              };
+            }
+
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
+          },
+          addReadOnlyProperties: function addReadOnlyProperties(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperty(prop);
+            });
+          },
+          setReadOnlyPropertyValue: function setReadOnlyPropertyValue(value) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = value;
+          },
+          addBooleanAttribute: function addBooleanAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return _.get(this).getBooleanAttributeValue(prop);
+              },
+              set: function set(value) {
+                _.get(this).setBooleanAttributeValue(prop, value);
+              }
+            });
+          },
+          addBooleanAttributes: function addBooleanAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttribute(prop);
+            });
+          },
+          getBooleanAttributeValue: function getBooleanAttributeValue(prop) {
+            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+          },
+          setBooleanAttributeValue: function setBooleanAttributeValue(attr, value) {
+            if (typeof value === 'boolean') {
+              value = value.toString();
             }
 
             var acceptableValues = ['true', 'false', '', null];
@@ -236,58 +302,56 @@ customElements.define('chassis-option', function () {
 
               _this.removeAttribute(attr);
 
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            if (value === 'false' && _this.hasAttribute(attr)) {
-              _this.removeAttribute(attr);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = _this.hasAttribute(attr);
-          },
-          handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
-            if (!bool) {
-              _this.removeAttribute(prop);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = false;
-              return;
-            }
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
-              _this.setAttribute(prop, '');
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = true;
-            }
-          },
-          handlePropertyChange: function handlePropertyChange(prop, val) {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = val;
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
-              _this.setAttribute(prop, val);
-            }
-          },
-          readonlyProperty: function readonlyProperty(name) {
-            return {
-              get: function get() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[name];
-              },
-              set: function set() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).throw('readonly', {
-                  name: name
-                });
+              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
               }
-            };
+
+              return;
+            }
+
+            switch (value) {
+              case 'false':
+              case null:
+                _this.removeAttribute(attr);
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
+                }
+
+                break;
+
+              case 'true':
+              case '':
+                _this.setAttribute(attr, '');
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = true;
+                }
+
+                break;
+
+              default:
+                return;
+            }
+          },
+          addPrivateProperties: function addPrivateProperties(props) {
+            for (var _prop in props) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[_prop] = props[_prop];
+            }
+          },
+          generateGuid: function generateGuid() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+            });
+            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-option> ';
 
             switch (type) {
               case 'readonly':
-                message += "Cannot set read-only property \"".concat(vars.name, "\".");
+                message += "Cannot set read-only property \"".concat(vars.prop, "\".");
                 break;
 
               default:
@@ -299,9 +363,26 @@ customElements.define('chassis-option', function () {
         });
 
         _this.parent = null;
-        _this.defaultSelected = false; // this.addEventListener('click', evt => {
-        //   console.log('chassis-option');
-        // })
+        _this.defaultSelected = false;
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttributes(['id', 'label', 'value']);
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttributes(['disabled', 'hover', 'selected']);
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperties(['form', {
+          name: 'index',
+          get: function get() {
+            var _this2 = this;
+
+            return this.parent.options.findIndex(function (option) {
+              return option.displayElement === _this2;
+            });
+          }
+        }]);
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
+          form: null
+        });
 
         _this.addEventListener('mouseover', function (evt) {
           if (_this.parent.mousedown) {
@@ -339,11 +420,11 @@ customElements.define('chassis-option', function () {
             case 'disabled':
             case 'selected':
             case 'hovered':
-              return _.get(this).handleBooleanAttributeChange(attr, newValue);
+              return _.get(this).setBooleanAttributeValue(attr, newValue);
 
             case 'label':
             case 'value':
-              return _.get(this).handleAttributeChange(attr, newValue);
+              return _.get(this).setAttributeValue(attr, newValue);
 
             default:
               return;
@@ -366,59 +447,6 @@ customElements.define('chassis-option', function () {
           (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "remove", this).call(this);
         }
       }, {
-        key: "disabled",
-        get: function get() {
-          return _.get(this).getBooleanPropertyValue('disabled');
-        },
-        set: function set(bool) {
-          _.get(this).handleBooleanPropertyChange('disabled', bool);
-        }
-      }, {
-        key: "form",
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'form'
-          });
-        }
-      }, {
-        key: "id",
-        get: function get() {
-          return this.getAttribute('id');
-        },
-        set: function set(value) {
-          _.get(this).handlePropertyChange('id', value);
-        }
-      }, {
-        key: "index",
-        get: function get() {
-          var _this2 = this;
-
-          return this.parent.options.findIndex(function (option) {
-            return option.displayElement === _this2;
-          });
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'index'
-          });
-        }
-      }, {
-        key: "label",
-        get: function get() {
-          return this.getAttribute('label');
-        },
-        set: function set(label) {
-          _.get(this).handlePropertyChange('label', label);
-        }
-      }, {
-        key: "selected",
-        get: function get() {
-          return _.get(this).getBooleanPropertyValue('selected');
-        },
-        set: function set(bool) {
-          _.get(this).handleBooleanPropertyChange('selected', bool);
-        }
-      }, {
         key: "text",
         get: function get() {
           return this.innerHTML;
@@ -426,26 +454,10 @@ customElements.define('chassis-option', function () {
         set: function set(content) {
           this.innerHTML = content;
         }
-      }, {
-        key: "value",
-        get: function get() {
-          return this.getAttribute('value');
-        },
-        set: function set(value) {
-          _.get(this).handlePropertyChange('value', value);
-        }
-      }, {
-        key: "hovered",
-        get: function get() {
-          return this.hasAttribute('hover');
-        },
-        set: function set(bool) {
-          bool ? this.setAttribute('hover', '') : this.removeAttribute('hover');
-        }
       }], [{
         key: "observedAttributes",
         get: function get() {
-          return ['disabled', 'hovered', 'label', 'selected', 'value'];
+          return ['disabled', 'hover', 'label', 'selected', 'value'];
         }
       }]);
       return _class;
@@ -454,7 +466,7 @@ customElements.define('chassis-option', function () {
 }());
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -466,7 +478,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -478,7 +490,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -500,12 +512,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(8);
+var _typeof = __webpack_require__(2);
 
-var assertThisInitialized = __webpack_require__(2);
+var assertThisInitialized = __webpack_require__(3);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -516,28 +528,6 @@ function _possibleConstructorReturn(self, call) {
 }
 
 module.exports = _possibleConstructorReturn;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
 
 /***/ }),
 /* 9 */

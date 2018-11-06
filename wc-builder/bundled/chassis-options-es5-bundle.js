@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -103,6 +103,28 @@ module.exports = _setPrototypeOf;
 /* 1 */
 /***/ (function(module, exports) {
 
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -114,7 +136,7 @@ function _assertThisInitialized(self) {
 module.exports = _assertThisInitialized;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 function _getPrototypeOf(o) {
@@ -127,27 +149,29 @@ function _getPrototypeOf(o) {
 module.exports = _getPrototypeOf;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(4);
+var _interopRequireDefault = __webpack_require__(5);
 
-var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(5));
+var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(6));
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(9));
+var _typeof2 = _interopRequireDefault(__webpack_require__(1));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(10));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(10));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(11));
+var _createClass2 = _interopRequireDefault(__webpack_require__(11));
 
-var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(2));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(12));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(3));
 
 var _inherits2 = _interopRequireDefault(__webpack_require__(13));
 
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(1));
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
 
 var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(14));
 
@@ -192,41 +216,83 @@ customElements.define('chassis-options', function () {
         }
 
         _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          addPrivateProps: function addPrivateProps(props) {
-            for (var prop in props) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = props[prop];
-            }
-          },
-          addReadOnlyProp: function addReadOnlyProp(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).readonlyProperty(prop));
-          },
-          addReadOnlyProps: function addReadOnlyProps(props) {
-            props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProp(prop);
+          sourceElement: null,
+          addAttribute: function addAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return this.getAttribute(prop);
+              },
+              set: function set(value) {
+                _.get(this).setAttributeValue(prop, value);
+              }
             });
           },
-          generateGuid: function generateGuid() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+          addAttributes: function addAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttribute(prop);
             });
-            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
-          getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
-            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-          },
-          handleAttributeChange: function handleAttributeChange(attr, val) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
-            }
-
+          setAttributeValue: function setAttributeValue(attr, val) {
             _this.setAttribute(attr, val);
 
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = val;
+            if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = val;
+            }
           },
-          handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
+          addReadOnlyProperty: function addReadOnlyProperty(prop) {
+            var custom = (0, _typeof2.default)(prop) === 'object';
+
+            if (!custom && typeof prop !== 'string') {
+              return console.error('ERROR <chassis-options> Read-only property must be type "object" or "string"');
+            }
+
+            var props = {
+              set: function set() {
+                _.get(this).throw('readonly', {
+                  prop: custom ? prop.name : prop
+                });
+              }
+            };
+
+            if (custom && prop.hasOwnProperty('get')) {
+              props.get = prop.get;
+            } else {
+              props.get = function () {
+                return _.get(this)[prop];
+              };
+            }
+
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
+          },
+          addReadOnlyProperties: function addReadOnlyProperties(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperty(prop);
+            });
+          },
+          setReadOnlyPropertyValue: function setReadOnlyPropertyValue(value) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = value;
+          },
+          addBooleanAttribute: function addBooleanAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return _.get(this).getBooleanAttributeValue(prop);
+              },
+              set: function set(value) {
+                _.get(this).setBooleanAttributeValue(prop, value);
+              }
+            });
+          },
+          addBooleanAttributes: function addBooleanAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttribute(prop);
+            });
+          },
+          getBooleanAttributeValue: function getBooleanAttributeValue(prop) {
+            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+          },
+          setBooleanAttributeValue: function setBooleanAttributeValue(attr, value) {
+            if (typeof value === 'boolean') {
+              value = value.toString();
             }
 
             var acceptableValues = ['true', 'false', '', null];
@@ -236,58 +302,56 @@ customElements.define('chassis-options', function () {
 
               _this.removeAttribute(attr);
 
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            if (value === 'false' && _this.hasAttribute(attr)) {
-              _this.removeAttribute(attr);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = _this.hasAttribute(attr);
-          },
-          handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
-            if (!bool) {
-              _this.removeAttribute(prop);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = false;
-              return;
-            }
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
-              _this.setAttribute(prop, '');
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = true;
-            }
-          },
-          handlePropertyChange: function handlePropertyChange(prop, val) {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = val;
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
-              _this.setAttribute(prop, val);
-            }
-          },
-          readonlyProperty: function readonlyProperty(name) {
-            return {
-              get: function get() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[name];
-              },
-              set: function set() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).throw('readonly', {
-                  name: name
-                });
+              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
               }
-            };
+
+              return;
+            }
+
+            switch (value) {
+              case 'false':
+              case null:
+                _this.removeAttribute(attr);
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
+                }
+
+                break;
+
+              case 'true':
+              case '':
+                _this.setAttribute(attr, '');
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = true;
+                }
+
+                break;
+
+              default:
+                return;
+            }
+          },
+          addPrivateProperties: function addPrivateProperties(props) {
+            for (var _prop in props) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[_prop] = props[_prop];
+            }
+          },
+          generateGuid: function generateGuid() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+            });
+            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-options> ';
 
             switch (type) {
               case 'readonly':
-                message += "Cannot set read-only property \"".concat(vars.name, "\".");
+                message += "Cannot set read-only property \"".concat(vars.prop, "\".");
                 break;
 
               default:
@@ -300,414 +364,482 @@ customElements.define('chassis-options', function () {
 
         _this.parent = null;
         _this.mousedown = false;
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).options = [];
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor = function () {
-          var _p = new WeakMap();
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperties([{
+          name: 'form',
+          get: function get() {
+            return this.parent.form;
+          }
+        }, {
+          name: 'displayOptions',
+          get: function get() {
+            var _this2 = this;
 
-          return (
-            /*#__PURE__*/
-            function () {
-              function ChassisOptionObject(parent, key, sourceElement, displayElement) {
-                (0, _classCallCheck2.default)(this, ChassisOptionObject);
-                this.key = key;
-                this.form = parent.form;
-                this.defaultSelected = sourceElement.selected;
-                this.sourceElement = sourceElement;
-                this.displayElement = displayElement;
-                this.displayElement.parent = parent;
-                this.displayElement.defaultSelected = sourceElement.selected;
-                this.displayElement.innerHTML = sourceElement.innerHTML;
-                this.displayElement.addEventListener('mouseup', function (evt) {
-                  parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey);
-                }); // Add additional attributes
+            return new (_.get(this).ChassisHTMLOptionsCollection())(this.options.map(function (option) {
+              return option.displayElement;
+            }), this.selectedIndex, function (element, before) {
+              _this2.add(_.get(_this2).generateOptionObject(element), before);
+            }, function (index) {
+              return _this2.removeOptionByIndex(index);
+            });
+          }
+        }, {
+          name: 'hoveredIndex',
+          get: function get() {
+            return this.options.findIndex(function (option) {
+              return option.displayElement.hover;
+            });
+          }
+        }, 'options', {
+          name: 'selectedOptions',
+          get: function get() {
+            var nodes = this.querySelectorAll('[selected]');
+            return new (_.get(this).ChassisHTMLCollection())(nodes);
+          }
+        }]);
 
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
+          options: [],
+          selectionStartIndex: -1,
+          selection:
+          /*#__PURE__*/
+          function () {
+            function selection(options) {
+              (0, _classCallCheck2.default)(this, selection);
+              this.options = options;
+            }
 
-                try {
-                  for (var _iterator = sourceElement.attributes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var attr = _step.value;
+            (0, _createClass2.default)(selection, [{
+              key: "append",
+              value: function append(option) {
+                this.options.push(option);
+              }
+            }, {
+              key: "clear",
+              value: function clear() {
+                this.options = [];
+              }
+            }, {
+              key: "prepend",
+              value: function prepend(option) {
+                this.options.unshift(option);
+              }
+            }, {
+              key: "length",
+              get: function get() {
+                return this.options.length;
+              }
+            }]);
+            return selection;
+          }(),
+          optionConstructor: function optionConstructor() {
+            var _p = new WeakMap();
 
-                    if (typeof attr.value === 'boolean') {
-                      attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
-                      continue;
-                    }
+            return (
+              /*#__PURE__*/
+              function () {
+                function ChassisOptionObject(parent, key, sourceElement, displayElement) {
+                  (0, _classCallCheck2.default)(this, ChassisOptionObject);
+                  this.key = key;
+                  this.form = parent.form;
+                  this.defaultSelected = sourceElement.selected;
+                  this.sourceElement = sourceElement;
+                  this.displayElement = displayElement;
+                  this.displayElement.parent = parent;
+                  this.displayElement.defaultSelected = sourceElement.selected;
+                  this.displayElement.innerHTML = sourceElement.innerHTML;
+                  this.displayElement.addEventListener('mousedown', function (evt) {
+                    parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey);
+                  }); // Add additional attributes
 
-                    this.displayElement.setAttribute(attr.name, attr.value);
-                  }
-                } catch (err) {
-                  _didIteratorError = true;
-                  _iteratorError = err;
-                } finally {
+                  var _iteratorNormalCompletion = true;
+                  var _didIteratorError = false;
+                  var _iteratorError = undefined;
+
                   try {
-                    if (!_iteratorNormalCompletion && _iterator.return != null) {
-                      _iterator.return();
+                    for (var _iterator = sourceElement.attributes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                      var attr = _step.value;
+
+                      if (typeof attr.value === 'boolean') {
+                        attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
+                        continue;
+                      }
+
+                      this.displayElement.setAttribute(attr.name, attr.value);
                     }
+                  } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
                   } finally {
-                    if (_didIteratorError) {
-                      throw _iteratorError;
+                    try {
+                      if (!_iteratorNormalCompletion && _iterator.return != null) {
+                        _iterator.return();
+                      }
+                    } finally {
+                      if (_didIteratorError) {
+                        throw _iteratorError;
+                      }
                     }
                   }
+
+                  _p.set(this, {
+                    attributes: {
+                      disabled: sourceElement.disabled,
+                      id: sourceElement.getAttribute('id'),
+                      label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
+                      selected: sourceElement.selected,
+                      value: sourceElement.getAttribute('value').trim(),
+                      text: sourceElement.text.trim()
+                    }
+                  });
                 }
 
-                _p.set(this, {
-                  attributes: {
-                    disabled: sourceElement.disabled,
-                    id: sourceElement.getAttribute('id'),
-                    label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
-                    selected: sourceElement.selected,
-                    value: sourceElement.getAttribute('value').trim(),
-                    text: sourceElement.text.trim()
+                (0, _createClass2.default)(ChassisOptionObject, [{
+                  key: "remove",
+                  value: function remove() {
+                    this.sourceElement.remove();
+                    this.displayElement.remove();
                   }
-                });
-              }
+                }, {
+                  key: "setAttr",
+                  value: function setAttr(name, value) {
+                    this.sourceElement[name] = value;
 
-              (0, _createClass2.default)(ChassisOptionObject, [{
-                key: "remove",
-                value: function remove() {
-                  this.sourceElement.remove();
-                  this.displayElement.remove();
-                }
-              }, {
-                key: "setAttr",
-                value: function setAttr(name, value) {
-                  this.sourceElement[name] = value;
+                    if (typeof value === 'boolean') {
+                      value ? this.displayElement.setAttribute(name, '') : this.displayElement.removeAttribute(name);
+                    } else {
+                      this.displayElement.setAttribute(name, value);
+                    }
 
-                  if (typeof value === 'boolean') {
-                    value ? this.displayElement.setAttribute(name, '') : this.displayElement.removeAttribute(name);
-                  } else {
-                    this.displayElement.setAttribute(name, value);
+                    _p.get(this).attributes[name] = value;
                   }
-
-                  _p.get(this).attributes[name] = value;
-                }
-              }, {
-                key: "disabled",
-                get: function get() {
-                  return _p.get(this).attributes.disabled;
-                },
-                set: function set(bool) {
-                  this.setAttr('disabled', bool);
-                }
-              }, {
-                key: "index",
-                get: function get() {
-                  return this.sourceElement.index;
-                }
-              }, {
-                key: "id",
-                get: function get() {
-                  return _p.get(this).attributes.id;
-                },
-                set: function set(id) {
-                  this.setAttr('id', id);
-                }
-              }, {
-                key: "selected",
-                get: function get() {
-                  return _p.get(this).attributes.selected;
-                },
-                set: function set(bool) {
-                  this.setAttr('selected', bool);
-                }
-              }, {
-                key: "label",
-                get: function get() {
-                  return _p.get(this).attributes.label;
-                },
-                set: function set(label) {
-                  this.setAttr('label', label);
-                }
-              }, {
-                key: "text",
-                get: function get() {
-                  return _p.get(this).attributes.text;
-                },
-                set: function set(text) {
-                  this.setAttr('text', text);
-                }
-              }, {
-                key: "value",
-                get: function get() {
-                  return _p.get(this).attributes.value;
-                },
-                set: function set(value) {
-                  this.setAttr('value', value);
-                }
-              }]);
-              return ChassisOptionObject;
-            }()
-          );
-        };
-
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject = function (sourceElement) {
-          if (!customElements.get('chassis-option')) {
-            console.error("<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.");
-            return;
-          }
-
-          return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor())((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, document.createElement('chassis-option'));
-        };
-
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateSourceOptionElement = function (option) {
-          var sourceEl = document.createElement('option');
-
-          if (option.hasOwnProperty('innerHTML')) {
-            sourceEl.innerHTML = option.innerHTML;
-          }
-
-          if (option.hasOwnProperty('label')) {
-            sourceEl.innerHTML = option.label;
-          }
-
-          if (option.hasOwnProperty('value')) {
-            sourceEl.value = option.value;
-          }
-
-          if (option.hasOwnProperty('disabled')) {
-            sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
-          }
-
-          return sourceEl;
-        };
-
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptgroup = function (optgroup) {
-          if (!customElements.get('chassis-optgroup')) {
-            console.error("<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.");
-            return;
-          }
-
-          var surrogate = document.createElement('chassis-optgroup');
-          surrogate.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid('optgroup');
-          var label = optgroup.getAttribute('label');
-
-          if (!label || label.trim() === '') {
-            console.error('<optgroup> must have a label attribute!');
-            return;
-          }
-
-          surrogate.setAttribute('label', label);
-          var options = optgroup.querySelectorAll('option');
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
-
-          try {
-            for (var _iterator2 = options[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var option = _step2.value;
-
-              _this.add(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject(option), null, surrogate);
+                }, {
+                  key: "disabled",
+                  get: function get() {
+                    return _p.get(this).attributes.disabled;
+                  },
+                  set: function set(bool) {
+                    this.setAttr('disabled', bool);
+                  }
+                }, {
+                  key: "index",
+                  get: function get() {
+                    return this.sourceElement.index;
+                  }
+                }, {
+                  key: "id",
+                  get: function get() {
+                    return _p.get(this).attributes.id;
+                  },
+                  set: function set(id) {
+                    this.setAttr('id', id);
+                  }
+                }, {
+                  key: "selected",
+                  get: function get() {
+                    return _p.get(this).attributes.selected;
+                  },
+                  set: function set(bool) {
+                    this.setAttr('selected', bool);
+                  }
+                }, {
+                  key: "label",
+                  get: function get() {
+                    return _p.get(this).attributes.label;
+                  },
+                  set: function set(label) {
+                    this.setAttr('label', label);
+                  }
+                }, {
+                  key: "text",
+                  get: function get() {
+                    return _p.get(this).attributes.text;
+                  },
+                  set: function set(text) {
+                    this.setAttr('text', text);
+                  }
+                }, {
+                  key: "value",
+                  get: function get() {
+                    return _p.get(this).attributes.value;
+                  },
+                  set: function set(value) {
+                    this.setAttr('value', value);
+                  }
+                }]);
+                return ChassisOptionObject;
+              }()
+            );
+          },
+          generateOptionObject: function generateOptionObject(sourceElement) {
+            if (!customElements.get('chassis-option')) {
+              console.error("<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.");
+              return;
             }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-          } finally {
+
+            return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor())((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, document.createElement('chassis-option'));
+          },
+          generateSourceOptionElement: function generateSourceOptionElement(option) {
+            var sourceEl = document.createElement('option');
+
+            if (option.hasOwnProperty('innerHTML')) {
+              sourceEl.innerHTML = option.innerHTML;
+            }
+
+            if (option.hasOwnProperty('label')) {
+              sourceEl.innerHTML = option.label;
+            }
+
+            if (option.hasOwnProperty('value')) {
+              sourceEl.value = option.value;
+            }
+
+            if (option.hasOwnProperty('disabled')) {
+              sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
+            }
+
+            return sourceEl;
+          },
+          generateOptgroup: function generateOptgroup(optgroup) {
+            if (!customElements.get('chassis-optgroup')) {
+              console.error("<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.");
+              return;
+            }
+
+            var surrogate = document.createElement('chassis-optgroup');
+            surrogate.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid('optgroup');
+            var label = optgroup.getAttribute('label');
+
+            if (!label || label.trim() === '') {
+              console.error('<optgroup> must have a label attribute!');
+              return;
+            }
+
+            surrogate.setAttribute('label', label);
+            var options = optgroup.querySelectorAll('option');
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
             try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                _iterator2.return();
+              for (var _iterator2 = options[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var option = _step2.value;
+
+                _this.add(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject(option), null, surrogate);
               }
+            } catch (err) {
+              _didIteratorError2 = true;
+              _iteratorError2 = err;
             } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
+              try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                  _iterator2.return();
+                }
+              } finally {
+                if (_didIteratorError2) {
+                  throw _iteratorError2;
+                }
               }
             }
-          }
 
-          return surrogate;
-        };
+            return surrogate;
+          },
+          ChassisHTMLCollection: function ChassisHTMLCollection() {
+            var _p = new WeakMap();
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection = function () {
-          var _p = new WeakMap();
+            return (
+              /*#__PURE__*/
+              function () {
+                function ChassisHTMLCollection(arr) {
+                  var _this3 = this;
 
-          return (
+                  (0, _classCallCheck2.default)(this, ChassisHTMLCollection);
+
+                  _p.set(this, {
+                    arr: arr
+                  });
+
+                  arr.forEach(function (node, index) {
+                    _this3[index] = node;
+
+                    if (node.id) {
+                      _this3[node.id] = node;
+                    }
+                  });
+                }
+
+                (0, _createClass2.default)(ChassisHTMLCollection, [{
+                  key: "item",
+                  value: function item(index) {
+                    return _p.get(this).arr[index];
+                  }
+                }, {
+                  key: "namedItem",
+                  value: function namedItem(name) {
+                    var matches = _p.get(this).arr.filter(function (item) {
+                      return item.id === name || item.name === name;
+                    });
+
+                    return matches.length > 0 ? matches[0] : null;
+                  }
+                }, {
+                  key: Symbol.iterator,
+                  value: function value() {
+                    var _this4 = this;
+
+                    var index = 0;
+                    return {
+                      next: function next() {
+                        var result = {
+                          value: _p.get(_this4).arr[index],
+                          done: !(index in _p.get(_this4).arr)
+                        };
+                        index++;
+                        return result;
+                      }
+                    };
+                  }
+                }, {
+                  key: Symbol.toStringTag,
+                  value: function value() {
+                    return 'ChassisHTMLCollection';
+                  }
+                }, {
+                  key: "length",
+                  get: function get() {
+                    return _p.get(this).arr.length;
+                  }
+                }]);
+                return ChassisHTMLCollection;
+              }()
+            );
+          },
+          ChassisHTMLOptionsCollection: function ChassisHTMLOptionsCollection() {
+            var _p = new WeakMap();
+
+            var ChassisHTMLOptionsCollection =
             /*#__PURE__*/
-            function () {
-              function ChassisHTMLCollection(arr) {
-                var _this2 = this;
+            function (_$get$ChassisHTMLColl) {
+              (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
 
-                (0, _classCallCheck2.default)(this, ChassisHTMLCollection);
+              function ChassisHTMLOptionsCollection(arr) {
+                var _this5;
 
-                _p.set(this, {
+                var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+                var add = arguments.length > 2 ? arguments[2] : undefined;
+                var remove = arguments.length > 3 ? arguments[3] : undefined;
+                (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
+                _this5 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
+                _this5.selectedIndex = selectedIndex;
+                _this5.add = add;
+                _this5.remove = remove;
+
+                _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this5)), {
                   arr: arr
                 });
 
-                arr.forEach(function (node, index) {
-                  _this2[index] = node;
-
-                  if (node.id) {
-                    _this2[node.id] = node;
-                  }
-                });
+                return _this5;
               }
 
-              (0, _createClass2.default)(ChassisHTMLCollection, [{
-                key: "item",
-                value: function item(index) {
-                  return _p.get(this).arr[index];
-                }
-              }, {
-                key: "namedItem",
-                value: function namedItem(name) {
-                  var matches = _p.get(this).arr.filter(function (item) {
-                    return item.id === name || item.name === name;
-                  });
-
-                  return matches.length > 0 ? matches[0] : null;
-                }
-              }, {
-                key: Symbol.iterator,
-                value: function value() {
-                  var _this3 = this;
-
-                  var index = 0;
-                  return {
-                    next: function next() {
-                      var result = {
-                        value: _p.get(_this3).arr[index],
-                        done: !(index in _p.get(_this3).arr)
-                      };
-                      index++;
-                      return result;
-                    }
-                  };
-                }
-              }, {
+              (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
                 key: Symbol.toStringTag,
                 value: function value() {
-                  return 'ChassisHTMLCollection';
-                }
-              }, {
-                key: "length",
-                get: function get() {
-                  return _p.get(this).arr.length;
+                  return 'ChassisHTMLOptionsCollection';
                 }
               }]);
-              return ChassisHTMLCollection;
-            }()
-          );
-        };
+              return ChassisHTMLOptionsCollection;
+            }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection());
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLOptionsCollection = function () {
-          var _p = new WeakMap();
-
-          var ChassisHTMLOptionsCollection =
-          /*#__PURE__*/
-          function (_$get$ChassisHTMLColl) {
-            (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
-
-            function ChassisHTMLOptionsCollection(arr) {
-              var _this4;
-
-              var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
-              var add = arguments.length > 2 ? arguments[2] : undefined;
-              var remove = arguments.length > 3 ? arguments[3] : undefined;
-              (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
-              _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
-              _this4.selectedIndex = selectedIndex;
-              _this4.add = add;
-              _this4.remove = remove;
-
-              _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this4)), {
-                arr: arr
-              });
-
-              return _this4;
-            }
-
-            (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
-              key: Symbol.toStringTag,
-              value: function value() {
-                return 'ChassisHTMLOptionsCollection';
-              }
-            }]);
             return ChassisHTMLOptionsCollection;
-          }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection());
+          },
+          selectByKey: function selectByKey(key) {
+            var _this6;
 
-          return ChassisHTMLOptionsCollection;
-        };
+            var option = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getOptionByKey(key);
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByKey = function (key) {
-          var _this5;
-
-          var option = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getOptionByKey(key);
-
-          if (!option) {
-            console.error("Invalid option key \"".concat(key, "\""));
-            return _this.deselectAll();
-          }
-
-          for (var _len = arguments.length, keys = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-            keys[_key - 1] = arguments[_key];
-          }
-
-          (_this5 = _this).select.apply(_this5, [option].concat(keys));
-        };
-
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByIndex = function (index) {
-          var _this6;
-
-          var option = _this.options[index];
-
-          if (!option) {
-            if (index >= 0) {
-              return console.error("No option at index ".concat(index));
+            if (!option) {
+              console.error("Invalid option key \"".concat(key, "\""));
+              return _this.deselectAll();
             }
 
-            return;
-          }
+            for (var _len = arguments.length, keys = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+              keys[_key - 1] = arguments[_key];
+            }
 
-          for (var _len2 = arguments.length, keys = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-            keys[_key2 - 1] = arguments[_key2];
-          }
+            (_this6 = _this).select.apply(_this6, [option].concat(keys));
+          },
+          selectByIndex: function selectByIndex(index) {
+            var _this7;
 
-          (_this6 = _this).select.apply(_this6, [option].concat(keys));
-        };
+            var option = _this.options[index];
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectByString = function (string) {
-          var _this7;
-
-          var query;
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
-
-          try {
-            for (var _iterator3 = _this.options[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var option = _step3.value;
-
-              if (option.key === string || option.id === string) {
-                query = option;
-                break;
+            if (!option) {
+              if (index >= 0) {
+                return console.error("No option at index ".concat(index));
               }
+
+              return;
             }
-          } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-          } finally {
+
+            for (var _len2 = arguments.length, keys = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+              keys[_key2 - 1] = arguments[_key2];
+            }
+
+            (_this7 = _this).select.apply(_this7, [option].concat(keys));
+          },
+          selectByString: function selectByString(string) {
+            var _this8;
+
+            var query;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
             try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
+              for (var _iterator3 = _this.options[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var option = _step3.value;
+
+                if (option.key === string || option.id === string) {
+                  query = option;
+                  break;
+                }
               }
+            } catch (err) {
+              _didIteratorError3 = true;
+              _iteratorError3 = err;
             } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
+              try {
+                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                  _iterator3.return();
+                }
+              } finally {
+                if (_didIteratorError3) {
+                  throw _iteratorError3;
+                }
               }
             }
-          }
 
-          if (!query) {
-            console.error("Option matching query \"".concat(key, "\" not found"));
-            return;
-          }
+            if (!query) {
+              console.error("Option matching query \"".concat(key, "\" not found"));
+              return;
+            }
 
-          for (var _len3 = arguments.length, keys = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-            keys[_key3 - 1] = arguments[_key3];
-          }
+            for (var _len3 = arguments.length, keys = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+              keys[_key3 - 1] = arguments[_key3];
+            }
 
-          (_this7 = _this).select.apply(_this7, [query].concat(keys));
-        };
+            (_this8 = _this).select.apply(_this8, [query].concat(keys));
+          },
+          selectOption: function selectOption(option) {
+            option.selected = true;
+
+            _this.parent.selectedOptionsElement.add(option);
+
+            _this.parent.dispatchEvent(new Event('change', {
+              bubbles: true
+            }));
+          }
+        });
 
         _this.addEventListener('mousedown', function (evt) {
           return _this.mousedown = true;
@@ -724,25 +856,27 @@ customElements.define('chassis-options', function () {
         key: "hoverOption",
         value: function hoverOption(index) {
           this.unHoverAllOptions();
-          this.options[index].displayElement.hovered = true;
+          this.options[index].displayElement.hover = true;
         }
       }, {
         key: "unHoverOption",
         value: function unHoverOption(index) {
-          this.options[index].displayElement.hovered = false;
+          this.options[index].displayElement.hover = false;
         }
       }, {
         key: "unHoverAllOptions",
         value: function unHoverAllOptions() {
-          var _this8 = this;
+          var _this9 = this;
 
           this.options.forEach(function (option, index) {
-            return _this8.unHoverOption(index);
+            return _this9.unHoverOption(index);
           });
         }
       }, {
         key: "connectedCallback",
-        value: function connectedCallback() {}
+        value: function connectedCallback() {
+          _.get(this).selectionStartIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
+        }
       }, {
         key: "add",
         value: function add(option) {
@@ -842,11 +976,13 @@ customElements.define('chassis-options', function () {
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          var _this9 = this;
+          var _this10 = this;
 
           this.parent.selectedOptionsElement.clear();
-          this.options.forEach(function (option) {
-            return _this9.deselect(option);
+          this.options.filter(function (option) {
+            return option.selected;
+          }).forEach(function (option) {
+            return _this10.deselect(option);
           });
         }
       }, {
@@ -886,19 +1022,20 @@ customElements.define('chassis-options', function () {
 
           this.options[index].remove();
         }
+      }, {
+        key: "select",
+
         /**
          * [select description]
          * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
          */
-
-      }, {
-        key: "select",
         value: function select(option) {
+          var _this11 = this;
+
           var shiftKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
           var ctrlKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
           var metaKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
           var keys = Array.prototype.slice.call(arguments, 1);
-          console.log(this.options);
 
           if (Array.isArray(option)) {
             return console.log('Handle array of indexes');
@@ -916,112 +1053,115 @@ customElements.define('chassis-options', function () {
             return (_$get2 = _.get(this)).selectByString.apply(_$get2, [option].concat((0, _toConsumableArray2.default)(keys)));
           }
 
-          var deselectAll = true;
+          var selection = new (_.get(this).selection)([option]);
 
           if (this.parent.multiple) {
-            if (ctrlKey || metaKey) {
+            if (shiftKey) {
+              var _$get3 = _.get(this),
+                  selectionStartIndex = _$get3.selectionStartIndex;
+
+              if (this.selectedOptions.length === 1) {
+                if (option.index === this.selectedIndex) {
+                  return;
+                }
+
+                selection.clear();
+
+                if (option.index < this.selectedIndex) {
+                  for (var i = this.selectedIndex; i >= option.index; i--) {
+                    selection.prepend(this.options[i]);
+                  }
+                }
+
+                if (option.index > this.selectedIndex) {
+                  for (var _i = this.selectedIndex; _i <= option.index; _i++) {
+                    selection.append(this.options[_i]);
+                  }
+                }
+              }
+
+              if (this.selectedOptions.length > 1) {
+                if (option.index !== selectionStartIndex) {
+                  selection.clear();
+
+                  if (option.index < selectionStartIndex) {
+                    for (var _i2 = selectionStartIndex; _i2 >= option.index; _i2--) {
+                      selection.prepend(this.options[_i2]);
+                    }
+                  }
+
+                  if (option.index > selectionStartIndex) {
+                    for (var _i3 = selectionStartIndex; _i3 <= option.index; _i3++) {
+                      selection.append(this.options[_i3]);
+                    }
+                  }
+                }
+              } // return selection.options.forEach(option => console.log(option.displayElement))
+
+            } else if (ctrlKey || metaKey) {
               if (option.selected) {
                 return this.deselect(option);
               }
 
-              deselectAll = false;
+              selection.append(option);
             } // Shift trumps other keys
+            // if (shiftKey) {
+            //
+            //
+            //   // if (option.index < selectionStartIndex) {
+            //   //   let upperBound = selectionStartIndex
+            //   //
+            //   //   if (this.selectedOptions.length > 1) {
+            //   //     upperBound += this.selectedOptions.length
+            //   //   }
+            //   //
+            //   //   for (let i = upperBound; i >= option.index; i--) {
+            //   //     options.unshift(this.options[i])
+            //   //   }
+            //   // }
+            //   //
+            //   // if (option.index > selectionStartIndex) {
+            //   //   for (let i = selectionStartIndex; i <= option.index; i++) {
+            //   //     options.push(this.options[i])
+            //   //   }
+            //   // }
+            // }
 
-
-            if (shiftKey) {
-              var currentSelection = this.selectedOptions.item(0);
-              deselectAll = false;
-              console.log(currentSelection);
-            }
           } else if (option.selected) {
             return;
           }
 
-          deselectAll && this.deselectAll();
-          option.selected = true;
-          this.parent.selectedOptionsElement.add(option);
-          this.parent.dispatchEvent(new Event('change', {
-            bubbles: true
-          }));
+          if (selection.length === 1) {
+            _.get(this).selectionStartIndex = option.index;
+          }
+
+          this.deselectAll();
+          selection.options.forEach(function (option) {
+            return _.get(_this11).selectOption(option);
+          });
 
           if (!this.parent.multiple) {
-            this.parent.close();
+            this.parent.open = false;
           }
 
           this.unHoverAllOptions();
         }
       }, {
-        key: "form",
-        get: function get() {
-          return this.parent.form;
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'form'
-          });
-        }
-      }, {
-        key: "displayOptions",
-        get: function get() {
-          var _this10 = this;
-
-          return new (_.get(this).ChassisHTMLOptionsCollection())(this.options.map(function (option) {
-            return option.displayElement;
-          }), this.selectedIndex, function (element, before) {
-            _this10.add(_.get(_this10).generateOptionObject(element), before);
-          }, function (index) {
-            return _this10.removeOptionByIndex(index);
-          });
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'displayOptions'
-          });
-        }
-      }, {
-        key: "options",
-        get: function get() {
-          return _.get(this).options;
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'options'
-          });
-        }
-      }, {
         key: "selectedIndex",
         get: function get() {
-          var _this11 = this;
+          var _this12 = this;
 
           return this.options.findIndex(function (option) {
-            return option.displayElement === _this11.selectedOptions.item(0);
+            return option.displayElement === _this12.selectedOptions.item(0);
           });
         },
         set: function set(index) {
-          _.get(this).selectByIndex(index, false, false, false);
+          this.select(index);
         }
       }, {
-        key: "selectedOptions",
+        key: "start",
         get: function get() {
-          var nodes = this.querySelectorAll('[selected]');
-          return new (_.get(this).ChassisHTMLCollection())(nodes);
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'selectedOptions'
-          });
-        }
-      }, {
-        key: "hoveredIndex",
-        get: function get() {
-          return this.options.findIndex(function (option) {
-            return option.displayElement.hovered;
-          });
-        },
-        set: function set(index) {
-          return _.get(this).throw('readonly', {
-            name: 'hoveredIndex'
-          });
+          return _.get(this).selectionStartIndex;
         }
       }]);
       return _class;
@@ -1030,7 +1170,7 @@ customElements.define('chassis-options', function () {
 }());
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -1042,14 +1182,14 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayWithoutHoles = __webpack_require__(6);
+var arrayWithoutHoles = __webpack_require__(7);
 
-var iterableToArray = __webpack_require__(7);
+var iterableToArray = __webpack_require__(8);
 
-var nonIterableSpread = __webpack_require__(8);
+var nonIterableSpread = __webpack_require__(9);
 
 function _toConsumableArray(arr) {
   return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
@@ -1058,7 +1198,7 @@ function _toConsumableArray(arr) {
 module.exports = _toConsumableArray;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 function _arrayWithoutHoles(arr) {
@@ -1074,7 +1214,7 @@ function _arrayWithoutHoles(arr) {
 module.exports = _arrayWithoutHoles;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 function _iterableToArray(iter) {
@@ -1084,7 +1224,7 @@ function _iterableToArray(iter) {
 module.exports = _iterableToArray;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 function _nonIterableSpread() {
@@ -1094,7 +1234,7 @@ function _nonIterableSpread() {
 module.exports = _nonIterableSpread;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -1106,7 +1246,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -1128,12 +1268,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(12);
+var _typeof = __webpack_require__(1);
 
-var assertThisInitialized = __webpack_require__(1);
+var assertThisInitialized = __webpack_require__(2);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -1144,28 +1284,6 @@ function _possibleConstructorReturn(self, call) {
 }
 
 module.exports = _possibleConstructorReturn;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
 
 /***/ }),
 /* 13 */
@@ -1194,7 +1312,7 @@ module.exports = _inherits;
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getPrototypeOf = __webpack_require__(2);
+var getPrototypeOf = __webpack_require__(3);
 
 var setPrototypeOf = __webpack_require__(0);
 

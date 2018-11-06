@@ -1,56 +1,45 @@
-class ChassisSelectedOptions extends HTMLElement {
+class ChassisSelectedOptionsElement extends HTMLElement {
   constructor () {
     super()
 
     this.parent = null
 
-    _.get(this).contentsEl = this.shadowRoot.querySelector('#contents')
-    _.get(this).options = []
+    _.get(this).addPrivateProperties({
+      contentsEl: this.shadowRoot.querySelector('#contents'),
+      options: [],
 
-    _.get(this).generateList = () => {
-      _.get(this).contentsEl.innerHTML = _.get(this).options.map(option => {
-        return option.displayElement.text
-      }).join(', ')
-    }
+      update: () => {
+        _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0
+          ? _.get(this).options.map(option => option.displayElement.text).join(', ')
+          : this.parent.placeholder || ''
+      }
+    })
   }
 
   add (option) {
-    if (this.parent.multiple) {
-      _.get(this).options.push(option)
-    } else {
-      _.get(this).options = [option]
-    }
-
-    this.update()
+    _.get(this).options.push(option)
+    _.get(this).update()
   }
 
   remove (option) {
     _.get(this).options.splice(_.get(this).options.indexOf(option), 1)
-    this.update()
-  }
-
-  update () {
-    if (_.get(this).options.length > 0) {
-      return _.get(this).generateList()
-    }
-
-    _.get(this).contentsEl.innerHTML = this.parent.placeholder || ''
+    _.get(this).update()
   }
 
   clear () {
     _.get(this).options = []
-    this.update()
+    _.get(this).update()
   }
 
   connectedCallback () {
     this._appendCaret()
 
     this.addEventListener('mousedown', evt => {
-      if (this.parent.isOpen) {
-        return this.parent.removeAttribute('open')
+      if (this.parent.multiple) {
+        return
       }
 
-      this.parent.setAttribute('open', '')
+      this.parent.open = !this.parent.open
     })
   }
 
@@ -78,4 +67,4 @@ class ChassisSelectedOptions extends HTMLElement {
   }
 }
 
-customElements.define('chassis-selected-options', ChassisSelectedOptions)
+customElements.define('chassis-selected-options', ChassisSelectedOptionsElement)

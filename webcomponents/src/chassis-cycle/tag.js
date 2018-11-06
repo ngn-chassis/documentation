@@ -2,7 +2,7 @@ class ChassisCycle extends HTMLElement {
   constructor () {
     super()
 
-    _.get(this).addPrivateProps({
+    _.get(this).addPrivateProperties({
       dummyEl: document.createElement('div'),
 
       middleWare: {

@@ -322,6 +322,10 @@ components {
 			opacity: .382;
 		}
 
+		/* @variation multiple {
+			@state initial {}
+		} */
+
 		@state multiple {
 			chassis-options {
 				height: auto;

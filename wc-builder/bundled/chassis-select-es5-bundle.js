@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,6 +116,28 @@ module.exports = _setPrototypeOf;
 /* 2 */
 /***/ (function(module, exports) {
 
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -127,19 +149,21 @@ function _assertThisInitialized(self) {
 module.exports = _assertThisInitialized;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(4);
+var _interopRequireDefault = __webpack_require__(5);
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+var _typeof2 = _interopRequireDefault(__webpack_require__(2));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(6));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(6));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(7));
+var _createClass2 = _interopRequireDefault(__webpack_require__(7));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(8));
 
 var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(0));
 
@@ -147,7 +171,7 @@ var _get2 = _interopRequireDefault(__webpack_require__(9));
 
 var _inherits2 = _interopRequireDefault(__webpack_require__(11));
 
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(3));
 
 var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(12));
 
@@ -192,41 +216,83 @@ customElements.define('chassis-select', function () {
         }
 
         _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          addPrivateProps: function addPrivateProps(props) {
-            for (var prop in props) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = props[prop];
-            }
-          },
-          addReadOnlyProp: function addReadOnlyProp(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).readonlyProperty(prop));
-          },
-          addReadOnlyProps: function addReadOnlyProps(props) {
-            props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProp(prop);
+          sourceElement: null,
+          addAttribute: function addAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return this.getAttribute(prop);
+              },
+              set: function set(value) {
+                _.get(this).setAttributeValue(prop, value);
+              }
             });
           },
-          generateGuid: function generateGuid() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+          addAttributes: function addAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttribute(prop);
             });
-            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
-          getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
-            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-          },
-          handleAttributeChange: function handleAttributeChange(attr, val) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
-            }
-
+          setAttributeValue: function setAttributeValue(attr, val) {
             _this.setAttribute(attr, val);
 
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = val;
+            if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = val;
+            }
           },
-          handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
+          addReadOnlyProperty: function addReadOnlyProperty(prop) {
+            var custom = (0, _typeof2.default)(prop) === 'object';
+
+            if (!custom && typeof prop !== 'string') {
+              return console.error('ERROR <chassis-select> Read-only property must be type "object" or "string"');
+            }
+
+            var props = {
+              set: function set() {
+                _.get(this).throw('readonly', {
+                  prop: custom ? prop.name : prop
+                });
+              }
+            };
+
+            if (custom && prop.hasOwnProperty('get')) {
+              props.get = prop.get;
+            } else {
+              props.get = function () {
+                return _.get(this)[prop];
+              };
+            }
+
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
+          },
+          addReadOnlyProperties: function addReadOnlyProperties(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperty(prop);
+            });
+          },
+          setReadOnlyPropertyValue: function setReadOnlyPropertyValue(value) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = value;
+          },
+          addBooleanAttribute: function addBooleanAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return _.get(this).getBooleanAttributeValue(prop);
+              },
+              set: function set(value) {
+                _.get(this).setBooleanAttributeValue(prop, value);
+              }
+            });
+          },
+          addBooleanAttributes: function addBooleanAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttribute(prop);
+            });
+          },
+          getBooleanAttributeValue: function getBooleanAttributeValue(prop) {
+            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+          },
+          setBooleanAttributeValue: function setBooleanAttributeValue(attr, value) {
+            if (typeof value === 'boolean') {
+              value = value.toString();
             }
 
             var acceptableValues = ['true', 'false', '', null];
@@ -236,58 +302,56 @@ customElements.define('chassis-select', function () {
 
               _this.removeAttribute(attr);
 
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            if (value === 'false' && _this.hasAttribute(attr)) {
-              _this.removeAttribute(attr);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = _this.hasAttribute(attr);
-          },
-          handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
-            if (!bool) {
-              _this.removeAttribute(prop);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = false;
-              return;
-            }
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
-              _this.setAttribute(prop, '');
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = true;
-            }
-          },
-          handlePropertyChange: function handlePropertyChange(prop, val) {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = val;
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
-              _this.setAttribute(prop, val);
-            }
-          },
-          readonlyProperty: function readonlyProperty(name) {
-            return {
-              get: function get() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[name];
-              },
-              set: function set() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).throw('readonly', {
-                  name: name
-                });
+              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
               }
-            };
+
+              return;
+            }
+
+            switch (value) {
+              case 'false':
+              case null:
+                _this.removeAttribute(attr);
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
+                }
+
+                break;
+
+              case 'true':
+              case '':
+                _this.setAttribute(attr, '');
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = true;
+                }
+
+                break;
+
+              default:
+                return;
+            }
+          },
+          addPrivateProperties: function addPrivateProperties(props) {
+            for (var _prop in props) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[_prop] = props[_prop];
+            }
+          },
+          generateGuid: function generateGuid() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+            });
+            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-select> ';
 
             switch (type) {
               case 'readonly':
-                message += "Cannot set read-only property \"".concat(vars.name, "\".");
+                message += "Cannot set read-only property \"".concat(vars.prop, "\".");
                 break;
 
               default:
@@ -296,14 +360,30 @@ customElements.define('chassis-select', function () {
 
             console.error(message);
           }
-        }); // this.addEventListener('click', evt => {
-        //   console.log('chassis-select');
-        // })
+        });
 
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperties(['form', {
+          name: 'hoveredIndex',
+          get: function get() {
+            return this.optionsElement.hoveredIndex;
+          }
+        }, 'labels', {
+          name: 'options',
+          get: function get() {
+            return this.optionsElement.displayOptions;
+          }
+        }, 'optionsElement', {
+          name: 'selectedOptions',
+          get: function get() {
+            return this.optionsElement ? this.optionsElement.selectedOptions : null;
+          }
+        }, 'selectedOptionsElement', 'sourceElement', 'type', 'willValidate', 'validationMessage', 'validity']);
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProps(['form', 'willValidate', 'type', 'validationMessage', 'validity']);
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttributes(['name', 'placeholder']);
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProps({
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttributes(['autofocus', 'disabled', 'multiple', 'open', 'required']);
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           title: '',
           arrowKeydownHandler: function arrowKeydownHandler(evt) {
             var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
@@ -316,12 +396,14 @@ customElements.define('chassis-select', function () {
                 evt.preventDefault();
 
                 if (!_this.multiple) {
-                  if (!_this.isOpen && (evt[_this.keySource] === 32 || evt[_this.keySource] === ' ')) {
-                    return _this.open();
+                  if (!_this.open && (evt[_this.keySource] === 32 || evt[_this.keySource] === ' ')) {
+                    _this.open = true;
+                    return;
                   }
 
                   if (_this.hoveredIndex === _this.selectedIndex || _this.hoveredIndex === -1) {
-                    return _this.close();
+                    _this.open = false;
+                    return;
                   }
                 }
 
@@ -331,8 +413,9 @@ customElements.define('chassis-select', function () {
               case 'ArrowUp':
                 evt.preventDefault();
 
-                if (!_this.multiple && !_this.isOpen) {
-                  return _this.open();
+                if (!_this.multiple && !_this.open) {
+                  _this.open = true;
+                  return;
                 }
 
                 switch (startIndex) {
@@ -350,8 +433,9 @@ customElements.define('chassis-select', function () {
               case 'ArrowDown':
                 evt.preventDefault();
 
-                if (!_this.multiple && !_this.isOpen) {
-                  return _this.open();
+                if (!_this.multiple && !_this.open) {
+                  _this.open = true;
+                  return;
                 }
 
                 switch (startIndex) {
@@ -373,7 +457,7 @@ customElements.define('chassis-select', function () {
               return;
             }
 
-            _this.removeAttribute('open');
+            _this.open = false;
           }
         });
 
@@ -395,12 +479,10 @@ customElements.define('chassis-select', function () {
           }
 
           switch (attr) {
-            case 'autofocus':
-            case 'disabled':
-              return _.get(this).handleBooleanAttributeChange(attr, newValue);
-
             case 'multiple':
-              _.get(this).handleBooleanAttributeChange(attr, newValue);
+              if (newValue && this.hasAttribute('open')) {
+                this.removeAttribute('open');
+              }
 
               if (!newValue && this.selectedOptions) {
                 var index = this.selectedIndex;
@@ -410,15 +492,23 @@ customElements.define('chassis-select', function () {
 
               break;
 
-            case 'name':
-              return _.get(this).handleAttributeChange(attr, newValue);
-
             case 'open':
-              if (this.multiple) {
+              if (!this.open) {
+                document.body.removeEventListener('click', _.get(this).bodyClickHandler);
+                document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler);
+                document.body.removeEventListener('touchend', _.get(this).bodyClickHandler);
                 return;
               }
 
-              return this.isOpen ? this.open() : this.close();
+              if (this.multiple) {
+                console.warn('WARNING <chassis-select multiple> cannot be opened.');
+                return this.removeAttribute('open');
+              }
+
+              document.body.addEventListener('click', _.get(this).bodyClickHandler);
+              document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler);
+              document.body.addEventListener('touchend', _.get(this).bodyClickHandler);
+              break;
           }
         }
       }, {
@@ -431,19 +521,6 @@ customElements.define('chassis-select', function () {
         value: function clear() {
           this.optionsElement.clear();
           this.selectedOptionsElement.clear();
-        }
-      }, {
-        key: "close",
-        value: function close() {
-          // In case method is called directly by user
-          if (this.multiple) {
-            return;
-          }
-
-          document.body.removeEventListener('click', _.get(this).bodyClickHandler);
-          document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler);
-          document.body.removeEventListener('touchend', _.get(this).bodyClickHandler);
-          this.isOpen = false;
         }
       }, {
         key: "connectedCallback",
@@ -465,6 +542,12 @@ customElements.define('chassis-select', function () {
             }
 
             _this2.autofocus && _this2.focus();
+
+            _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
+
+            _.get(_this2).sourceElement.addEventListener('mousedown', function (evt) {
+              console.log(evt);
+            });
           }, 0);
         }
       }, {
@@ -476,9 +559,9 @@ customElements.define('chassis-select', function () {
         key: "inject",
         value: function inject(select, labels) {
           Object.assign(_.get(this), {
-            sourceEl: select,
-            optionsEl: document.createElement('chassis-options'),
-            selectedOptionsEl: document.createElement('chassis-selected-options'),
+            sourceElement: select,
+            optionsElement: document.createElement('chassis-options'),
+            selectedOptionsElement: document.createElement('chassis-selected-options'),
             labels: labels
           });
           this.placeholder = this.getAttribute('placeholder');
@@ -505,19 +588,6 @@ customElements.define('chassis-select', function () {
         key: "namedItem",
         value: function namedItem(id) {
           return this.optionsElement.namedItem(id);
-        }
-      }, {
-        key: "open",
-        value: function open() {
-          // In case method is called directly by user
-          if (this.multiple) {
-            return;
-          }
-
-          document.body.addEventListener('click', _.get(this).bodyClickHandler);
-          document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler);
-          document.body.addEventListener('touchend', _.get(this).bodyClickHandler);
-          this.isOpen = true;
         }
         /**
          * method querySelector
@@ -583,109 +653,9 @@ customElements.define('chassis-select', function () {
           return 'ChassisSelectElement';
         }
       }, {
-        key: "autofocus",
-        get: function get() {
-          return _.get(this).getBooleanPropertyValue('autofocus');
-        },
-        set: function set(bool) {
-          _.get(this).handleBooleanPropertyChange('autofocus', bool);
-        }
-      }, {
-        key: "disabled",
-        get: function get() {
-          return _.get(this).getBooleanPropertyValue('disabled');
-        },
-        set: function set(bool) {
-          _.get(this).handleBooleanPropertyChange('disabled', bool);
-        }
-      }, {
-        key: "hoveredIndex",
-        get: function get() {
-          return this.optionsElement.hoveredIndex;
-        },
-        set: function set(index) {
-          return _.get(this).throw('readonly', {
-            name: 'hoveredIndex'
-          });
-        }
-      }, {
-        key: "isOpen",
-        get: function get() {
-          if (this.multiple) {
-            return null;
-          }
-
-          return this.hasAttribute('open');
-        },
-        set: function set(bool) {
-          if (this.multiple) {
-            return;
-          }
-
-          bool ? this.setAttribute('open', '') : this.removeAttribute('open');
-        }
-      }, {
         key: "length",
         get: function get() {
           return this.options.length;
-        }
-      }, {
-        key: "labels",
-        get: function get() {
-          return _.get(this).labels;
-        },
-        set: function set(elements) {
-          return _.get(this).throw('readonly', {
-            name: 'labels'
-          });
-        }
-      }, {
-        key: "multiple",
-        get: function get() {
-          return _.get(this).getBooleanPropertyValue('multiple');
-        },
-        set: function set(bool) {
-          if (bool && this.hasAttribute('open')) {
-            this.removeAttribute('open');
-          }
-
-          _.get(this).handleBooleanPropertyChange('multiple', bool);
-        }
-      }, {
-        key: "name",
-        get: function get() {
-          return this.getAttribute('name');
-        },
-        set: function set(name) {
-          _.get(this).handlePropertyChange('name', name);
-        }
-      }, {
-        key: "options",
-        get: function get() {
-          return this.optionsElement.displayOptions;
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'options'
-          });
-        }
-      }, {
-        key: "optionsElement",
-        get: function get() {
-          return _.get(this).optionsEl;
-        },
-        set: function set(el) {
-          return _.get(this).throw('readonly', {
-            name: 'optionsElement'
-          });
-        }
-      }, {
-        key: "required",
-        get: function get() {
-          return _.get(this).getBooleanPropertyValue('required');
-        },
-        set: function set(bool) {
-          _.get(this).handleBooleanPropertyChange('required', bool);
         }
       }, {
         key: "selectedIndex",
@@ -698,36 +668,6 @@ customElements.define('chassis-select', function () {
           }
 
           this.optionsElement.selectedIndex = index;
-        }
-      }, {
-        key: "selectedOptions",
-        get: function get() {
-          return this.optionsElement ? this.optionsElement.selectedOptions : null;
-        },
-        set: function set(value) {
-          return _.get(this).throw('readonly', {
-            name: 'selectedOptions'
-          });
-        }
-      }, {
-        key: "sourceElement",
-        get: function get() {
-          return _.get(this).sourceEl;
-        },
-        set: function set(el) {
-          return _.get(this).throw('readonly', {
-            name: 'sourceElement'
-          });
-        }
-      }, {
-        key: "selectedOptionsElement",
-        get: function get() {
-          return _.get(this).selectedOptionsEl;
-        },
-        set: function set(el) {
-          return _.get(this).throw('readonly', {
-            name: 'selectedOptionsElement'
-          });
         }
       }, {
         key: "value",
@@ -751,7 +691,7 @@ customElements.define('chassis-select', function () {
 }());
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -763,7 +703,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -775,7 +715,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -797,12 +737,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(8);
+var _typeof = __webpack_require__(2);
 
-var assertThisInitialized = __webpack_require__(2);
+var assertThisInitialized = __webpack_require__(3);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -813,28 +753,6 @@ function _possibleConstructorReturn(self, call) {
 }
 
 module.exports = _possibleConstructorReturn;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
 
 /***/ }),
 /* 9 */

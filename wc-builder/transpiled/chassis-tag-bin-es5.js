@@ -2,6 +2,8 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -57,41 +59,83 @@ customElements.define('chassis-tag-bin', function () {
         }
 
         _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          addPrivateProps: function addPrivateProps(props) {
-            for (var prop in props) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = props[prop];
-            }
-          },
-          addReadOnlyProp: function addReadOnlyProp(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).readonlyProperty(prop));
-          },
-          addReadOnlyProps: function addReadOnlyProps(props) {
-            props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProp(prop);
+          sourceElement: null,
+          addAttribute: function addAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return this.getAttribute(prop);
+              },
+              set: function set(value) {
+                _.get(this).setAttributeValue(prop, value);
+              }
             });
           },
-          generateGuid: function generateGuid() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+          addAttributes: function addAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttribute(prop);
             });
-            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
-          getBooleanPropertyValue: function getBooleanPropertyValue(prop) {
-            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-          },
-          handleAttributeChange: function handleAttributeChange(attr, val) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
-            }
-
+          setAttributeValue: function setAttributeValue(attr, val) {
             _this.setAttribute(attr, val);
 
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = val;
+            if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = val;
+            }
           },
-          handleBooleanAttributeChange: function handleBooleanAttributeChange(attr, value) {
-            if (!_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl) {
-              return;
+          addReadOnlyProperty: function addReadOnlyProperty(prop) {
+            var custom = (0, _typeof2.default)(prop) === 'object';
+
+            if (!custom && typeof prop !== 'string') {
+              return console.error('ERROR <chassis-tag-bin> Read-only property must be type "object" or "string"');
+            }
+
+            var props = {
+              set: function set() {
+                _.get(this).throw('readonly', {
+                  prop: custom ? prop.name : prop
+                });
+              }
+            };
+
+            if (custom && prop.hasOwnProperty('get')) {
+              props.get = prop.get;
+            } else {
+              props.get = function () {
+                return _.get(this)[prop];
+              };
+            }
+
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
+          },
+          addReadOnlyProperties: function addReadOnlyProperties(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperty(prop);
+            });
+          },
+          setReadOnlyPropertyValue: function setReadOnlyPropertyValue(value) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = value;
+          },
+          addBooleanAttribute: function addBooleanAttribute(prop) {
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
+              get: function get() {
+                return _.get(this).getBooleanAttributeValue(prop);
+              },
+              set: function set(value) {
+                _.get(this).setBooleanAttributeValue(prop, value);
+              }
+            });
+          },
+          addBooleanAttributes: function addBooleanAttributes(props) {
+            return props.forEach(function (prop) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttribute(prop);
+            });
+          },
+          getBooleanAttributeValue: function getBooleanAttributeValue(prop) {
+            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
+          },
+          setBooleanAttributeValue: function setBooleanAttributeValue(attr, value) {
+            if (typeof value === 'boolean') {
+              value = value.toString();
             }
 
             var acceptableValues = ['true', 'false', '', null];
@@ -101,58 +145,56 @@ customElements.define('chassis-tag-bin', function () {
 
               _this.removeAttribute(attr);
 
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            if (value === 'false' && _this.hasAttribute(attr)) {
-              _this.removeAttribute(attr);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = false;
-              return;
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[attr] = _this.hasAttribute(attr);
-          },
-          handleBooleanPropertyChange: function handleBooleanPropertyChange(prop, bool) {
-            if (!bool) {
-              _this.removeAttribute(prop);
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = false;
-              return;
-            }
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== 'true') {
-              _this.setAttribute(prop, '');
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = true;
-            }
-          },
-          handlePropertyChange: function handlePropertyChange(prop, val) {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[prop] = val;
-
-            if (!_this.hasAttribute(prop) || _this.getAttribute(prop) !== val) {
-              _this.setAttribute(prop, val);
-            }
-          },
-          readonlyProperty: function readonlyProperty(name) {
-            return {
-              get: function get() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceEl[name];
-              },
-              set: function set() {
-                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).throw('readonly', {
-                  name: name
-                });
+              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
               }
-            };
+
+              return;
+            }
+
+            switch (value) {
+              case 'false':
+              case null:
+                _this.removeAttribute(attr);
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
+                }
+
+                break;
+
+              case 'true':
+              case '':
+                _this.setAttribute(attr, '');
+
+                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = true;
+                }
+
+                break;
+
+              default:
+                return;
+            }
+          },
+          addPrivateProperties: function addPrivateProperties(props) {
+            for (var _prop in props) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[_prop] = props[_prop];
+            }
+          },
+          generateGuid: function generateGuid() {
+            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+            });
+            return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-tag-bin> ';
 
             switch (type) {
               case 'readonly':
-                message += "Cannot set read-only property \"".concat(vars.name, "\".");
+                message += "Cannot set read-only property \"".concat(vars.prop, "\".");
                 break;
 
               default:

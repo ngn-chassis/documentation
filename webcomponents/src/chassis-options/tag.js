@@ -2,14 +2,11 @@ class ChassisOptionsElement extends HTMLElement {
   constructor () {
     super()
 
-    this.parent = null
-    this.mousedown = false
-
     _.get(this).addReadOnlyProperties([
       {
         name: 'form',
         get () {
-          return this.parent.form
+          return this.parentNode.form
         }
       },
 
@@ -32,7 +29,7 @@ class ChassisOptionsElement extends HTMLElement {
       {
         name: 'multiple',
         get () {
-          return this.parent.multiple
+          return this.parentNode.multiple
         }
       },
 
@@ -51,9 +48,92 @@ class ChassisOptionsElement extends HTMLElement {
       options: [],
       selectionStartIndex: -1,
 
-      selection: class {
-        constructor (options) {
+      optionSelectionHandler: evt => {
+        let { ChassisHTMLCollection, emit, Selection, selectionStartIndex } = _.get(this)
+        let { index, shiftKey, metaKey, ctrlKey } = evt.detail
+
+        let option = this.options[index]
+        let detail = { shiftKey, metaKey, ctrlKey }
+        let selection = new Selection()
+
+        let applyMiddleware = next => {
+          let { beforeChange } = this.parentNode
+
+          let cb = () => {
+            detail.options = selection.options
+            next()
+
+            return emit('options.selected', detail, this.parentNode)
+          }
+
+          if (!(beforeChange && typeof beforeChange === 'function')) {
+            return cb()
+          }
+
+          beforeChange(this.selectedOptions, new (ChassisHTMLCollection())(selection.displayElements), cb)
+        }
+
+        if (this.multiple) {
+          if (metaKey || ctrlKey) {
+            selection.options = this.options.filter(option => option.selected || (option.index === index && !option.selected))
+            _.get(this).selectionStartIndex = index
+            return applyMiddleware(() => option.selected = !option.selected)
+          }
+
+          if (shiftKey) {
+            let bounds = [index, selectionStartIndex].sort()
+
+            if (bounds[0] === bounds[1]) {
+              return
+            }
+
+            selection.options = this.options.slice(bounds[0], bounds[1] + 1)
+
+            return applyMiddleware(() => {
+              this.deselectAll()
+              selection.options.forEach(option => option.selected = true)
+            })
+          }
+        } else if (index === this.selectedIndex) {
+          return
+        }
+
+        selection.options = [option]
+        _.get(this).selectionStartIndex = index
+
+        applyMiddleware(() => {
+          this.deselectAll()
+          option.selected = true
+        })
+      },
+
+      parentStateChangeHandler: evt => {
+        _.get(this).emit('state.change', evt.detail)
+
+        let { name, value } = evt.detail
+
+        switch (name) {
+          case 'multiple':
+            if (!value && this.selectedOptions.length > 0) {
+              let index = this.selectedIndex
+
+              this.deselectAll()
+              _.get(this).emit('option.selected', {index})
+            }
+
+            break
+
+          default: return
+        }
+      },
+
+      Selection: class {
+        constructor (options = []) {
           this.options = options
+        }
+
+        get displayElements () {
+          return this.options.map(option => option.displayElement)
         }
 
         get length () {
@@ -73,8 +153,9 @@ class ChassisOptionsElement extends HTMLElement {
         }
       },
 
-      optionConstructor () {
+      OptionConstructor: () => {
         let _p = new WeakMap()
+        let selectionHandler = _.get(this).optionSelectionHandler
 
         return class ChassisOptionObject {
           constructor (parent, key, sourceElement, displayElement) {
@@ -106,14 +187,8 @@ class ChassisOptionsElement extends HTMLElement {
                 selected: sourceElement.selected,
                 value: sourceElement.getAttribute('value').trim(),
                 text: sourceElement.text.trim()
-              },
-
-              selectionHandler: evt => {
-                parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey)
               }
             })
-
-            this.multipleMode = parent.multiple
           }
 
           get disabled () {
@@ -168,25 +243,9 @@ class ChassisOptionsElement extends HTMLElement {
             this.setAttr('value', value)
           }
 
-          set multipleMode (bool) {
-            if (bool) {
-              this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler)
-              this.displayElement.addEventListener('mousedown', _p.get(this).selectionHandler)
-            } else {
-              this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler)
-              this.displayElement.addEventListener('mouseup', _p.get(this).selectionHandler)
-            }
-          }
-
           remove () {
             this.sourceElement.remove()
             this.displayElement.remove()
-
-            if (parent.multiple) {
-              this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler)
-            } else {
-              this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler)
-            }
           }
 
           setAttr (name, value) {
@@ -209,7 +268,7 @@ class ChassisOptionsElement extends HTMLElement {
           return
         }
 
-        return new (_.get(this).optionConstructor())(this, _.get(this).generateGuid(), sourceElement, document.createElement('chassis-option'))
+        return new (_.get(this).OptionConstructor())(this, _.get(this).generateGuid(), sourceElement, document.createElement('chassis-option'))
       },
 
       generateSourceOptionElement: option => {
@@ -333,65 +392,69 @@ class ChassisOptionsElement extends HTMLElement {
         return ChassisHTMLOptionsCollection
       },
 
-      selectByKey: (key, ...keys) => {
-        let option = _.get(this).getOptionByKey(key)
-
-        if (!option) {
-          console.error(`Invalid option key "${key}"`)
-          return this.deselectAll()
-        }
-
-        this.select(option, ...keys)
-      },
-
-      selectByIndex: (index, ...keys) => {
-        let option = this.options[index]
-
-        if (!option) {
-          if (index >= 0) {
-            return console.error(`No option at index ${index}`)
-          }
-
-          return
-        }
-
-        this.select(option, ...keys)
-      },
-
-      selectByString: (string, ...keys) => {
-        let query
-
-        for (let option of this.options) {
-          if (option.key === string || option.id === string) {
-            query = option
-            break
-          }
-        }
-
-        if (!query) {
-          console.error(`Option matching query "${key}" not found`)
-          return
-        }
-
-        this.select(query, ...keys)
-      },
-
-      selectOption: option => {
-        option.selected = true
-        this.parent.selectedOptionsElement.add(option)
-      }
+      // selectByKey: (key, ...keys) => {
+      //   let option = _.get(this).getOptionByKey(key)
+      //
+      //   if (!option) {
+      //     console.error(`Invalid option key "${key}"`)
+      //     return this.deselectAll()
+      //   }
+      //
+      //   this.select(option, ...keys)
+      // },
+      //
+      // selectByIndex: (index, ...keys) => {
+      //   let option = this.options[index]
+      //
+      //   if (!option) {
+      //     if (index >= 0) {
+      //       return console.error(`No option at index ${index}`)
+      //     }
+      //
+      //     return
+      //   }
+      //
+      //   this.select(option, ...keys)
+      // },
+      //
+      // selectByString: (string, ...keys) => {
+      //   let query
+      //
+      //   for (let option of this.options) {
+      //     if (option.key === string || option.id === string) {
+      //       query = option
+      //       break
+      //     }
+      //   }
+      //
+      //   if (!query) {
+      //     console.error(`Option matching query "${key}" not found`)
+      //     return
+      //   }
+      //
+      //   this.select(query, ...keys)
+      // }
     })
-
-    this.addEventListener('mousedown', evt => this.mousedown = true)
-    this.addEventListener('mouseup', evt => this.mousedown = false)
   }
 
   get selectedIndex () {
-    return this.options.findIndex(option => option.displayElement === this.selectedOptions.item(0))
+    if (this.selectedOptions.length === 0) {
+      return
+    }
+
+    return this.selectedOptions.item(0).index
   }
 
   set selectedIndex (index) {
-    this.select(index)
+    _.get(this).emit('option.selected', index)
+  }
+
+  get selectionStartIndex () {
+    return _.get(this).selectionStartIndex
+  }
+
+  set selectionStartIndex (value) {
+    console.warn(`WARNING <chassis-select> selectionStartIndex cannot be set manually.`)
   }
 
   hoverOption (index) {
@@ -407,10 +470,6 @@ class ChassisOptionsElement extends HTMLElement {
     this.options.forEach((option, index) => this.unHoverOption(index))
   }
 
-  connectedCallback () {
-    _.get(this).selectionStartIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0
-  }
-
   add (option, index = null, dest = this) {
     if (!customElements.get('chassis-option')) {
       console.error(`<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.`)
@@ -421,25 +480,21 @@ class ChassisOptionsElement extends HTMLElement {
       option = _.get(this).generateOptionObject(option)
     }
 
-    this.parent[`${option.index}`] = option.displayElement
+    this.parentNode[`${option.index}`] = option.displayElement
 
     if (index) {
       dest.insertBefore(option.displayElement, dest.children.item(index))
 
       this.options.splice(index, 0, option)
-      this.parent.sourceElement.add(option.sourceElement, index)
+      this.parentNode.sourceElement.add(option.sourceElement, index)
 
     } else {
       dest.appendChild(option.displayElement)
       this.options.push(option)
 
-      if (!this.parent.sourceElement[this.options.length - 1]) {
-        this.parent.sourceElement.appendChild(option.sourceElement)
+      if (!this.parentNode.sourceElement[this.options.length - 1]) {
+        this.parentNode.sourceElement.appendChild(option.sourceElement)
       }
-    }
-
-    if (option.selected) {
-      _.get(this).selectByString(option.key, false, false, false)
     }
   }
 
@@ -477,14 +532,31 @@ class ChassisOptionsElement extends HTMLElement {
     }
   }
 
-  deselect (option) {
-    option.selected = false
-    this.parent.selectedOptionsElement.remove(option)
+  connectedCallback () {
+    this.addEventListener('option.selected', _.get(this).optionSelectionHandler)
+    this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler)
+
+    _.get(this).selectionStartIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0
   }
 
-  deselectAll () {
-    this.parent.selectedOptionsElement.clear()
-    this.options.filter(option => option.selected).forEach(option => this.deselect(option))
+  disconnectedCallback () {
+    this.removeEventListener('option.selected', _.get(this).optionSelectionHandler)
+    this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler)
+  }
+
+  deselect (option, updateList = true) {
+    if (typeof option === 'number') {
+      option = this.options[option]
+    }
+
+    option.selected = false
+    this.parentNode.selectedOptionsElement.remove(option, updateList)
+  }
+
+  deselectAll (showPlaceholder = true) {
+    this.options.filter(option => option.selected).forEach((option, index, options) => {
+      this.deselect(option, index = options.length - 1 && showPlaceholder)
+    })
   }
 
   item (index) {
@@ -522,117 +594,129 @@ class ChassisOptionsElement extends HTMLElement {
    * [select description]
    * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
    */
-  select (option, shiftKey = false, ctrlKey = false, metaKey = false) {
-    let keys = Array.prototype.slice.call(arguments, 1)
-
-    if (Array.isArray(option)) {
-      return console.log('Handle array of indexes')
-    }
-
-    if (typeof option === 'number') {
-      return _.get(this).selectByIndex(option, ...keys)
-    }
-
-    if (typeof option === 'string') {
-      return _.get(this).selectByString(option, ...keys)
-    }
-
-    if (typeof option !== 'object') {
-      return console.error(`ERROR <chassis-select> Cannot select option type "${typeof option}"`)
-    }
-
-    let selection = new (_.get(this).selection)([option])
-    let deselectAll = true
-
-    if (this.parent.multiple) {
-      let { selectionStartIndex } = _.get(this)
-
-      // TODO: Refactor to use bounding method
-      if (shiftKey) {
-        if (this.selectedOptions.length === 1) {
-          if (option.index === this.selectedIndex) {
-            return
-          }
-
-          selection.clear()
-
-          if (option.index < this.selectedIndex) {
-            for (let i = this.selectedIndex; i >= option.index; i--) {
-              selection.prepend(this.options[i])
-            }
-          }
-
-          if (option.index > this.selectedIndex) {
-            for (let i = this.selectedIndex; i <= option.index; i++) {
-              selection.append(this.options[i])
-            }
-          }
-        }
-
-        if (this.selectedOptions.length > 1 && option.index !== selectionStartIndex) {
-          selection.clear()
-
-          if (option.index < selectionStartIndex) {
-            for (let i = selectionStartIndex; i >= option.index; i--) {
-              selection.prepend(this.options[i])
-            }
-          }
-
-          if (option.index > selectionStartIndex) {
-            for (let i = selectionStartIndex; i <= option.index; i++) {
-              selection.append(this.options[i])
-            }
-          }
-        }
-      } else if (ctrlKey || metaKey) {
-        _.get(this).selectionStartIndex = option.index
-
-        if (option.selected) {
-          return this.deselect(option)
-        }
-
-        deselectAll = false
-      }
-    } else if (option.selected) {
-      return
-    }
-
-    if (selection.length === 1) {
-      _.get(this).selectionStartIndex = option.index
-    }
-
-    let completeChange = () => {
-      let previouslySelectedOptions = this.selectedOptions
-
-      deselectAll && this.deselectAll()
-      selection.options.forEach(option => _.get(this).selectOption(option))
-
-      if (!this.parent.multiple) {
-        this.parent.open = false
-      }
-
-      this.unHoverAllOptions()
-
-      this.parent.dispatchEvent(new Event('change', {
-        bubbles: true
-      }))
-
-      if (this.parent.afterChange && typeof this.parent.afterChange === 'function') {
-        this.parent.afterChange(previouslySelectedOptions, this.selectedOptions)
-      }
-    }
-
-    if (this.parent.beforeChange && typeof this.parent.beforeChange === 'function') {
-      let collection = new (_.get(this).ChassisHTMLCollection())(selection.options.map(option => option.displayElement))
-      return this.parent.beforeChange(this.selectedOptions, collection, completeChange)
-    }
-
-    completeChange()
-  }
-
-  setOptionMultipleMode (multiple = false) {
-    this.options.forEach(option => option.multipleMode = multiple)
-  }
+  // select (option, input, shiftKey = false, ctrlKey = false, metaKey = false, startIndex = null) {
+  //   let keys = Array.prototype.slice.call(arguments, 1)
+  //
+  //   if (Array.isArray(option)) {
+  //     return console.log('Handle array of indexes')
+  //   }
+  //
+  //   if (typeof option === 'number') {
+  //     return _.get(this).selectByIndex(option, ...keys)
+  //   }
+  //
+  //   if (typeof option === 'string') {
+  //     return _.get(this).selectByString(option, ...keys)
+  //   }
+  //
+  //   if (typeof option !== 'object') {
+  //     return console.error(`ERROR <chassis-select> Cannot select option type "${typeof option}"`)
+  //   }
+  //
+  //   let selection = new (_.get(this).selection)([option])
+  //
+  //   if (selection.length === 1) {
+  //     _.get(this).selectionStartIndex = option.index
+  //   }
+  //
+  //   if (this.parentNode.multiple) {
+  //     let { selectionStartIndex } = _.get(this)
+  //
+  //     if (startIndex) {
+  //       selectionStartIndex = startIndex
+  //     }
+  //
+  //     if (shiftKey) {
+  //       console.log('shift key');
+  //     } else if (ctrlKey || metaKey) {
+  //       _.get(this).selectionStartIndex = option.index
+  //
+  //       deselectAll = false
+  //     }
+  //
+  //   } else if (option.selected) {
+  //     return
+  //   }
+  //
+  //   let completeChange = () => {
+  //     let previouslySelectedOptions = this.selectedOptions
+  //
+  //     deselectAll && this.deselectAll(false)
+  //     selection.options.forEach(option => option.selected = true)
+  //
+  //     this.parentNode.dispatchEvent(new Event('change', {
+  //       bubbles: true
+  //     }))
+  //
+  //     if (this.parentNode.afterChange && typeof this.parentNode.afterChange === 'function') {
+  //       this.parentNode.afterChange(previouslySelectedOptions, this.selectedOptions)
+  //     }
+  //   }
+  //
+  //   if (this.parentNode.beforeChange && typeof this.parentNode.beforeChange === 'function') {
+  //     let collection = new (_.get(this).ChassisHTMLCollection())(selection.options.map(option => option.displayElement))
+  //     return this.parentNode.beforeChange(this.selectedOptions, collection, completeChange)
+  //   }
+  //
+  //   completeChange()
+  //
+  //   // if (this.parentNode.multiple) {
+  //   //   let { selectionStartIndex } = _.get(this)
+  //   //
+  //   //   if (startIndex) {
+  //   //     selectionStartIndex = startIndex
+  //   //   }
+  //   //
+  //   //   // TODO: Refactor to use bounding method
+  //   //   if (shiftKey) {
+  //   //     if (this.selectedOptions.length === 1) {
+  //   //       if (option.index === this.selectedIndex) {
+  //   //         return
+  //   //       }
+  //   //
+  //   //       selection.clear()
+  //   //
+  //   //       if (option.index < this.selectedIndex) {
+  //   //         for (let i = this.selectedIndex; i >= option.index; i--) {
+  //   //           selection.prepend(this.options[i])
+  //   //         }
+  //   //       }
+  //   //
+  //   //       if (option.index > this.selectedIndex) {
+  //   //         for (let i = this.selectedIndex; i <= option.index; i++) {
+  //   //           selection.append(this.options[i])
+  //   //         }
+  //   //       }
+  //   //     }
+  //   //
+  //   //     if (this.selectedOptions.length > 1 && option.index !== selectionStartIndex) {
+  //   //       selection.clear()
+  //   //
+  //   //       if (option.index < selectionStartIndex) {
+  //   //         for (let i = selectionStartIndex; i >= option.index; i--) {
+  //   //           selection.prepend(this.options[i])
+  //   //         }
+  //   //       }
+  //   //
+  //   //       if (option.index > selectionStartIndex) {
+  //   //         for (let i = selectionStartIndex; i <= option.index; i++) {
+  //   //           selection.append(this.options[i])
+  //   //         }
+  //   //       }
+  //   //     }
+  //   //   } else if (ctrlKey || metaKey) {
+  //   //     _.get(this).selectionStartIndex = option.index
+  //   //
+  //   //     if (option.selected) {
+  //   //       return this.deselect(option)
+  //   //     }
+  //   //
+  //   //     deselectAll = false
+  //   //   }
+  //   // } else if (option.selected) {
+  //   //   return
+  //   // }
+  // }
 }
 
 customElements.define('chassis-options', ChassisOptionsElement)

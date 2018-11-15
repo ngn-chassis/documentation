@@ -346,6 +346,20 @@ customElements.define('chassis-select', function () {
             });
             return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
+          emit: function emit(name, detail) {
+            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+            if (target) {
+              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+            }
+
+            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+          },
+          newEvent: function newEvent(name, detail) {
+            return new CustomEvent(name, {
+              detail: detail
+            });
+          },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-select> ';
 
@@ -377,13 +391,19 @@ customElements.define('chassis-select', function () {
           get: function get() {
             return this.optionsElement ? this.optionsElement.selectedOptions : null;
           }
-        }, 'selectedOptionsElement', 'sourceElement', 'type', 'willValidate', 'validationMessage', 'validity']);
+        }, 'selectedOptionsElement', 'sourceElement', {
+          name: 'type',
+          get: function get() {
+            return this.multiple ? 'select-multiple' : 'select-one';
+          }
+        }, 'willValidate', 'validationMessage', 'validity']);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttributes(['name', 'placeholder']);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttributes(['autofocus', 'disabled', 'multiple', 'open', 'required']);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
+          injected: false,
           title: '',
           arrowKeydownHandler: function arrowKeydownHandler(evt) {
             var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
@@ -407,43 +427,175 @@ customElements.define('chassis-select', function () {
                   }
                 }
 
-                return _this.optionsElement.select(_this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey);
+                return;
+              // return this.optionsElement.select(this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey)
 
               case 38:
               case 'ArrowUp':
                 evt.preventDefault();
 
-                if (!_this.multiple && !_this.open) {
-                  _this.open = true;
+                if (!_this.multiple) {
+                  if (!_this.open) {
+                    _this.open = true;
+                    return;
+                  }
+
+                  switch (startIndex) {
+                    case -1:
+                    case 0:
+                      return;
+
+                    default:
+                      return _this.optionsElement.hoverOption(startIndex - 1);
+                  }
+                }
+
+                if (_this.selectedIndex === 0) {
                   return;
                 }
 
-                switch (startIndex) {
-                  case -1:
-                  case 0:
-                    return;
-
-                  default:
-                    return _this.optionsElement.hoverOption(startIndex - 1);
+                if (!evt.shiftKey) {
+                  return _this.optionsElement.select(_this.optionsElement.selectionStartIndex - 1);
                 }
 
-                break;
+                if (_this.selectedOptions.length === 1) {
+                  return _this.optionsElement.select(_this.selectedIndex - 1, evt.shiftKey, null, null, _this.selectedIndex);
+                }
+
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                  for (var _iterator = _this.selectedOptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var option = _step.value;
+                    console.log(option);
+                  }
+                } catch (err) {
+                  _didIteratorError = true;
+                  _iteratorError = err;
+                } finally {
+                  try {
+                    if (!_iteratorNormalCompletion && _iterator.return != null) {
+                      _iterator.return();
+                    }
+                  } finally {
+                    if (_didIteratorError) {
+                      throw _iteratorError;
+                    }
+                  }
+                }
+
+                return;
+
+                if (!evt.shiftKey) {
+                  return _this.optionsElement.select(_this.selectedOptions[_this.selectedOptions.length - 1].index);
+                }
+
+                if (_this.optionsElement.selectionStartIndex < _this.selectedIndex) {
+                  return _this.optionsElement.deselect(_this.selectedOptions[_this.selectedOptions.length - 1].index);
+                }
+
+                return _this.optionsElement.select(_this.selectedIndex - 1, evt.shiftKey);
 
               case 40:
               case 'ArrowDown':
                 evt.preventDefault();
 
-                if (!_this.multiple && !_this.open) {
-                  _this.open = true;
+                if (!_this.multiple) {
+                  if (!_this.open) {
+                    _this.open = true;
+                    return;
+                  }
+
+                  switch (startIndex) {
+                    case _this.options.length - 1:
+                      return;
+
+                    default:
+                      return _this.optionsElement.hoverOption(startIndex + 1);
+                  }
+                }
+
+                if (_this.selectedIndex === _this.length - 1) {
                   return;
                 }
 
-                switch (startIndex) {
-                  case _this.options.length - 1:
-                    return;
+                if (_this.selectedOptions.length === 1) {
+                  return _this.optionsElement.select(_this.selectedOptions[_this.selectedOptions.length - 1].index + 1, evt.shiftKey, null, null, _this.selectedIndex);
+                }
 
-                  default:
-                    return _this.optionsElement.hoverOption(startIndex + 1);
+                if (!evt.shiftKey) {
+                  if (_this.selectedOptions.length === 1) {
+                    return _this.optionsElement.select(_this.selectedIndex + 1);
+                  }
+                }
+
+                if (_this.optionsElement.selectionStartIndex > _this.selectedIndex) {
+                  return _this.optionsElement.deselect(_this.selectedIndex);
+                }
+
+                return _this.optionsElement.select(_this.selectedOptions[_this.selectedOptions.length - 1].index + 1, evt.shiftKey);
+
+              default:
+                return;
+            }
+          },
+          blurHandler: function blurHandler(evt) {
+            return _this.removeEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).arrowKeydownHandler);
+          },
+          bodyMousedownHandler: function bodyMousedownHandler(evt) {
+            if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
+              return;
+            }
+
+            _this.open = false;
+          },
+          focusHandler: function focusHandler(evt) {
+            return _this.addEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).arrowKeydownHandler);
+          },
+          middleWare: {
+            beforeChange: null,
+            afterChange: null
+          },
+          optionSelectionHandler: function optionSelectionHandler(evt) {
+            evt.stopPropagation();
+
+            if (_this.open) {
+              _this.removeAttribute('open');
+            }
+
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('options.selected', evt.detail, _this.selectedOptionsElement); // TODO: Handle afterChange
+          },
+          stateChangeHandler: function stateChangeHandler(evt) {
+            var _evt$detail = evt.detail,
+                name = _evt$detail.name,
+                value = _evt$detail.value;
+
+            switch (name) {
+              case 'open':
+                if (!value) {
+                  document.body.removeEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+                  document.body.removeEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+                  document.body.removeEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+                  return;
+                }
+
+                if (_this.multiple) {
+                  console.warn('WARNING <chassis-select multiple> cannot be opened.');
+                  return _this.removeAttribute('open');
+                }
+
+                _this.optionsElement.unHoverAllOptions();
+
+                document.body.addEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+                document.body.addEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+                document.body.addEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+                break;
+
+              case 'multiple':
+                if (value && _this.hasAttribute('open')) {
+                  _this.removeAttribute('open');
                 }
 
                 break;
@@ -452,19 +604,11 @@ customElements.define('chassis-select', function () {
                 return;
             }
           },
-          middleWare: {
-            beforeChange: null,
-            afterChange: null
-          },
-          bodyClickHandler: function bodyClickHandler(evt) {
-            if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
-              return;
-            }
-
-            _this.open = false;
-          },
           throwSizeAttributeWarning: function throwSizeAttributeWarning() {
             console.warn('WARNING <chassis-select> "size" attribute is not supported. Please use CSS to set the height of the options panel instead.');
+          },
+          toggleHandler: function toggleHandler(evt) {
+            return _this.open = !_this.open;
           }
         });
 
@@ -487,46 +631,16 @@ customElements.define('chassis-select', function () {
 
           switch (attr) {
             case 'multiple':
-              if (!this.multiple) {
-                if (this.optionsElement) {
-                  this.optionsElement.setOptionMultipleMode(false);
-                }
-
-                if (this.selectedOptions) {
-                  this.deselectAll();
-                  this.select(this.selectedIndex);
-                }
-
-                return;
-              }
-
-              if (this.optionsElement) {
-                this.optionsElement.setOptionMultipleMode(true);
-              }
-
-              if (this.hasAttribute('open')) {
-                this.removeAttribute('open');
-              }
-
-              break;
+              return _.get(this).emit('state.change', {
+                name: 'multiple',
+                value: this.multiple
+              });
 
             case 'open':
-              if (!this.open) {
-                document.body.removeEventListener('click', _.get(this).bodyClickHandler);
-                document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler);
-                document.body.removeEventListener('touchend', _.get(this).bodyClickHandler);
-                return;
-              }
-
-              if (this.multiple) {
-                console.warn('WARNING <chassis-select multiple> cannot be opened.');
-                return this.removeAttribute('open');
-              }
-
-              document.body.addEventListener('click', _.get(this).bodyClickHandler);
-              document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler);
-              document.body.addEventListener('touchend', _.get(this).bodyClickHandler);
-              break;
+              return _.get(this).emit('state.change', {
+                name: 'open',
+                value: this.open
+              });
 
             case 'placeholder':
               this.placeholder = newValue;
@@ -538,9 +652,7 @@ customElements.define('chassis-select', function () {
               break;
 
             case 'size':
-              _.get(this).throwSizeAttributeWarning();
-
-              break;
+              return _.get(this).throwSizeAttributeWarning();
 
             default:
               return;
@@ -562,26 +674,30 @@ customElements.define('chassis-select', function () {
         value: function connectedCallback() {
           var _this2 = this;
 
-          this.addEventListener('focus', function (evt) {
-            return _this2.addEventListener('keydown', _.get(_this2).arrowKeydownHandler);
-          });
-          this.addEventListener('blur', function (evt) {
-            return _this2.removeEventListener('keydown', _.get(_this2).arrowKeydownHandler);
-          });
-          document.body.addEventListener('mouseup', function (evt) {
-            return _this2.optionsElement.mousedown = false;
-          });
+          this.addEventListener('blur', _.get(this).blurHandler);
+          this.addEventListener('focus', _.get(this).focusHandler);
+          this.addEventListener('state.change', _.get(this).stateChangeHandler);
+          this.addEventListener('toggle', _.get(this).toggleHandler);
+          this.addEventListener('options.selected', _.get(this).optionSelectionHandler);
           setTimeout(function () {
             if (!_this2.hasAttribute('tabindex')) {
               _this2.setAttribute('tabindex', 0);
             }
 
             _this2.autofocus && _this2.focus();
+            _this2.placeholder = _this2.getAttribute('placeholder'); // TEMP
 
-            _this2.optionsElement.setOptionMultipleMode(_this2.multiple); // TEMP
-            // this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
-
+            _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
           }, 0);
+        }
+      }, {
+        key: "disconnectedCallback",
+        value: function disconnectedCallback() {
+          this.removeEventListener('blur', _.get(this).blurHandler);
+          this.removeEventListener('focus', _.get(this).focusHandler);
+          this.addEventListener('state.change', _.get(this).stateChangeHandler);
+          this.removeEventListener('toggle', _.get(this).toggleHandler);
+          this.removeEventListener('options.selected', _.get(this).optionSelectionHandler);
         }
       }, {
         key: "deselectAll",
@@ -591,26 +707,29 @@ customElements.define('chassis-select', function () {
       }, {
         key: "inject",
         value: function inject(select, labels) {
+          // Prevent re-injections
+          if (_.get(this).injected) {
+            return;
+          }
+
+          var optionsElement = document.createElement('chassis-options');
+          optionsElement.slot = 'options';
+          var selectedOptionsElement = document.createElement('chassis-selected-options');
+          selectedOptionsElement.slot = 'selectedoptions';
           Object.assign(_.get(this), {
             sourceElement: select,
-            optionsElement: document.createElement('chassis-options'),
-            selectedOptionsElement: document.createElement('chassis-selected-options'),
+            optionsElement: optionsElement,
+            selectedOptionsElement: selectedOptionsElement,
             labels: labels
           });
-          this.placeholder = this.getAttribute('placeholder');
-          this.optionsElement.parent = this;
-          this.selectedOptionsElement.parent = this;
-          this.selectedOptionsElement.slot = 'selectedoptions';
-          this.appendChild(this.selectedOptionsElement);
-          this.optionsElement.slot = 'options';
-          this.appendChild(this.optionsElement);
+          this.appendChild(_.get(this).optionsElement);
+          this.appendChild(_.get(this).selectedOptionsElement);
 
           if (select.children.length > 0) {
             this.optionsElement.addChildren(select.children);
-            this.select(this.selectedIndex);
-          } else {
-            this.deselectAll();
           }
+
+          _.get(this).injected = true;
         }
       }, {
         key: "item",
@@ -669,12 +788,10 @@ customElements.define('chassis-select', function () {
          * @method select
          * @param  {Number || Array} index
          */
+        // select (index) {
+        //   this.optionsElement.select(index)
+        // }
 
-      }, {
-        key: "select",
-        value: function select(index) {
-          this.optionsElement.select(index);
-        }
       }, {
         key: "setCustomValidity",
         value: function setCustomValidity(string) {

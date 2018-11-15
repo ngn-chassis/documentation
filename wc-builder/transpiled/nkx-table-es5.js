@@ -189,6 +189,20 @@ customElements.define('nkx-table', function () {
             });
             return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
+          emit: function emit(name, detail) {
+            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+            if (target) {
+              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+            }
+
+            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+          },
+          newEvent: function newEvent(name, detail) {
+            return new CustomEvent(name, {
+              detail: detail
+            });
+          },
           throw: function _throw(type, vars) {
             var message = 'ERROR <nkx-table> ';
 

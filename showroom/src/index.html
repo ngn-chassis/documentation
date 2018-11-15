@@ -14,7 +14,7 @@
 
     <script src="webcomponents/chassis-control-es5.js"></script>
     <script src="webcomponents/chassis-select-es5.js"></script>
-    <script src="webcomponents/chassis-datalist-es5.js"></script>
+    <!-- <script src="webcomponents/chassis-datalist-es5.js"></script> -->
     <script src="webcomponents/chassis-cycle-es5.js"></script>
   </head>
 
@@ -53,7 +53,7 @@
         <section class="test">
           <chassis-control id="chassis-select">
             <label>Menu Label</label>
-            <select name="name-test" placeholder="placeholder" >
+            <select name="name-test" placeholder="placeholder" size="20" multiple>
               <option value="test1">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="7"></circle>
@@ -61,12 +61,12 @@
                 </svg>
                 Option 1
               </option>
-              <option id="testaaaaa" label=" " value="test2">Option 2</option>
+              <option id="testaaaaa" label=" " value="test2" selected>Option 2</option>
               <option value="test3">Option 3 is long and should wrap to the next line</option>
-              <option value="test5">Option 5</option>
-              <option value="test6">Option 6</option>
+              <option value="test4">Option 4</option>
+              <option value="test5" selected>Option 5</option>
+              <option value="test6" selected>Option 6</option>
               <option value="test7">Option 7</option>
-              <option value="test8">Option 8</option>
               <!-- <optgroup label="Option Group 1">
                 <option value="test5">Grouped Option</option>
                 <option value="test6">Grouped Option</option>
@@ -81,7 +81,7 @@
           </chassis-control>
 
           <label for="default-select">test</label>
-          <select id="default-select" multiple>
+          <select id="default-select">
             <option id="test-option" value="1">Option 1</option>
             <option id="test-option2" value="2">Option 2</option>
             <option value="3">Option 3</option>
@@ -663,15 +663,15 @@
           cb()
         }
 
-        chassisSelect.afterChange = function (prev, current) {
-          console.log('after change');
-          console.log('previous: ', prev);
-          console.log('current: ', current);
-        }
-
-        chassisSelect.addEventListener('change', evt => {
-          console.log('chassisSelect change');
-        })
+        // chassisSelect.afterChange = function (prev, current) {
+        //   console.log('after change');
+        //   console.log('previous: ', prev);
+        //   console.log('current: ', current);
+        // }
+        //
+        // chassisSelect.addEventListener('change', evt => {
+        //   console.log('chassisSelect change');
+        // })
         // window.old = document.getElementById('old')
 
         // var old = document.getElementById('heyyy')

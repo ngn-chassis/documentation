@@ -191,6 +191,20 @@ customElements.define('chassis-option', function () {
             });
             return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
+          emit: function emit(name, detail) {
+            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+            if (target) {
+              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+            }
+
+            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+          },
+          newEvent: function newEvent(name, detail) {
+            return new CustomEvent(name, {
+              detail: detail
+            });
+          },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-option> ';
 
@@ -207,7 +221,6 @@ customElements.define('chassis-option', function () {
           }
         });
 
-        _this.parent = null;
         _this.defaultSelected = false;
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttributes(['id', 'label', 'value']);
@@ -219,34 +232,85 @@ customElements.define('chassis-option', function () {
           get: function get() {
             var _this2 = this;
 
-            return this.parent.options.findIndex(function (option) {
+            return this.parentNode.options.findIndex(function (option) {
               return option.displayElement === _this2;
             });
           }
         }]);
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
-          form: null
-        });
+          form: null,
+          mouseButtonDown: function mouseButtonDown(evt) {
+            var code = evt.buttons !== undefined ? evt.buttons : evt.nativeEvent.which;
+            return code >= 1;
+          },
+          mousemoveHandler: function mousemoveHandler(evt) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.hovered', _this.index);
+          },
+          mouseoutHandler: function mouseoutHandler(evt) {
+            return _this.hover = false;
+          },
+          mouseoverHandler: function mouseoverHandler(evt) {
+            var mousedown = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).mouseButtonDown(evt);
 
-        _this.addEventListener('mouseover', function (evt) {
-          if (_this.parent.multiple && _this.parent.mousedown) {
-            return _this.parent.select(_this.index, true);
+            if (!(_this.parentNode.multiple && mousedown)) {
+              _this.hover = true;
+              return;
+            }
+
+            var shiftKey = evt.shiftKey,
+                metaKey = evt.metaKey,
+                ctrlKey = evt.ctrlKey;
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).select(shiftKey, metaKey, ctrlKey, mousedown);
+          },
+          select: function select() {
+            var shiftKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+            var metaKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var ctrlKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var mousedown = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+            var _assertThisInitialize = (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)),
+                index = _assertThisInitialize.index;
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
+              index: index,
+              shiftKey: shiftKey,
+              metaKey: metaKey,
+              ctrlKey: ctrlKey,
+              mousedown: mousedown
+            }, _this.parentNode);
+          },
+          selectionHandler: function selectionHandler(evt) {
+            var shiftKey = evt.shiftKey,
+                metaKey = evt.metaKey,
+                ctrlKey = evt.ctrlKey;
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).select(shiftKey, metaKey, ctrlKey);
+          },
+          parentStateChangeHandler: function parentStateChangeHandler(evt) {
+            var _evt$detail = evt.detail,
+                name = _evt$detail.name,
+                value = _evt$detail.value;
+
+            switch (name) {
+              case 'multiple':
+                if (value) {
+                  _this.removeEventListener('mouseup', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionHandler);
+
+                  _this.addEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionHandler);
+                } else {
+                  _this.addEventListener('mouseup', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionHandler);
+
+                  _this.removeEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionHandler);
+                }
+
+                break;
+
+              default:
+                return;
+            }
           }
-
-          _this.parent.hoverOption(_this.index);
-        });
-
-        _this.addEventListener('focus', function (evt) {
-          console.log('chassis-option');
-        });
-
-        _this.addEventListener('mousemove', function (evt) {
-          return _this.parent.hoverOption(_this.index);
-        });
-
-        _this.addEventListener('mouseout', function (evt) {
-          return _this.parent.unHoverOption(_this.index);
         });
 
         return _this;
@@ -277,7 +341,26 @@ customElements.define('chassis-option', function () {
         }
       }, {
         key: "connectedCallback",
-        value: function connectedCallback() {}
+        value: function connectedCallback() {
+          this.addEventListener('mouseover', _.get(this).mouseoverHandler);
+          this.addEventListener('mousemove', _.get(this).mousemoveHandler);
+          this.addEventListener('mouseout', _.get(this).mouseoutHandler);
+          this.addEventListener('mouseup', _.get(this).selectionHandler);
+          this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler);
+        }
+      }, {
+        key: "disconnectedCallback",
+        value: function disconnectedCallback() {
+          this.removeEventListener('mouseover', _.get(this).mouseoverHandler);
+          this.removeEventListener('mousemove', _.get(this).mousemoveHandler);
+          this.removeEventListener('mouseout', _.get(this).mouseoutHandler);
+          this.removeEventListener('mouseup', _.get(this).selectionHandler);
+          this.removeEventListener('mousedown', _.get(this).selectionHandler);
+          this.displayElement.removeEventListener('mousedown', _p.get(this).multipleMousedownHandler);
+          this.displayElement.removeEventListener('mouseup', _p.get(this).multipleMouseupHandler);
+          this.displayElement.removeEventListener('mouseup', _p.get(this).mouseupHandler);
+          this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler);
+        }
         /**
          * @method remove
          * Remove this option from the DOM.
@@ -287,7 +370,7 @@ customElements.define('chassis-option', function () {
       }, {
         key: "remove",
         value: function remove() {
-          this.parent.options.splice(this.index, 1);
+          this.parentNode.options.splice(this.index, 1);
           (0, _get2.default)((0, _getPrototypeOf2.default)(_class.prototype), "remove", this).call(this);
         }
       }, {

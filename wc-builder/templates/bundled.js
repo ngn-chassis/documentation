@@ -154,6 +154,18 @@ customElements.define('{{TAG-NAME}}', (function () {
           return prefix ? `${prefix}_${id}` : id
         },
 
+        emit: (name, detail, target = null) => {
+          if (target) {
+            return target.dispatchEvent(_.get(this).newEvent(name, detail))
+          }
+          
+          this.dispatchEvent(_.get(this).newEvent(name, detail))
+        },
+
+        newEvent: (name, detail) => {
+          return new CustomEvent(name, {detail})
+        },
+
         throw: (type, vars) => {
           let message = 'ERROR <{{TAG-NAME}}> '
 

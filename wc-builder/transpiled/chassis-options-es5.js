@@ -2,8 +2,6 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
-
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
@@ -191,6 +189,20 @@ customElements.define('chassis-options', function () {
             });
             return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
+          emit: function emit(name, detail) {
+            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+            if (target) {
+              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+            }
+
+            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+          },
+          newEvent: function newEvent(name, detail) {
+            return new CustomEvent(name, {
+              detail: detail
+            });
+          },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-options> ';
 
@@ -207,13 +219,10 @@ customElements.define('chassis-options', function () {
           }
         });
 
-        _this.parent = null;
-        _this.mousedown = false;
-
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperties([{
           name: 'form',
           get: function get() {
-            return this.parent.form;
+            return this.parentNode.form;
           }
         }, {
           name: 'displayOptions',
@@ -238,7 +247,7 @@ customElements.define('chassis-options', function () {
         }, {
           name: 'multiple',
           get: function get() {
-            return this.parent.multiple;
+            return this.parentNode.multiple;
           }
         }, 'options', {
           name: 'selectedOptions',
@@ -251,15 +260,116 @@ customElements.define('chassis-options', function () {
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           options: [],
           selectionStartIndex: -1,
-          selection:
+          optionSelectionHandler: function optionSelectionHandler(evt) {
+            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+                ChassisHTMLCollection = _$get.ChassisHTMLCollection,
+                emit = _$get.emit,
+                Selection = _$get.Selection,
+                selectionStartIndex = _$get.selectionStartIndex;
+
+            var _evt$detail = evt.detail,
+                index = _evt$detail.index,
+                shiftKey = _evt$detail.shiftKey,
+                metaKey = _evt$detail.metaKey,
+                ctrlKey = _evt$detail.ctrlKey;
+            var option = _this.options[index];
+            var detail = {
+              shiftKey: shiftKey,
+              metaKey: metaKey,
+              ctrlKey: ctrlKey
+            };
+            var selection = new Selection();
+
+            var applyMiddleware = function applyMiddleware(next) {
+              var beforeChange = _this.parentNode.beforeChange;
+
+              var cb = function cb() {
+                detail.options = selection.options;
+                next();
+                return emit('options.selected', detail, _this.parentNode);
+              };
+
+              if (!(beforeChange && typeof beforeChange === 'function')) {
+                return cb();
+              }
+
+              beforeChange(_this.selectedOptions, new (ChassisHTMLCollection())(selection.displayElements), cb);
+            };
+
+            if (_this.multiple) {
+              if (metaKey || ctrlKey) {
+                selection.options = _this.options.filter(function (option) {
+                  return option.selected || option.index === index && !option.selected;
+                });
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+                return applyMiddleware(function () {
+                  return option.selected = !option.selected;
+                });
+              }
+
+              if (shiftKey) {
+                var bounds = [index, selectionStartIndex].sort();
+
+                if (bounds[0] === bounds[1]) {
+                  return;
+                }
+
+                selection.options = _this.options.slice(bounds[0], bounds[1] + 1);
+                return applyMiddleware(function () {
+                  _this.deselectAll();
+
+                  selection.options.forEach(function (option) {
+                    return option.selected = true;
+                  });
+                });
+              }
+            } else if (index === _this.selectedIndex) {
+              return;
+            }
+
+            selection.options = [option];
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+            applyMiddleware(function () {
+              _this.deselectAll();
+
+              option.selected = true;
+            });
+          },
+          parentStateChangeHandler: function parentStateChangeHandler(evt) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('state.change', evt.detail);
+
+            var _evt$detail2 = evt.detail,
+                name = _evt$detail2.name,
+                value = _evt$detail2.value;
+
+            switch (name) {
+              case 'multiple':
+                if (!value && _this.selectedOptions.length > 0) {
+                  var index = _this.selectedIndex;
+
+                  _this.deselectAll();
+
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
+                    index: index
+                  });
+                }
+
+                break;
+
+              default:
+                return;
+            }
+          },
+          Selection:
           /*#__PURE__*/
           function () {
-            function selection(options) {
-              (0, _classCallCheck2.default)(this, selection);
+            function Selection() {
+              var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+              (0, _classCallCheck2.default)(this, Selection);
               this.options = options;
             }
 
-            (0, _createClass2.default)(selection, [{
+            (0, _createClass2.default)(Selection, [{
               key: "append",
               value: function append(option) {
                 this.options.push(option);
@@ -275,15 +385,24 @@ customElements.define('chassis-options', function () {
                 this.options.unshift(option);
               }
             }, {
+              key: "displayElements",
+              get: function get() {
+                return this.options.map(function (option) {
+                  return option.displayElement;
+                });
+              }
+            }, {
               key: "length",
               get: function get() {
                 return this.options.length;
               }
             }]);
-            return selection;
+            return Selection;
           }(),
-          optionConstructor: function optionConstructor() {
+          OptionConstructor: function OptionConstructor() {
             var _p = new WeakMap();
+
+            var selectionHandler = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionSelectionHandler;
 
             return (
               /*#__PURE__*/
@@ -337,13 +456,8 @@ customElements.define('chassis-options', function () {
                       selected: sourceElement.selected,
                       value: sourceElement.getAttribute('value').trim(),
                       text: sourceElement.text.trim()
-                    },
-                    selectionHandler: function selectionHandler(evt) {
-                      parent.select(key, evt.shiftKey, evt.ctrlKey, evt.metaKey);
                     }
                   });
-
-                  this.multipleMode = parent.multiple;
                 }
 
                 (0, _createClass2.default)(ChassisOptionObject, [{
@@ -351,12 +465,6 @@ customElements.define('chassis-options', function () {
                   value: function remove() {
                     this.sourceElement.remove();
                     this.displayElement.remove();
-
-                    if (parent.multiple) {
-                      this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler);
-                    } else {
-                      this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler);
-                    }
                   }
                 }, {
                   key: "setAttr",
@@ -424,17 +532,6 @@ customElements.define('chassis-options', function () {
                   set: function set(value) {
                     this.setAttr('value', value);
                   }
-                }, {
-                  key: "multipleMode",
-                  set: function set(bool) {
-                    if (bool) {
-                      this.displayElement.removeEventListener('mouseup', _p.get(this).selectionHandler);
-                      this.displayElement.addEventListener('mousedown', _p.get(this).selectionHandler);
-                    } else {
-                      this.displayElement.removeEventListener('mousedown', _p.get(this).selectionHandler);
-                      this.displayElement.addEventListener('mouseup', _p.get(this).selectionHandler);
-                    }
-                  }
                 }]);
                 return ChassisOptionObject;
               }()
@@ -446,7 +543,7 @@ customElements.define('chassis-options', function () {
               return;
             }
 
-            return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionConstructor())((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, document.createElement('chassis-option'));
+            return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).OptionConstructor())((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, document.createElement('chassis-option'));
           },
           generateSourceOptionElement: function generateSourceOptionElement(option) {
             var sourceEl = document.createElement('option');
@@ -620,98 +717,49 @@ customElements.define('chassis-options', function () {
             }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection());
 
             return ChassisHTMLOptionsCollection;
-          },
-          selectByKey: function selectByKey(key) {
-            var _this6;
+          } // selectByKey: (key, ...keys) => {
+          //   let option = _.get(this).getOptionByKey(key)
+          //
+          //   if (!option) {
+          //     console.error(`Invalid option key "${key}"`)
+          //     return this.deselectAll()
+          //   }
+          //
+          //   this.select(option, ...keys)
+          // },
+          //
+          // selectByIndex: (index, ...keys) => {
+          //   let option = this.options[index]
+          //
+          //   if (!option) {
+          //     if (index >= 0) {
+          //       return console.error(`No option at index ${index}`)
+          //     }
+          //
+          //     return
+          //   }
+          //
+          //   this.select(option, ...keys)
+          // },
+          //
+          // selectByString: (string, ...keys) => {
+          //   let query
+          //
+          //   for (let option of this.options) {
+          //     if (option.key === string || option.id === string) {
+          //       query = option
+          //       break
+          //     }
+          //   }
+          //
+          //   if (!query) {
+          //     console.error(`Option matching query "${key}" not found`)
+          //     return
+          //   }
+          //
+          //   this.select(query, ...keys)
+          // }
 
-            var option = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getOptionByKey(key);
-
-            if (!option) {
-              console.error("Invalid option key \"".concat(key, "\""));
-              return _this.deselectAll();
-            }
-
-            for (var _len = arguments.length, keys = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-              keys[_key - 1] = arguments[_key];
-            }
-
-            (_this6 = _this).select.apply(_this6, [option].concat(keys));
-          },
-          selectByIndex: function selectByIndex(index) {
-            var _this7;
-
-            var option = _this.options[index];
-
-            if (!option) {
-              if (index >= 0) {
-                return console.error("No option at index ".concat(index));
-              }
-
-              return;
-            }
-
-            for (var _len2 = arguments.length, keys = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-              keys[_key2 - 1] = arguments[_key2];
-            }
-
-            (_this7 = _this).select.apply(_this7, [option].concat(keys));
-          },
-          selectByString: function selectByString(string) {
-            var _this8;
-
-            var query;
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-              for (var _iterator3 = _this.options[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var option = _step3.value;
-
-                if (option.key === string || option.id === string) {
-                  query = option;
-                  break;
-                }
-              }
-            } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
-                }
-              } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
-                }
-              }
-            }
-
-            if (!query) {
-              console.error("Option matching query \"".concat(key, "\" not found"));
-              return;
-            }
-
-            for (var _len3 = arguments.length, keys = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-              keys[_key3 - 1] = arguments[_key3];
-            }
-
-            (_this8 = _this).select.apply(_this8, [query].concat(keys));
-          },
-          selectOption: function selectOption(option) {
-            option.selected = true;
-
-            _this.parent.selectedOptionsElement.add(option);
-          }
-        });
-
-        _this.addEventListener('mousedown', function (evt) {
-          return _this.mousedown = true;
-        });
-
-        _this.addEventListener('mouseup', function (evt) {
-          return _this.mousedown = false;
         });
 
         return _this;
@@ -731,16 +779,11 @@ customElements.define('chassis-options', function () {
       }, {
         key: "unHoverAllOptions",
         value: function unHoverAllOptions() {
-          var _this9 = this;
+          var _this6 = this;
 
           this.options.forEach(function (option, index) {
-            return _this9.unHoverOption(index);
+            return _this6.unHoverOption(index);
           });
-        }
-      }, {
-        key: "connectedCallback",
-        value: function connectedCallback() {
-          _.get(this).selectionStartIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
         }
       }, {
         key: "add",
@@ -757,35 +800,31 @@ customElements.define('chassis-options', function () {
             option = _.get(this).generateOptionObject(option);
           }
 
-          this.parent["".concat(option.index)] = option.displayElement;
+          this.parentNode["".concat(option.index)] = option.displayElement;
 
           if (index) {
             dest.insertBefore(option.displayElement, dest.children.item(index));
             this.options.splice(index, 0, option);
-            this.parent.sourceElement.add(option.sourceElement, index);
+            this.parentNode.sourceElement.add(option.sourceElement, index);
           } else {
             dest.appendChild(option.displayElement);
             this.options.push(option);
 
-            if (!this.parent.sourceElement[this.options.length - 1]) {
-              this.parent.sourceElement.appendChild(option.sourceElement);
+            if (!this.parentNode.sourceElement[this.options.length - 1]) {
+              this.parentNode.sourceElement.appendChild(option.sourceElement);
             }
-          }
-
-          if (option.selected) {
-            _.get(this).selectByString(option.key, false, false, false);
           }
         }
       }, {
         key: "addChildren",
         value: function addChildren(children) {
-          var _iteratorNormalCompletion4 = true;
-          var _didIteratorError4 = false;
-          var _iteratorError4 = undefined;
+          var _iteratorNormalCompletion3 = true;
+          var _didIteratorError3 = false;
+          var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator4 = children[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-              var child = _step4.value;
+            for (var _iterator3 = children[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              var child = _step3.value;
               var isElement = child instanceof HTMLElement;
 
               switch (child.nodeName) {
@@ -803,16 +842,16 @@ customElements.define('chassis-options', function () {
               }
             }
           } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
+              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                _iterator3.return();
               }
             } finally {
-              if (_didIteratorError4) {
-                throw _iteratorError4;
+              if (_didIteratorError3) {
+                throw _iteratorError3;
               }
             }
           }
@@ -833,21 +872,40 @@ customElements.define('chassis-options', function () {
           }
         }
       }, {
+        key: "connectedCallback",
+        value: function connectedCallback() {
+          this.addEventListener('option.selected', _.get(this).optionSelectionHandler);
+          this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler);
+          _.get(this).selectionStartIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
+        }
+      }, {
+        key: "disconnectedCallback",
+        value: function disconnectedCallback() {
+          this.removeEventListener('option.selected', _.get(this).optionSelectionHandler);
+          this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler);
+        }
+      }, {
         key: "deselect",
         value: function deselect(option) {
+          var updateList = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+          if (typeof option === 'number') {
+            option = this.options[option];
+          }
+
           option.selected = false;
-          this.parent.selectedOptionsElement.remove(option);
+          this.parentNode.selectedOptionsElement.remove(option, updateList);
         }
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          var _this10 = this;
+          var _this7 = this;
 
-          this.parent.selectedOptionsElement.clear();
+          var showPlaceholder = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
           this.options.filter(function (option) {
             return option.selected;
-          }).forEach(function (option) {
-            return _this10.deselect(option);
+          }).forEach(function (option, index, options) {
+            _this7.deselect(option, index = options.length - 1 && showPlaceholder);
           });
         }
       }, {
@@ -891,148 +949,149 @@ customElements.define('chassis-options', function () {
          * [select description]
          * TODO: see if its possible to set Event.isTrusted to true for the change event dispatched in this method
          */
+        // select (option, input, shiftKey = false, ctrlKey = false, metaKey = false, startIndex = null) {
+        //   let keys = Array.prototype.slice.call(arguments, 1)
+        //
+        //   if (Array.isArray(option)) {
+        //     return console.log('Handle array of indexes')
+        //   }
+        //
+        //   if (typeof option === 'number') {
+        //     return _.get(this).selectByIndex(option, ...keys)
+        //   }
+        //
+        //   if (typeof option === 'string') {
+        //     return _.get(this).selectByString(option, ...keys)
+        //   }
+        //
+        //   if (typeof option !== 'object') {
+        //     return console.error(`ERROR <chassis-select> Cannot select option type "${typeof option}"`)
+        //   }
+        //
+        //   let selection = new (_.get(this).selection)([option])
+        //
+        //   if (selection.length === 1) {
+        //     _.get(this).selectionStartIndex = option.index
+        //   }
+        //
+        //   if (this.parentNode.multiple) {
+        //     let { selectionStartIndex } = _.get(this)
+        //
+        //     if (startIndex) {
+        //       selectionStartIndex = startIndex
+        //     }
+        //
+        //     if (shiftKey) {
+        //       console.log('shift key');
+        //     } else if (ctrlKey || metaKey) {
+        //       _.get(this).selectionStartIndex = option.index
+        //
+        //       deselectAll = false
+        //     }
+        //
+        //   } else if (option.selected) {
+        //     return
+        //   }
+        //
+        //   let completeChange = () => {
+        //     let previouslySelectedOptions = this.selectedOptions
+        //
+        //     deselectAll && this.deselectAll(false)
+        //     selection.options.forEach(option => option.selected = true)
+        //
+        //     this.parentNode.dispatchEvent(new Event('change', {
+        //       bubbles: true
+        //     }))
+        //
+        //     if (this.parentNode.afterChange && typeof this.parentNode.afterChange === 'function') {
+        //       this.parentNode.afterChange(previouslySelectedOptions, this.selectedOptions)
+        //     }
+        //   }
+        //
+        //   if (this.parentNode.beforeChange && typeof this.parentNode.beforeChange === 'function') {
+        //     let collection = new (_.get(this).ChassisHTMLCollection())(selection.options.map(option => option.displayElement))
+        //     return this.parentNode.beforeChange(this.selectedOptions, collection, completeChange)
+        //   }
+        //
+        //   completeChange()
+        //
+        //   // if (this.parentNode.multiple) {
+        //   //   let { selectionStartIndex } = _.get(this)
+        //   //
+        //   //   if (startIndex) {
+        //   //     selectionStartIndex = startIndex
+        //   //   }
+        //   //
+        //   //   // TODO: Refactor to use bounding method
+        //   //   if (shiftKey) {
+        //   //     if (this.selectedOptions.length === 1) {
+        //   //       if (option.index === this.selectedIndex) {
+        //   //         return
+        //   //       }
+        //   //
+        //   //       selection.clear()
+        //   //
+        //   //       if (option.index < this.selectedIndex) {
+        //   //         for (let i = this.selectedIndex; i >= option.index; i--) {
+        //   //           selection.prepend(this.options[i])
+        //   //         }
+        //   //       }
+        //   //
+        //   //       if (option.index > this.selectedIndex) {
+        //   //         for (let i = this.selectedIndex; i <= option.index; i++) {
+        //   //           selection.append(this.options[i])
+        //   //         }
+        //   //       }
+        //   //     }
+        //   //
+        //   //     if (this.selectedOptions.length > 1 && option.index !== selectionStartIndex) {
+        //   //       selection.clear()
+        //   //
+        //   //       if (option.index < selectionStartIndex) {
+        //   //         for (let i = selectionStartIndex; i >= option.index; i--) {
+        //   //           selection.prepend(this.options[i])
+        //   //         }
+        //   //       }
+        //   //
+        //   //       if (option.index > selectionStartIndex) {
+        //   //         for (let i = selectionStartIndex; i <= option.index; i++) {
+        //   //           selection.append(this.options[i])
+        //   //         }
+        //   //       }
+        //   //     }
+        //   //   } else if (ctrlKey || metaKey) {
+        //   //     _.get(this).selectionStartIndex = option.index
+        //   //
+        //   //     if (option.selected) {
+        //   //       return this.deselect(option)
+        //   //     }
+        //   //
+        //   //     deselectAll = false
+        //   //   }
+        //   // } else if (option.selected) {
+        //   //   return
+        //   // }
+        // }
 
-      }, {
-        key: "select",
-        value: function select(option) {
-          var _this11 = this;
-
-          var shiftKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-          var ctrlKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-          var metaKey = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-          var keys = Array.prototype.slice.call(arguments, 1);
-
-          if (Array.isArray(option)) {
-            return console.log('Handle array of indexes');
-          }
-
-          if (typeof option === 'number') {
-            var _$get;
-
-            return (_$get = _.get(this)).selectByIndex.apply(_$get, [option].concat((0, _toConsumableArray2.default)(keys)));
-          }
-
-          if (typeof option === 'string') {
-            var _$get2;
-
-            return (_$get2 = _.get(this)).selectByString.apply(_$get2, [option].concat((0, _toConsumableArray2.default)(keys)));
-          }
-
-          if ((0, _typeof2.default)(option) !== 'object') {
-            return console.error("ERROR <chassis-select> Cannot select option type \"".concat((0, _typeof2.default)(option), "\""));
-          }
-
-          var selection = new (_.get(this).selection)([option]);
-          var deselectAll = true;
-
-          if (this.parent.multiple) {
-            var _$get3 = _.get(this),
-                selectionStartIndex = _$get3.selectionStartIndex; // TODO: Refactor to use bounding method
-
-
-            if (shiftKey) {
-              if (this.selectedOptions.length === 1) {
-                if (option.index === this.selectedIndex) {
-                  return;
-                }
-
-                selection.clear();
-
-                if (option.index < this.selectedIndex) {
-                  for (var i = this.selectedIndex; i >= option.index; i--) {
-                    selection.prepend(this.options[i]);
-                  }
-                }
-
-                if (option.index > this.selectedIndex) {
-                  for (var _i = this.selectedIndex; _i <= option.index; _i++) {
-                    selection.append(this.options[_i]);
-                  }
-                }
-              }
-
-              if (this.selectedOptions.length > 1 && option.index !== selectionStartIndex) {
-                selection.clear();
-
-                if (option.index < selectionStartIndex) {
-                  for (var _i2 = selectionStartIndex; _i2 >= option.index; _i2--) {
-                    selection.prepend(this.options[_i2]);
-                  }
-                }
-
-                if (option.index > selectionStartIndex) {
-                  for (var _i3 = selectionStartIndex; _i3 <= option.index; _i3++) {
-                    selection.append(this.options[_i3]);
-                  }
-                }
-              }
-            } else if (ctrlKey || metaKey) {
-              _.get(this).selectionStartIndex = option.index;
-
-              if (option.selected) {
-                return this.deselect(option);
-              }
-
-              deselectAll = false;
-            }
-          } else if (option.selected) {
-            return;
-          }
-
-          if (selection.length === 1) {
-            _.get(this).selectionStartIndex = option.index;
-          }
-
-          var completeChange = function completeChange() {
-            var previouslySelectedOptions = _this11.selectedOptions;
-            deselectAll && _this11.deselectAll();
-            selection.options.forEach(function (option) {
-              return _.get(_this11).selectOption(option);
-            });
-
-            if (!_this11.parent.multiple) {
-              _this11.parent.open = false;
-            }
-
-            _this11.unHoverAllOptions();
-
-            _this11.parent.dispatchEvent(new Event('change', {
-              bubbles: true
-            }));
-
-            if (_this11.parent.afterChange && typeof _this11.parent.afterChange === 'function') {
-              _this11.parent.afterChange(previouslySelectedOptions, _this11.selectedOptions);
-            }
-          };
-
-          if (this.parent.beforeChange && typeof this.parent.beforeChange === 'function') {
-            var collection = new (_.get(this).ChassisHTMLCollection())(selection.options.map(function (option) {
-              return option.displayElement;
-            }));
-            return this.parent.beforeChange(this.selectedOptions, collection, completeChange);
-          }
-
-          completeChange();
-        }
-      }, {
-        key: "setOptionMultipleMode",
-        value: function setOptionMultipleMode() {
-          var multiple = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-          this.options.forEach(function (option) {
-            return option.multipleMode = multiple;
-          });
-        }
       }, {
         key: "selectedIndex",
         get: function get() {
-          var _this12 = this;
+          if (this.selectedOptions.length === 0) {
+            return;
+          }
 
-          return this.options.findIndex(function (option) {
-            return option.displayElement === _this12.selectedOptions.item(0);
-          });
+          return this.selectedOptions.item(0).index;
         },
         set: function set(index) {
-          this.select(index);
+          _.get(this).emit('option.selected', index);
+        }
+      }, {
+        key: "selectionStartIndex",
+        get: function get() {
+          return _.get(this).selectionStartIndex;
+        },
+        set: function set(value) {
+          console.warn("WARNING <chassis-select> selectionStartIndex cannot be set manually.");
         }
       }]);
       return _class;

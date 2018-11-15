@@ -2,7 +2,6 @@ class ChassisOptionElement extends HTMLElement {
   constructor () {
     super()
 
-    this.parent = null
     this.defaultSelected = false
 
     _.get(this).addAttributes([
@@ -23,29 +22,63 @@ class ChassisOptionElement extends HTMLElement {
       {
         name: 'index',
         get () {
-          return this.parent.options.findIndex(option => option.displayElement === this)
+          return this.parentNode.options.findIndex(option => option.displayElement === this)
         }
       }
     ])
 
     _.get(this).addPrivateProperties({
-      form: null
-    })
+      form: null,
 
-    this.addEventListener('mouseover', evt => {
-      if (this.parent.multiple && this.parent.mousedown) {
-        return this.parent.select(this.index, true)
+      mouseButtonDown: evt => {
+        let code = evt.buttons !== undefined ? evt.buttons : evt.nativeEvent.which
+        return code >= 1
+      },
+
+      mousemoveHandler: evt => _.get(this).emit('option.hovered', this.index),
+
+      mouseoutHandler: evt => this.hover = false,
+
+      mouseoverHandler: evt => {
+        let mousedown = _.get(this).mouseButtonDown(evt)
+
+        if (!(this.parentNode.multiple && mousedown)) {
+          this.hover = true
+          return
+        }
+
+        let { shiftKey, metaKey, ctrlKey } = evt
+        _.get(this).select(shiftKey, metaKey, ctrlKey, mousedown)
+      },
+
+      select: (shiftKey = false, metaKey = false, ctrlKey = false, mousedown = false) => {
+        let { index } = this
+        _.get(this).emit('option.selected', {index, shiftKey, metaKey, ctrlKey, mousedown}, this.parentNode)
+      },
+
+      selectionHandler: evt => {
+        let { shiftKey, metaKey, ctrlKey } = evt
+        _.get(this).select(shiftKey, metaKey, ctrlKey)
+      },
+
+      parentStateChangeHandler: evt => {
+        let { name, value } = evt.detail
+
+        switch (name) {
+          case 'multiple':
+            if (value) {
+              this.removeEventListener('mouseup', _.get(this).selectionHandler)
+              this.addEventListener('mousedown', _.get(this).selectionHandler)
+            } else {
+              this.addEventListener('mouseup', _.get(this).selectionHandler)
+              this.removeEventListener('mousedown', _.get(this).selectionHandler)
+            }
+            break
+
+          default: return
+        }
       }
-
-      this.parent.hoverOption(this.index)
     })
-
-    this.addEventListener('focus', evt => {
-      console.log('chassis-option');
-    })
-
-    this.addEventListener('mousemove', evt => this.parent.hoverOption(this.index))
-    this.addEventListener('mouseout', evt => this.parent.unHoverOption(this.index))
   }
 
   static get observedAttributes () {
@@ -81,7 +114,28 @@ class ChassisOptionElement extends HTMLElement {
     }
   }
 
-  connectedCallback () {}
+  connectedCallback () {
+    this.addEventListener('mouseover', _.get(this).mouseoverHandler)
+    this.addEventListener('mousemove', _.get(this).mousemoveHandler)
+    this.addEventListener('mouseout', _.get(this).mouseoutHandler)
+    this.addEventListener('mouseup', _.get(this).selectionHandler)
+
+    this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler)
+  }
+
+  disconnectedCallback () {
+    this.removeEventListener('mouseover', _.get(this).mouseoverHandler)
+    this.removeEventListener('mousemove', _.get(this).mousemoveHandler)
+    this.removeEventListener('mouseout', _.get(this).mouseoutHandler)
+    this.removeEventListener('mouseup', _.get(this).selectionHandler)
+    this.removeEventListener('mousedown', _.get(this).selectionHandler)
+
+    this.displayElement.removeEventListener('mousedown', _p.get(this).multipleMousedownHandler)
+    this.displayElement.removeEventListener('mouseup', _p.get(this).multipleMouseupHandler)
+    this.displayElement.removeEventListener('mouseup', _p.get(this).mouseupHandler)
+
+    this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler)
+  }
 
   /**
    * @method remove
@@ -89,7 +143,7 @@ class ChassisOptionElement extends HTMLElement {
    * @override
    */
   remove () {
-    this.parent.options.splice(this.index, 1)
+    this.parentNode.options.splice(this.index, 1)
     super.remove()
   }
 }

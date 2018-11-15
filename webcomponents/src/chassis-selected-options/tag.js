@@ -2,8 +2,6 @@ class ChassisSelectedOptionsElement extends HTMLElement {
   constructor () {
     super()
 
-    this.parent = null
-
     _.get(this).addPrivateProperties({
       contentsEl: this.shadowRoot.querySelector('#contents'),
       options: [],
@@ -29,7 +27,50 @@ class ChassisSelectedOptionsElement extends HTMLElement {
 
         caret.appendChild(shape)
         this.appendChild(caret)
-      }
+      },
+
+      optionSelectionHandler: evt => {
+        evt.stopPropagation()
+        let { options, shiftKey, metaKey, ctrlKey } = evt.detail
+
+        this.clear(false)
+        options.forEach(option => this.add(option))
+      },
+
+      parentStateChangeHandler: evt => {
+        let { name, value } = evt.detail
+
+        switch (name) {
+          case 'multiple':
+            if (!value) {
+              return this.addEventListener('mousedown', _.get(this).mousedownHandler)
+            }
+
+            return this.removeEventListener('mousedown', _.get(this).mousedownHandler)
+
+          default: return
+        }
+
+        // if (!multiple && this.parentNode.selectedOptions) {
+        //   this.clear(false)
+        //
+        // }
+
+        // if (!this.multiple && this.selectedOptions) {
+        //   this.deselectAll()
+        //   this.select(this.selectedIndex)
+        //
+        //   if (!_.get(this).clickListenerActive) {
+        //     this.selectedOptionsElement.addEventListener('mousedown', _.get(this).mousedownHandler)
+        //     _.get(this).clickListenerActive = true
+        //   }
+        // } else {
+        //   this.selectedOptionsElement.removeEventListener('mousedown', _.get(this).mousedownHandler)
+        //   _.get(this).clickListenerActive = false
+        // }
+      },
+
+      mousedownHandler: evt => _.get(this).emit('toggle', null, this.parentNode)
     })
   }
 
@@ -37,39 +78,40 @@ class ChassisSelectedOptionsElement extends HTMLElement {
     return _.get(this).options.map(option => option.displayElement.text).join(', ')
   }
 
-  add (option) {
+  add (option, update = true) {
     _.get(this).options.push(option)
-    this.update()
+    update && this.update()
   }
 
-  remove (option) {
+  remove (option, update = true) {
     _.get(this).options.splice(_.get(this).options.indexOf(option), 1)
-    this.update()
+    update && this.update()
   }
 
-  clear () {
+  clear (update = true) {
     _.get(this).options = []
-    this.update()
+    update && this.update()
   }
 
   connectedCallback () {
     _.get(this).appendCaret()
-
-    this.addEventListener('mousedown', evt => {
-      if (this.parent.multiple) {
-        return
-      }
-
-      this.parent.open = !this.parent.open
-    })
-
     this.update()
+
+    this.addEventListener('mousedown', _.get(this).mousedownHandler)
+    this.addEventListener('options.selected', _.get(this).optionSelectionHandler)
+    this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler)
+  }
+
+  disconnectedCallback () {
+    this.removeEventListener('mousedown', _.get(this).mousedownHandler)
+    this.addEventListener('options.selected', _.get(this).optionSelectionHandler)
+    this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler)
   }
 
   update () {
     _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0
       ? this.list
-      : this.parent.placeholder || ''
+      : this.parentNode.placeholder || ''
   }
 }
 

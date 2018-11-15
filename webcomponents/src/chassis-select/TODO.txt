@@ -1,7 +1,11 @@
+- Handle <chassis-options> scrolling
+- Think about whether its worth it to add "size" attr for select-one menus
 - Make sure validation works properly
 - Figure out a way to insert custom svg icons for chassis-selected-options
+- Make sure options with labels use label contents as innerHTML
 
 MULTIPLE SELECT
+- Fix keyboard arrow behavior
 - Handle focusing of options panel on click
 
 - Write Unit Tests

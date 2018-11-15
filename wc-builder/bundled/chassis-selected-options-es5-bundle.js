@@ -344,6 +344,20 @@ customElements.define('chassis-selected-options', function () {
             });
             return prefix ? "".concat(prefix, "_").concat(id) : id;
           },
+          emit: function emit(name, detail) {
+            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+            if (target) {
+              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+            }
+
+            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
+          },
+          newEvent: function newEvent(name, detail) {
+            return new CustomEvent(name, {
+              detail: detail
+            });
+          },
           throw: function _throw(type, vars) {
             var message = 'ERROR <chassis-selected-options> ';
 
@@ -359,8 +373,6 @@ customElements.define('chassis-selected-options', function () {
             console.error(message);
           }
         });
-
-        _this.parent = null;
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           contentsEl: _this.shadowRoot.querySelector('#contents'),
@@ -384,6 +396,56 @@ customElements.define('chassis-selected-options', function () {
             caret.appendChild(shape);
 
             _this.appendChild(caret);
+          },
+          optionSelectionHandler: function optionSelectionHandler(evt) {
+            evt.stopPropagation();
+            var _evt$detail = evt.detail,
+                options = _evt$detail.options,
+                shiftKey = _evt$detail.shiftKey,
+                metaKey = _evt$detail.metaKey,
+                ctrlKey = _evt$detail.ctrlKey;
+
+            _this.clear(false);
+
+            options.forEach(function (option) {
+              return _this.add(option);
+            });
+          },
+          parentStateChangeHandler: function parentStateChangeHandler(evt) {
+            var _evt$detail2 = evt.detail,
+                name = _evt$detail2.name,
+                value = _evt$detail2.value;
+
+            switch (name) {
+              case 'multiple':
+                if (!value) {
+                  return _this.addEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).mousedownHandler);
+                }
+
+                return _this.removeEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).mousedownHandler);
+
+              default:
+                return;
+            } // if (!multiple && this.parentNode.selectedOptions) {
+            //   this.clear(false)
+            //
+            // }
+            // if (!this.multiple && this.selectedOptions) {
+            //   this.deselectAll()
+            //   this.select(this.selectedIndex)
+            //
+            //   if (!_.get(this).clickListenerActive) {
+            //     this.selectedOptionsElement.addEventListener('mousedown', _.get(this).mousedownHandler)
+            //     _.get(this).clickListenerActive = true
+            //   }
+            // } else {
+            //   this.selectedOptionsElement.removeEventListener('mousedown', _.get(this).mousedownHandler)
+            //   _.get(this).clickListenerActive = false
+            // }
+
+          },
+          mousedownHandler: function mousedownHandler(evt) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('toggle', null, _this.parentNode);
           }
         });
 
@@ -393,43 +455,49 @@ customElements.define('chassis-selected-options', function () {
       (0, _createClass2.default)(_class, [{
         key: "add",
         value: function add(option) {
+          var update = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
           _.get(this).options.push(option);
 
-          this.update();
+          update && this.update();
         }
       }, {
         key: "remove",
         value: function remove(option) {
+          var update = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
           _.get(this).options.splice(_.get(this).options.indexOf(option), 1);
 
-          this.update();
+          update && this.update();
         }
       }, {
         key: "clear",
         value: function clear() {
+          var update = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
           _.get(this).options = [];
-          this.update();
+          update && this.update();
         }
       }, {
         key: "connectedCallback",
         value: function connectedCallback() {
-          var _this2 = this;
-
           _.get(this).appendCaret();
 
-          this.addEventListener('mousedown', function (evt) {
-            if (_this2.parent.multiple) {
-              return;
-            }
-
-            _this2.parent.open = !_this2.parent.open;
-          });
           this.update();
+          this.addEventListener('mousedown', _.get(this).mousedownHandler);
+          this.addEventListener('options.selected', _.get(this).optionSelectionHandler);
+          this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler);
+        }
+      }, {
+        key: "disconnectedCallback",
+        value: function disconnectedCallback() {
+          this.removeEventListener('mousedown', _.get(this).mousedownHandler);
+          this.addEventListener('options.selected', _.get(this).optionSelectionHandler);
+          this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler);
         }
       }, {
         key: "update",
         value: function update() {
-          _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0 ? this.list : this.parent.placeholder || '';
+          _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0 ? this.list : this.parentNode.placeholder || '';
         }
       }, {
         key: "list",

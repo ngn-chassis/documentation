@@ -32,7 +32,14 @@ class ChassisSelectElement extends HTMLElement {
 
       'selectedOptionsElement',
       'sourceElement',
-      'type',
+
+      {
+        name: 'type',
+        get () {
+          return this.multiple ? 'select-multiple' : 'select-one'
+        }
+      },
+
       'willValidate',
       'validationMessage',
       'validity'
@@ -52,6 +59,7 @@ class ChassisSelectElement extends HTMLElement {
     ])
 
     _.get(this).addPrivateProperties({
+      injected: false,
       title: '',
 
       arrowKeydownHandler: evt => {
@@ -76,42 +84,157 @@ class ChassisSelectElement extends HTMLElement {
               }
             }
 
-            return this.optionsElement.select(this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey)
+            return
+            // return this.optionsElement.select(this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey)
 
           case 38:
           case 'ArrowUp':
             evt.preventDefault()
 
-            if (!this.multiple && !this.open) {
-              this.open = true
+            if (!this.multiple) {
+              if (!this.open) {
+                this.open = true
+                return
+              }
+
+              switch (startIndex) {
+                case -1:
+                case 0:
+                  return
+
+                default:
+                  return this.optionsElement.hoverOption(startIndex - 1)
+              }
+            }
+
+            if (this.selectedIndex === 0) {
               return
             }
 
-            switch (startIndex) {
-              case -1:
-              case 0:
-                return
-
-              default:
-                return this.optionsElement.hoverOption(startIndex - 1)
+            if (!evt.shiftKey) {
+              return this.optionsElement.select(this.optionsElement.selectionStartIndex - 1)
             }
 
-            break
+            if (this.selectedOptions.length === 1) {
+              return this.optionsElement.select(this.selectedIndex - 1, evt.shiftKey, null, null, this.selectedIndex)
+            }
+
+            for (let option of this.selectedOptions) {
+              console.log(option);
+            }
+
+            return
+
+
+
+            if (!evt.shiftKey) {
+              return this.optionsElement.select(this.selectedOptions[this.selectedOptions.length - 1].index)
+            }
+
+            if (this.optionsElement.selectionStartIndex < this.selectedIndex) {
+              return this.optionsElement.deselect(this.selectedOptions[this.selectedOptions.length - 1].index)
+            }
+
+            return this.optionsElement.select(this.selectedIndex - 1, evt.shiftKey)
 
           case 40:
           case 'ArrowDown':
             evt.preventDefault()
 
-            if (!this.multiple && !this.open) {
-              this.open = true
+            if (!this.multiple) {
+              if (!this.open) {
+                this.open = true
+                return
+              }
+
+              switch (startIndex) {
+                case this.options.length - 1: return
+
+                default:
+                  return this.optionsElement.hoverOption(startIndex + 1)
+              }
+            }
+
+            if (this.selectedIndex === this.length - 1) {
               return
             }
 
-            switch (startIndex) {
-              case this.options.length - 1: return
+            if (this.selectedOptions.length === 1) {
+              return this.optionsElement.select(this.selectedOptions[this.selectedOptions.length - 1].index + 1, evt.shiftKey, null, null, this.selectedIndex)
+            }
 
-              default:
-                return this.optionsElement.hoverOption(startIndex + 1)
+            if (!evt.shiftKey) {
+              if (this.selectedOptions.length === 1) {
+                return this.optionsElement.select(this.selectedIndex + 1)
+              }
+
+
+            }
+
+            if (this.optionsElement.selectionStartIndex > this.selectedIndex) {
+              return this.optionsElement.deselect(this.selectedIndex)
+            }
+
+            return this.optionsElement.select(this.selectedOptions[this.selectedOptions.length - 1].index + 1, evt.shiftKey)
+
+          default: return
+        }
+      },
+
+      blurHandler: evt => this.removeEventListener('keydown', _.get(this).arrowKeydownHandler),
+
+      bodyMousedownHandler: evt => {
+        if (evt.target === this || this.contains(evt.target)) {
+          return
+        }
+
+        this.open = false
+      },
+
+      focusHandler: evt => this.addEventListener('keydown', _.get(this).arrowKeydownHandler),
+
+      middleWare: {
+        beforeChange: null,
+        afterChange: null
+      },
+
+      optionSelectionHandler: evt => {
+        evt.stopPropagation()
+
+        if (this.open) {
+          this.removeAttribute('open')
+        }
+
+        return _.get(this).emit('options.selected', evt.detail, this.selectedOptionsElement)
+        // TODO: Handle afterChange
+      },
+
+      stateChangeHandler: evt => {
+        let { name, value } = evt.detail
+
+        switch (name) {
+          case 'open':
+            if (!value) {
+              document.body.removeEventListener('mousedown', _.get(this).bodyMousedownHandler)
+              document.body.removeEventListener('touchcancel', _.get(this).bodyMousedownHandler)
+              document.body.removeEventListener('touchend', _.get(this).bodyMousedownHandler)
+              return
+            }
+
+            if (this.multiple) {
+              console.warn('WARNING <chassis-select multiple> cannot be opened.')
+              return this.removeAttribute('open')
+            }
+
+            this.optionsElement.unHoverAllOptions()
+            document.body.addEventListener('mousedown', _.get(this).bodyMousedownHandler)
+            document.body.addEventListener('touchcancel', _.get(this).bodyMousedownHandler)
+            document.body.addEventListener('touchend', _.get(this).bodyMousedownHandler)
+            break
+
+          case 'multiple':
+            if (value && this.hasAttribute('open')) {
+              this.removeAttribute('open')
             }
 
             break
@@ -120,22 +243,11 @@ class ChassisSelectElement extends HTMLElement {
         }
       },
 
-      middleWare: {
-        beforeChange: null,
-        afterChange: null
-      },
-
-      bodyClickHandler: evt => {
-        if (evt.target === this || this.contains(evt.target)) {
-          return
-        }
-
-        this.open = false
-      },
-
       throwSizeAttributeWarning: () => {
         console.warn('WARNING <chassis-select> "size" attribute is not supported. Please use CSS to set the height of the options panel instead.')
-      }
+      },
+
+      toggleHandler: evt => this.open = !this.open
     })
   }
 
@@ -206,46 +318,16 @@ class ChassisSelectElement extends HTMLElement {
 
     switch (attr) {
       case 'multiple':
-        if (!this.multiple) {
-          if (this.optionsElement) {
-            this.optionsElement.setOptionMultipleMode(false)
-          }
-
-          if (this.selectedOptions) {
-            this.deselectAll()
-            this.select(this.selectedIndex)
-          }
-
-          return
-        }
-
-        if (this.optionsElement) {
-          this.optionsElement.setOptionMultipleMode(true)
-        }
-
-        if (this.hasAttribute('open')) {
-          this.removeAttribute('open')
-        }
-
-        break
+        return _.get(this).emit('state.change', {
+          name: 'multiple',
+          value: this.multiple
+        })
 
       case 'open':
-        if (!this.open) {
-          document.body.removeEventListener('click', _.get(this).bodyClickHandler)
-          document.body.removeEventListener('touchcancel', _.get(this).bodyClickHandler)
-          document.body.removeEventListener('touchend', _.get(this).bodyClickHandler)
-          return
-        }
-
-        if (this.multiple) {
-          console.warn('WARNING <chassis-select multiple> cannot be opened.')
-          return this.removeAttribute('open')
-        }
-
-        document.body.addEventListener('click', _.get(this).bodyClickHandler)
-        document.body.addEventListener('touchcancel', _.get(this).bodyClickHandler)
-        document.body.addEventListener('touchend', _.get(this).bodyClickHandler)
-        break
+        return _.get(this).emit('state.change', {
+          name: 'open',
+          value: this.open
+        })
 
       case 'placeholder':
         this.placeholder = newValue
@@ -257,8 +339,7 @@ class ChassisSelectElement extends HTMLElement {
         break
 
       case 'size':
-        _.get(this).throwSizeAttributeWarning()
-        break
+        return _.get(this).throwSizeAttributeWarning()
 
       default: return
     }
@@ -274,9 +355,11 @@ class ChassisSelectElement extends HTMLElement {
   }
 
   connectedCallback () {
-    this.addEventListener('focus', evt => this.addEventListener('keydown', _.get(this).arrowKeydownHandler))
-    this.addEventListener('blur', evt => this.removeEventListener('keydown', _.get(this).arrowKeydownHandler))
-    document.body.addEventListener('mouseup', evt => this.optionsElement.mousedown = false)
+    this.addEventListener('blur', _.get(this).blurHandler)
+    this.addEventListener('focus', _.get(this).focusHandler)
+    this.addEventListener('state.change', _.get(this).stateChangeHandler)
+    this.addEventListener('toggle', _.get(this).toggleHandler)
+    this.addEventListener('options.selected', _.get(this).optionSelectionHandler)
 
     setTimeout(() => {
       if (!this.hasAttribute('tabindex')) {
@@ -284,11 +367,19 @@ class ChassisSelectElement extends HTMLElement {
       }
 
       this.autofocus && this.focus()
-      this.optionsElement.setOptionMultipleMode(this.multiple)
+      this.placeholder = this.getAttribute('placeholder')
 
       // TEMP
-      // this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
+      this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
     }, 0)
+  }
+
+  disconnectedCallback () {
+    this.removeEventListener('blur', _.get(this).blurHandler)
+    this.removeEventListener('focus', _.get(this).focusHandler)
+    this.addEventListener('state.change', _.get(this).stateChangeHandler)
+    this.removeEventListener('toggle', _.get(this).toggleHandler)
+    this.removeEventListener('options.selected', _.get(this).optionSelectionHandler)
   }
 
   deselectAll () {
@@ -296,30 +387,32 @@ class ChassisSelectElement extends HTMLElement {
   }
 
   inject (select, labels) {
+    // Prevent re-injections
+    if (_.get(this).injected) {
+      return
+    }
+
+    let optionsElement = document.createElement('chassis-options')
+    optionsElement.slot = 'options'
+
+    let selectedOptionsElement = document.createElement('chassis-selected-options')
+    selectedOptionsElement.slot = 'selectedoptions'
+
     Object.assign(_.get(this), {
       sourceElement: select,
-      optionsElement: document.createElement('chassis-options'),
-      selectedOptionsElement: document.createElement('chassis-selected-options'),
+      optionsElement,
+      selectedOptionsElement,
       labels
     })
 
-    this.placeholder = this.getAttribute('placeholder')
-
-    this.optionsElement.parent = this
-    this.selectedOptionsElement.parent = this
-
-    this.selectedOptionsElement.slot = 'selectedoptions'
-    this.appendChild(this.selectedOptionsElement)
-
-    this.optionsElement.slot = 'options'
-    this.appendChild(this.optionsElement)
+    this.appendChild(_.get(this).optionsElement)
+    this.appendChild(_.get(this).selectedOptionsElement)
 
     if (select.children.length > 0) {
       this.optionsElement.addChildren(select.children)
-      this.select(this.selectedIndex)
-    } else {
-      this.deselectAll()
     }
+
+    _.get(this).injected = true
   }
 
   item (index) {
@@ -370,9 +463,9 @@ class ChassisSelectElement extends HTMLElement {
    * @method select
    * @param  {Number || Array} index
    */
-  select (index) {
-    this.optionsElement.select(index)
-  }
+  // select (index) {
+  //   this.optionsElement.select(index)
+  // }
 
   setCustomValidity (string) {
     this.sourceElement.setCustomValidity(string)

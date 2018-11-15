@@ -655,12 +655,19 @@
           console.log('select change');
         })
 
-        chassisSelect.beforeChange = function (current, selection, cb) {
-          console.log('before change');
-          console.log('current: ', current);
-          console.log('new selection: ', selection);
+        // chassisSelect.beforeChange = function (current, selection, cb) {
+        //   console.log('before change');
+        //   console.log('current: ', current);
+        //   console.log('new selection: ', selection);
+        //   console.log('---------');
+        //   cb()
+        // }
+
+        chassisSelect.afterChange = function (previous, current) {
+          console.log('after change');
+          console.log('previous selection: ', previous);
+          console.log('current selection: ', current);
           console.log('---------');
-          cb()
         }
 
         // chassisSelect.afterChange = function (prev, current) {

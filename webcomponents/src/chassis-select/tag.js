@@ -193,20 +193,24 @@ class ChassisSelectElement extends HTMLElement {
 
       focusHandler: evt => this.addEventListener('keydown', _.get(this).arrowKeydownHandler),
 
-      middleWare: {
+      middleware: {
         beforeChange: null,
         afterChange: null
       },
 
       optionSelectionHandler: evt => {
         evt.stopPropagation()
+        let { afterChange } = _.get(this).middleware
 
         if (this.open) {
           this.removeAttribute('open')
         }
 
-        return _.get(this).emit('options.selected', evt.detail, this.selectedOptionsElement)
-        // TODO: Handle afterChange
+        _.get(this).emit('options.selected', evt.detail, this.selectedOptionsElement)
+
+        if (afterChange && typeof afterChange === 'function') {
+          afterChange(evt.detail.previous, this.selectedOptions)
+        }
       },
 
       stateChangeHandler: evt => {
@@ -256,19 +260,19 @@ class ChassisSelectElement extends HTMLElement {
   }
 
   get afterChange () {
-    return _.get(this).middleWare.afterChange
+    return _.get(this).middleware.afterChange
   }
 
   set afterChange (func) {
-    _.get(this).middleWare.afterChange = func.bind(this)
+    _.get(this).middleware.afterChange = func.bind(this)
   }
 
   get beforeChange () {
-    return _.get(this).middleWare.beforeChange
+    return _.get(this).middleware.beforeChange
   }
 
   set beforeChange (func) {
-    _.get(this).middleWare.beforeChange = func.bind(this)
+    _.get(this).middleware.beforeChange = func.bind(this)
   }
 
   get length () {

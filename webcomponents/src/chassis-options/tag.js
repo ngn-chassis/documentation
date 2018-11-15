@@ -61,6 +61,8 @@ class ChassisOptionsElement extends HTMLElement {
 
           let cb = () => {
             detail.options = selection.options
+            detail.previous = this.selectedOptions
+            detail.next = new (ChassisHTMLCollection())(selection.displayElements)
             next()
 
             return emit('options.selected', detail, this.parentNode)
@@ -70,7 +72,7 @@ class ChassisOptionsElement extends HTMLElement {
             return cb()
           }
 
-          beforeChange(this.selectedOptions, new (ChassisHTMLCollection())(selection.displayElements), cb)
+          beforeChange(this.selectedOptions, detail.next, cb)
         }
 
         if (this.multiple) {

@@ -399,18 +399,24 @@ customElements.define('chassis-select', function () {
           focusHandler: function focusHandler(evt) {
             return _this.addEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).arrowKeydownHandler);
           },
-          middleWare: {
+          middleware: {
             beforeChange: null,
             afterChange: null
           },
           optionSelectionHandler: function optionSelectionHandler(evt) {
             evt.stopPropagation();
 
+            var afterChange = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).middleware.afterChange;
+
             if (_this.open) {
               _this.removeAttribute('open');
             }
 
-            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('options.selected', evt.detail, _this.selectedOptionsElement); // TODO: Handle afterChange
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('options.selected', evt.detail, _this.selectedOptionsElement);
+
+            if (afterChange && typeof afterChange === 'function') {
+              afterChange(evt.detail.previous, _this.selectedOptions);
+            }
           },
           stateChangeHandler: function stateChangeHandler(evt) {
             var _evt$detail = evt.detail,
@@ -650,18 +656,18 @@ customElements.define('chassis-select', function () {
       }, {
         key: "afterChange",
         get: function get() {
-          return _.get(this).middleWare.afterChange;
+          return _.get(this).middleware.afterChange;
         },
         set: function set(func) {
-          _.get(this).middleWare.afterChange = func.bind(this);
+          _.get(this).middleware.afterChange = func.bind(this);
         }
       }, {
         key: "beforeChange",
         get: function get() {
-          return _.get(this).middleWare.beforeChange;
+          return _.get(this).middleware.beforeChange;
         },
         set: function set(func) {
-          _.get(this).middleWare.beforeChange = func.bind(this);
+          _.get(this).middleware.beforeChange = func.bind(this);
         }
       }, {
         key: "length",

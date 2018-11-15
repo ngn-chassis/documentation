@@ -440,6 +440,8 @@ customElements.define('chassis-options', function () {
 
               var cb = function cb() {
                 detail.options = selection.options;
+                detail.previous = _this.selectedOptions;
+                detail.next = new (ChassisHTMLCollection())(selection.displayElements);
                 next();
                 return emit('options.selected', detail, _this.parentNode);
               };
@@ -448,7 +450,7 @@ customElements.define('chassis-options', function () {
                 return cb();
               }
 
-              beforeChange(_this.selectedOptions, new (ChassisHTMLCollection())(selection.displayElements), cb);
+              beforeChange(_this.selectedOptions, detail.next, cb);
             };
 
             if (_this.multiple) {

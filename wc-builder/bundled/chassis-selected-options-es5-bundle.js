@@ -399,22 +399,17 @@ customElements.define('chassis-selected-options', function () {
           },
           optionSelectionHandler: function optionSelectionHandler(evt) {
             evt.stopPropagation();
-            var _evt$detail = evt.detail,
-                options = _evt$detail.options,
-                shiftKey = _evt$detail.shiftKey,
-                metaKey = _evt$detail.metaKey,
-                ctrlKey = _evt$detail.ctrlKey;
 
-            _this.clear(false);
+            _this.clear(evt.detail.length === 0);
 
-            options.forEach(function (option) {
-              return _this.add(option);
+            evt.detail.forEach(function (option, index) {
+              return _this.add(option, index === evt.detail.length - 1);
             });
           },
           parentStateChangeHandler: function parentStateChangeHandler(evt) {
-            var _evt$detail2 = evt.detail,
-                name = _evt$detail2.name,
-                value = _evt$detail2.value;
+            var _evt$detail = evt.detail,
+                name = _evt$detail.name,
+                value = _evt$detail.value;
 
             switch (name) {
               case 'multiple':
@@ -426,23 +421,7 @@ customElements.define('chassis-selected-options', function () {
 
               default:
                 return;
-            } // if (!multiple && this.parentNode.selectedOptions) {
-            //   this.clear(false)
-            //
-            // }
-            // if (!this.multiple && this.selectedOptions) {
-            //   this.deselectAll()
-            //   this.select(this.selectedIndex)
-            //
-            //   if (!_.get(this).clickListenerActive) {
-            //     this.selectedOptionsElement.addEventListener('mousedown', _.get(this).mousedownHandler)
-            //     _.get(this).clickListenerActive = true
-            //   }
-            // } else {
-            //   this.selectedOptionsElement.removeEventListener('mousedown', _.get(this).mousedownHandler)
-            //   _.get(this).clickListenerActive = false
-            // }
-
+            }
           },
           mousedownHandler: function mousedownHandler(evt) {
             return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('toggle', null, _this.parentNode);
@@ -497,7 +476,13 @@ customElements.define('chassis-selected-options', function () {
       }, {
         key: "update",
         value: function update() {
-          _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0 ? this.list : this.parentNode.placeholder || '';
+          var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _.get(this).options;
+
+          if (options !== _.get(this).options) {
+            _.get(this).options = options;
+          }
+
+          _.get(this).contentsEl.innerHTML = options.length > 0 ? this.list : this.parentNode.placeholder || '';
         }
       }, {
         key: "list",

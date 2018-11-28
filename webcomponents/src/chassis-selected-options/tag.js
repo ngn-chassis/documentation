@@ -31,10 +31,9 @@ class ChassisSelectedOptionsElement extends HTMLElement {
 
       optionSelectionHandler: evt => {
         evt.stopPropagation()
-        let { options, shiftKey, metaKey, ctrlKey } = evt.detail
 
-        this.clear(false)
-        options.forEach(option => this.add(option))
+        this.clear(evt.detail.length === 0)
+        evt.detail.forEach((option, index) => this.add(option, index === evt.detail.length - 1))
       },
 
       parentStateChangeHandler: evt => {
@@ -50,24 +49,6 @@ class ChassisSelectedOptionsElement extends HTMLElement {
 
           default: return
         }
-
-        // if (!multiple && this.parentNode.selectedOptions) {
-        //   this.clear(false)
-        //
-        // }
-
-        // if (!this.multiple && this.selectedOptions) {
-        //   this.deselectAll()
-        //   this.select(this.selectedIndex)
-        //
-        //   if (!_.get(this).clickListenerActive) {
-        //     this.selectedOptionsElement.addEventListener('mousedown', _.get(this).mousedownHandler)
-        //     _.get(this).clickListenerActive = true
-        //   }
-        // } else {
-        //   this.selectedOptionsElement.removeEventListener('mousedown', _.get(this).mousedownHandler)
-        //   _.get(this).clickListenerActive = false
-        // }
       },
 
       mousedownHandler: evt => _.get(this).emit('toggle', null, this.parentNode)
@@ -108,8 +89,12 @@ class ChassisSelectedOptionsElement extends HTMLElement {
     this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler)
   }
 
-  update () {
-    _.get(this).contentsEl.innerHTML = _.get(this).options.length > 0
+  update (options = _.get(this).options) {
+    if (options !== _.get(this).options) {
+      _.get(this).options = options
+    }
+
+    _.get(this).contentsEl.innerHTML = options.length > 0
       ? this.list
       : this.parentNode.placeholder || ''
   }

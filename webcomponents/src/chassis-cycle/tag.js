@@ -1,4 +1,4 @@
-class ChassisCycle extends HTMLElement {
+class ChassisCycleElement extends HTMLElement {
   constructor () {
     super()
 
@@ -421,4 +421,4 @@ class ChassisCycle extends HTMLElement {
   }
 }
 
-customElements.define('chassis-cycle', ChassisCycle)
+customElements.define('chassis-cycle', ChassisCycleElement)

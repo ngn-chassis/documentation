@@ -62,6 +62,12 @@ class ChassisSelectElement extends HTMLElement {
       injected: false,
       title: '',
 
+      addOpenListeners: () => {
+        document.body.addEventListener('mousedown', _.get(this).bodyMousedownHandler)
+        document.body.addEventListener('touchcancel', _.get(this).bodyMousedownHandler)
+        document.body.addEventListener('touchend', _.get(this).bodyMousedownHandler)
+      },
+
       arrowKeydownHandler: evt => {
         let startIndex = this.hoveredIndex > -1 ? this.hoveredIndex : this.selectedIndex > -1 ? this.selectedIndex : -1
 
@@ -206,11 +212,17 @@ class ChassisSelectElement extends HTMLElement {
           this.removeAttribute('open')
         }
 
-        _.get(this).emit('options.selected', evt.detail, this.selectedOptionsElement)
+        _.get(this).emit('options.selected', evt.detail.options, this.selectedOptionsElement)
 
         if (afterChange && typeof afterChange === 'function') {
           afterChange(evt.detail.previous, this.selectedOptions)
         }
+      },
+
+      removeOpenListeners: () => {
+        document.body.removeEventListener('mousedown', _.get(this).bodyMousedownHandler)
+        document.body.removeEventListener('touchcancel', _.get(this).bodyMousedownHandler)
+        document.body.removeEventListener('touchend', _.get(this).bodyMousedownHandler)
       },
 
       stateChangeHandler: evt => {
@@ -219,10 +231,7 @@ class ChassisSelectElement extends HTMLElement {
         switch (name) {
           case 'open':
             if (!value) {
-              document.body.removeEventListener('mousedown', _.get(this).bodyMousedownHandler)
-              document.body.removeEventListener('touchcancel', _.get(this).bodyMousedownHandler)
-              document.body.removeEventListener('touchend', _.get(this).bodyMousedownHandler)
-              return
+              return _.get(this).removeOpenListeners()
             }
 
             if (this.multiple) {
@@ -231,10 +240,7 @@ class ChassisSelectElement extends HTMLElement {
             }
 
             this.optionsElement.unHoverAllOptions()
-            document.body.addEventListener('mousedown', _.get(this).bodyMousedownHandler)
-            document.body.addEventListener('touchcancel', _.get(this).bodyMousedownHandler)
-            document.body.addEventListener('touchend', _.get(this).bodyMousedownHandler)
-            break
+            return _.get(this).addOpenListeners()
 
           case 'multiple':
             if (value && this.hasAttribute('open')) {
@@ -371,7 +377,6 @@ class ChassisSelectElement extends HTMLElement {
       }
 
       this.autofocus && this.focus()
-      this.placeholder = this.getAttribute('placeholder')
 
       // TEMP
       this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
@@ -396,11 +401,11 @@ class ChassisSelectElement extends HTMLElement {
       return
     }
 
-    let optionsElement = document.createElement('chassis-options')
-    optionsElement.slot = 'options'
-
     let selectedOptionsElement = document.createElement('chassis-selected-options')
     selectedOptionsElement.slot = 'selectedoptions'
+
+    let optionsElement = document.createElement('chassis-options')
+    optionsElement.slot = 'options'
 
     Object.assign(_.get(this), {
       sourceElement: select,
@@ -409,11 +414,23 @@ class ChassisSelectElement extends HTMLElement {
       labels
     })
 
-    this.appendChild(_.get(this).optionsElement)
     this.appendChild(_.get(this).selectedOptionsElement)
+    this.appendChild(_.get(this).optionsElement)
 
     if (select.children.length > 0) {
+      if (!this.multiple) {
+        for (let option of select.children) {
+          if (option.index !== select.selectedIndex) {
+            option.removeAttribute('selected')
+          }
+        }
+      }
+
       this.optionsElement.addChildren(select.children)
+
+      if (!this.multiple) {
+        this.selectedOptionsElement.add(this.optionsElement.options[this.selectedIndex])
+      }
     }
 
     _.get(this).injected = true

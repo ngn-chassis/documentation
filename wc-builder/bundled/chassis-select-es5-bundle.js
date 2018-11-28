@@ -405,6 +405,11 @@ customElements.define('chassis-select', function () {
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           injected: false,
           title: '',
+          addOpenListeners: function addOpenListeners() {
+            document.body.addEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+            document.body.addEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+            document.body.addEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+          },
           arrowKeydownHandler: function arrowKeydownHandler(evt) {
             var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
 
@@ -567,11 +572,16 @@ customElements.define('chassis-select', function () {
               _this.removeAttribute('open');
             }
 
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('options.selected', evt.detail, _this.selectedOptionsElement);
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('options.selected', evt.detail.options, _this.selectedOptionsElement);
 
             if (afterChange && typeof afterChange === 'function') {
               afterChange(evt.detail.previous, _this.selectedOptions);
             }
+          },
+          removeOpenListeners: function removeOpenListeners() {
+            document.body.removeEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+            document.body.removeEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
+            document.body.removeEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
           },
           stateChangeHandler: function stateChangeHandler(evt) {
             var _evt$detail = evt.detail,
@@ -581,10 +591,7 @@ customElements.define('chassis-select', function () {
             switch (name) {
               case 'open':
                 if (!value) {
-                  document.body.removeEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
-                  document.body.removeEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
-                  document.body.removeEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
-                  return;
+                  return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).removeOpenListeners();
                 }
 
                 if (_this.multiple) {
@@ -594,10 +601,7 @@ customElements.define('chassis-select', function () {
 
                 _this.optionsElement.unHoverAllOptions();
 
-                document.body.addEventListener('mousedown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
-                document.body.addEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
-                document.body.addEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
-                break;
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addOpenListeners();
 
               case 'multiple':
                 if (value && _this.hasAttribute('open')) {
@@ -690,8 +694,7 @@ customElements.define('chassis-select', function () {
               _this2.setAttribute('tabindex', 0);
             }
 
-            _this2.autofocus && _this2.focus();
-            _this2.placeholder = _this2.getAttribute('placeholder'); // TEMP
+            _this2.autofocus && _this2.focus(); // TEMP
 
             _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
           }, 0);
@@ -718,21 +721,54 @@ customElements.define('chassis-select', function () {
             return;
           }
 
-          var optionsElement = document.createElement('chassis-options');
-          optionsElement.slot = 'options';
           var selectedOptionsElement = document.createElement('chassis-selected-options');
           selectedOptionsElement.slot = 'selectedoptions';
+          var optionsElement = document.createElement('chassis-options');
+          optionsElement.slot = 'options';
           Object.assign(_.get(this), {
             sourceElement: select,
             optionsElement: optionsElement,
             selectedOptionsElement: selectedOptionsElement,
             labels: labels
           });
-          this.appendChild(_.get(this).optionsElement);
           this.appendChild(_.get(this).selectedOptionsElement);
+          this.appendChild(_.get(this).optionsElement);
 
           if (select.children.length > 0) {
+            if (!this.multiple) {
+              var _iteratorNormalCompletion2 = true;
+              var _didIteratorError2 = false;
+              var _iteratorError2 = undefined;
+
+              try {
+                for (var _iterator2 = select.children[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                  var option = _step2.value;
+
+                  if (option.index !== select.selectedIndex) {
+                    option.removeAttribute('selected');
+                  }
+                }
+              } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                    _iterator2.return();
+                  }
+                } finally {
+                  if (_didIteratorError2) {
+                    throw _iteratorError2;
+                  }
+                }
+              }
+            }
+
             this.optionsElement.addChildren(select.children);
+
+            if (!this.multiple) {
+              this.selectedOptionsElement.add(this.optionsElement.options[this.selectedIndex]);
+            }
           }
 
           _.get(this).injected = true;

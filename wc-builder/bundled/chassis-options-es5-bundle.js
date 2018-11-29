@@ -193,7 +193,7 @@ customElements.define('chassis-options', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:block;width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-options{display:block;width:100%}:host :after,:host :before,chassis-options *{box-sizing:border-box}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptions\"></slot><slot></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: block;\n  width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-options {\n  display: block;\n  width: 100%;\n}\n\nchassis-options *,\nchassis-options *:before,\nchassis-options *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptions\"></slot><slot></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -405,6 +405,36 @@ customElements.define('chassis-options', function () {
             return this.parentNode.multiple;
           }
         }, 'options', {
+          name: 'selectedIndexes',
+          get: function get() {
+            var array = [];
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = this.selectedOptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var option = _step.value;
+                array.push(option.index);
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator.return != null) {
+                  _iterator.return();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+
+            return array;
+          }
+        }, {
           name: 'selectedOptions',
           get: function get() {
             var nodes = this.querySelectorAll('[selected]');
@@ -415,6 +445,118 @@ customElements.define('chassis-options', function () {
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           options: [],
           selectionStartIndex: -1,
+          arrowDownHandler: function arrowDownHandler(evt) {
+            if (!_this.multiple) {
+              var startIndex = evt.detail.startIndex;
+
+              switch (startIndex) {
+                case _this.options.length - 1:
+                  return;
+
+                default:
+                  return _this.hoverOption(startIndex + 1);
+              }
+
+              return;
+            }
+
+            if (_this.selectedOptions.length === 1 && _this.selectedIndex === _this.options.length - 1) {
+              return;
+            }
+
+            var shiftKey = evt.detail.shiftKey;
+            var index = _this.selectedIndex + 1;
+
+            if (_this.selectedOptions.length === 0) {
+              index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex === 0 ? 0 : _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex + 1;
+            }
+
+            if (_this.selectedOptions.length > 1) {
+              if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
+                index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index + 1;
+              }
+
+              if (_this.selectedIndex < _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex && _this.selectedIndex === _this.options.length - 1) {
+                return;
+              }
+            }
+
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
+              index: index,
+              shiftKey: shiftKey,
+              ctrlKey: false,
+              metaKey: false
+            });
+          },
+          arrowUpHandler: function arrowUpHandler(evt) {
+            if (!_this.multiple) {
+              var startIndex = evt.detail.startIndex;
+
+              switch (startIndex) {
+                case -1:
+                case 0:
+                  return;
+
+                default:
+                  return _this.hoverOption(startIndex - 1);
+              }
+
+              return;
+            }
+
+            if (_this.selectedOptions.length === 1 && _this.selectedIndex === 0) {
+              return;
+            }
+
+            var index = _this.selectedIndex - 1;
+            var shiftKey = evt.detail.shiftKey;
+
+            if (_this.selectedOptions.length === 0) {
+              index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex === -1 ? _this.options.length - 1 : _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex - 1;
+            }
+
+            if (_this.selectedOptions.length > 1) {
+              if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
+                index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index - 1;
+              }
+
+              if (_this.selectedIndex < _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex && _this.selectedIndex === 0) {
+                return;
+              }
+            }
+
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
+              index: index,
+              shiftKey: shiftKey,
+              ctrlKey: false,
+              metaKey: false
+            });
+          },
+          popSelection: function popSelection() {
+            var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
+              index: _this.selectedOptions.length - 1,
+              shiftKey: true
+            });
+          },
+          // unshiftSelection: (value = 1) => {
+          //   let startIndex = this.selectedOptions.length === 1 ? this.selectedIndex : (value < 0 ? this.selectedIndexes[0] : this.selectedIndexes[this.selectedIndexes.length - 1])
+          //
+          //   return _.get(this).emit('option.selected', {
+          //     index: startIndex + value,
+          //     shiftKey: true
+          //   })
+          // },
+          //
+          // shiftSelection: (value = 1) => {
+          //   let startIndex = this.selectedOptions.length === 1 ? this.selectedIndex : (value < 0 ? this.selectedIndexes[0] : this.selectedIndexes[this.selectedIndexes.length - 1])
+          //
+          //   return _.get(this).emit('option.selected', {
+          //     index: startIndex + value,
+          //     shiftKey: true
+          //   })
+          // },
           optionSelectionHandler: function optionSelectionHandler(evt) {
             var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
                 ChassisHTMLCollection = _$get.ChassisHTMLCollection,
@@ -426,7 +568,8 @@ customElements.define('chassis-options', function () {
                 index = _evt$detail.index,
                 shiftKey = _evt$detail.shiftKey,
                 metaKey = _evt$detail.metaKey,
-                ctrlKey = _evt$detail.ctrlKey;
+                ctrlKey = _evt$detail.ctrlKey,
+                newStartIndex = _evt$detail.newStartIndex;
             var option = _this.options[index];
             var selection = new Selection();
 
@@ -568,13 +711,13 @@ customElements.define('chassis-options', function () {
                   this.displayElement.defaultSelected = sourceElement.selected;
                   this.displayElement.innerHTML = sourceElement.innerHTML; // Add additional attributes
 
-                  var _iteratorNormalCompletion = true;
-                  var _didIteratorError = false;
-                  var _iteratorError = undefined;
+                  var _iteratorNormalCompletion2 = true;
+                  var _didIteratorError2 = false;
+                  var _iteratorError2 = undefined;
 
                   try {
-                    for (var _iterator = sourceElement.attributes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                      var attr = _step.value;
+                    for (var _iterator2 = sourceElement.attributes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                      var attr = _step2.value;
 
                       if (typeof attr.value === 'boolean') {
                         attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
@@ -584,16 +727,16 @@ customElements.define('chassis-options', function () {
                       this.displayElement.setAttribute(attr.name, attr.value);
                     }
                   } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
                   } finally {
                     try {
-                      if (!_iteratorNormalCompletion && _iterator.return != null) {
-                        _iterator.return();
+                      if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                        _iterator2.return();
                       }
                     } finally {
-                      if (_didIteratorError) {
-                        throw _iteratorError;
+                      if (_didIteratorError2) {
+                        throw _iteratorError2;
                       }
                     }
                   }
@@ -733,27 +876,27 @@ customElements.define('chassis-options', function () {
 
             surrogate.setAttribute('label', label);
             var options = optgroup.querySelectorAll('option');
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-              for (var _iterator2 = options[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var option = _step2.value;
+              for (var _iterator3 = options[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var option = _step3.value;
 
                 _this.add(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject(option), null, surrogate);
               }
             } catch (err) {
-              _didIteratorError2 = true;
-              _iteratorError2 = err;
+              _didIteratorError3 = true;
+              _iteratorError3 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                  _iterator2.return();
+                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                  _iterator3.return();
                 }
               } finally {
-                if (_didIteratorError2) {
-                  throw _iteratorError2;
+                if (_didIteratorError3) {
+                  throw _iteratorError3;
                 }
               }
             }
@@ -874,26 +1017,6 @@ customElements.define('chassis-options', function () {
       }
 
       (0, _createClass2.default)(_class, [{
-        key: "hoverOption",
-        value: function hoverOption(index) {
-          this.unHoverAllOptions();
-          this.options[index].displayElement.hover = true;
-        }
-      }, {
-        key: "unHoverOption",
-        value: function unHoverOption(index) {
-          this.options[index].displayElement.hover = false;
-        }
-      }, {
-        key: "unHoverAllOptions",
-        value: function unHoverAllOptions() {
-          var _this6 = this;
-
-          this.options.forEach(function (option, index) {
-            return _this6.unHoverOption(index);
-          });
-        }
-      }, {
         key: "add",
         value: function add(option) {
           var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -933,13 +1056,13 @@ customElements.define('chassis-options', function () {
       }, {
         key: "addChildren",
         value: function addChildren(children) {
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
+          var _iteratorNormalCompletion4 = true;
+          var _didIteratorError4 = false;
+          var _iteratorError4 = undefined;
 
           try {
-            for (var _iterator3 = children[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var child = _step3.value;
+            for (var _iterator4 = children[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+              var child = _step4.value;
               var isElement = child instanceof HTMLElement;
 
               switch (child.nodeName) {
@@ -957,16 +1080,16 @@ customElements.define('chassis-options', function () {
               }
             }
           } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
+              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                _iterator4.return();
               }
             } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
+              if (_didIteratorError4) {
+                throw _iteratorError4;
               }
             }
           }
@@ -989,6 +1112,8 @@ customElements.define('chassis-options', function () {
       }, {
         key: "connectedCallback",
         value: function connectedCallback() {
+          this.addEventListener('keydown.arrowUp', _.get(this).arrowUpHandler);
+          this.addEventListener('keydown.arrowDown', _.get(this).arrowDownHandler);
           this.addEventListener('option.selected', _.get(this).optionSelectionHandler);
           this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler);
           _.get(this).selectionStartIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
@@ -996,6 +1121,8 @@ customElements.define('chassis-options', function () {
       }, {
         key: "disconnectedCallback",
         value: function disconnectedCallback() {
+          this.removeEventListener('keydown.arrowUp', _.get(this).arrowUpHandler);
+          this.removeEventListener('keydown.arrowDown', _.get(this).arrowDownHandler);
           this.removeEventListener('option.selected', _.get(this).optionSelectionHandler);
           this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler);
         }
@@ -1014,14 +1141,20 @@ customElements.define('chassis-options', function () {
       }, {
         key: "deselectAll",
         value: function deselectAll() {
-          var _this7 = this;
+          var _this6 = this;
 
           var showPlaceholder = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
           this.options.filter(function (option) {
             return option.selected;
           }).forEach(function (option, index, options) {
-            _this7.deselect(option, index = options.length - 1 && showPlaceholder);
+            _this6.deselect(option, index = options.length - 1 && showPlaceholder);
           });
+        }
+      }, {
+        key: "hoverOption",
+        value: function hoverOption(index) {
+          this.unHoverAllOptions();
+          this.options[index].displayElement.hover = true;
         }
       }, {
         key: "item",
@@ -1059,6 +1192,20 @@ customElements.define('chassis-options', function () {
           }
 
           this.options[index].remove();
+        }
+      }, {
+        key: "unHoverAllOptions",
+        value: function unHoverAllOptions() {
+          var _this7 = this;
+
+          this.options.forEach(function (option, index) {
+            return _this7.unHoverOption(index);
+          });
+        }
+      }, {
+        key: "unHoverOption",
+        value: function unHoverOption(index) {
+          this.options[index].displayElement.hover = false;
         }
       }, {
         key: "selectedIndex",

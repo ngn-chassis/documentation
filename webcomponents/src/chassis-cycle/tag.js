@@ -12,64 +12,63 @@ class ChassisCycleElement extends HTMLElement {
 
       getChildIndex: child => [].slice.call(this.children).indexOf(child),
 
-      getNextActiveChild: child => {
+      getNextSelectedChild: child => {
         let nextIndex = _.get(this).getChildIndex(child)
 
         return {
           element: child,
-          index: nextIndex,
-          page: nextIndex + 1
+          index: nextIndex
         }
       },
 
-      hideChild: child => child.removeAttribute('active', ''),
+      hideChild: child => child.removeAttribute('selected', ''),
 
       showChild: child => {
         let {
           getChildIndex,
-          getNextActiveChild,
+          getNextSelectedChild,
           hideChild,
           middleWare
         } = _.get(this)
 
-        let previous = this.active
-        let next = getNextActiveChild(child)
+        let previous = this.selected
+        let next = getNextSelectedChild(child)
 
-        this.dispatchEvent(new CustomEvent('page-change', {
+        this.dispatchEvent(new CustomEvent('change', {
           detail: {
-            active: this.active,
+            selected: this.selected,
             next
           }
         }))
 
         let completeChange = () => {
-          if (this.activeIndex >= 0) {
-            hideChild(this.children.item(this.activeIndex || 0))
+          if (this.selectedIndex >= 0) {
+            hideChild(this.children.item(this.selectedIndex || 0))
           }
 
-          child.setAttribute('active', '')
+          child.setAttribute('selected', '')
 
-          this.dispatchEvent(new CustomEvent('page-changed', {
+          this.dispatchEvent(new CustomEvent('changed', {
             detail: {
               previous,
-              active: this.active
+              selected: this.selected
             }
           }))
 
           if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
-            middleWare.afterChange(previous, this.active)
+            middleWare.afterChange(previous, this.selected)
           }
         }
 
         if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
-          middleWare.beforeChange(this.active, next, completeChange)
+          middleWare.beforeChange(this.selected, next, completeChange)
         } else {
           completeChange()
         }
       },
 
       showChildByIndex: index => {
-        if (this.activeIndex === index || index >= this.children.length || index < 0) {
+        if (this.selectedIndex === index || index >= this.children.length || index < 0) {
           return
         }
 
@@ -88,15 +87,6 @@ class ChassisCycleElement extends HTMLElement {
         }
 
         _.get(this).showChild(nodes.item(0))
-      },
-
-      replaceDeprecatedAttributes: child => {
-        if (child.hasAttribute('selected')) {
-          console.warn(`<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.`);
-          child.removeAttribute('selected')
-
-          _.get(this).showChild(child)
-        }
       }
     })
   }
@@ -106,49 +96,38 @@ class ChassisCycleElement extends HTMLElement {
   }
 
   /**
-   * @typedef {Object} ActiveElementProperties
-   * @property {HTMLElement} element The currently active page.
-   * @property {Number} index The zero-based index of the currently active page.
-   * @property {Number} page The 1-based index of the currently active page.
+   * @typedef {Object} SelectedElementProperties
+   * @property {HTMLElement} element The currently selected page.
+   * @property {Number} index The zero-based index of the currently selected page.
    */
 
   /**
-   * @property active
-   * Information about the currently active page.
-   * @return {ActiveElementProperties}
+   * @property selected
+   * Information about the currently selected page.
+   * @return {SelectedElementProperties}
    */
-  get active () {
+  get selected () {
     return {
-      element: this.activeElement,
-      index: this.activeIndex,
-      page: this.activePage
+      element: this.selectedElement,
+      index: this.selectedIndex
     }
   }
 
   /**
-   * @property activeElement
-   * The currently active page.
+   * @property selectedElement
+   * The currently selected page.
    * @return {HTMLElement}
    */
-  get activeElement () {
-    return this.activeIndex === null ? null : this.children.item(this.activeIndex)
+  get selectedElement () {
+    return this.selectedIndex === null ? null : this.children.item(this.selectedIndex)
   }
 
   /**
-   * @property activePage
-   * The 1-based index of the currently active page.
+   * @property selectedIndex
+   * The zero-based index of the currently selected page.
    * @return {Number}
    */
-  get activePage () {
-    return this.activeIndex + 1
-  }
-
-  /**
-   * @property activeIndex
-   * The zero-based index of the currently active page.
-   * @return {Number}
-   */
-  get activeIndex () {
+  get selectedIndex () {
     for (let index in this.children) {
       if (!this.children.hasOwnProperty(index)) {
         continue
@@ -160,34 +139,12 @@ class ChassisCycleElement extends HTMLElement {
         continue
       }
 
-      if (child.hasAttribute('active')) {
+      if (child.hasAttribute('selected')) {
         return parseInt(index)
       }
     }
 
     return null
-  }
-
-  /**
-   * @property selected
-   * The current active section.
-   * @return {HTMLElement}
-   * @deprecated
-   */
-  get selected () {
-    console.warn(`<chassis-cycle> 'selected' property is deprecated. Please use 'activeElement' instead.`);
-    return this.activeElement
-  }
-
-  /**
-   * @property selectedIndex
-   * The index number of the current active section.
-   * @return {Number}
-   * @deprecated
-   */
-  get selectedIndex () {
-    console.warn(`<chassis-cycle> 'selectedIndex' property is deprecated. Please use 'activeIndex' for zero-based indexing or 'activePage' for 1-based indexing instead.`);
-    return this.activePage
   }
 
   set beforeChange (func) {
@@ -205,24 +162,11 @@ class ChassisCycleElement extends HTMLElement {
 
         switch (type) {
           case 'childList':
-            if (removedNodes.length > 0 && !this.activeElement) {
+            if (removedNodes.length > 0 && !this.selectedElement) {
               return this.previous()
             }
 
-            if (addedNodes.length === 0 || addedNodes.item(0).nodeType !== Node.ELEMENT_NODE) {
-              return
-            }
-
-            let node = addedNodes.item(0)
-
-            if (node.nodeType !== Node.ELEMENT_NODE) {
-              return
-            }
-
-            _.get(this).replaceDeprecatedAttributes(node)
-
             break
-            // return node.hasAttribute('active') ? _.get(this).showChild(node) : _.get(this).hideChild(node)
 
           default: return
         }
@@ -247,9 +191,7 @@ class ChassisCycleElement extends HTMLElement {
           continue
         }
 
-        _.get(this).replaceDeprecatedAttributes(child)
-
-        if (child !== this.activeElement) {
+        if (child !== this.selectedElement) {
           _.get(this).hideChild(child)
         }
       }
@@ -262,18 +204,18 @@ class ChassisCycleElement extends HTMLElement {
    * @deprecated
    */
   hide (child) {
-    console.warn(`<chassis-cycle> "hide()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.`);
+    console.warn(`<chassis-cycle> "hide()" method is deprecated. Please use "show()" and "hideAll()" to manage selected elements.`);
     _.get(this).hideChild(child)
   }
 
   /**
    * @method hideActive
-   * Deactivate the currently active page.
+   * Deactivate the currently selected page.
    * @deprecated
    */
   hideActive () {
-    console.warn(`<chassis-cycle> "hideActive()" method is deprecated. Please use "show()" and "hideAll()" to manage active/inactive pages.`);
-    _.get(this).hideChild(this.activeElement)
+    console.warn(`<chassis-cycle> "hideActive()" method is deprecated. Please use "show()" and "hideAll()" to manage selected elements.`);
+    _.get(this).hideChild(this.selectedElement)
   }
 
   /**
@@ -298,10 +240,6 @@ class ChassisCycleElement extends HTMLElement {
 
   indexOf (child) {
     return _.get(this).getChildIndex(child)
-  }
-
-  pageNumberOf (child) {
-    return _.get(this).getChildIndex(child) + 1
   }
 
   /**
@@ -356,7 +294,7 @@ class ChassisCycleElement extends HTMLElement {
    * A helper method to display the first child element.
    */
   first () {
-    this.show(1)
+    this.show(0)
   }
 
   /**
@@ -364,54 +302,58 @@ class ChassisCycleElement extends HTMLElement {
    * A helper method to display the last child element.
    */
   last () {
-    this.show(this.children.length)
+    this.show(this.children.length - 1)
   }
 
   /**
    * @method next
-   * Deactivate the currently active child element and activate the one
+   * Deactivate the currently selected child element and activate the one
    * immediately adjacent to it.
    * @param {function} callback
    * Executed when the operation is complete.
    */
   next (callback) {
-    this.show(this.activePage === this.children.length ? 1 : this.activePage + 1)
-    callback && callback(this.activeElement)
+    this.show(this.selectedIndex === this.children.length - 1 ? 0 : this.selectedIndex + 1)
+    callback && callback(this.selectedElement)
   }
 
   /**
    * @method previous
-   * Deactivate the currently active child element and activate the one
+   * Deactivate the currently selected child element and activate the one
    * immediately preceding it.
    * @param {function} callback
    * Executed when the operation is complete.
    */
   previous (callback) {
-    this.show(this.activePage === 1 ? this.children.length : this.activePage - 1)
-    callback && callback(this.activeElement)
+    this.show(this.selectedIndex === 0 ? this.children.length - 1 : this.selectedIndex - 1)
+    callback && callback(this.selectedElement)
   }
 
   /**
    * @method show
-   * Deactive the currently active element activate a different one.
+   * Deselect the currently selected element and select a different one.
    * @param {number | string | HTMLElement} query
    * 1-based index,
    * Element selector string, or
-   * HTMLElement to make active
+   * HTMLElement to select
    */
   show (query) {
-    if (!query) {
-      return _.get(this).showChildByIndex(0)
+    if (query === null) {
+      if (!this.selectedIndex) {
+        _.get(this).showChildByIndex(0)
+      }
+
+      return
     }
 
     switch ((typeof query).toLowerCase()) {
       case 'number':
-        return _.get(this).showChildByIndex(query - 1)
+        return _.get(this).showChildByIndex(query)
 
       case 'string':
         return isNaN(parseInt(query))
           ? _.get(this).showChildBySelector(query)
-          : _.get(this).showChildByIndex(parseInt(query) - 1)
+          : _.get(this).showChildByIndex(parseInt(query))
 
       default:
         return query instanceof HTMLElement

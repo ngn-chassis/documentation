@@ -38,7 +38,7 @@ customElements.define('chassis-layout', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:flex;flex-direction:column}:host([fullscreen]){height:100vh;max-height:100%;width:100vw;max-width:100%;overflow:auto}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout{display:flex;flex-direction:column}chassis-layout[fullscreen]{height:100vh;max-height:100%;width:100vw;max-width:100%;overflow:auto}chassis-layout[orientation=horizontal]{flex-direction:row}chassis-layout[orientation=vertical]{flex-direction:column}</style><slot></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: flex;\n  flex-direction: column;\n}\n\n:host([fullscreen]) {\n  height: 100vh;\n  max-height: 100%;\n  width: 100vw;\n  max-width: 100%;\n  overflow: auto;\n}\n\n:host([orientation=\"horizontal\"]) {\n  flex-direction: row;\n}\n\n:host([orientation=\"vertical\"]) {\n  flex-direction: column;\n}\n\nchassis-layout {\n  display: flex;\n  flex-direction: column;\n}\n\nchassis-layout[fullscreen] {\n  height: 100vh;\n  max-height: 100%;\n  width: 100vw;\n  max-width: 100%;\n  overflow: auto;\n}\n\nchassis-layout[orientation=\"horizontal\"] {\n  flex-direction: row;\n}\n\nchassis-layout[orientation=\"vertical\"] {\n  flex-direction: column;\n}</style><slot></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

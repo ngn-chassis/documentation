@@ -38,7 +38,7 @@ customElements.define('chassis-cycle', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([active])){display:none!important}chassis-cycle{display:block}:host :after,:host :before,chassis-cycle *{box-sizing:border-box}</style><slot></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: block;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host(:not([mode=\"custom\"])) > ::slotted(:not([selected])) {\n  display: none !important;\n}\n\nchassis-cycle {\n  display: block;\n}\n\nchassis-cycle *,\nchassis-cycle *:before,\nchassis-cycle *:after {\n  box-sizing: border-box;\n}\n\nchassis-cycle:not([mode=\"custom\"])) > :not([selected] {\n  display: none !important;\n}</style><slot></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -228,62 +228,61 @@ customElements.define('chassis-cycle', function () {
           getChildIndex: function getChildIndex(child) {
             return [].slice.call(_this.children).indexOf(child);
           },
-          getNextActiveChild: function getNextActiveChild(child) {
+          getNextSelectedChild: function getNextSelectedChild(child) {
             var nextIndex = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getChildIndex(child);
 
             return {
               element: child,
-              index: nextIndex,
-              page: nextIndex + 1
+              index: nextIndex
             };
           },
           hideChild: function hideChild(child) {
-            return child.removeAttribute('active', '');
+            return child.removeAttribute('selected', '');
           },
           showChild: function showChild(child) {
             var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
                 getChildIndex = _$get.getChildIndex,
-                getNextActiveChild = _$get.getNextActiveChild,
+                getNextSelectedChild = _$get.getNextSelectedChild,
                 hideChild = _$get.hideChild,
                 middleWare = _$get.middleWare;
 
-            var previous = _this.active;
-            var next = getNextActiveChild(child);
+            var previous = _this.selected;
+            var next = getNextSelectedChild(child);
 
-            _this.dispatchEvent(new CustomEvent('page-change', {
+            _this.dispatchEvent(new CustomEvent('change', {
               detail: {
-                active: _this.active,
+                selected: _this.selected,
                 next: next
               }
             }));
 
             var completeChange = function completeChange() {
-              if (_this.activeIndex >= 0) {
-                hideChild(_this.children.item(_this.activeIndex || 0));
+              if (_this.selectedIndex >= 0) {
+                hideChild(_this.children.item(_this.selectedIndex || 0));
               }
 
-              child.setAttribute('active', '');
+              child.setAttribute('selected', '');
 
-              _this.dispatchEvent(new CustomEvent('page-changed', {
+              _this.dispatchEvent(new CustomEvent('changed', {
                 detail: {
                   previous: previous,
-                  active: _this.active
+                  selected: _this.selected
                 }
               }));
 
               if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
-                middleWare.afterChange(previous, _this.active);
+                middleWare.afterChange(previous, _this.selected);
               }
             };
 
             if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
-              middleWare.beforeChange(_this.active, next, completeChange);
+              middleWare.beforeChange(_this.selected, next, completeChange);
             } else {
               completeChange();
             }
           },
           showChildByIndex: function showChildByIndex(index) {
-            if (_this.activeIndex === index || index >= _this.children.length || index < 0) {
+            if (_this.selectedIndex === index || index >= _this.children.length || index < 0) {
               return;
             }
 
@@ -301,14 +300,6 @@ customElements.define('chassis-cycle', function () {
             }
 
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(nodes.item(0));
-          },
-          replaceDeprecatedAttributes: function replaceDeprecatedAttributes(child) {
-            if (child.hasAttribute('selected')) {
-              console.warn("<chassis-cycle> 'selected' attribute is deprecated. Please use 'active' instead.");
-              child.removeAttribute('selected');
-
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(child);
-            }
           }
         });
 
@@ -328,24 +319,11 @@ customElements.define('chassis-cycle', function () {
 
               switch (type) {
                 case 'childList':
-                  if (removedNodes.length > 0 && !_this2.activeElement) {
+                  if (removedNodes.length > 0 && !_this2.selectedElement) {
                     return _this2.previous();
                   }
 
-                  if (addedNodes.length === 0 || addedNodes.item(0).nodeType !== Node.ELEMENT_NODE) {
-                    return;
-                  }
-
-                  var node = addedNodes.item(0);
-
-                  if (node.nodeType !== Node.ELEMENT_NODE) {
-                    return;
-                  }
-
-                  _.get(_this2).replaceDeprecatedAttributes(node);
-
                   break;
-                // return node.hasAttribute('active') ? _.get(this).showChild(node) : _.get(this).hideChild(node)
 
                 default:
                   return;
@@ -369,9 +347,7 @@ customElements.define('chassis-cycle', function () {
                 continue;
               }
 
-              _.get(_this2).replaceDeprecatedAttributes(child);
-
-              if (child !== _this2.activeElement) {
+              if (child !== _this2.selectedElement) {
                 _.get(_this2).hideChild(child);
               }
             }
@@ -386,22 +362,22 @@ customElements.define('chassis-cycle', function () {
       }, {
         key: "hide",
         value: function hide(child) {
-          console.warn("<chassis-cycle> \"hide()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage active/inactive pages.");
+          console.warn("<chassis-cycle> \"hide()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage selected elements.");
 
           _.get(this).hideChild(child);
         }
         /**
          * @method hideActive
-         * Deactivate the currently active page.
+         * Deactivate the currently selected page.
          * @deprecated
          */
 
       }, {
         key: "hideActive",
         value: function hideActive() {
-          console.warn("<chassis-cycle> \"hideActive()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage active/inactive pages.");
+          console.warn("<chassis-cycle> \"hideActive()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage selected elements.");
 
-          _.get(this).hideChild(this.activeElement);
+          _.get(this).hideChild(this.selectedElement);
         }
         /**
          * @method hideAll
@@ -429,11 +405,6 @@ customElements.define('chassis-cycle', function () {
         key: "indexOf",
         value: function indexOf(child) {
           return _.get(this).getChildIndex(child);
-        }
-      }, {
-        key: "pageNumberOf",
-        value: function pageNumberOf(child) {
-          return _.get(this).getChildIndex(child) + 1;
         }
         /**
          * @method insertAdjacentHTML
@@ -495,7 +466,7 @@ customElements.define('chassis-cycle', function () {
       }, {
         key: "first",
         value: function first() {
-          this.show(1);
+          this.show(0);
         }
         /**
          * @method last
@@ -505,11 +476,11 @@ customElements.define('chassis-cycle', function () {
       }, {
         key: "last",
         value: function last() {
-          this.show(this.children.length);
+          this.show(this.children.length - 1);
         }
         /**
          * @method next
-         * Deactivate the currently active child element and activate the one
+         * Deactivate the currently selected child element and activate the one
          * immediately adjacent to it.
          * @param {function} callback
          * Executed when the operation is complete.
@@ -518,12 +489,12 @@ customElements.define('chassis-cycle', function () {
       }, {
         key: "next",
         value: function next(callback) {
-          this.show(this.activePage === this.children.length ? 1 : this.activePage + 1);
-          callback && callback(this.activeElement);
+          this.show(this.selectedIndex === this.children.length - 1 ? 0 : this.selectedIndex + 1);
+          callback && callback(this.selectedElement);
         }
         /**
          * @method previous
-         * Deactivate the currently active child element and activate the one
+         * Deactivate the currently selected child element and activate the one
          * immediately preceding it.
          * @param {function} callback
          * Executed when the operation is complete.
@@ -532,88 +503,79 @@ customElements.define('chassis-cycle', function () {
       }, {
         key: "previous",
         value: function previous(callback) {
-          this.show(this.activePage === 1 ? this.children.length : this.activePage - 1);
-          callback && callback(this.activeElement);
+          this.show(this.selectedIndex === 0 ? this.children.length - 1 : this.selectedIndex - 1);
+          callback && callback(this.selectedElement);
         }
         /**
          * @method show
-         * Deactive the currently active element activate a different one.
+         * Deselect the currently selected element and select a different one.
          * @param {number | string | HTMLElement} query
          * 1-based index,
          * Element selector string, or
-         * HTMLElement to make active
+         * HTMLElement to select
          */
 
       }, {
         key: "show",
         value: function show(query) {
-          if (!query) {
-            return _.get(this).showChildByIndex(0);
+          if (query === null) {
+            if (!this.selectedIndex) {
+              _.get(this).showChildByIndex(0);
+            }
+
+            return;
           }
 
           switch ((0, _typeof2.default)(query).toLowerCase()) {
             case 'number':
-              return _.get(this).showChildByIndex(query - 1);
+              return _.get(this).showChildByIndex(query);
 
             case 'string':
-              return isNaN(parseInt(query)) ? _.get(this).showChildBySelector(query) : _.get(this).showChildByIndex(parseInt(query) - 1);
+              return isNaN(parseInt(query)) ? _.get(this).showChildBySelector(query) : _.get(this).showChildByIndex(parseInt(query));
 
             default:
               return query instanceof HTMLElement ? _.get(this).showChild(query) : console.error("<chassis-cycle>: Invalid query \"".concat(query, "\""));
           }
         }
       }, {
-        key: "active",
+        key: "selected",
 
         /**
-         * @typedef {Object} ActiveElementProperties
-         * @property {HTMLElement} element The currently active page.
-         * @property {Number} index The zero-based index of the currently active page.
-         * @property {Number} page The 1-based index of the currently active page.
+         * @typedef {Object} SelectedElementProperties
+         * @property {HTMLElement} element The currently selected page.
+         * @property {Number} index The zero-based index of the currently selected page.
          */
 
         /**
-         * @property active
-         * Information about the currently active page.
-         * @return {ActiveElementProperties}
+         * @property selected
+         * Information about the currently selected page.
+         * @return {SelectedElementProperties}
          */
         get: function get() {
           return {
-            element: this.activeElement,
-            index: this.activeIndex,
-            page: this.activePage
+            element: this.selectedElement,
+            index: this.selectedIndex
           };
         }
         /**
-         * @property activeElement
-         * The currently active page.
+         * @property selectedElement
+         * The currently selected page.
          * @return {HTMLElement}
          */
 
       }, {
-        key: "activeElement",
+        key: "selectedElement",
         get: function get() {
-          return this.activeIndex === null ? null : this.children.item(this.activeIndex);
+          return this.selectedIndex === null ? null : this.children.item(this.selectedIndex);
         }
         /**
-         * @property activePage
-         * The 1-based index of the currently active page.
+         * @property selectedIndex
+         * The zero-based index of the currently selected page.
          * @return {Number}
          */
 
       }, {
-        key: "activePage",
-        get: function get() {
-          return this.activeIndex + 1;
-        }
-        /**
-         * @property activeIndex
-         * The zero-based index of the currently active page.
-         * @return {Number}
-         */
-
-      }, {
-        key: "activeIndex",
+        key: "selectedIndex",
         get: function get() {
           for (var index in this.children) {
             if (!this.children.hasOwnProperty(index)) {
@@ -626,38 +588,12 @@ customElements.define('chassis-cycle', function () {
               continue;
             }
 
-            if (child.hasAttribute('active')) {
+            if (child.hasAttribute('selected')) {
               return parseInt(index);
             }
           }
 
           return null;
-        }
-        /**
-         * @property selected
-         * The current active section.
-         * @return {HTMLElement}
-         * @deprecated
-         */
-
-      }, {
-        key: "selected",
-        get: function get() {
-          console.warn("<chassis-cycle> 'selected' property is deprecated. Please use 'activeElement' instead.");
-          return this.activeElement;
-        }
-        /**
-         * @property selectedIndex
-         * The index number of the current active section.
-         * @return {Number}
-         * @deprecated
-         */
-
-      }, {
-        key: "selectedIndex",
-        get: function get() {
-          console.warn("<chassis-cycle> 'selectedIndex' property is deprecated. Please use 'activeIndex' for zero-based indexing or 'activePage' for 1-based indexing instead.");
-          return this.activePage;
         }
       }, {
         key: "beforeChange",

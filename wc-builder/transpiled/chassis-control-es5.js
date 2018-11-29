@@ -38,7 +38,7 @@ customElements.define('chassis-control', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:flex;contain:layout style;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host .label-wrapper{flex:1 1 auto;display:flex}:host .input-wrapper{display:flex;align-items:center}:host([type=toggle]) .input-wrapper{order:-1;justify-content:center}:host([type=select]){flex-direction:column}chassis-control{display:flex;contain:layout style;max-width:100%}:host :after,:host :before,chassis-control *{box-sizing:border-box}chassis-control .hidden{display:none;visibility:hidden;opacity:0}chassis-control[type=field]{flex-direction:column}chassis-control[type=toggle]{align-items:center}chassis-control .label-wrapper{flex:1 1 auto;display:flex}chassis-control .input-wrapper{display:flex;align-items:center}chassis-control[type=toggle] .input-wrapper{order:-1;justify-content:center}chassis-control[type=select]{flex-direction:column}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabelwrapper\"></slot><div class=\"label-wrapper\"><slot name=\"beforelabel\"></slot><slot name=\"label\"></slot><slot name=\"afterlabel\"></slot></div><slot name=\"afterlabelwrapper\"></slot><slot name=\"beforeinputwrapper\"></slot><div class=\"input-wrapper\"><slot name=\"beforeinput\"></slot><slot name=\"input\"></slot><slot name=\"afterinput\"></slot></div><slot name=\"afterinputwrapper\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: flex;\n  contain: layout style;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host .hidden {\n  display: none;\n  visibility: hidden;\n  opacity: 0;\n}\n\n:host([type=\"field\"]) {\n  flex-direction: column;\n}\n\n:host([type=\"toggle\"]) {\n  align-items: center;\n}\n\n:host .label-wrapper {\n  flex: 1 1 auto;\n  display: flex;\n}\n\n:host .input-wrapper {\n  display: flex;\n  align-items: center;\n}\n\n:host([type=\"toggle\"]) .input-wrapper {\n  order: -1;\n  justify-content: center;\n}\n\n:host([type=\"select\"]) {\n  flex-direction: column;\n}\n\nchassis-control {\n  display: flex;\n  contain: layout style;\n  max-width: 100%;\n}\n\nchassis-control *,\nchassis-control *:before,\nchassis-control *:after {\n  box-sizing: border-box;\n}\n\nchassis-control .hidden {\n  display: none;\n  visibility: hidden;\n  opacity: 0;\n}\n\nchassis-control[type=\"field\"] {\n  flex-direction: column;\n}\n\nchassis-control[type=\"toggle\"] {\n  align-items: center;\n}\n\nchassis-control .label-wrapper {\n  flex: 1 1 auto;\n  display: flex;\n}\n\nchassis-control .input-wrapper {\n  display: flex;\n  align-items: center;\n}\n\nchassis-control[type=\"toggle\"] .input-wrapper {\n  order: -1;\n  justify-content: center;\n}\n\nchassis-control[type=\"select\"] {\n  flex-direction: column;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabelwrapper\"></slot><div class=\"label-wrapper\"><slot name=\"beforelabel\"></slot><slot name=\"label\"></slot><slot name=\"afterlabel\"></slot></div><slot name=\"afterlabelwrapper\"></slot><slot name=\"beforeinputwrapper\"></slot><div class=\"input-wrapper\"><slot name=\"beforeinput\"></slot><slot name=\"input\"></slot><slot name=\"afterinput\"></slot></div><slot name=\"afterinputwrapper\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -373,6 +373,15 @@ customElements.define('chassis-control', function () {
               }
             }
           },
+          initMultipleSelectMenu: function initMultipleSelectMenu(select) {
+            _this.type = 'select';
+
+            if (!customElements.get('chassis-select')) {
+              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initDefaultSelect(select);
+            }
+
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initSelectSurrogate(select, document.createElement('chassis-select'));
+          },
           initSelectSurrogate: function initSelectSurrogate(original, surrogate) {
             surrogate.slot = 'input';
             surrogate.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).guid;
@@ -416,15 +425,6 @@ customElements.define('chassis-control', function () {
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).input = surrogate;
           },
           initSelectMenu: function initSelectMenu(select) {
-            _this.type = 'select';
-
-            if (!customElements.get('chassis-select')) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initDefaultSelect(select);
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initSelectSurrogate(select, document.createElement('chassis-select'));
-          },
-          initMultipleSelectMenu: function initMultipleSelectMenu(select) {
             _this.type = 'select';
 
             if (!customElements.get('chassis-select')) {

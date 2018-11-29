@@ -193,7 +193,7 @@ customElements.define('chassis-tag-bin', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{contain:content;display:flex;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-tag-bin{contain:content;display:flex;max-width:100%}:host :after,:host :before,chassis-tag-bin *{box-sizing:border-box}</style></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-tag-bin {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\nchassis-tag-bin *,\nchassis-tag-bin *:before,\nchassis-tag-bin *:after {\n  box-sizing: border-box;\n}</style></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

@@ -38,7 +38,7 @@ customElements.define('chassis-multiple-select', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:inline-block;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-multiple-select{display:inline-block;max-width:100%}:host :after,:host :before,chassis-multiple-select *{box-sizing:border-box}</style><slot></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: inline-block;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-multiple-select {\n  display: inline-block;\n  max-width: 100%;\n}\n\nchassis-multiple-select *,\nchassis-multiple-select *:before,\nchassis-multiple-select *:after {\n  box-sizing: border-box;\n}</style><slot></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

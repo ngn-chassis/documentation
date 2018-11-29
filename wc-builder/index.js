@@ -173,7 +173,9 @@ module.exports = class {
     ))
 
     this.css.append(newRules)
-    this.css = cleanCss.minify(this.css.toString()).styles
+    // this.css = cleanCss.minify(this.css.toString()).styles
+    // TODO: cleanCss is removing some rules, check into this
+    this.css = this.css.toString()
 
     cb && cb()
   }
@@ -299,7 +301,7 @@ module.exports = class {
     }
 
     if (!result) {
-      return selector.replace(':host', this.tagName)
+      return selector.replace(/:host/g, this.tagName)
     }
 
     return selector.replace(result[0], `${this.tagName}${result[1]}`)

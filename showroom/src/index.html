@@ -53,20 +53,20 @@
         <section class="test">
           <chassis-control id="chassis-select">
             <label>Menu Label</label>
-            <select name="name-test" placeholder="placeholder">
+            <select name="name-test" placeholder="placeholder" multiple size="20">
               <option value="test1">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="7"></circle>
                   <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                 </svg>
-                Option 1
+                Option 0
               </option>
-              <option id="testaaaaa" label=" " value="test2" selected>Option 2</option>
-              <option value="test3">Option 3 is long and should wrap to the next line</option>
-              <option value="test4">Option 4</option>
-              <option value="test5" selected>Option 5</option>
-              <option value="test6" selected>Option 6</option>
-              <option value="test7">Option 7</option>
+              <option id="testaaaaa" label=" " value="test2">Option 1</option>
+              <option value="test3">Option 2</option>
+              <option value="test4">Option 3</option>
+              <option value="test5">Option 4</option>
+              <option value="test6">Option 5</option>
+              <option value="test7">Option 6</option>
               <!-- <optgroup label="Option Group 1">
                 <option value="test5">Grouped Option</option>
                 <option value="test6">Grouped Option</option>
@@ -81,7 +81,7 @@
           </chassis-control>
 
           <label for="default-select">test</label>
-          <select id="default-select">
+          <select id="default-select" multiple size="20">
             <option id="test-option" value="1">Option 1</option>
             <option id="test-option2" value="2" selected>Option 2</option>
             <option value="3" selected>Option 3</option>
@@ -397,7 +397,7 @@
                 <h4>chassis-cycle</h4>
 
                 <chassis-cycle id="cycle">
-                  <section active>
+                  <section selected>
                     <p>
                       Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </p>
@@ -420,27 +420,27 @@
                 <script type="text/javascript">
                   let cycle = document.getElementById('cycle')
 
-                  cycle.beforeChange = function (active, next, cont) {
+                  cycle.beforeChange = function (selected, next, cont) {
                     console.log('Running beforeChange() middleware');
                     this.setAttribute('transition', '')
-                    active.element.setAttribute('fade-out', '')
+                    selected.element.setAttribute('fade-out', '')
                     setTimeout(() => cont(), 500)
                   }
 
-                  cycle.afterChange = function (previous, active) {
+                  cycle.afterChange = function (previous, selected) {
                     console.log('Running afterChange() middleware');
                     this.removeAttribute('transition')
                     previous.element.removeAttribute('fade-out')
-                    active.element.setAttribute('fade-in', '')
-                    setTimeout(() => active.element.removeAttribute('fade-in'), 1000)
+                    selected.element.setAttribute('fade-in', '')
+                    setTimeout(() => selected.element.removeAttribute('fade-in'), 1000)
                   }
 
-                  cycle.addEventListener('page-change', evt => {
-                    console.log('page-change fired');
+                  cycle.addEventListener('change', evt => {
+                    console.log('change fired');
                   })
 
-                  cycle.addEventListener('page-changed', evt => {
-                    console.log('page-changed fired');
+                  cycle.addEventListener('changed', evt => {
+                    console.log('changed fired');
                   })
                 </script>
               </header>

@@ -36,6 +36,19 @@ class ChassisOptionsElement extends HTMLElement {
       'options',
 
       {
+        name: 'selectedIndexes',
+        get () {
+          let array = []
+
+          for (let option of this.selectedOptions) {
+            array.push(option.index)
+          }
+
+          return array
+        }
+      },
+
+      {
         name: 'selectedOptions',
         get () {
           let nodes = this.querySelectorAll('[selected]')
@@ -48,9 +61,107 @@ class ChassisOptionsElement extends HTMLElement {
       options: [],
       selectionStartIndex: -1,
 
+      // TODO: Handle cases where
+      // selectionStartIndex !== this.selectedOptions.item(this.selectedOptions.length - 1).index
+      // && selectionStartIndex !== this.selectedOptions.item(0).index
+      // This happens if there is an active selection with > 1 options,
+      // and ctrlKey || metaKey is used to select an option outside the range of
+      // this.selectedOptions, or to deselect an option within this.selectedOptions
+
+      arrowDownHandler: evt => {
+        if (!this.multiple) {
+          let { startIndex } = evt.detail
+
+          switch (startIndex) {
+            case this.options.length - 1:
+              return
+
+            default:
+              return this.hoverOption(startIndex + 1)
+          }
+
+          return
+        }
+
+        if (this.selectedOptions.length === 1 && this.selectedIndex === this.options.length - 1) {
+          return
+        }
+
+        let { shiftKey } = evt.detail
+        let index = this.selectedIndex + 1
+
+        if (this.selectedOptions.length === 0) {
+          index = _.get(this).selectionStartIndex === 0 ? 0 : _.get(this).selectionStartIndex + 1
+        }
+
+        if (this.selectedOptions.length > 1) {
+          if (this.selectedIndex === _.get(this).selectionStartIndex) {
+            index = this.selectedOptions.item(this.selectedOptions.length - 1).index + 1
+          }
+
+          if (this.selectedIndex < _.get(this).selectionStartIndex) {
+            if (this.selectedIndex === this.options.length - 1) {
+              return
+            }
+          }
+        }
+
+        return _.get(this).emit('option.selected', {
+          index,
+          shiftKey,
+          ctrlKey: false,
+          metaKey: false
+        })
+      },
+
+      arrowUpHandler: evt => {
+        if (!this.multiple) {
+          let { startIndex } = evt.detail
+
+          switch (startIndex) {
+            case -1:
+            case 0:
+              return
+
+            default:
+              return this.hoverOption(startIndex - 1)
+          }
+
+          return
+        }
+
+        if (this.selectedOptions.length === 1 && this.selectedIndex === 0) {
+          return
+        }
+
+        let index = this.selectedIndex - 1
+        let { shiftKey } = evt.detail
+
+        if (this.selectedOptions.length === 0) {
+          index = _.get(this).selectionStartIndex === -1 ? this.options.length - 1 : _.get(this).selectionStartIndex - 1
+        }
+
+        if (this.selectedOptions.length > 1) {
+          if (this.selectedIndex === _.get(this).selectionStartIndex) {
+            index = this.selectedOptions.item(this.selectedOptions.length - 1).index - 1
+          }
+
+          if (this.selectedIndex < _.get(this).selectionStartIndex && this.selectedIndex === 0) {
+            return
+          }
+        }
+
+        return _.get(this).emit('option.selected', {
+          index,
+          shiftKey,
+          ctrlKey: false,
+          metaKey: false
+        })
+      },
+
       optionSelectionHandler: evt => {
         let { ChassisHTMLCollection, emit, Selection, selectionStartIndex } = _.get(this)
-        let { index, shiftKey, metaKey, ctrlKey } = evt.detail
+        let { index, shiftKey, metaKey, ctrlKey, newStartIndex } = evt.detail
 
         let option = this.options[index]
         let selection = new Selection()
@@ -84,7 +195,6 @@ class ChassisOptionsElement extends HTMLElement {
           if (shiftKey) {
             let bounds = [index, selectionStartIndex].sort()
             selection.options = bounds[0] === bounds[1] ? [option] : this.options.slice(bounds[0], bounds[1] + 1)
-
             return applyMiddleware()
           }
 
@@ -416,19 +526,6 @@ class ChassisOptionsElement extends HTMLElement {
     console.warn(`WARNING <chassis-select> selectionStartIndex cannot be set manually.`)
   }
 
-  hoverOption (index) {
-    this.unHoverAllOptions()
-    this.options[index].displayElement.hover = true
-  }
-
-  unHoverOption (index) {
-    this.options[index].displayElement.hover = false
-  }
-
-  unHoverAllOptions () {
-    this.options.forEach((option, index) => this.unHoverOption(index))
-  }
-
   add (option, index = null, dest = this) {
     if (!customElements.get('chassis-option')) {
       console.error(`<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.`)
@@ -499,6 +596,8 @@ class ChassisOptionsElement extends HTMLElement {
   }
 
   connectedCallback () {
+    this.addEventListener('keydown.arrowUp', _.get(this).arrowUpHandler)
+    this.addEventListener('keydown.arrowDown', _.get(this).arrowDownHandler)
     this.addEventListener('option.selected', _.get(this).optionSelectionHandler)
     this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler)
 
@@ -506,6 +605,8 @@ class ChassisOptionsElement extends HTMLElement {
   }
 
   disconnectedCallback () {
+    this.removeEventListener('keydown.arrowUp', _.get(this).arrowUpHandler)
+    this.removeEventListener('keydown.arrowDown', _.get(this).arrowDownHandler)
     this.removeEventListener('option.selected', _.get(this).optionSelectionHandler)
     this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler)
   }
@@ -523,6 +624,11 @@ class ChassisOptionsElement extends HTMLElement {
     this.options.filter(option => option.selected).forEach((option, index, options) => {
       this.deselect(option, index = options.length - 1 && showPlaceholder)
     })
+  }
+
+  hoverOption (index) {
+    this.unHoverAllOptions()
+    this.options[index].displayElement.hover = true
   }
 
   item (index) {
@@ -554,6 +660,14 @@ class ChassisOptionsElement extends HTMLElement {
     }
 
     this.options[index].remove()
+  }
+
+  unHoverAllOptions () {
+    this.options.forEach((option, index) => this.unHoverOption(index))
+  }
+
+  unHoverOption (index) {
+    this.options[index].displayElement.hover = false
   }
 }
 

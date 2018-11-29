@@ -68,7 +68,19 @@ class ChassisSelectElement extends HTMLElement {
         document.body.addEventListener('touchend', _.get(this).bodyMousedownHandler)
       },
 
-      arrowKeydownHandler: evt => {
+      blurHandler: evt => this.removeEventListener('keydown', _.get(this).keydownHandler),
+
+      bodyMousedownHandler: evt => {
+        if (evt.target === this || this.contains(evt.target)) {
+          return
+        }
+
+        this.open = false
+      },
+
+      focusHandler: evt => this.addEventListener('keydown', _.get(this).keydownHandler),
+
+      keydownHandler: evt => {
         let startIndex = this.hoveredIndex > -1 ? this.hoveredIndex : this.selectedIndex > -1 ? this.selectedIndex : -1
 
         switch (evt[this.keySource]) {
@@ -88,116 +100,43 @@ class ChassisSelectElement extends HTMLElement {
                 this.open = false
                 return
               }
+
+              this.selectedIndex = this.hoveredIndex
             }
 
             return
-            // return this.optionsElement.select(this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey)
 
           case 38:
           case 'ArrowUp':
             evt.preventDefault()
 
-            if (!this.multiple) {
-              if (!this.open) {
-                this.open = true
-                return
-              }
-
-              switch (startIndex) {
-                case -1:
-                case 0:
-                  return
-
-                default:
-                  return this.optionsElement.hoverOption(startIndex - 1)
-              }
-            }
-
-            if (this.selectedIndex === 0) {
+            if (!this.multiple && !this.open) {
+              this.open = true
               return
             }
 
-            if (!evt.shiftKey) {
-              return this.optionsElement.select(this.optionsElement.selectionStartIndex - 1)
-            }
-
-            if (this.selectedOptions.length === 1) {
-              return this.optionsElement.select(this.selectedIndex - 1, evt.shiftKey, null, null, this.selectedIndex)
-            }
-
-            for (let option of this.selectedOptions) {
-              console.log(option);
-            }
-
-            return
-
-
-
-            if (!evt.shiftKey) {
-              return this.optionsElement.select(this.selectedOptions[this.selectedOptions.length - 1].index)
-            }
-
-            if (this.optionsElement.selectionStartIndex < this.selectedIndex) {
-              return this.optionsElement.deselect(this.selectedOptions[this.selectedOptions.length - 1].index)
-            }
-
-            return this.optionsElement.select(this.selectedIndex - 1, evt.shiftKey)
+            return _.get(this).emit('keydown.arrowUp', {
+              shiftKey: evt.shiftKey,
+              startIndex
+            }, this.optionsElement)
 
           case 40:
           case 'ArrowDown':
             evt.preventDefault()
 
-            if (!this.multiple) {
-              if (!this.open) {
-                this.open = true
-                return
-              }
-
-              switch (startIndex) {
-                case this.options.length - 1: return
-
-                default:
-                  return this.optionsElement.hoverOption(startIndex + 1)
-              }
-            }
-
-            if (this.selectedIndex === this.length - 1) {
+            if (!this.multiple && !this.open) {
+              this.open = true
               return
             }
 
-            if (this.selectedOptions.length === 1) {
-              return this.optionsElement.select(this.selectedOptions[this.selectedOptions.length - 1].index + 1, evt.shiftKey, null, null, this.selectedIndex)
-            }
-
-            if (!evt.shiftKey) {
-              if (this.selectedOptions.length === 1) {
-                return this.optionsElement.select(this.selectedIndex + 1)
-              }
-
-
-            }
-
-            if (this.optionsElement.selectionStartIndex > this.selectedIndex) {
-              return this.optionsElement.deselect(this.selectedIndex)
-            }
-
-            return this.optionsElement.select(this.selectedOptions[this.selectedOptions.length - 1].index + 1, evt.shiftKey)
+            return _.get(this).emit('keydown.arrowDown', {
+              shiftKey: evt.shiftKey,
+              startIndex
+            }, this.optionsElement)
 
           default: return
         }
       },
-
-      blurHandler: evt => this.removeEventListener('keydown', _.get(this).arrowKeydownHandler),
-
-      bodyMousedownHandler: evt => {
-        if (evt.target === this || this.contains(evt.target)) {
-          return
-        }
-
-        this.open = false
-      },
-
-      focusHandler: evt => this.addEventListener('keydown', _.get(this).arrowKeydownHandler),
 
       middleware: {
         beforeChange: null,
@@ -479,14 +418,6 @@ class ChassisSelectElement extends HTMLElement {
 
     this.optionsElement.removeOptionByIndex(index)
   }
-
-  /**
-   * @method select
-   * @param  {Number || Array} index
-   */
-  // select (index) {
-  //   this.optionsElement.select(index)
-  // }
 
   setCustomValidity (string) {
     this.sourceElement.setCustomValidity(string)

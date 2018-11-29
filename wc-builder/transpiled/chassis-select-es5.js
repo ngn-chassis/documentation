@@ -40,7 +40,7 @@ customElements.define('chassis-select', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";:host{display:inline-block;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}chassis-select{display:inline-block;max-width:100%}:host :after,:host :before,chassis-select *{box-sizing:border-box}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeselectedoptions\"></slot><slot name=\"selectedoptions\"></slot><slot name=\"afterselectedoptions\"></slot><slot name=\"beforeoptions\"></slot><slot name=\"options\"></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: inline-block;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-select {\n  display: inline-block;\n  max-width: 100%;\n}\n\nchassis-select *,\nchassis-select *:before,\nchassis-select *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeselectedoptions\"></slot><slot name=\"selectedoptions\"></slot><slot name=\"afterselectedoptions\"></slot><slot name=\"beforeoptions\"></slot><slot name=\"options\"></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -255,7 +255,20 @@ customElements.define('chassis-select', function () {
             document.body.addEventListener('touchcancel', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
             document.body.addEventListener('touchend', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).bodyMousedownHandler);
           },
-          arrowKeydownHandler: function arrowKeydownHandler(evt) {
+          blurHandler: function blurHandler(evt) {
+            return _this.removeEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).keydownHandler);
+          },
+          bodyMousedownHandler: function bodyMousedownHandler(evt) {
+            if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
+              return;
+            }
+
+            _this.open = false;
+          },
+          focusHandler: function focusHandler(evt) {
+            return _this.addEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).keydownHandler);
+          },
+          keydownHandler: function keydownHandler(evt) {
             var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
 
             switch (evt[_this.keySource]) {
@@ -275,109 +288,53 @@ customElements.define('chassis-select', function () {
                     _this.open = false;
                     return;
                   }
+
+                  _this.selectedIndex = _this.hoveredIndex;
                 }
 
                 return;
-              // return this.optionsElement.select(this.hoveredIndex, evt.shiftKey, evt.ctrlKey, evt.metaKey)
 
               case 38:
               case 'ArrowUp':
                 evt.preventDefault();
 
-                if (!_this.multiple) {
-                  if (!_this.open) {
-                    _this.open = true;
-                    return;
-                  }
-
-                  switch (startIndex) {
-                    case -1:
-                    case 0:
-                      return;
-
-                    default:
-                      return _this.optionsElement.hoverOption(startIndex - 1);
-                  }
-                }
-
-                if (_this.selectedIndex === 0) {
+                if (!_this.multiple && !_this.open) {
+                  _this.open = true;
                   return;
                 }
 
-                if (!evt.shiftKey) {
-                  return _this.optionsElement.select(_this.optionsElement.selectionStartIndex - 1);
-                }
-
-                if (_this.selectedOptions.length === 1) {
-                  return _this.optionsElement.select(_this.selectedIndex - 1, evt.shiftKey, null, null, _this.selectedIndex);
-                }
-
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                  for (var _iterator = _this.selectedOptions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var option = _step.value;
-                    console.log(option);
-                  }
-                } catch (err) {
-                  _didIteratorError = true;
-                  _iteratorError = err;
-                } finally {
-                  try {
-                    if (!_iteratorNormalCompletion && _iterator.return != null) {
-                      _iterator.return();
-                    }
-                  } finally {
-                    if (_didIteratorError) {
-                      throw _iteratorError;
-                    }
-                  }
-                }
-
-                return;
-
-                if (!evt.shiftKey) {
-                  return _this.optionsElement.select(_this.selectedOptions[_this.selectedOptions.length - 1].index);
-                }
-
-                if (_this.optionsElement.selectionStartIndex < _this.selectedIndex) {
-                  return _this.optionsElement.deselect(_this.selectedOptions[_this.selectedOptions.length - 1].index);
-                }
-
-                return _this.optionsElement.select(_this.selectedIndex - 1, evt.shiftKey);
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('keydown.arrowUp', {
+                  shiftKey: evt.shiftKey,
+                  startIndex: startIndex
+                }, _this.optionsElement);
 
               case 40:
               case 'ArrowDown':
                 evt.preventDefault();
 
-                if (!_this.multiple) {
-                  if (!_this.open) {
-                    _this.open = true;
-                    return;
-                  }
-
-                  switch (startIndex) {
-                    case _this.options.length - 1:
-                      return;
-
-                    default:
-                      return _this.optionsElement.hoverOption(startIndex + 1);
-                  }
+                if (!_this.multiple && !_this.open) {
+                  _this.open = true;
+                  return;
                 }
+
+                return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('keydown.arrowDown', {
+                  shiftKey: evt.shiftKey,
+                  startIndex: startIndex
+                }, _this.optionsElement);
 
                 if (_this.selectedIndex === _this.length - 1) {
                   return;
                 }
 
                 if (_this.selectedOptions.length === 1) {
-                  return _this.optionsElement.select(_this.selectedOptions[_this.selectedOptions.length - 1].index + 1, evt.shiftKey, null, null, _this.selectedIndex);
+                  _this.selectedIndex = _this.selectedOptions[_this.selectedOptions.length - 1].index + 1;
+                  return;
                 }
 
                 if (!evt.shiftKey) {
                   if (_this.selectedOptions.length === 1) {
-                    return _this.optionsElement.select(_this.selectedIndex + 1);
+                    _this.selectedIndex = _this.optionsElement.selectionStartIndex + 1;
+                    return;
                   }
                 }
 
@@ -390,19 +347,6 @@ customElements.define('chassis-select', function () {
               default:
                 return;
             }
-          },
-          blurHandler: function blurHandler(evt) {
-            return _this.removeEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).arrowKeydownHandler);
-          },
-          bodyMousedownHandler: function bodyMousedownHandler(evt) {
-            if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
-              return;
-            }
-
-            _this.open = false;
-          },
-          focusHandler: function focusHandler(evt) {
-            return _this.addEventListener('keydown', _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).arrowKeydownHandler);
           },
           middleware: {
             beforeChange: null,
@@ -581,29 +525,29 @@ customElements.define('chassis-select', function () {
 
           if (select.children.length > 0) {
             if (!this.multiple) {
-              var _iteratorNormalCompletion2 = true;
-              var _didIteratorError2 = false;
-              var _iteratorError2 = undefined;
+              var _iteratorNormalCompletion = true;
+              var _didIteratorError = false;
+              var _iteratorError = undefined;
 
               try {
-                for (var _iterator2 = select.children[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  var option = _step2.value;
+                for (var _iterator = select.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  var option = _step.value;
 
                   if (option.index !== select.selectedIndex) {
                     option.removeAttribute('selected');
                   }
                 }
               } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _didIteratorError = true;
+                _iteratorError = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                    _iterator2.return();
+                  if (!_iteratorNormalCompletion && _iterator.return != null) {
+                    _iterator.return();
                   }
                 } finally {
-                  if (_didIteratorError2) {
-                    throw _iteratorError2;
+                  if (_didIteratorError) {
+                    throw _iteratorError;
                   }
                 }
               }
@@ -671,14 +615,6 @@ customElements.define('chassis-select', function () {
 
           this.optionsElement.removeOptionByIndex(index);
         }
-        /**
-         * @method select
-         * @param  {Number || Array} index
-         */
-        // select (index) {
-        //   this.optionsElement.select(index)
-        // }
-
       }, {
         key: "setCustomValidity",
         value: function setCustomValidity(string) {

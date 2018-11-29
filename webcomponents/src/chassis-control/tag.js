@@ -127,6 +127,16 @@ class ChassisFormControl extends HTMLElement {
         }
       },
 
+      initMultipleSelectMenu: select => {
+        this.type = 'select'
+
+        if (!customElements.get('chassis-select')) {
+          return _.get(this).initDefaultSelect(select)
+        }
+
+        _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
+      },
+
       initSelectSurrogate: (original, surrogate) => {
         surrogate.slot = 'input'
         surrogate.id = _.get(this).guid
@@ -149,16 +159,6 @@ class ChassisFormControl extends HTMLElement {
       },
 
       initSelectMenu: select => {
-        this.type = 'select'
-
-        if (!customElements.get('chassis-select')) {
-          return _.get(this).initDefaultSelect(select)
-        }
-
-        _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
-      },
-
-      initMultipleSelectMenu: select => {
         this.type = 'select'
 
         if (!customElements.get('chassis-select')) {

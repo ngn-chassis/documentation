@@ -114,6 +114,7 @@ class ChassisOptionsElement extends HTMLElement {
 
         return _.get(this).emit('option.selected', {
           index,
+          keyboard: true,
           shiftKey,
           ctrlKey: false,
           metaKey: false
@@ -159,15 +160,29 @@ class ChassisOptionsElement extends HTMLElement {
 
         return _.get(this).emit('option.selected', {
           index,
+          keyboard: true,
           shiftKey,
           ctrlKey: false,
           metaKey: false
         })
       },
 
+      getSelectedOptionsAsArray: () => {
+        return Array.from(this.selectedOptions).map(option => option.index)
+      },
+
       selectedOptionsAreSequential: () => {
-        let optionIndexes = Array.from(this.selectedOptions).map(option => option.index)
+        if (this.selectedOptions.length === 1) {
+          return true
+        }
+
+        let optionIndexes = _.get(this).getSelectedOptionsAsArray()
         return optionIndexes.every((index, i) => index === optionIndexes[i + 1] - 1 || i === optionIndexes.length - 1)
+      },
+
+      selectedOptionsContainsStartIndex: () => {
+        let optionIndexes = _.get(this).getSelectedOptionsAsArray()
+        return optionIndexes.some(selectedIndex => selectedIndex === _.get(this).selectionStartIndex)
       },
 
       optionSelectionHandler: evt => {
@@ -177,13 +192,15 @@ class ChassisOptionsElement extends HTMLElement {
           emit,
           Selection,
           selectedOptionsAreSequential,
+          selectedOptionsContainsStartIndex,
           selectionStartIndex
         } = _.get(this)
 
-        let { index, shiftKey, metaKey, ctrlKey, newStartIndex } = evt.detail
+        let { index, keyboard, shiftKey, metaKey, ctrlKey, newStartIndex } = evt.detail
 
         let option = this.options[index]
         let selection = new Selection()
+        let resetCherryPickedOptions = true
 
         let applyMiddleware = next => {
           let { beforeChange } = this.parentNode
@@ -212,21 +229,44 @@ class ChassisOptionsElement extends HTMLElement {
 
         if (this.multiple) {
           if (shiftKey) {
-            if (option.selected) {
-              if (this.selectedOptions.length === 1) {
+            if (keyboard) {
+              if (index === this.options.length) {
+                console.log(1);
                 return
               }
 
-              if (selectedOptionsAreSequential() && index !== selectionStartIndex) {
+            } else if (option.selected) {
+              if (this.selectedOptions.length === 1) {
+                console.log(2);
+                return
+              }
+
+              if (selectedOptionsAreSequential()) {
                 if (this.selectedOptions.length === 2) {
+                  if (index !== selectionStartIndex) {
+                    if (selectedOptionsContainsStartIndex()) {
+                      console.log(3);
+                      return
+                    }
+                  }
+
+                } else if (index !== selectionStartIndex) {
+                  if (index === this.selectedOptions.item(this.selectedOptions.length - 1).index || index === this.selectedIndex) {
+                    if (selectedOptionsContainsStartIndex()) {
+                      console.log(4);
+                      return
+                    }
+                  }
+                }
+
+              } else if (cherryPickedOptions.length > 0) {
+                if (index === selectionStartIndex) {
+                  this.selectedIndex = index
+                  console.log(5);
                   return
                 }
 
-                let indexAtOuterBound = index === this.selectedOptions.item(this.selectedOptions.length - 1).index || index === this.selectedIndex
-
-                if (indexAtOuterBound) {
-                  return
-                }
+                resetCherryPickedOptions = false
               }
             }
 
@@ -249,7 +289,10 @@ class ChassisOptionsElement extends HTMLElement {
 
         selection.options = [option]
         _.get(this).selectionStartIndex = index
-        _.get(this).cherryPickedOptions = []
+
+        if (resetCherryPickedOptions) {
+          _.get(this).cherryPickedOptions = []
+        }
 
         applyMiddleware()
       },

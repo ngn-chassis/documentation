@@ -1,3 +1,4 @@
+- Handle mouse dragging
 - Handle <chassis-options> scrolling
 - Think about whether its worth it to add "size" attr for select-one menus
 - Make sure validation works properly

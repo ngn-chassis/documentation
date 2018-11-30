@@ -349,6 +349,7 @@ customElements.define('chassis-options', function () {
 
             return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
               index: index,
+              keyboard: true,
               shiftKey: shiftKey,
               ctrlKey: false,
               metaKey: false
@@ -393,17 +394,32 @@ customElements.define('chassis-options', function () {
 
             return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
               index: index,
+              keyboard: true,
               shiftKey: shiftKey,
               ctrlKey: false,
               metaKey: false
             });
+          },
+          getSelectedOptionsAsArray: function getSelectedOptionsAsArray() {
+            return Array.from(_this.selectedOptions).map(function (option) {
+              return option.index;
+            });
           }
         }, (0, _defineProperty2.default)(_$get$addPrivatePrope, "selectedOptionsAreSequential", function selectedOptionsAreSequential() {
-          var optionIndexes = Array.from(_this.selectedOptions).map(function (option) {
-            return option.index;
-          });
+          if (_this.selectedOptions.length === 1) {
+            return true;
+          }
+
+          var optionIndexes = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getSelectedOptionsAsArray();
+
           return optionIndexes.every(function (index, i) {
             return index === optionIndexes[i + 1] - 1 || i === optionIndexes.length - 1;
+          });
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "selectedOptionsContainsStartIndex", function selectedOptionsContainsStartIndex() {
+          var optionIndexes = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getSelectedOptionsAsArray();
+
+          return optionIndexes.some(function (selectedIndex) {
+            return selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex;
           });
         }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "optionSelectionHandler", function optionSelectionHandler(evt) {
           var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
@@ -412,16 +428,19 @@ customElements.define('chassis-options', function () {
               emit = _$get.emit,
               Selection = _$get.Selection,
               selectedOptionsAreSequential = _$get.selectedOptionsAreSequential,
+              selectedOptionsContainsStartIndex = _$get.selectedOptionsContainsStartIndex,
               selectionStartIndex = _$get.selectionStartIndex;
 
           var _evt$detail = evt.detail,
               index = _evt$detail.index,
+              keyboard = _evt$detail.keyboard,
               shiftKey = _evt$detail.shiftKey,
               metaKey = _evt$detail.metaKey,
               ctrlKey = _evt$detail.ctrlKey,
               newStartIndex = _evt$detail.newStartIndex;
           var option = _this.options[index];
           var selection = new Selection();
+          var resetCherryPickedOptions = true;
 
           var applyMiddleware = function applyMiddleware(next) {
             var beforeChange = _this.parentNode.beforeChange;
@@ -450,21 +469,41 @@ customElements.define('chassis-options', function () {
 
           if (_this.multiple) {
             if (shiftKey) {
-              if (option.selected) {
+              if (keyboard) {
+                if (index === _this.options.length) {
+                  console.log(1);
+                  return;
+                }
+              } else if (option.selected) {
                 if (_this.selectedOptions.length === 1) {
+                  console.log(2);
                   return;
                 }
 
-                if (selectedOptionsAreSequential() && index !== selectionStartIndex) {
+                if (selectedOptionsAreSequential()) {
                   if (_this.selectedOptions.length === 2) {
+                    if (index !== selectionStartIndex) {
+                      if (selectedOptionsContainsStartIndex()) {
+                        console.log(3);
+                        return;
+                      }
+                    }
+                  } else if (index !== selectionStartIndex) {
+                    if (index === _this.selectedOptions.item(_this.selectedOptions.length - 1).index || index === _this.selectedIndex) {
+                      if (selectedOptionsContainsStartIndex()) {
+                        console.log(4);
+                        return;
+                      }
+                    }
+                  }
+                } else if (cherryPickedOptions.length > 0) {
+                  if (index === selectionStartIndex) {
+                    _this.selectedIndex = index;
+                    console.log(5);
                     return;
                   }
 
-                  var indexAtOuterBound = index === _this.selectedOptions.item(_this.selectedOptions.length - 1).index || index === _this.selectedIndex;
-
-                  if (indexAtOuterBound) {
-                    return;
-                  }
+                  resetCherryPickedOptions = false;
                 }
               }
 
@@ -487,7 +526,11 @@ customElements.define('chassis-options', function () {
 
           selection.options = [option];
           _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
-          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = [];
+
+          if (resetCherryPickedOptions) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = [];
+          }
+
           applyMiddleware();
         }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "parentStateChangeHandler", function parentStateChangeHandler(evt) {
           _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('state.change', evt.detail);

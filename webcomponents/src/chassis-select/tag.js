@@ -147,6 +147,8 @@ class ChassisSelectElement extends HTMLElement {
         evt.stopPropagation()
         let { afterChange } = _.get(this).middleware
 
+        this.dispatchEvent(new Event('change', {}))
+
         if (this.open) {
           this.removeAttribute('open')
         }

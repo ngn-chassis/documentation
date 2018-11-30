@@ -322,28 +322,6 @@ customElements.define('chassis-select', function () {
                   startIndex: startIndex
                 }, _this.optionsElement);
 
-                if (_this.selectedIndex === _this.length - 1) {
-                  return;
-                }
-
-                if (_this.selectedOptions.length === 1) {
-                  _this.selectedIndex = _this.selectedOptions[_this.selectedOptions.length - 1].index + 1;
-                  return;
-                }
-
-                if (!evt.shiftKey) {
-                  if (_this.selectedOptions.length === 1) {
-                    _this.selectedIndex = _this.optionsElement.selectionStartIndex + 1;
-                    return;
-                  }
-                }
-
-                if (_this.optionsElement.selectionStartIndex > _this.selectedIndex) {
-                  return _this.optionsElement.deselect(_this.selectedIndex);
-                }
-
-                return _this.optionsElement.select(_this.selectedOptions[_this.selectedOptions.length - 1].index + 1, evt.shiftKey);
-
               default:
                 return;
             }
@@ -356,6 +334,8 @@ customElements.define('chassis-select', function () {
             evt.stopPropagation();
 
             var afterChange = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).middleware.afterChange;
+
+            _this.dispatchEvent(new Event('change', {}));
 
             if (_this.open) {
               _this.removeAttribute('open');

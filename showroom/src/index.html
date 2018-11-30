@@ -651,6 +651,10 @@
         window.select = document.getElementById('default-select')
         window.chassisSelect = document.getElementById('chassis-select').input
 
+        chassisSelect.addEventListener('change', evt => {
+          console.log('chassis-select change');
+        })
+
         select.addEventListener('change', evt => {
           console.log('select change');
         })

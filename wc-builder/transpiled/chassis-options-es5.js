@@ -2,6 +2,8 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
@@ -27,6 +29,8 @@ customElements.define('chassis-options', function () {
       (0, _inherits2.default)(_class, _HTMLElement);
 
       function _class() {
+        var _$get$addPrivatePrope;
+
         var _this;
 
         (0, _classCallCheck2.default)(this, _class);
@@ -287,9 +291,24 @@ customElements.define('chassis-options', function () {
           }
         }]);
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties((_$get$addPrivatePrope = {
           options: [],
           selectionStartIndex: -1,
+          cherryPickedOptions: [],
+          selectedOptionsAreSequential: function selectedOptionsAreSequential() {
+            var array = Array.from(_this.selectedOptions).map(function (option) {
+              return option.index;
+            });
+            return array.every(function (index, i) {
+              return i === array.length - 1 || index < array[i + 1];
+            });
+          },
+          // TODO: Handle cases where
+          // selectionStartIndex !== this.selectedOptions.item(this.selectedOptions.length - 1).index
+          // && selectionStartIndex !== this.selectedOptions.item(0).index
+          // This happens if there is an active selection with > 1 options,
+          // and ctrlKey || metaKey is used to select an option outside the range of
+          // this.selectedOptions, or to deselect an option within this.selectedOptions
           arrowDownHandler: function arrowDownHandler(evt) {
             if (!_this.multiple) {
               var startIndex = evt.detail.startIndex;
@@ -321,8 +340,10 @@ customElements.define('chassis-options', function () {
                 index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index + 1;
               }
 
-              if (_this.selectedIndex < _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex && _this.selectedIndex === _this.options.length - 1) {
-                return;
+              if (_this.selectedIndex < _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
+                if (_this.selectedIndex === _this.options.length - 1) {
+                  return;
+                }
               }
             }
 
@@ -376,487 +397,482 @@ customElements.define('chassis-options', function () {
               ctrlKey: false,
               metaKey: false
             });
-          },
-          popSelection: function popSelection() {
-            var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+          }
+        }, (0, _defineProperty2.default)(_$get$addPrivatePrope, "selectedOptionsAreSequential", function selectedOptionsAreSequential() {
+          var optionIndexes = Array.from(_this.selectedOptions).map(function (option) {
+            return option.index;
+          });
+          return optionIndexes.every(function (index, i) {
+            return index === optionIndexes[i + 1] - 1 || i === optionIndexes.length - 1;
+          });
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "optionSelectionHandler", function optionSelectionHandler(evt) {
+          var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+              ChassisHTMLCollection = _$get.ChassisHTMLCollection,
+              cherryPickedOptions = _$get.cherryPickedOptions,
+              emit = _$get.emit,
+              Selection = _$get.Selection,
+              selectedOptionsAreSequential = _$get.selectedOptionsAreSequential,
+              selectionStartIndex = _$get.selectionStartIndex;
 
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
-              index: _this.selectedOptions.length - 1,
-              shiftKey: true
-            });
-          },
-          // unshiftSelection: (value = 1) => {
-          //   let startIndex = this.selectedOptions.length === 1 ? this.selectedIndex : (value < 0 ? this.selectedIndexes[0] : this.selectedIndexes[this.selectedIndexes.length - 1])
-          //
-          //   return _.get(this).emit('option.selected', {
-          //     index: startIndex + value,
-          //     shiftKey: true
-          //   })
-          // },
-          //
-          // shiftSelection: (value = 1) => {
-          //   let startIndex = this.selectedOptions.length === 1 ? this.selectedIndex : (value < 0 ? this.selectedIndexes[0] : this.selectedIndexes[this.selectedIndexes.length - 1])
-          //
-          //   return _.get(this).emit('option.selected', {
-          //     index: startIndex + value,
-          //     shiftKey: true
-          //   })
-          // },
-          optionSelectionHandler: function optionSelectionHandler(evt) {
-            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
-                ChassisHTMLCollection = _$get.ChassisHTMLCollection,
-                emit = _$get.emit,
-                Selection = _$get.Selection,
-                selectionStartIndex = _$get.selectionStartIndex;
+          var _evt$detail = evt.detail,
+              index = _evt$detail.index,
+              shiftKey = _evt$detail.shiftKey,
+              metaKey = _evt$detail.metaKey,
+              ctrlKey = _evt$detail.ctrlKey,
+              newStartIndex = _evt$detail.newStartIndex;
+          var option = _this.options[index];
+          var selection = new Selection();
 
-            var _evt$detail = evt.detail,
-                index = _evt$detail.index,
-                shiftKey = _evt$detail.shiftKey,
-                metaKey = _evt$detail.metaKey,
-                ctrlKey = _evt$detail.ctrlKey,
-                newStartIndex = _evt$detail.newStartIndex;
-            var option = _this.options[index];
-            var selection = new Selection();
-
-            var applyMiddleware = function applyMiddleware(next) {
-              var beforeChange = _this.parentNode.beforeChange;
-              var detail = {
-                options: selection.options,
-                previous: _this.selectedOptions,
-                next: new (ChassisHTMLCollection())(selection.displayElements),
-                shiftKey: shiftKey,
-                metaKey: metaKey,
-                ctrlKey: ctrlKey
-              };
-
-              var cb = function cb() {
-                _this.deselectAll();
-
-                selection.selectAll();
-                return emit('options.selected', detail, _this.parentNode);
-              };
-
-              if (!(beforeChange && typeof beforeChange === 'function')) {
-                return cb();
-              }
-
-              beforeChange(_this.selectedOptions, detail.next, cb);
+          var applyMiddleware = function applyMiddleware(next) {
+            var beforeChange = _this.parentNode.beforeChange;
+            var detail = {
+              options: selection.options,
+              previous: _this.selectedOptions,
+              next: new (ChassisHTMLCollection())(selection.displayElements),
+              shiftKey: shiftKey,
+              metaKey: metaKey,
+              ctrlKey: ctrlKey
             };
 
-            if (_this.multiple) {
-              if (shiftKey) {
-                var bounds = [index, selectionStartIndex].sort();
-                selection.options = bounds[0] === bounds[1] ? [option] : _this.options.slice(bounds[0], bounds[1] + 1);
-                return applyMiddleware();
-              }
+            var cb = function cb() {
+              _this.deselectAll();
 
-              if (metaKey || ctrlKey) {
-                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
-                selection.options = _this.options.filter(function (option) {
-                  return option.index === index ? !option.selected : option.selected;
-                });
-                return applyMiddleware();
-              }
-            } else if (index === _this.selectedIndex) {
-              return;
+              selection.selectAll();
+              return emit('options.selected', detail, _this.parentNode);
+            };
+
+            if (!(beforeChange && typeof beforeChange === 'function')) {
+              return cb();
             }
 
-            selection.options = [option];
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
-            applyMiddleware();
-          },
-          parentStateChangeHandler: function parentStateChangeHandler(evt) {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('state.change', evt.detail);
+            beforeChange(_this.selectedOptions, detail.next, cb);
+          };
 
-            var _evt$detail2 = evt.detail,
-                name = _evt$detail2.name,
-                value = _evt$detail2.value;
-
-            switch (name) {
-              case 'multiple':
-                if (!value && _this.selectedOptions.length > 0) {
-                  var index = _this.selectedIndex;
-
-                  _this.deselectAll();
-
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
-                    index: index
-                  });
+          if (_this.multiple) {
+            if (shiftKey) {
+              if (option.selected) {
+                if (_this.selectedOptions.length === 1) {
+                  return;
                 }
 
-                break;
+                if (selectedOptionsAreSequential() && index !== selectionStartIndex) {
+                  if (_this.selectedOptions.length === 2) {
+                    return;
+                  }
 
-              default:
-                return;
-            }
-          },
-          Selection:
-          /*#__PURE__*/
-          function () {
-            function Selection() {
-              var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-              (0, _classCallCheck2.default)(this, Selection);
-              this.options = options;
+                  var indexAtOuterBound = index === _this.selectedOptions.item(_this.selectedOptions.length - 1).index || index === _this.selectedIndex;
+
+                  if (indexAtOuterBound) {
+                    return;
+                  }
+                }
+              }
+
+              var bounds = [index, selectionStartIndex].sort();
+              selection.options = bounds[0] === bounds[1] ? [option] : _this.options.slice(bounds[0], bounds[1] + 1);
+              return applyMiddleware();
             }
 
-            (0, _createClass2.default)(Selection, [{
-              key: "append",
-              value: function append(option) {
-                this.options.push(option);
-              }
-            }, {
-              key: "clear",
-              value: function clear() {
-                this.options = [];
-              }
-            }, {
-              key: "prepend",
-              value: function prepend(option) {
-                this.options.unshift(option);
-              }
-            }, {
-              key: "selectAll",
-              value: function selectAll() {
-                this.options.forEach(function (option) {
-                  return option.selected = true;
+            if (metaKey || ctrlKey) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+              selection.options = _this.options.filter(function (option) {
+                return option.index === index ? !option.selected : option.selected;
+              });
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = selection.options;
+              return applyMiddleware();
+            }
+          } else if (index === _this.selectedIndex) {
+            return;
+          }
+
+          selection.options = [option];
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = [];
+          applyMiddleware();
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "parentStateChangeHandler", function parentStateChangeHandler(evt) {
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('state.change', evt.detail);
+
+          var _evt$detail2 = evt.detail,
+              name = _evt$detail2.name,
+              value = _evt$detail2.value;
+
+          switch (name) {
+            case 'multiple':
+              if (!value && _this.selectedOptions.length > 0) {
+                var index = _this.selectedIndex;
+
+                _this.deselectAll();
+
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
+                  index: index
                 });
               }
-            }, {
-              key: "displayElements",
-              get: function get() {
-                return this.options.map(function (option) {
-                  return option.displayElement;
-                });
-              }
-            }, {
-              key: "length",
-              get: function get() {
-                return this.options.length;
-              }
-            }]);
-            return Selection;
-          }(),
-          OptionConstructor: function OptionConstructor() {
-            var _p = new WeakMap();
 
-            var selectionHandler = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionSelectionHandler;
+              break;
 
-            return (
-              /*#__PURE__*/
-              function () {
-                function ChassisOptionObject(parent, key, sourceElement, displayElement) {
-                  (0, _classCallCheck2.default)(this, ChassisOptionObject);
-                  this.key = key;
-                  this.form = parent.form;
-                  this.defaultSelected = sourceElement.selected;
-                  this.sourceElement = sourceElement;
-                  this.displayElement = displayElement;
-                  this.displayElement.parent = parent;
-                  this.displayElement.selected = sourceElement.selected;
-                  this.displayElement.defaultSelected = sourceElement.selected;
-                  this.displayElement.innerHTML = sourceElement.innerHTML; // Add additional attributes
-
-                  var _iteratorNormalCompletion2 = true;
-                  var _didIteratorError2 = false;
-                  var _iteratorError2 = undefined;
-
-                  try {
-                    for (var _iterator2 = sourceElement.attributes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                      var attr = _step2.value;
-
-                      if (typeof attr.value === 'boolean') {
-                        attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
-                        continue;
-                      }
-
-                      this.displayElement.setAttribute(attr.name, attr.value);
-                    }
-                  } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                  } finally {
-                    try {
-                      if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                        _iterator2.return();
-                      }
-                    } finally {
-                      if (_didIteratorError2) {
-                        throw _iteratorError2;
-                      }
-                    }
-                  }
-
-                  _p.set(this, {
-                    attributes: {
-                      disabled: sourceElement.disabled,
-                      id: sourceElement.getAttribute('id'),
-                      label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
-                      selected: sourceElement.selected,
-                      value: sourceElement.hasAttribute('value') ? sourceElement.getAttribute('value').trim() : null,
-                      text: sourceElement.text.trim()
-                    }
-                  });
-                }
-
-                (0, _createClass2.default)(ChassisOptionObject, [{
-                  key: "remove",
-                  value: function remove() {
-                    this.sourceElement.remove();
-                    this.displayElement.remove();
-                  }
-                }, {
-                  key: "setAttr",
-                  value: function setAttr(name, value) {
-                    this.sourceElement[name] = value;
-
-                    if (typeof value === 'boolean') {
-                      value ? this.displayElement.setAttribute(name, '') : this.displayElement.removeAttribute(name);
-                    } else {
-                      this.displayElement.setAttribute(name, value);
-                    }
-
-                    _p.get(this).attributes[name] = value;
-                  }
-                }, {
-                  key: "disabled",
-                  get: function get() {
-                    return _p.get(this).attributes.disabled;
-                  },
-                  set: function set(bool) {
-                    this.setAttr('disabled', bool);
-                  }
-                }, {
-                  key: "index",
-                  get: function get() {
-                    return this.sourceElement.index;
-                  }
-                }, {
-                  key: "id",
-                  get: function get() {
-                    return _p.get(this).attributes.id;
-                  },
-                  set: function set(id) {
-                    this.setAttr('id', id);
-                  }
-                }, {
-                  key: "selected",
-                  get: function get() {
-                    return _p.get(this).attributes.selected;
-                  },
-                  set: function set(bool) {
-                    this.setAttr('selected', bool);
-                  }
-                }, {
-                  key: "label",
-                  get: function get() {
-                    return _p.get(this).attributes.label;
-                  },
-                  set: function set(label) {
-                    this.setAttr('label', label);
-                  }
-                }, {
-                  key: "text",
-                  get: function get() {
-                    return _p.get(this).attributes.text;
-                  },
-                  set: function set(text) {
-                    this.setAttr('text', text);
-                  }
-                }, {
-                  key: "value",
-                  get: function get() {
-                    return _p.get(this).attributes.value;
-                  },
-                  set: function set(value) {
-                    this.setAttr('value', value);
-                  }
-                }]);
-                return ChassisOptionObject;
-              }()
-            );
-          },
-          generateOptionObject: function generateOptionObject(sourceElement) {
-            if (!customElements.get('chassis-option')) {
-              console.error("<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.");
+            default:
               return;
+          }
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "Selection",
+        /*#__PURE__*/
+        function () {
+          function Selection() {
+            var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+            (0, _classCallCheck2.default)(this, Selection);
+            this.options = options;
+          }
+
+          (0, _createClass2.default)(Selection, [{
+            key: "append",
+            value: function append(option) {
+              this.options.push(option);
             }
-
-            return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).OptionConstructor())((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, document.createElement('chassis-option'));
-          },
-          generateSourceOptionElement: function generateSourceOptionElement(option) {
-            var sourceEl = document.createElement('option');
-
-            if (option.hasOwnProperty('innerHTML')) {
-              sourceEl.innerHTML = option.innerHTML;
+          }, {
+            key: "clear",
+            value: function clear() {
+              this.options = [];
             }
-
-            if (option.hasOwnProperty('label')) {
-              sourceEl.innerHTML = option.label;
+          }, {
+            key: "prepend",
+            value: function prepend(option) {
+              this.options.unshift(option);
             }
-
-            if (option.hasOwnProperty('value')) {
-              sourceEl.value = option.value;
+          }, {
+            key: "selectAll",
+            value: function selectAll() {
+              this.options.forEach(function (option) {
+                return option.selected = true;
+              });
             }
-
-            if (option.hasOwnProperty('disabled')) {
-              sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
+          }, {
+            key: "displayElements",
+            get: function get() {
+              return this.options.map(function (option) {
+                return option.displayElement;
+              });
             }
-
-            return sourceEl;
-          },
-          generateOptgroup: function generateOptgroup(optgroup) {
-            if (!customElements.get('chassis-optgroup')) {
-              console.error("<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.");
-              return;
+          }, {
+            key: "length",
+            get: function get() {
+              return this.options.length;
             }
+          }]);
+          return Selection;
+        }()), (0, _defineProperty2.default)(_$get$addPrivatePrope, "OptionConstructor", function OptionConstructor() {
+          var _p = new WeakMap();
 
-            var surrogate = document.createElement('chassis-optgroup');
-            surrogate.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid('optgroup');
-            var label = optgroup.getAttribute('label');
+          var selectionHandler = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).optionSelectionHandler;
 
-            if (!label || label.trim() === '') {
-              console.error('<optgroup> must have a label attribute!');
-              return;
-            }
-
-            surrogate.setAttribute('label', label);
-            var options = optgroup.querySelectorAll('option');
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-              for (var _iterator3 = options[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var option = _step3.value;
-
-                _this.add(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject(option), null, surrogate);
-              }
-            } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
-                }
-              } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
-                }
-              }
-            }
-
-            return surrogate;
-          },
-          ChassisHTMLCollection: function ChassisHTMLCollection() {
-            var _p = new WeakMap();
-
-            return (
-              /*#__PURE__*/
-              function () {
-                function ChassisHTMLCollection(arr) {
-                  var _this3 = this;
-
-                  (0, _classCallCheck2.default)(this, ChassisHTMLCollection);
-
-                  _p.set(this, {
-                    arr: arr
-                  });
-
-                  arr.forEach(function (node, index) {
-                    _this3[index] = node;
-
-                    if (node.id) {
-                      _this3[node.id] = node;
-                    }
-                  });
-                }
-
-                (0, _createClass2.default)(ChassisHTMLCollection, [{
-                  key: "item",
-                  value: function item(index) {
-                    return _p.get(this).arr[index];
-                  }
-                }, {
-                  key: "namedItem",
-                  value: function namedItem(name) {
-                    var matches = _p.get(this).arr.filter(function (item) {
-                      return item.id === name || item.name === name;
-                    });
-
-                    return matches.length > 0 ? matches[0] : null;
-                  }
-                }, {
-                  key: Symbol.iterator,
-                  value: function value() {
-                    var _this4 = this;
-
-                    var index = 0;
-                    return {
-                      next: function next() {
-                        var result = {
-                          value: _p.get(_this4).arr[index],
-                          done: !(index in _p.get(_this4).arr)
-                        };
-                        index++;
-                        return result;
-                      }
-                    };
-                  }
-                }, {
-                  key: Symbol.toStringTag,
-                  value: function value() {
-                    return 'ChassisHTMLCollection';
-                  }
-                }, {
-                  key: "length",
-                  get: function get() {
-                    return _p.get(this).arr.length;
-                  }
-                }]);
-                return ChassisHTMLCollection;
-              }()
-            );
-          },
-          ChassisHTMLOptionsCollection: function ChassisHTMLOptionsCollection() {
-            var _p = new WeakMap();
-
-            var ChassisHTMLOptionsCollection =
+          return (
             /*#__PURE__*/
-            function (_$get$ChassisHTMLColl) {
-              (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
+            function () {
+              function ChassisOptionObject(parent, key, sourceElement, displayElement) {
+                (0, _classCallCheck2.default)(this, ChassisOptionObject);
+                this.key = key;
+                this.form = parent.form;
+                this.defaultSelected = sourceElement.selected;
+                this.sourceElement = sourceElement;
+                this.displayElement = displayElement;
+                this.displayElement.parent = parent;
+                this.displayElement.selected = sourceElement.selected;
+                this.displayElement.defaultSelected = sourceElement.selected;
+                this.displayElement.innerHTML = sourceElement.innerHTML; // Add additional attributes
 
-              function ChassisHTMLOptionsCollection(arr) {
-                var _this5;
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
 
-                var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
-                var add = arguments.length > 2 ? arguments[2] : undefined;
-                var remove = arguments.length > 3 ? arguments[3] : undefined;
-                (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
-                _this5 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
-                _this5.selectedIndex = selectedIndex;
-                _this5.add = add;
-                _this5.remove = remove;
+                try {
+                  for (var _iterator2 = sourceElement.attributes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var attr = _step2.value;
 
-                _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this5)), {
+                    if (typeof attr.value === 'boolean') {
+                      attr.value ? this.displayElement.setAttribute(attr.name, '') : this.displayElement.removeAttribute(attr.name);
+                      continue;
+                    }
+
+                    this.displayElement.setAttribute(attr.name, attr.value);
+                  }
+                } catch (err) {
+                  _didIteratorError2 = true;
+                  _iteratorError2 = err;
+                } finally {
+                  try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                      _iterator2.return();
+                    }
+                  } finally {
+                    if (_didIteratorError2) {
+                      throw _iteratorError2;
+                    }
+                  }
+                }
+
+                _p.set(this, {
+                  attributes: {
+                    disabled: sourceElement.disabled,
+                    id: sourceElement.getAttribute('id'),
+                    label: sourceElement.getAttribute('label') || sourceElement.textContent.trim(),
+                    selected: sourceElement.selected,
+                    value: sourceElement.hasAttribute('value') ? sourceElement.getAttribute('value').trim() : null,
+                    text: sourceElement.text.trim()
+                  }
+                });
+              }
+
+              (0, _createClass2.default)(ChassisOptionObject, [{
+                key: "remove",
+                value: function remove() {
+                  this.sourceElement.remove();
+                  this.displayElement.remove();
+                }
+              }, {
+                key: "setAttr",
+                value: function setAttr(name, value) {
+                  this.sourceElement[name] = value;
+
+                  if (typeof value === 'boolean') {
+                    value ? this.displayElement.setAttribute(name, '') : this.displayElement.removeAttribute(name);
+                  } else {
+                    this.displayElement.setAttribute(name, value);
+                  }
+
+                  _p.get(this).attributes[name] = value;
+                }
+              }, {
+                key: "disabled",
+                get: function get() {
+                  return _p.get(this).attributes.disabled;
+                },
+                set: function set(bool) {
+                  this.setAttr('disabled', bool);
+                }
+              }, {
+                key: "index",
+                get: function get() {
+                  return this.sourceElement.index;
+                }
+              }, {
+                key: "id",
+                get: function get() {
+                  return _p.get(this).attributes.id;
+                },
+                set: function set(id) {
+                  this.setAttr('id', id);
+                }
+              }, {
+                key: "selected",
+                get: function get() {
+                  return _p.get(this).attributes.selected;
+                },
+                set: function set(bool) {
+                  this.setAttr('selected', bool);
+                }
+              }, {
+                key: "label",
+                get: function get() {
+                  return _p.get(this).attributes.label;
+                },
+                set: function set(label) {
+                  this.setAttr('label', label);
+                }
+              }, {
+                key: "text",
+                get: function get() {
+                  return _p.get(this).attributes.text;
+                },
+                set: function set(text) {
+                  this.setAttr('text', text);
+                }
+              }, {
+                key: "value",
+                get: function get() {
+                  return _p.get(this).attributes.value;
+                },
+                set: function set(value) {
+                  this.setAttr('value', value);
+                }
+              }]);
+              return ChassisOptionObject;
+            }()
+          );
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "generateOptionObject", function generateOptionObject(sourceElement) {
+          if (!customElements.get('chassis-option')) {
+            console.error("<chassis-select> requires <chassis-option>. Please include it in this document's <head> element.");
+            return;
+          }
+
+          return new (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).OptionConstructor())((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid(), sourceElement, document.createElement('chassis-option'));
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "generateSourceOptionElement", function generateSourceOptionElement(option) {
+          var sourceEl = document.createElement('option');
+
+          if (option.hasOwnProperty('innerHTML')) {
+            sourceEl.innerHTML = option.innerHTML;
+          }
+
+          if (option.hasOwnProperty('label')) {
+            sourceEl.innerHTML = option.label;
+          }
+
+          if (option.hasOwnProperty('value')) {
+            sourceEl.value = option.value;
+          }
+
+          if (option.hasOwnProperty('disabled')) {
+            sourceEl.disabled = typeof option.disabled === 'boolean' && option.disabled;
+          }
+
+          return sourceEl;
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "generateOptgroup", function generateOptgroup(optgroup) {
+          if (!customElements.get('chassis-optgroup')) {
+            console.error("<chassis-select> requires <chassis-optgroup>. Please include it in this document's <head> element.");
+            return;
+          }
+
+          var surrogate = document.createElement('chassis-optgroup');
+          surrogate.id = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateGuid('optgroup');
+          var label = optgroup.getAttribute('label');
+
+          if (!label || label.trim() === '') {
+            console.error('<optgroup> must have a label attribute!');
+            return;
+          }
+
+          surrogate.setAttribute('label', label);
+          var options = optgroup.querySelectorAll('option');
+          var _iteratorNormalCompletion3 = true;
+          var _didIteratorError3 = false;
+          var _iteratorError3 = undefined;
+
+          try {
+            for (var _iterator3 = options[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              var option = _step3.value;
+
+              _this.add(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).generateOptionObject(option), null, surrogate);
+            }
+          } catch (err) {
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                _iterator3.return();
+              }
+            } finally {
+              if (_didIteratorError3) {
+                throw _iteratorError3;
+              }
+            }
+          }
+
+          return surrogate;
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "ChassisHTMLCollection", function ChassisHTMLCollection() {
+          var _p = new WeakMap();
+
+          return (
+            /*#__PURE__*/
+            function () {
+              function ChassisHTMLCollection(arr) {
+                var _this3 = this;
+
+                (0, _classCallCheck2.default)(this, ChassisHTMLCollection);
+
+                _p.set(this, {
                   arr: arr
                 });
 
-                return _this5;
+                arr.forEach(function (node, index) {
+                  _this3[index] = node;
+
+                  if (node.id) {
+                    _this3[node.id] = node;
+                  }
+                });
               }
 
-              (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
+              (0, _createClass2.default)(ChassisHTMLCollection, [{
+                key: "item",
+                value: function item(index) {
+                  return _p.get(this).arr[index];
+                }
+              }, {
+                key: "namedItem",
+                value: function namedItem(name) {
+                  var matches = _p.get(this).arr.filter(function (item) {
+                    return item.id === name || item.name === name;
+                  });
+
+                  return matches.length > 0 ? matches[0] : null;
+                }
+              }, {
+                key: Symbol.iterator,
+                value: function value() {
+                  var _this4 = this;
+
+                  var index = 0;
+                  return {
+                    next: function next() {
+                      var result = {
+                        value: _p.get(_this4).arr[index],
+                        done: !(index in _p.get(_this4).arr)
+                      };
+                      index++;
+                      return result;
+                    }
+                  };
+                }
+              }, {
                 key: Symbol.toStringTag,
                 value: function value() {
-                  return 'ChassisHTMLOptionsCollection';
+                  return 'ChassisHTMLCollection';
+                }
+              }, {
+                key: "length",
+                get: function get() {
+                  return _p.get(this).arr.length;
                 }
               }]);
-              return ChassisHTMLOptionsCollection;
-            }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection());
+              return ChassisHTMLCollection;
+            }()
+          );
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "ChassisHTMLOptionsCollection", function ChassisHTMLOptionsCollection() {
+          var _p = new WeakMap();
 
+          var ChassisHTMLOptionsCollection =
+          /*#__PURE__*/
+          function (_$get$ChassisHTMLColl) {
+            (0, _inherits2.default)(ChassisHTMLOptionsCollection, _$get$ChassisHTMLColl);
+
+            function ChassisHTMLOptionsCollection(arr) {
+              var _this5;
+
+              var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
+              var add = arguments.length > 2 ? arguments[2] : undefined;
+              var remove = arguments.length > 3 ? arguments[3] : undefined;
+              (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
+              _this5 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
+              _this5.selectedIndex = selectedIndex;
+              _this5.add = add;
+              _this5.remove = remove;
+
+              _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this5)), {
+                arr: arr
+              });
+
+              return _this5;
+            }
+
+            (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
+              key: Symbol.toStringTag,
+              value: function value() {
+                return 'ChassisHTMLOptionsCollection';
+              }
+            }]);
             return ChassisHTMLOptionsCollection;
-          }
-        });
+          }(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).ChassisHTMLCollection());
+
+          return ChassisHTMLOptionsCollection;
+        }), _$get$addPrivatePrope));
 
         return _this;
       }

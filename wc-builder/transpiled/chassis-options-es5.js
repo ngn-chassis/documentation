@@ -468,7 +468,6 @@ customElements.define('chassis-options', function () {
               ctrlKey = detail.ctrlKey,
               metaKey = detail.metaKey;
           var selectedOption = _this.options[index];
-          var currentSelection = getCurrentSelection();
 
           if (shiftKey && lastSelectedIndex !== null) {
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
@@ -479,12 +478,16 @@ customElements.define('chassis-options', function () {
             return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : _this.options.slice(bounds[0], bounds[1] + 1)));
           }
 
+          var currentSelection = getCurrentSelection();
+
           if (ctrlKey || metaKey) {
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPicked.options = selectedOption.selected ? currentSelection.filter(function (option) {
               return option !== selectedOption;
-            }) : currentSelection;
+            }) : _this.options.filter(function (option) {
+              return option === selectedOption || currentSelection.includes(option);
+            });
             return cb(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPicked);
           }
 

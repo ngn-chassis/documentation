@@ -209,7 +209,6 @@ class ChassisOptionsElement extends HTMLElement {
         let { cherryPicked, getCurrentSelection, lastSelectedIndex, Selection, selectionStartIndex } = _.get(this)
         let { index, shiftKey, ctrlKey, metaKey } = detail
         let selectedOption = this.options[index]
-        let currentSelection = getCurrentSelection()
 
         if (shiftKey && lastSelectedIndex !== null) {
           _.get(this).lastSelectedIndex = index
@@ -218,11 +217,13 @@ class ChassisOptionsElement extends HTMLElement {
           return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : this.options.slice(bounds[0], bounds[1] + 1)))
         }
 
+        let currentSelection = getCurrentSelection()
+
         if (ctrlKey || metaKey) {
           _.get(this).lastSelectedIndex = index
           _.get(this).selectionStartIndex = index
 
-          _.get(this).cherryPicked.options = selectedOption.selected ? currentSelection.filter(option => option !== selectedOption) : currentSelection
+          _.get(this).cherryPicked.options = selectedOption.selected ? currentSelection.filter(option => option !== selectedOption) : this.options.filter(option => option === selectedOption || currentSelection.includes(option))
           return cb(_.get(this).cherryPicked)
         }
 
@@ -262,128 +263,6 @@ class ChassisOptionsElement extends HTMLElement {
           return cb(selection)
         }
       },
-
-//       optionSelectionHandler: evt => {
-//         let {
-//           ChassisHTMLCollection,
-//           cherryPickedOptions,
-//           emit,
-//           Selection,
-//           selectedOptionsAreSequential,
-//           selectedOptionsContainsStartIndex,
-//           selectionStartIndex,
-//           getSelectedOptionsAsArray
-//         } = _.get(this)
-//
-//         let { index, keyboard, shiftKey, metaKey, ctrlKey } = evt.detail
-// console.log(index);
-//         _.get(this).lastSelectedIndex = index
-//         let option = this.options[index]
-//         let selection = new Selection()
-//         let resetCherryPickedOptions = true
-//
-//         let applyMiddleware = next => {
-//           let { beforeChange } = this.parentNode
-//
-//           let detail = {
-//             options: selection.options,
-//             previous: this.selectedOptions,
-//             next: new (ChassisHTMLCollection())(selection.displayElements),
-//             shiftKey,
-//             metaKey,
-//             ctrlKey
-//           }
-//
-//           let cb = () => {
-//             this.deselectAll()
-//             selection.selectAll()
-//             return emit('options.selected', detail, this.parentNode)
-//           }
-//
-//           if (!(beforeChange && typeof beforeChange === 'function')) {
-//             return cb()
-//           }
-//
-//           beforeChange(this.selectedOptions, detail.next, cb)
-//         }
-//
-//         if (this.multiple) {
-//           if (shiftKey) {
-//             if (keyboard) {
-//               if (index === this.options.length) {
-//                 console.log('A');
-//                 return
-//               }
-//
-//             } else if (option.selected) {
-//               if (this.selectedOptions.length === 1) {
-//                 console.log('B');
-//                 return
-//               }
-//
-//               if (selectedOptionsAreSequential()) {
-//                 if (this.selectedOptions.length === 2) {
-//                   if (index !== selectionStartIndex) {
-//                     if (selectedOptionsContainsStartIndex()) {
-//                       console.log('C');
-//                       return
-//                     }
-//                   }
-//
-//                 } else if (index !== selectionStartIndex) {
-//                   if (index === this.selectedOptions.item(this.selectedOptions.length - 1).index || index === this.selectedIndex) {
-//                     if (selectedOptionsContainsStartIndex()) {
-//                       console.log('D');
-//                       return
-//                     }
-//                   }
-//                 }
-//
-//               } else if (cherryPickedOptions.length > 0) {
-//                 if (index === selectionStartIndex) {
-//                   this.selectedIndex = index
-//                   console.log('E');
-//                   return
-//                 }
-//
-//                 resetCherryPickedOptions = false
-//               }
-//             }
-//
-//             let bounds = [index, selectionStartIndex].sort()
-//
-//             selection.options = bounds[0] === bounds[1] ? [option] : this.options.slice(bounds[0], bounds[1] + 1)
-//
-//             if (cherryPickedOptions.length > 0) {
-//               console.log(cherryPickedOptions);
-//               selection.options = this.options.filter(option => cherryPickedOptions.includes(option) || selection.options.includes(option))
-//             }
-//
-//             console.log('F');
-//             return applyMiddleware()
-//           }
-//
-//           if (metaKey || ctrlKey) {
-//             _.get(this).selectionStartIndex = index
-//             selection.options = this.options.filter(option => option.index === index ? !option.selected : option.selected)
-//             _.get(this).cherryPickedOptions = option.selected ? [] : selection.options
-//             console.log('G');
-//             return applyMiddleware()
-//           }
-//         } else if (index === this.selectedIndex) {
-//           console.log('H');
-//           return
-//         }
-//
-//         selection.options = [option]
-//         _.get(this).selectionStartIndex = index
-//
-//         if (resetCherryPickedOptions) {
-//           _.get(this).cherryPickedOptions = []
-//         }
-//         console.log('I');
-//         applyMiddleware()
-//       },
 
       parentStateChangeHandler: evt => {
         _.get(this).emit('state.change', evt.detail)

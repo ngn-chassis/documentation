@@ -6,15 +6,12 @@
 - Make sure options with labels use label contents as innerHTML
 
 MULTIPLE SELECT
-- Fix keyboard arrow behavior
 - Handle focusing of options panel on click
-
 - Write Unit Tests
 
 
-CASE 1
---------------
-Select an option
-Hold cmd and select the next adjacent option
-Hold shift and click the option just selected
-RESULT: The option just selected should be the only one highlighted
+V2
+---
+Add a "highlighted" state to option that is different from selected or hovered.
+This state could be used to alter the styling of options which are highlighted
+by keyboard commands, but are not hovered or having their selection state altered.

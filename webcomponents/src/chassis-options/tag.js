@@ -109,7 +109,11 @@ class ChassisOptionsElement extends HTMLElement {
 
             index = _.get(this).lastSelectedIndex + 1
           } else {
-            if (this.selectedIndex === _.get(this).selectionStartIndex) {
+            if (this.selectedOptions.length > 0) {
+              _.get(this).cherryPickedOptions = this.options.filter(option => option.selected)
+              index = _.get(this).lastSelectedIndex
+
+            } else if (this.selectedIndex === _.get(this).selectionStartIndex) {
               index = this.selectedOptions.item(this.selectedOptions.length - 1).index + 1
             }
 
@@ -165,7 +169,11 @@ class ChassisOptionsElement extends HTMLElement {
 
             index = _.get(this).lastSelectedIndex - 1
           } else {
-            if (this.selectedIndex === _.get(this).selectionStartIndex) {
+            if (this.selectedOptions.length > 0) {
+              _.get(this).cherryPickedOptions = this.options.filter(option => option.selected)
+              index = _.get(this).lastSelectedIndex
+
+            } else if (this.selectedIndex === _.get(this).selectionStartIndex) {
               index = this.selectedOptions.item(this.selectedOptions.length - 1).index - 1
             }
 
@@ -303,7 +311,7 @@ class ChassisOptionsElement extends HTMLElement {
           if (metaKey || ctrlKey) {
             _.get(this).selectionStartIndex = index
             selection.options = this.options.filter(option => option.index === index ? !option.selected : option.selected)
-            _.get(this).cherryPickedOptions = selection.options
+            _.get(this).cherryPickedOptions = option.selected ? [] : selection.options
 
             return applyMiddleware()
           }

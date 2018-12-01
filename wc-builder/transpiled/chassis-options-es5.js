@@ -344,7 +344,12 @@ customElements.define('chassis-options', function () {
 
                 index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex + 1;
               } else {
-                if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
+                if (_this.selectedOptions.length > 0) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = _this.options.filter(function (option) {
+                    return option.selected;
+                  });
+                  index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex;
+                } else if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
                   index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index + 1;
                 }
 
@@ -399,7 +404,12 @@ customElements.define('chassis-options', function () {
 
                 index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex - 1;
               } else {
-                if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
+                if (_this.selectedOptions.length > 0) {
+                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = _this.options.filter(function (option) {
+                    return option.selected;
+                  });
+                  index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex;
+                } else if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
                   index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index - 1;
                 }
 
@@ -544,7 +554,7 @@ customElements.define('chassis-options', function () {
               selection.options = _this.options.filter(function (option) {
                 return option.index === index ? !option.selected : option.selected;
               });
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = selection.options;
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = option.selected ? [] : selection.options;
               return applyMiddleware();
             }
           } else if (index === _this.selectedIndex) {

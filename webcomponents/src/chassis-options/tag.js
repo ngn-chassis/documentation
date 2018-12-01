@@ -151,8 +151,12 @@ class ChassisOptionsElement extends HTMLElement {
         return optionIndexes.some(selectedIndex => selectedIndex === _.get(this).selectionStartIndex)
       },
 
+      diffSelections: (comparator, comparable) => {
+        return comparator.filter(option => !comparable.includes(option))
+      },
+
       optionSelectionHandler: evt => {
-        let { cherryPicked, emit, ChassisHTMLCollection, handleClickSelection, handleKeyboardSelection, Selection } = _.get(this)
+        let { cherryPicked, diffSelections, getCurrentSelection, emit, ChassisHTMLCollection, handleClickSelection, handleKeyboardSelection, Selection } = _.get(this)
 
         if (cherryPicked === null) {
           _.get(this).cherryPicked = new Selection([])
@@ -161,6 +165,14 @@ class ChassisOptionsElement extends HTMLElement {
         let { index, keyboard } = evt.detail
 
         let completeOperation = selection => {
+          let currentSelection = getCurrentSelection()
+          let comparator = selection.length >= currentSelection.length ? selection.options : currentSelection
+          let diff = diffSelections(comparator, comparator === currentSelection ? selection.options : currentSelection)
+
+          if (diff.length === 0) {
+            return
+          }
+
           let { beforeChange } = this.parentNode
 
           let detail = {
@@ -201,6 +213,7 @@ class ChassisOptionsElement extends HTMLElement {
 
         if (shiftKey && lastSelectedIndex !== null) {
           _.get(this).lastSelectedIndex = index
+          _.get(this).cherryPicked.clear()
           let bounds = [index, selectionStartIndex].sort()
           return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : this.options.slice(bounds[0], bounds[1] + 1)))
         }
@@ -219,6 +232,7 @@ class ChassisOptionsElement extends HTMLElement {
 
         _.get(this).lastSelectedIndex = index
         _.get(this).selectionStartIndex = index
+        _.get(this).cherryPicked.clear()
         return cb(new Selection([selectedOption]))
       },
 
@@ -232,6 +246,7 @@ class ChassisOptionsElement extends HTMLElement {
 
         if (!shiftKey || currentSelection.length === 0) {
           _.get(this).selectionStartIndex = index
+          _.get(this).cherryPicked.clear()
           return cb(new Selection([selectedOption]))
         }
 

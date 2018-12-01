@@ -61,6 +61,7 @@ class ChassisOptionsElement extends HTMLElement {
       options: [],
       selectionStartIndex: -1,
       cherryPickedOptions: [],
+      lastSelectedIndex: null,
 
       selectedOptionsAreSequential: () => {
         let array = Array.from(this.selectedOptions).map(option => option.index)
@@ -101,6 +102,10 @@ class ChassisOptionsElement extends HTMLElement {
         }
 
         if (this.selectedOptions.length > 1) {
+          if (_.get(this).cherryPickedOptions.length > 0) {
+            index = _.get(this).lastSelectedIndex + 1
+          }
+
           if (this.selectedIndex === _.get(this).selectionStartIndex) {
             index = this.selectedOptions.item(this.selectedOptions.length - 1).index + 1
           }
@@ -149,6 +154,10 @@ class ChassisOptionsElement extends HTMLElement {
         }
 
         if (this.selectedOptions.length > 1) {
+          if (_.get(this).cherryPickedOptions.length > 0) {
+            index = _.get(this).lastSelectedIndex - 1
+          }
+
           if (this.selectedIndex === _.get(this).selectionStartIndex) {
             index = this.selectedOptions.item(this.selectedOptions.length - 1).index - 1
           }
@@ -168,7 +177,7 @@ class ChassisOptionsElement extends HTMLElement {
       },
 
       getSelectedOptionsAsArray: () => {
-        return Array.from(this.selectedOptions).map(option => option.index)
+        return Array.from(this.selectedOptions)
       },
 
       selectedOptionsAreSequential: () => {
@@ -176,12 +185,12 @@ class ChassisOptionsElement extends HTMLElement {
           return true
         }
 
-        let optionIndexes = _.get(this).getSelectedOptionsAsArray()
+        let optionIndexes = _.get(this).getSelectedOptionsAsArray().map(option => option.index)
         return optionIndexes.every((index, i) => index === optionIndexes[i + 1] - 1 || i === optionIndexes.length - 1)
       },
 
       selectedOptionsContainsStartIndex: () => {
-        let optionIndexes = _.get(this).getSelectedOptionsAsArray()
+        let optionIndexes = _.get(this).getSelectedOptionsAsArray().map(option => option.index)
         return optionIndexes.some(selectedIndex => selectedIndex === _.get(this).selectionStartIndex)
       },
 
@@ -193,11 +202,13 @@ class ChassisOptionsElement extends HTMLElement {
           Selection,
           selectedOptionsAreSequential,
           selectedOptionsContainsStartIndex,
-          selectionStartIndex
+          selectionStartIndex,
+          getSelectedOptionsAsArray
         } = _.get(this)
 
-        let { index, keyboard, shiftKey, metaKey, ctrlKey, newStartIndex } = evt.detail
+        let { index, keyboard, shiftKey, metaKey, ctrlKey } = evt.detail
 
+        _.get(this).lastSelectedIndex = index
         let option = this.options[index]
         let selection = new Selection()
         let resetCherryPickedOptions = true
@@ -233,6 +244,27 @@ class ChassisOptionsElement extends HTMLElement {
               if (index === this.options.length) {
                 console.log(1);
                 return
+              }
+
+              if (cherryPickedOptions.length > 0) {
+                resetCherryPickedOptions = false
+
+                // let cherryPicked = cherryPickedOptions.some(option => option.index === index)
+                //
+                // if (cherryPicked) {
+                //   return
+                // }
+                //
+                // selection.options = this.options.filter(option => option.index === index ? !option.selected : option.selected)
+                //
+                // // if (option.selected) {
+                // //   return
+                // //   // selection.options = this.options.filter(option => option.index !== index && option.selected)
+                // // } else {
+                // //
+                // // }
+                //
+                // return applyMiddleware()
               }
 
             } else if (option.selected) {
@@ -273,6 +305,13 @@ class ChassisOptionsElement extends HTMLElement {
             let bounds = [index, selectionStartIndex].sort()
 
             selection.options = bounds[0] === bounds[1] ? [option] : this.options.slice(bounds[0], bounds[1] + 1)
+
+            if (resetCherryPickedOptions) {
+              _.get(this).cherryPickedOptions = []
+            } else {
+              selection.options = this.options.filter(option => cherryPickedOptions.includes(option) || selection.options.includes(option))
+            }
+
             return applyMiddleware()
           }
 

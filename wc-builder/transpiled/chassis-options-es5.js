@@ -295,6 +295,7 @@ customElements.define('chassis-options', function () {
           options: [],
           selectionStartIndex: -1,
           cherryPickedOptions: [],
+          lastSelectedIndex: null,
           selectedOptionsAreSequential: function selectedOptionsAreSequential() {
             var array = Array.from(_this.selectedOptions).map(function (option) {
               return option.index;
@@ -336,6 +337,10 @@ customElements.define('chassis-options', function () {
             }
 
             if (_this.selectedOptions.length > 1) {
+              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions.length > 0) {
+                index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex + 1;
+              }
+
               if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
                 index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index + 1;
               }
@@ -383,6 +388,10 @@ customElements.define('chassis-options', function () {
             }
 
             if (_this.selectedOptions.length > 1) {
+              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions.length > 0) {
+                index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex - 1;
+              }
+
               if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
                 index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index - 1;
               }
@@ -401,22 +410,24 @@ customElements.define('chassis-options', function () {
             });
           },
           getSelectedOptionsAsArray: function getSelectedOptionsAsArray() {
-            return Array.from(_this.selectedOptions).map(function (option) {
-              return option.index;
-            });
+            return Array.from(_this.selectedOptions);
           }
         }, (0, _defineProperty2.default)(_$get$addPrivatePrope, "selectedOptionsAreSequential", function selectedOptionsAreSequential() {
           if (_this.selectedOptions.length === 1) {
             return true;
           }
 
-          var optionIndexes = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getSelectedOptionsAsArray();
+          var optionIndexes = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getSelectedOptionsAsArray().map(function (option) {
+            return option.index;
+          });
 
           return optionIndexes.every(function (index, i) {
             return index === optionIndexes[i + 1] - 1 || i === optionIndexes.length - 1;
           });
         }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "selectedOptionsContainsStartIndex", function selectedOptionsContainsStartIndex() {
-          var optionIndexes = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getSelectedOptionsAsArray();
+          var optionIndexes = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getSelectedOptionsAsArray().map(function (option) {
+            return option.index;
+          });
 
           return optionIndexes.some(function (selectedIndex) {
             return selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex;
@@ -429,15 +440,16 @@ customElements.define('chassis-options', function () {
               Selection = _$get.Selection,
               selectedOptionsAreSequential = _$get.selectedOptionsAreSequential,
               selectedOptionsContainsStartIndex = _$get.selectedOptionsContainsStartIndex,
-              selectionStartIndex = _$get.selectionStartIndex;
+              selectionStartIndex = _$get.selectionStartIndex,
+              getSelectedOptionsAsArray = _$get.getSelectedOptionsAsArray;
 
           var _evt$detail = evt.detail,
               index = _evt$detail.index,
               keyboard = _evt$detail.keyboard,
               shiftKey = _evt$detail.shiftKey,
               metaKey = _evt$detail.metaKey,
-              ctrlKey = _evt$detail.ctrlKey,
-              newStartIndex = _evt$detail.newStartIndex;
+              ctrlKey = _evt$detail.ctrlKey;
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
           var option = _this.options[index];
           var selection = new Selection();
           var resetCherryPickedOptions = true;
@@ -474,6 +486,25 @@ customElements.define('chassis-options', function () {
                   console.log(1);
                   return;
                 }
+
+                if (cherryPickedOptions.length > 0) {
+                  resetCherryPickedOptions = false; // let cherryPicked = cherryPickedOptions.some(option => option.index === index)
+                  //
+                  // if (cherryPicked) {
+                  //   return
+                  // }
+                  //
+                  // selection.options = this.options.filter(option => option.index === index ? !option.selected : option.selected)
+                  //
+                  // // if (option.selected) {
+                  // //   return
+                  // //   // selection.options = this.options.filter(option => option.index !== index && option.selected)
+                  // // } else {
+                  // //
+                  // // }
+                  //
+                  // return applyMiddleware()
+                }
               } else if (option.selected) {
                 if (_this.selectedOptions.length === 1) {
                   console.log(2);
@@ -509,6 +540,15 @@ customElements.define('chassis-options', function () {
 
               var bounds = [index, selectionStartIndex].sort();
               selection.options = bounds[0] === bounds[1] ? [option] : _this.options.slice(bounds[0], bounds[1] + 1);
+
+              if (resetCherryPickedOptions) {
+                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = [];
+              } else {
+                selection.options = _this.options.filter(function (option) {
+                  return cherryPickedOptions.includes(option) || selection.options.includes(option);
+                });
+              }
+
               return applyMiddleware();
             }
 

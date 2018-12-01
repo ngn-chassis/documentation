@@ -293,9 +293,14 @@ customElements.define('chassis-options', function () {
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties((_$get$addPrivatePrope = {
           options: [],
-          selectionStartIndex: -1,
-          cherryPickedOptions: [],
+          selectionStartIndex: null,
           lastSelectedIndex: null,
+          cherryPicked: null,
+          getCurrentSelection: function getCurrentSelection() {
+            return _this.options.filter(function (option) {
+              return option.selected;
+            });
+          },
           selectedOptionsAreSequential: function selectedOptionsAreSequential() {
             var array = Array.from(_this.selectedOptions).map(function (option) {
               return option.index;
@@ -304,12 +309,6 @@ customElements.define('chassis-options', function () {
               return i === array.length - 1 || index < array[i + 1];
             });
           },
-          // TODO: Handle cases where
-          // selectionStartIndex !== this.selectedOptions.item(this.selectedOptions.length - 1).index
-          // && selectionStartIndex !== this.selectedOptions.item(0).index
-          // This happens if there is an active selection with > 1 options,
-          // and ctrlKey || metaKey is used to select an option outside the range of
-          // this.selectedOptions, or to deselect an option within this.selectedOptions
           arrowDownHandler: function arrowDownHandler(evt) {
             if (!_this.multiple) {
               var startIndex = evt.detail.startIndex;
@@ -325,46 +324,17 @@ customElements.define('chassis-options', function () {
               return;
             }
 
-            if (_this.selectedOptions.length === 1 && _this.selectedIndex === _this.options.length - 1) {
+            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+                lastSelectedIndex = _$get.lastSelectedIndex;
+
+            if (lastSelectedIndex === _this.options.length - 1) {
               return;
             }
 
-            var shiftKey = evt.detail.shiftKey;
-            var index = _this.selectedIndex + 1;
-
-            if (_this.selectedOptions.length === 0) {
-              index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex === 0 ? 0 : _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex + 1;
-            }
-
-            if (_this.selectedOptions.length > 1) {
-              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions.length > 0) {
-                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex === _this.options.length - 1) {
-                  return;
-                }
-
-                index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex + 1;
-              } else {
-                if (_this.selectedOptions.length > 0) {
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = _this.options.filter(function (option) {
-                    return option.selected;
-                  });
-                  index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex;
-                } else if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
-                  index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index + 1;
-                }
-
-                if (_this.selectedIndex < _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
-                  if (_this.selectedIndex === _this.options.length - 1) {
-                    return;
-                  }
-                }
-              }
-            }
-
             return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
-              index: index,
+              index: lastSelectedIndex === null ? 0 : lastSelectedIndex + 1,
               keyboard: true,
-              shiftKey: shiftKey,
+              shiftKey: evt.detail.shiftKey,
               ctrlKey: false,
               metaKey: false
             });
@@ -385,44 +355,17 @@ customElements.define('chassis-options', function () {
               return;
             }
 
-            if (_this.selectedOptions.length === 1 && _this.selectedIndex === 0) {
+            var _$get2 = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+                lastSelectedIndex = _$get2.lastSelectedIndex;
+
+            if (lastSelectedIndex === 0) {
               return;
             }
 
-            var index = _this.selectedIndex - 1;
-            var shiftKey = evt.detail.shiftKey;
-
-            if (_this.selectedOptions.length === 0) {
-              index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex === -1 ? _this.options.length - 1 : _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex - 1;
-            }
-
-            if (_this.selectedOptions.length > 1) {
-              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions.length > 0) {
-                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex === 0) {
-                  return;
-                }
-
-                index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex - 1;
-              } else {
-                if (_this.selectedOptions.length > 0) {
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = _this.options.filter(function (option) {
-                    return option.selected;
-                  });
-                  index = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex;
-                } else if (_this.selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex) {
-                  index = _this.selectedOptions.item(_this.selectedOptions.length - 1).index - 1;
-                }
-
-                if (_this.selectedIndex < _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex && _this.selectedIndex === 0) {
-                  return;
-                }
-              }
-            }
-
             return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', {
-              index: index,
+              index: lastSelectedIndex === null ? _this.options.length - 1 : lastSelectedIndex - 1,
               keyboard: true,
-              shiftKey: shiftKey,
+              shiftKey: evt.detail.shiftKey,
               ctrlKey: false,
               metaKey: false
             });
@@ -451,36 +394,28 @@ customElements.define('chassis-options', function () {
             return selectedIndex === _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex;
           });
         }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "optionSelectionHandler", function optionSelectionHandler(evt) {
-          var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
-              ChassisHTMLCollection = _$get.ChassisHTMLCollection,
-              cherryPickedOptions = _$get.cherryPickedOptions,
-              emit = _$get.emit,
-              Selection = _$get.Selection,
-              selectedOptionsAreSequential = _$get.selectedOptionsAreSequential,
-              selectedOptionsContainsStartIndex = _$get.selectedOptionsContainsStartIndex,
-              selectionStartIndex = _$get.selectionStartIndex,
-              getSelectedOptionsAsArray = _$get.getSelectedOptionsAsArray;
+          var _$get3 = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+              cherryPicked = _$get3.cherryPicked,
+              emit = _$get3.emit,
+              ChassisHTMLCollection = _$get3.ChassisHTMLCollection,
+              handleClickSelection = _$get3.handleClickSelection,
+              handleKeyboardSelection = _$get3.handleKeyboardSelection,
+              Selection = _$get3.Selection;
+
+          if (cherryPicked === null) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPicked = new Selection([]);
+          }
 
           var _evt$detail = evt.detail,
               index = _evt$detail.index,
-              keyboard = _evt$detail.keyboard,
-              shiftKey = _evt$detail.shiftKey,
-              metaKey = _evt$detail.metaKey,
-              ctrlKey = _evt$detail.ctrlKey;
-          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
-          var option = _this.options[index];
-          var selection = new Selection();
-          var resetCherryPickedOptions = true;
+              keyboard = _evt$detail.keyboard;
 
-          var applyMiddleware = function applyMiddleware(next) {
+          var completeOperation = function completeOperation(selection) {
             var beforeChange = _this.parentNode.beforeChange;
             var detail = {
               options: selection.options,
               previous: _this.selectedOptions,
-              next: new (ChassisHTMLCollection())(selection.displayElements),
-              shiftKey: shiftKey,
-              metaKey: metaKey,
-              ctrlKey: ctrlKey
+              next: new (ChassisHTMLCollection())(selection.displayElements)
             };
 
             var cb = function cb() {
@@ -497,78 +432,84 @@ customElements.define('chassis-options', function () {
             beforeChange(_this.selectedOptions, detail.next, cb);
           };
 
-          if (_this.multiple) {
-            if (shiftKey) {
-              if (keyboard) {
-                if (index === _this.options.length) {
-                  console.log(1);
-                  return;
-                }
-              } else if (option.selected) {
-                if (_this.selectedOptions.length === 1) {
-                  console.log(2);
-                  return;
-                }
+          if (!_this.multiple) {
+            return completeOperation(new Selection([_this.options[index]]));
+          }
 
-                if (selectedOptionsAreSequential()) {
-                  if (_this.selectedOptions.length === 2) {
-                    if (index !== selectionStartIndex) {
-                      if (selectedOptionsContainsStartIndex()) {
-                        console.log(3);
-                        return;
-                      }
-                    }
-                  } else if (index !== selectionStartIndex) {
-                    if (index === _this.selectedOptions.item(_this.selectedOptions.length - 1).index || index === _this.selectedIndex) {
-                      if (selectedOptionsContainsStartIndex()) {
-                        console.log(4);
-                        return;
-                      }
-                    }
-                  }
-                } else if (cherryPickedOptions.length > 0) {
-                  if (index === selectionStartIndex) {
-                    _this.selectedIndex = index;
-                    console.log(5);
-                    return;
-                  }
+          if (keyboard) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).handleKeyboardSelection(evt.detail, completeOperation);
+          }
 
-                  resetCherryPickedOptions = false;
-                }
-              }
+          return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).handleClickSelection(evt.detail, completeOperation);
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "handleClickSelection", function handleClickSelection(detail, cb) {
+          var _$get4 = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+              cherryPicked = _$get4.cherryPicked,
+              getCurrentSelection = _$get4.getCurrentSelection,
+              lastSelectedIndex = _$get4.lastSelectedIndex,
+              Selection = _$get4.Selection,
+              selectionStartIndex = _$get4.selectionStartIndex;
 
-              var bounds = [index, selectionStartIndex].sort();
-              selection.options = bounds[0] === bounds[1] ? [option] : _this.options.slice(bounds[0], bounds[1] + 1);
+          var index = detail.index,
+              shiftKey = detail.shiftKey,
+              ctrlKey = detail.ctrlKey,
+              metaKey = detail.metaKey;
+          var selectedOption = _this.options[index];
+          var currentSelection = getCurrentSelection();
 
-              if (cherryPickedOptions.length > 0) {
-                selection.options = _this.options.filter(function (option) {
-                  return cherryPickedOptions.includes(option) || selection.options.includes(option);
-                });
-              }
+          if (shiftKey && lastSelectedIndex !== null) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
+            var bounds = [index, selectionStartIndex].sort();
+            return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : _this.options.slice(bounds[0], bounds[1] + 1)));
+          }
 
-              return applyMiddleware();
-            }
+          if (ctrlKey || metaKey) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPicked.options = selectedOption.selected ? currentSelection.filter(function (option) {
+              return option !== selectedOption;
+            }) : currentSelection;
+            return cb(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPicked);
+          }
 
-            if (metaKey || ctrlKey) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
-              selection.options = _this.options.filter(function (option) {
-                return option.index === index ? !option.selected : option.selected;
-              });
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = option.selected ? [] : selection.options;
-              return applyMiddleware();
-            }
-          } else if (index === _this.selectedIndex) {
+          if (currentSelection.length === 1 && index === lastSelectedIndex) {
             return;
           }
 
-          selection.options = [option];
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
           _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+          return cb(new Selection([selectedOption]));
+        }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "handleKeyboardSelection", function handleKeyboardSelection(detail, cb) {
+          var _$get5 = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+              cherryPicked = _$get5.cherryPicked,
+              getCurrentSelection = _$get5.getCurrentSelection,
+              lastSelectedIndex = _$get5.lastSelectedIndex,
+              Selection = _$get5.Selection,
+              selectionStartIndex = _$get5.selectionStartIndex;
 
-          if (resetCherryPickedOptions) {
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPickedOptions = [];
+          var index = detail.index,
+              shiftKey = detail.shiftKey;
+          var selectedOption = _this.options[index];
+          var currentSelection = getCurrentSelection();
+          _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).lastSelectedIndex = index;
+
+          if (!shiftKey || currentSelection.length === 0) {
+            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).selectionStartIndex = index;
+            return cb(new Selection([selectedOption]));
+          } // 1 option or more selected
+
+
+          if (currentSelection.length > 0) {
+            var bounds = [index, selectionStartIndex].sort();
+            var selection = new Selection(bounds[0] === bounds[1] ? [selectedOption] : _this.options.slice(bounds[0], bounds[1] + 1));
+
+            if (cherryPicked.length > 0) {
+              selection.options = _this.options.filter(function (option) {
+                return selection.includes(option) || cherryPicked.includes(option);
+              });
+            }
+
+            return cb(selection);
           }
-
-          applyMiddleware();
         }), (0, _defineProperty2.default)(_$get$addPrivatePrope, "parentStateChangeHandler", function parentStateChangeHandler(evt) {
           _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('state.change', evt.detail);
 
@@ -613,6 +554,11 @@ customElements.define('chassis-options', function () {
               this.options = [];
             }
           }, {
+            key: "includes",
+            value: function includes(option) {
+              return this.options.includes(option);
+            }
+          }, {
             key: "prepend",
             value: function prepend(option) {
               this.options.unshift(option);
@@ -635,6 +581,16 @@ customElements.define('chassis-options', function () {
             key: "length",
             get: function get() {
               return this.options.length;
+            }
+          }, {
+            key: "first",
+            get: function get() {
+              return this.options[0];
+            }
+          }, {
+            key: "last",
+            get: function get() {
+              return this.options[this.options.length - 1];
             }
           }]);
           return Selection;

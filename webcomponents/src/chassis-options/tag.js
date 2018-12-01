@@ -103,16 +103,20 @@ class ChassisOptionsElement extends HTMLElement {
 
         if (this.selectedOptions.length > 1) {
           if (_.get(this).cherryPickedOptions.length > 0) {
-            index = _.get(this).lastSelectedIndex + 1
-          }
-
-          if (this.selectedIndex === _.get(this).selectionStartIndex) {
-            index = this.selectedOptions.item(this.selectedOptions.length - 1).index + 1
-          }
-
-          if (this.selectedIndex < _.get(this).selectionStartIndex) {
-            if (this.selectedIndex === this.options.length - 1) {
+            if (_.get(this).lastSelectedIndex === this.options.length - 1) {
               return
+            }
+
+            index = _.get(this).lastSelectedIndex + 1
+          } else {
+            if (this.selectedIndex === _.get(this).selectionStartIndex) {
+              index = this.selectedOptions.item(this.selectedOptions.length - 1).index + 1
+            }
+
+            if (this.selectedIndex < _.get(this).selectionStartIndex) {
+              if (this.selectedIndex === this.options.length - 1) {
+                return
+              }
             }
           }
         }
@@ -155,15 +159,19 @@ class ChassisOptionsElement extends HTMLElement {
 
         if (this.selectedOptions.length > 1) {
           if (_.get(this).cherryPickedOptions.length > 0) {
+            if (_.get(this).lastSelectedIndex === 0) {
+              return
+            }
+
             index = _.get(this).lastSelectedIndex - 1
-          }
+          } else {
+            if (this.selectedIndex === _.get(this).selectionStartIndex) {
+              index = this.selectedOptions.item(this.selectedOptions.length - 1).index - 1
+            }
 
-          if (this.selectedIndex === _.get(this).selectionStartIndex) {
-            index = this.selectedOptions.item(this.selectedOptions.length - 1).index - 1
-          }
-
-          if (this.selectedIndex < _.get(this).selectionStartIndex && this.selectedIndex === 0) {
-            return
+            if (this.selectedIndex < _.get(this).selectionStartIndex && this.selectedIndex === 0) {
+              return
+            }
           }
         }
 
@@ -246,27 +254,6 @@ class ChassisOptionsElement extends HTMLElement {
                 return
               }
 
-              if (cherryPickedOptions.length > 0) {
-                resetCherryPickedOptions = false
-
-                // let cherryPicked = cherryPickedOptions.some(option => option.index === index)
-                //
-                // if (cherryPicked) {
-                //   return
-                // }
-                //
-                // selection.options = this.options.filter(option => option.index === index ? !option.selected : option.selected)
-                //
-                // // if (option.selected) {
-                // //   return
-                // //   // selection.options = this.options.filter(option => option.index !== index && option.selected)
-                // // } else {
-                // //
-                // // }
-                //
-                // return applyMiddleware()
-              }
-
             } else if (option.selected) {
               if (this.selectedOptions.length === 1) {
                 console.log(2);
@@ -306,9 +293,7 @@ class ChassisOptionsElement extends HTMLElement {
 
             selection.options = bounds[0] === bounds[1] ? [option] : this.options.slice(bounds[0], bounds[1] + 1)
 
-            if (resetCherryPickedOptions) {
-              _.get(this).cherryPickedOptions = []
-            } else {
+            if (cherryPickedOptions.length > 0) {
               selection.options = this.options.filter(option => cherryPickedOptions.includes(option) || selection.options.includes(option))
             }
 

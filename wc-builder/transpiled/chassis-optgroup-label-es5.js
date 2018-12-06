@@ -38,7 +38,7 @@ customElements.define('chassis-optgroup-label', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-optgroup-label {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\nchassis-optgroup-label *,\nchassis-optgroup-label *:before,\nchassis-optgroup-label *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabel\"></slot><slot></slot><slot name=\"afterlabel\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-optgroup-label {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\nchassis-optgroup-label *,\nchassis-optgroup-label *:before,\nchassis-optgroup-label *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabel\"></slot><slot></slot><slot name=\"afterlabel\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

@@ -318,9 +318,6 @@ class ChassisSelectElement extends HTMLElement {
       }
 
       this.autofocus && this.focus()
-
-      // TEMP
-      this.parentNode.parentNode.insertBefore(_.get(this).sourceElement, this.nextSibling)
     }, 0)
   }
 

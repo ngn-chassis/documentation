@@ -42,7 +42,7 @@ customElements.define('chassis-options', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: block;\n  width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-options {\n  display: block;\n  width: 100%;\n}\n\nchassis-options *,\nchassis-options *:before,\nchassis-options *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptions\"></slot><slot></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: block;\n  width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-options {\n  display: block;\n  width: 100%;\n}\n\nchassis-options *,\nchassis-options *:before,\nchassis-options *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptions\"></slot><slot></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -474,7 +474,9 @@ customElements.define('chassis-options', function () {
 
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).cherryPicked.clear();
 
-            var bounds = [index, selectionStartIndex].sort();
+            var bounds = [index, selectionStartIndex].sort(function (a, b) {
+              return a - b;
+            });
             return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : _this.options.slice(bounds[0], bounds[1] + 1)));
           }
 

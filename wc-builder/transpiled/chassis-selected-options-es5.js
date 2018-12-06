@@ -38,7 +38,7 @@ customElements.define('chassis-selected-options', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-selected-options {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\nchassis-selected-options *,\nchassis-selected-options *:before,\nchassis-selected-options *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforecontents\"></slot><div class=\"contents\"><slot id=\"contents\"></slot></div><slot name=\"aftercontents\"></slot><div class=\"beforeend\"><slot name=\"beforeend\"></slot></div></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-selected-options {\n  contain: content;\n  display: flex;\n  max-width: 100%;\n}\n\nchassis-selected-options *,\nchassis-selected-options *:before,\nchassis-selected-options *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforecontents\"></slot><div class=\"contents\"><slot id=\"contents\"></slot></div><slot name=\"aftercontents\"></slot><div class=\"beforeend\"><slot name=\"beforeend\"></slot></div></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

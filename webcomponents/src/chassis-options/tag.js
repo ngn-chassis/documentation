@@ -213,7 +213,7 @@ class ChassisOptionsElement extends HTMLElement {
         if (shiftKey && lastSelectedIndex !== null) {
           _.get(this).lastSelectedIndex = index
           _.get(this).cherryPicked.clear()
-          let bounds = [index, selectionStartIndex].sort()
+          let bounds = [index, selectionStartIndex].sort((a, b) => a - b)
           return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : this.options.slice(bounds[0], bounds[1] + 1)))
         }
 

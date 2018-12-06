@@ -1,4 +1,4 @@
-class ChassisLayoutCell extends HTMLElement {
+class ChassisLayoutCellElement extends HTMLElement {
   constructor () {
     super()
 
@@ -61,4 +61,4 @@ class ChassisLayoutCell extends HTMLElement {
   }
 }
 
-customElements.define('chassis-layout-cell', ChassisLayoutCell)
+customElements.define('chassis-layout-cell', ChassisLayoutCellElement)

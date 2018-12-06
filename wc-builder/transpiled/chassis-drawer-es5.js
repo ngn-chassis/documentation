@@ -38,7 +38,7 @@ customElements.define('chassis-drawer', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: flex;\n  flex-direction: column;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-drawer {\n  display: flex;\n  flex-direction: column;\n}\n\nchassis-drawer *,\nchassis-drawer *:before,\nchassis-drawer *:after {\n  box-sizing: border-box;\n}</style></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: flex;\n  flex-direction: column;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-drawer {\n  display: flex;\n  flex-direction: column;\n}\n\nchassis-drawer *,\nchassis-drawer *:before,\nchassis-drawer *:after {\n  box-sizing: border-box;\n}</style></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

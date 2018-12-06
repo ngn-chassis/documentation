@@ -38,7 +38,7 @@ customElements.define('chassis-control', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: flex;\n  contain: layout style;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host .hidden {\n  display: none;\n  visibility: hidden;\n  opacity: 0;\n}\n\n:host([type=\"field\"]) {\n  flex-direction: column;\n}\n\n:host([type=\"toggle\"]) {\n  align-items: center;\n}\n\n:host .label-wrapper {\n  flex: 1 1 auto;\n  display: flex;\n}\n\n:host .input-wrapper {\n  display: flex;\n  align-items: center;\n}\n\n:host([type=\"toggle\"]) .input-wrapper {\n  order: -1;\n  justify-content: center;\n}\n\n:host([type=\"select\"]) {\n  flex-direction: column;\n}\n\nchassis-control {\n  display: flex;\n  contain: layout style;\n  max-width: 100%;\n}\n\nchassis-control *,\nchassis-control *:before,\nchassis-control *:after {\n  box-sizing: border-box;\n}\n\nchassis-control .hidden {\n  display: none;\n  visibility: hidden;\n  opacity: 0;\n}\n\nchassis-control[type=\"field\"] {\n  flex-direction: column;\n}\n\nchassis-control[type=\"toggle\"] {\n  align-items: center;\n}\n\nchassis-control .label-wrapper {\n  flex: 1 1 auto;\n  display: flex;\n}\n\nchassis-control .input-wrapper {\n  display: flex;\n  align-items: center;\n}\n\nchassis-control[type=\"toggle\"] .input-wrapper {\n  order: -1;\n  justify-content: center;\n}\n\nchassis-control[type=\"select\"] {\n  flex-direction: column;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabelwrapper\"></slot><div class=\"label-wrapper\"><slot name=\"beforelabel\"></slot><slot name=\"label\"></slot><slot name=\"afterlabel\"></slot></div><slot name=\"afterlabelwrapper\"></slot><slot name=\"beforeinputwrapper\"></slot><div class=\"input-wrapper\"><slot name=\"beforeinput\"></slot><slot name=\"input\"></slot><slot name=\"afterinput\"></slot></div><slot name=\"afterinputwrapper\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: flex;\n  contain: layout style;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host .hidden {\n  display: none;\n  visibility: hidden;\n  opacity: 0;\n}\n\n:host([type=\"field\"]) {\n  flex-direction: column;\n}\n\n:host([type=\"toggle\"]) {\n  align-items: center;\n}\n\n:host .label-wrapper {\n  flex: 1 1 auto;\n  display: flex;\n}\n\n:host .input-wrapper {\n  display: flex;\n  align-items: center;\n}\n\n:host([type=\"toggle\"]) .input-wrapper {\n  order: -1;\n  justify-content: center;\n}\n\n:host([type=\"select\"]) {\n  flex-direction: column;\n}\n\nchassis-control {\n  display: flex;\n  contain: layout style;\n  max-width: 100%;\n}\n\nchassis-control *,\nchassis-control *:before,\nchassis-control *:after {\n  box-sizing: border-box;\n}\n\nchassis-control .hidden {\n  display: none;\n  visibility: hidden;\n  opacity: 0;\n}\n\nchassis-control[type=\"field\"] {\n  flex-direction: column;\n}\n\nchassis-control[type=\"toggle\"] {\n  align-items: center;\n}\n\nchassis-control .label-wrapper {\n  flex: 1 1 auto;\n  display: flex;\n}\n\nchassis-control .input-wrapper {\n  display: flex;\n  align-items: center;\n}\n\nchassis-control[type=\"toggle\"] .input-wrapper {\n  order: -1;\n  justify-content: center;\n}\n\nchassis-control[type=\"select\"] {\n  flex-direction: column;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabelwrapper\"></slot><div class=\"label-wrapper\"><slot name=\"beforelabel\"></slot><slot name=\"label\"></slot><slot name=\"afterlabel\"></slot></div><slot name=\"afterlabelwrapper\"></slot><slot name=\"beforeinputwrapper\"></slot><div class=\"input-wrapper\"><slot name=\"beforeinput\"></slot><slot name=\"input\"></slot><slot name=\"afterinput\"></slot></div><slot name=\"afterinputwrapper\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -432,19 +432,8 @@ customElements.define('chassis-control', function () {
             }
 
             _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initSelectSurrogate(select, document.createElement('chassis-select'));
-          }
-        });
-
-        return _this;
-      }
-
-      (0, _createClass2.default)(_class, [{
-        key: "connectedCallback",
-        value: function connectedCallback() {
-          var _this2 = this;
-
-          _.get(this).guid = _.get(this).generateGuid('control');
-          var observer = new MutationObserver(function (mutations, observer) {
+          },
+          observer: new MutationObserver(function (mutations, observer) {
             var filtered = mutations.filter(function (record) {
               return record.addedNodes.item(0).nodeType !== 3;
             });
@@ -453,41 +442,51 @@ customElements.define('chassis-control', function () {
 
               switch (node.nodeName) {
                 case 'LABEL':
-                  return _.get(_this2).initLabel(node);
+                  return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initLabel(node);
 
                 case 'INPUT':
                   // Check if there is an additional element adjacent to the input
                   if (array[index + 1] === void 0) {
-                    return _.get(_this2).initInput(node);
+                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initInput(node);
                   }
 
                   var adjacentElement = array[index + 1].addedNodes.item(0);
 
                   if (!adjacentElement || adjacentElement.nodeName !== 'DATALIST') {
-                    return _.get(_this2).initInput(node);
+                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initInput(node);
                   }
 
-                  return _.get(_this2).initDatalist(node, adjacentElement);
+                  return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initDatalist(node, adjacentElement);
 
                 case 'TEXTAREA':
-                  return _.get(_this2).initInput(node);
+                  return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initInput(node);
 
                 case 'SELECT':
                   if (!node.multiple) {
-                    return _.get(_this2).initSelectMenu(node);
+                    return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initSelectMenu(node);
                   }
 
-                  return _.get(_this2).initMultipleSelectMenu(node);
+                  return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).initMultipleSelectMenu(node);
 
                 default:
                   return;
               }
             });
             observer.disconnect();
-          });
-          observer.observe(this, {
-            childList: true
-          });
+          })
+        });
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).observer.observe((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+          childList: true
+        });
+
+        return _this;
+      }
+
+      (0, _createClass2.default)(_class, [{
+        key: "connectedCallback",
+        value: function connectedCallback() {
+          _.get(this).guid = _.get(this).generateGuid('control');
         }
       }, {
         key: "input",

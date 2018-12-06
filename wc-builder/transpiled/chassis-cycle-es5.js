@@ -38,7 +38,7 @@ customElements.define('chassis-cycle', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: block;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host(:not([mode=\"custom\"])) > ::slotted(:not([selected])) {\n  display: none !important;\n}\n\nchassis-cycle {\n  display: block;\n}\n\nchassis-cycle *,\nchassis-cycle *:before,\nchassis-cycle *:after {\n  box-sizing: border-box;\n}\n\nchassis-cycle:not([mode=\"custom\"])) > :not([selected] {\n  display: none !important;\n}</style><slot></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: block;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host(:not([mode=\"custom\"])) > ::slotted(:not([selected])) {\n  display: none !important;\n}\n\nchassis-cycle {\n  display: block;\n}\n\nchassis-cycle *,\nchassis-cycle *:before,\nchassis-cycle *:after {\n  box-sizing: border-box;\n}\n\nchassis-cycle:not([mode=\"custom\"])) > :not([selected] {\n  display: none !important;\n}</style><slot></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

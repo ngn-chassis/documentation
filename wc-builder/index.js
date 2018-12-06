@@ -47,7 +47,7 @@ module.exports = class {
   }
 
   get finalTemplateString () {
-    let templateString = `<template><style>@charset UTF-8; ${this.css}</style>${this.template}</template>`
+    let templateString = `<template><style>@charset "UTF-8"; ${this.css}</style>${this.template}</template>`
 
     return minifyHtml(templateString, {
       collapseWhitespace: true,

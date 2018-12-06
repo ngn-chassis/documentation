@@ -38,7 +38,7 @@ customElements.define('chassis-optgroup', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  contain: content;\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-optgroup {\n  contain: content;\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n}\n\nchassis-optgroup *,\nchassis-optgroup *:before,\nchassis-optgroup *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptgroup\"></slot><slot></slot><slot name=\"afteroptgroup\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  contain: content;\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-optgroup {\n  contain: content;\n  display: flex;\n  flex-direction: column;\n  max-width: 100%;\n}\n\nchassis-optgroup *,\nchassis-optgroup *:before,\nchassis-optgroup *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptgroup\"></slot><slot></slot><slot name=\"afteroptgroup\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -219,12 +219,40 @@ customElements.define('chassis-optgroup', function () {
           }
         });
 
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
+          optionSelectionHandler: function optionSelectionHandler(evt) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('option.selected', evt.detail, _this.parentNode);
+          },
+          parentStateChangeHandler: function parentStateChangeHandler(evt) {
+            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).emit('state.change', evt.detail);
+          }
+        });
+
         return _this;
       }
 
       (0, _createClass2.default)(_class, [{
         key: "connectedCallback",
-        value: function connectedCallback() {}
+        value: function connectedCallback() {
+          this.parentNode.addEventListener('state.change', _.get(this).parentStateChangeHandler);
+          this.addEventListener('option.selected', _.get(this).optionSelectionHandler);
+        }
+      }, {
+        key: "disconnectedCallback",
+        value: function disconnectedCallback() {
+          this.parentNode.removeEventListener('state.change', _.get(this).parentStateChangeHandler);
+          this.removeEventListener('option.selected', _.get(this).optionSelectionHandler);
+        }
+      }, {
+        key: "options",
+        get: function get() {
+          return this.parentNode.options;
+        }
+      }, {
+        key: "multiple",
+        get: function get() {
+          return this.parentNode.multiple;
+        }
       }]);
       return _class;
     }((0, _wrapNativeSuper2.default)(HTMLElement))

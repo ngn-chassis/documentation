@@ -1,4 +1,4 @@
-class ChassisDatalist extends HTMLElement {
+class ChassisDatalistElement extends HTMLElement {
   constructor () {
     super()
 
@@ -318,4 +318,4 @@ class ChassisDatalist extends HTMLElement {
   }
 }
 
-customElements.define('chassis-datalist', ChassisDatalist)
+customElements.define('chassis-datalist', ChassisDatalistElement)

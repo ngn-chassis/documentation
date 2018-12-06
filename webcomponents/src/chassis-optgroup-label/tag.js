@@ -1,4 +1,4 @@
-class ChassisOptgroupLabel extends HTMLElement {
+class ChassisOptgroupLabelElement extends HTMLElement {
   constructor () {
     super()
   }
@@ -8,4 +8,4 @@ class ChassisOptgroupLabel extends HTMLElement {
   }
 }
 
-customElements.define('chassis-optgroup-label', ChassisOptgroupLabel)
+customElements.define('chassis-optgroup-label', ChassisOptgroupLabelElement)

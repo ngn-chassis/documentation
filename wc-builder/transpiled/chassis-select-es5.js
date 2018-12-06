@@ -40,7 +40,7 @@ customElements.define('chassis-select', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";\n\n:host {\n  display: inline-block;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-select {\n  display: inline-block;\n  max-width: 100%;\n}\n\nchassis-select *,\nchassis-select *:before,\nchassis-select *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeselectedoptions\"></slot><slot name=\"selectedoptions\"></slot><slot name=\"afterselectedoptions\"></slot><slot name=\"beforeoptions\"></slot><slot name=\"options\"></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: inline-block;\n  max-width: 100%;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\nchassis-select {\n  display: inline-block;\n  max-width: 100%;\n}\n\nchassis-select *,\nchassis-select *:before,\nchassis-select *:after {\n  box-sizing: border-box;\n}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeselectedoptions\"></slot><slot name=\"selectedoptions\"></slot><slot name=\"afterselectedoptions\"></slot><slot name=\"beforeoptions\"></slot><slot name=\"options\"></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {
@@ -463,9 +463,7 @@ customElements.define('chassis-select', function () {
               _this2.setAttribute('tabindex', 0);
             }
 
-            _this2.autofocus && _this2.focus(); // TEMP
-
-            _this2.parentNode.parentNode.insertBefore(_.get(_this2).sourceElement, _this2.nextSibling);
+            _this2.autofocus && _this2.focus();
           }, 0);
         }
       }, {

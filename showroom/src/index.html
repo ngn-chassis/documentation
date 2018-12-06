@@ -9,13 +9,18 @@
 
     <link rel="stylesheet" href="/css/main.css">
 
-    <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
-    <script src="polyfills/webcomponents/webcomponents-lite.js"></script>
+    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
 
-    <script src="webcomponents/chassis-control-es5.js"></script>
-    <script src="webcomponents/chassis-select-es5.js"></script>
+    <!-- <script src="webcomponents/chassis-control-es5.js"></script> -->
+    <!-- <script src="webcomponents/chassis-cycle-es5.js"></script> -->
+    <!-- <script src="webcomponents/chassis-select-es5.js"></script> -->
     <!-- <script src="webcomponents/chassis-datalist-es5.js"></script> -->
-    <script src="webcomponents/chassis-cycle-es5.js"></script>
+
+    <script src="webcomponents/chassis-control.js"></script>
+    <script src="webcomponents/chassis-cycle.js"></script>
+    <script src="webcomponents/chassis-select.js"></script>
+    <!-- <script src="webcomponents/chassis-datalist-es5.js"></script> -->
   </head>
 
   <body class="authorio showroom">
@@ -53,7 +58,7 @@
         <section class="test">
           <chassis-control id="chassis-select">
             <label>Menu Label</label>
-            <select name="name-test" placeholder="placeholder" multiple size="20">
+            <select name="name-test" placeholder="placeholder">
               <option value="test1">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="7"></circle>
@@ -63,20 +68,21 @@
               </option>
               <option id="testaaaaa" label=" " value="test2">Option 1</option>
               <option value="test3">Option 2</option>
-              <option value="test4">Option 3</option>
-              <option value="test5">Option 4</option>
-              <option value="test6">Option 5</option>
-              <option value="test7">Option 6</option>
-              <!-- <optgroup label="Option Group 1">
-                <option value="test5">Grouped Option</option>
-                <option value="test6">Grouped Option</option>
-                <option value="test7">Grouped Option</option>
+              <optgroup label="Option Group 1">
+                <option value="test5">Option 3</option>
+                <option value="test6">Option 4</option>
+                <option value="test7">Option 5</option>
               </optgroup>
               <optgroup label="Option Group 2">
-                <option value="test8">Grouped Option</option>
-                <option value="test9">Grouped Option</option>
-                <option value="test10">Grouped Option</option>
-              </optgroup> -->
+                <option value="test8">Option 6</option>
+                <option value="test9">Option 7</option>
+                <option value="test10">Option 8</option>
+              </optgroup>
+              <optgroup label="Option Group 3">
+                <option value="test8">Option 9</option>
+                <option value="test9">Option 10</option>
+                <option value="test10">Option 11</option>
+              </optgroup>
             </select>
           </chassis-control>
 
@@ -88,6 +94,11 @@
             <option value="4">Option 3</option>
             <option value="5" selected>Option 4</option>
             <option value="6">Option 5</option>
+            <optgroup label="Option Group 2">
+              <option value="test8">Option 6</option>
+              <option value="test9">Option 7</option>
+              <option value="test10">Option 8</option>
+            </optgroup>
           </select>
 
           <!-- <chassis-control>

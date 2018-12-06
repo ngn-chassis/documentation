@@ -1,4 +1,4 @@
-class ChassisFormControl extends HTMLElement {
+class ChassisFormControlElement extends HTMLElement {
   constructor () {
     super()
 
@@ -166,7 +166,52 @@ class ChassisFormControl extends HTMLElement {
         }
 
         _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
-      }
+      },
+
+      observer: new MutationObserver((mutations, observer) => {
+        let filtered = mutations.filter(record => record.addedNodes.item(0).nodeType !== 3)
+
+        filtered.forEach((record, index, array) => {
+          let node = record.addedNodes.item(0)
+
+          switch (node.nodeName) {
+            case 'LABEL':
+              return _.get(this).initLabel(node)
+
+            case 'INPUT':
+              // Check if there is an additional element adjacent to the input
+              if (array[index + 1] === void 0) {
+                return _.get(this).initInput(node)
+              }
+
+              let adjacentElement = array[index + 1].addedNodes.item(0)
+
+              if (!adjacentElement || adjacentElement.nodeName !== 'DATALIST') {
+                return _.get(this).initInput(node)
+              }
+
+              return _.get(this).initDatalist(node, adjacentElement)
+
+            case 'TEXTAREA':
+              return _.get(this).initInput(node)
+
+            case 'SELECT':
+              if (!node.multiple) {
+                return _.get(this).initSelectMenu(node)
+              }
+
+              return _.get(this).initMultipleSelectMenu(node)
+
+            default: return
+          }
+        })
+
+        observer.disconnect()
+      })
+    })
+
+    _.get(this).observer.observe(this, {
+      childList: true
     })
   }
 
@@ -197,52 +242,7 @@ class ChassisFormControl extends HTMLElement {
 
   connectedCallback () {
     _.get(this).guid = _.get(this).generateGuid('control')
-
-    let observer = new MutationObserver((mutations, observer) => {
-      let filtered = mutations.filter(record => record.addedNodes.item(0).nodeType !== 3)
-
-      filtered.forEach((record, index, array) => {
-        let node = record.addedNodes.item(0)
-
-        switch (node.nodeName) {
-          case 'LABEL':
-            return _.get(this).initLabel(node)
-
-          case 'INPUT':
-            // Check if there is an additional element adjacent to the input
-            if (array[index + 1] === void 0) {
-              return _.get(this).initInput(node)
-            }
-
-            let adjacentElement = array[index + 1].addedNodes.item(0)
-
-            if (!adjacentElement || adjacentElement.nodeName !== 'DATALIST') {
-              return _.get(this).initInput(node)
-            }
-
-            return _.get(this).initDatalist(node, adjacentElement)
-
-          case 'TEXTAREA':
-            return _.get(this).initInput(node)
-
-          case 'SELECT':
-            if (!node.multiple) {
-              return _.get(this).initSelectMenu(node)
-            }
-
-            return _.get(this).initMultipleSelectMenu(node)
-
-          default: return
-        }
-      })
-
-      observer.disconnect()
-    })
-
-    observer.observe(this, {
-      childList: true
-    })
   }
 }
 
-customElements.define('chassis-control', ChassisFormControl)
+customElements.define('chassis-control', ChassisFormControlElement)

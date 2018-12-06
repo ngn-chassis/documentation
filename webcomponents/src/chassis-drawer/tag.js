@@ -1,4 +1,4 @@
-class ChassisDrawer extends HTMLElement {
+class ChassisDrawerElement extends HTMLElement {
   constructor () {
     super()
   }
@@ -8,4 +8,4 @@ class ChassisDrawer extends HTMLElement {
   }
 }
 
-customElements.define('chassis-drawer', ChassisDrawer)
+customElements.define('chassis-drawer', ChassisDrawerElement)

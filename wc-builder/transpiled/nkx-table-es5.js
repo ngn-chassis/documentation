@@ -38,7 +38,7 @@ customElements.define('nkx-table', function () {
         });
 
         var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset UTF-8; @charset \"UTF-8\";</style><slot></slot></template>");
+        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\";</style><slot></slot></template>");
         var template = container.querySelector('template');
 
         if ('content' in template) {

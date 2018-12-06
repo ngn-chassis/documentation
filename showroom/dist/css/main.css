@@ -965,6 +965,7 @@ html.chassis {
 .chassis chassis-selected-options {
     align-items: center;
     justify-content: space-between;
+    z-index: 1;
 }
 
 .chassis chassis-selected-options svg {

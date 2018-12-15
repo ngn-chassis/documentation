@@ -7,6 +7,7 @@ Add ARIA roles for accessibility
 
 Add @chassis apply block margin/padding
 and @chassis apply nested-block margin/padding;
+and @chassis-apply h1-6 margin/line-height/font-size;
 
 Instead of a separate chassis-multiple-select component,
 just combine chassis-select[multiple] with chassis-tagbin.

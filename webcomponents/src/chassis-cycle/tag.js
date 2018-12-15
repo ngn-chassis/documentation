@@ -5,11 +5,6 @@ class ChassisCycleElement extends HTMLElement {
     _.get(this).addPrivateProperties({
       dummyEl: document.createElement('div'),
 
-      middleWare: {
-        beforeChange: null,
-        afterChange: null
-      },
-
       getChildIndex: child => [].slice.call(this.children).indexOf(child),
 
       getNextSelectedChild: child => {
@@ -23,48 +18,67 @@ class ChassisCycleElement extends HTMLElement {
 
       hideChild: child => child.removeAttribute('selected', ''),
 
-      showChild: child => {
-        let {
-          getChildIndex,
-          getNextSelectedChild,
-          hideChild,
-          middleWare
-        } = _.get(this)
+      beforeChangeCallback: (child, previousSelection) => {
+        if (this.selectedIndex >= 0) {
+          _.get(this).hideChild(this.children.item(this.selectedIndex || 0))
+        }
 
-        let previous = this.selected
-        let next = getNextSelectedChild(child)
+        child.setAttribute('selected', '')
 
         this.dispatchEvent(new CustomEvent('change', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+
           detail: {
-            selected: this.selected,
-            next
+            previousSelection,
+            currentSelection: this.selected
           }
         }))
+      },
 
-        let completeChange = () => {
-          if (this.selectedIndex >= 0) {
-            hideChild(this.children.item(this.selectedIndex || 0))
+      showChild: child => {
+        let {
+          beforeChangeCallback,
+          getNextSelectedChild,
+          hideChild
+        } = _.get(this)
+
+        let previousSelection = this.selected
+        let nextSelection = getNextSelectedChild(child)
+
+        let beforechangeHandler = evt => {
+          this.removeEventListener('beforechange', beforechangeHandler)
+
+          if (evt.defaultPrevented) {
+            return
           }
 
-          child.setAttribute('selected', '')
+          beforeChangeCallback(child, previousSelection)
+        }
 
-          this.dispatchEvent(new CustomEvent('changed', {
-            detail: {
-              previous,
-              selected: this.selected
+        this.addEventListener('beforechange', beforechangeHandler)
+
+        let beforechangeEvent = new CustomEvent('beforechange', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+
+          detail: {
+            currentSelection: this.selected,
+            nextSelection,
+            next () {
+              if (!this.defaultPrevented) {
+                return console.warn(`<chassis-cycle> Calling "next()" in "beforechange" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())`)
+              }
+
+              beforeChangeCallback(child, previousSelection)
             }
-          }))
-
-          if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
-            middleWare.afterChange(previous, this.selected)
           }
-        }
+        })
 
-        if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
-          middleWare.beforeChange(this.selected, next, completeChange)
-        } else {
-          completeChange()
-        }
+        beforechangeEvent.detail.next = beforechangeEvent.detail.next.bind(beforechangeEvent)
+        this.dispatchEvent(beforechangeEvent)
       },
 
       showChildByIndex: index => {
@@ -145,14 +159,6 @@ class ChassisCycleElement extends HTMLElement {
     }
 
     return null
-  }
-
-  set beforeChange (func) {
-    _.get(this).middleWare.beforeChange = func.bind(this)
-  }
-
-  set afterChange (func) {
-    _.get(this).middleWare.afterChange = func.bind(this)
   }
 
   connectedCallback () {

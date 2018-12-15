@@ -376,10 +376,6 @@ customElements.define('chassis-cycle', function () {
 
         _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           dummyEl: document.createElement('div'),
-          middleWare: {
-            beforeChange: null,
-            afterChange: null
-          },
           getChildIndex: function getChildIndex(child) {
             return [].slice.call(_this.children).indexOf(child);
           },
@@ -394,47 +390,81 @@ customElements.define('chassis-cycle', function () {
           hideChild: function hideChild(child) {
             return child.removeAttribute('selected', '');
           },
-          showChild: function showChild(child) {
-            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
-                getChildIndex = _$get.getChildIndex,
-                getNextSelectedChild = _$get.getNextSelectedChild,
-                hideChild = _$get.hideChild,
-                middleWare = _$get.middleWare;
+          beforeChangeCallback: function beforeChangeCallback(child, previousSelection) {
+            if (_this.selectedIndex >= 0) {
+              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).hideChild(_this.children.item(_this.selectedIndex || 0));
+            }
 
-            var previous = _this.selected;
-            var next = getNextSelectedChild(child);
+            child.setAttribute('selected', '');
 
             _this.dispatchEvent(new CustomEvent('change', {
+              bubbles: true,
+              cancelable: true,
+              composed: true,
               detail: {
-                selected: _this.selected,
-                next: next
+                previousSelection: previousSelection,
+                currentSelection: _this.selected
               }
             }));
+          },
+          showChild: function showChild(child) {
+            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
+                beforeChangeCallback = _$get.beforeChangeCallback,
+                getChildIndex = _$get.getChildIndex,
+                getNextSelectedChild = _$get.getNextSelectedChild,
+                hideChild = _$get.hideChild;
 
-            var completeChange = function completeChange() {
-              if (_this.selectedIndex >= 0) {
-                hideChild(_this.children.item(_this.selectedIndex || 0));
+            var previousSelection = _this.selected;
+            var nextSelection = getNextSelectedChild(child); // let beforeChangeCallback = () => {
+            //   if (this.selectedIndex >= 0) {
+            //     hideChild(this.children.item(this.selectedIndex || 0))
+            //   }
+            //
+            //   child.setAttribute('selected', '')
+            //
+            //   this.dispatchEvent(new CustomEvent('change', {
+            //     bubbles: true,
+            //     cancelable: true,
+            //     composed: true,
+            //
+            //     detail: {
+            //       previousSelection,
+            //       currentSelection: this.selected
+            //     }
+            //   }))
+            // }
+
+            var beforechangeHandler = function beforechangeHandler(evt) {
+              _this.removeEventListener('beforechange', beforechangeHandler);
+
+              if (evt.defaultPrevented) {
+                return;
               }
 
-              child.setAttribute('selected', '');
-
-              _this.dispatchEvent(new CustomEvent('changed', {
-                detail: {
-                  previous: previous,
-                  selected: _this.selected
-                }
-              }));
-
-              if (middleWare.afterChange && typeof middleWare.afterChange === 'function') {
-                middleWare.afterChange(previous, _this.selected);
-              }
+              beforeChangeCallback(child, previousSelection);
             };
 
-            if (middleWare.beforeChange && typeof middleWare.beforeChange === 'function') {
-              middleWare.beforeChange(_this.selected, next, completeChange);
-            } else {
-              completeChange();
-            }
+            _this.addEventListener('beforechange', beforechangeHandler);
+
+            var beforechangeEvent = new CustomEvent('beforechange', {
+              bubbles: true,
+              cancelable: true,
+              composed: true,
+              detail: {
+                currentSelection: _this.selected,
+                nextSelection: nextSelection,
+                next: function next() {
+                  if (!this.defaultPrevented) {
+                    return console.warn("<chassis-cycle> Calling \"next()\" in \"beforechange\" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())");
+                  }
+
+                  beforeChangeCallback(child, previousSelection);
+                }
+              }
+            });
+            beforechangeEvent.detail.next = beforechangeEvent.detail.next.bind(beforechangeEvent);
+
+            _this.dispatchEvent(beforechangeEvent);
           },
           showChildByIndex: function showChildByIndex(index) {
             if (_this.selectedIndex === index || index >= _this.children.length || index < 0) {
@@ -749,16 +779,6 @@ customElements.define('chassis-cycle', function () {
           }
 
           return null;
-        }
-      }, {
-        key: "beforeChange",
-        set: function set(func) {
-          _.get(this).middleWare.beforeChange = func.bind(this);
-        }
-      }, {
-        key: "afterChange",
-        set: function set(func) {
-          _.get(this).middleWare.afterChange = func.bind(this);
         }
       }], [{
         key: "observedAttributes",

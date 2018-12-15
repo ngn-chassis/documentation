@@ -431,27 +431,22 @@
                 <script type="text/javascript">
                   let cycle = document.getElementById('cycle')
 
-                  cycle.beforeChange = function (selected, next, cont) {
-                    console.log('Running beforeChange() middleware');
-                    this.setAttribute('transition', '')
-                    selected.element.setAttribute('fade-out', '')
-                    setTimeout(() => cont(), 500)
-                  }
+                  cycle.addEventListener('beforechange', evt => {
+                    evt.preventDefault()
+                    let { currentSelection, nextSelection, next } = evt.detail
 
-                  cycle.afterChange = function (previous, selected) {
-                    console.log('Running afterChange() middleware');
-                    this.removeAttribute('transition')
-                    previous.element.removeAttribute('fade-out')
-                    selected.element.setAttribute('fade-in', '')
-                    setTimeout(() => selected.element.removeAttribute('fade-in'), 1000)
-                  }
-
-                  cycle.addEventListener('change', evt => {
-                    console.log('change fired');
+                    cycle.setAttribute('transition', '')
+                    currentSelection.element.setAttribute('fade-out', '')
+                    setTimeout(next, 500)
                   })
 
-                  cycle.addEventListener('changed', evt => {
-                    console.log('changed fired');
+                  cycle.addEventListener('change', evt => {
+                    let { previousSelection, currentSelection } = evt.detail
+
+                    cycle.removeAttribute('transition')
+                    previousSelection.element.removeAttribute('fade-out')
+                    currentSelection.element.setAttribute('fade-in', '')
+                    setTimeout(() => currentSelection.element.removeAttribute('fade-in'), 1000)
                   })
                 </script>
               </header>

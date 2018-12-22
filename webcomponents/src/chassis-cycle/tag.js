@@ -2,13 +2,13 @@ class ChassisCycleElement extends HTMLElement {
   constructor () {
     super()
 
-    _.get(this).addPrivateProperties({
+    this.UTIL.addPrivateProperties({
       dummyEl: document.createElement('div'),
 
       getChildIndex: child => [].slice.call(this.children).indexOf(child),
 
       getNextSelectedChild: child => {
-        let nextIndex = _.get(this).getChildIndex(child)
+        let nextIndex = this.PRIVATE.getChildIndex(child)
 
         return {
           element: child,
@@ -20,7 +20,7 @@ class ChassisCycleElement extends HTMLElement {
 
       beforeChangeCallback: (child, previousSelection) => {
         if (this.selectedIndex >= 0) {
-          _.get(this).hideChild(this.children.item(this.selectedIndex || 0))
+          this.PRIVATE.hideChild(this.children.item(this.selectedIndex || 0))
         }
 
         child.setAttribute('selected', '')
@@ -42,7 +42,7 @@ class ChassisCycleElement extends HTMLElement {
           beforeChangeCallback,
           getNextSelectedChild,
           hideChild
-        } = _.get(this)
+        } = this.PRIVATE
 
         let previousSelection = this.selected
         let nextSelection = getNextSelectedChild(child)
@@ -86,7 +86,7 @@ class ChassisCycleElement extends HTMLElement {
           return
         }
 
-        _.get(this).showChild(this.children.item(index))
+        this.PRIVATE.showChild(this.children.item(index))
       },
 
       showChildBySelector: query => {
@@ -100,7 +100,7 @@ class ChassisCycleElement extends HTMLElement {
           console.warn(`<chassis-cycle> found multiple nodes matching "${query}". Displaying first result...`)
         }
 
-        _.get(this).showChild(nodes.item(0))
+        this.PRIVATE.showChild(nodes.item(0))
       }
     })
   }
@@ -198,7 +198,7 @@ class ChassisCycleElement extends HTMLElement {
         }
 
         if (child !== this.selectedElement) {
-          _.get(this).hideChild(child)
+          this.PRIVATE.hideChild(child)
         }
       }
     }, 0)
@@ -211,7 +211,7 @@ class ChassisCycleElement extends HTMLElement {
    */
   hide (child) {
     console.warn(`<chassis-cycle> "hide()" method is deprecated. Please use "show()" and "hideAll()" to manage selected elements.`);
-    _.get(this).hideChild(child)
+    this.PRIVATE.hideChild(child)
   }
 
   /**
@@ -221,7 +221,7 @@ class ChassisCycleElement extends HTMLElement {
    */
   hideActive () {
     console.warn(`<chassis-cycle> "hideActive()" method is deprecated. Please use "show()" and "hideAll()" to manage selected elements.`);
-    _.get(this).hideChild(this.selectedElement)
+    this.PRIVATE.hideChild(this.selectedElement)
   }
 
   /**
@@ -240,12 +240,12 @@ class ChassisCycleElement extends HTMLElement {
         continue
       }
 
-      _.get(this).hideChild(child)
+      this.PRIVATE.hideChild(child)
     }
   }
 
   indexOf (child) {
-    return _.get(this).getChildIndex(child)
+    return this.PRIVATE.getChildIndex(child)
   }
 
   /**
@@ -263,11 +263,13 @@ class ChassisCycleElement extends HTMLElement {
         return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text)
 
       default:
-        _.get(this).dummyEl.insertAdjacentHTML(position, text)
-        let node = _.get(this).dummyEl.children.item(0)
+        let { dummyEl } = this.PRIVATE
 
-        while (_.get(this).dummyEl.firstChild) {
-          _.get(this).dummyEl.removeChild(_.get(this).dummyEl.firstChild)
+        dummyEl.insertAdjacentHTML(position, text)
+        let node = dummyEl.children.item(0)
+
+        while (dummyEl.firstChild) {
+          dummyEl.removeChild(dummyEl.firstChild)
         }
 
         return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild)
@@ -346,7 +348,7 @@ class ChassisCycleElement extends HTMLElement {
   show (query) {
     if (query === null) {
       if (!this.selectedIndex) {
-        _.get(this).showChildByIndex(0)
+        this.PRIVATE.showChildByIndex(0)
       }
 
       return
@@ -354,16 +356,16 @@ class ChassisCycleElement extends HTMLElement {
 
     switch ((typeof query).toLowerCase()) {
       case 'number':
-        return _.get(this).showChildByIndex(query)
+        return this.PRIVATE.showChildByIndex(query)
 
       case 'string':
         return isNaN(parseInt(query))
-          ? _.get(this).showChildBySelector(query)
-          : _.get(this).showChildByIndex(parseInt(query))
+          ? this.PRIVATE.showChildBySelector(query)
+          : this.PRIVATE.showChildByIndex(parseInt(query))
 
       default:
         return query instanceof HTMLElement
-          ? _.get(this).showChild(query)
+          ? this.PRIVATE.showChild(query)
           : console.error(`<chassis-cycle>: Invalid query "${query}"`)
     }
   }

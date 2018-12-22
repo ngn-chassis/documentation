@@ -13,11 +13,11 @@
     <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
 
+    <script src="webcomponents/chassis-element.js"></script>
     <script src="webcomponents/chassis-layout.js"></script>
   </head>
 
   <body class="layout showroom">
-
     <chassis-layout id="layout" fullscreen>
       <chassis-layout-cell class="header">
         header
@@ -33,6 +33,14 @@
             workspace
           </div>
         </chassis-layout-cell>
+        <chassis-layout-cell orientation="vertical">
+          <chassis-layout-cell>
+            CELL 1
+          </chassis-layout-cell>
+          <chassis-layout-cell>
+            CELL 2
+          </chassis-layout-cell>
+        </chassis-layout-cell>
       </chassis-layout-cell>
       <chassis-layout-cell class="footer">
         footer
@@ -41,7 +49,8 @@
 
     <script type="text/javascript">
       window.addEventListener('DOMContentLoaded', function () {
-        console.log('hello');
+        window.test = document.getElementById('test')
+        window.layout = document.getElementById('layout')
         window.cell = document.querySelector('#layout chassis-layout-cell[size]')
         // window.select = document.getElementById('select_menu').input
         //

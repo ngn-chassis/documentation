@@ -2,7 +2,7 @@ class ChassisFormControlElement extends HTMLElement {
   constructor () {
     super()
 
-    _.get(this).addPrivateProperties({
+    this.UTIL.addPrivateProperties({
       fieldInputTypes: [
         'color',
         'date',
@@ -44,12 +44,12 @@ class ChassisFormControlElement extends HTMLElement {
 
         if (!customElements.get('chassis-datalist')) {
           console.dir(input);
-          input.id = _.get(this).guid
+          input.id = this.PRIVATE.guid
           datalist.id = `${input.id}_datalist`
           input.setAttribute('list', datalist.id)
           input.slot = input.slot || 'input'
           // select.setAttribute('role', 'menu')
-          _.get(this).input = input
+          this.PRIVATE.input = input
 
           let titleEls = datalist.querySelectorAll('option[title]')
           titleEls.forEach(el => select.removeChild(el))
@@ -79,21 +79,21 @@ class ChassisFormControlElement extends HTMLElement {
         this.removeChild(datalist)
         this.removeChild(input)
 
-        surrogate.inject(input, datalist, _.get(this).guid)
+        surrogate.inject(input, datalist, this.PRIVATE.guid)
         this.appendChild(surrogate)
-        _.get(this).input = surrogate
+        this.PRIVATE.input = surrogate
       },
 
       initInput: input => {
         input.slot = input.slot || 'input'
-        _.get(this).input = input
-        input.id = _.get(this).guid
+        this.PRIVATE.input = input
+        input.id = this.PRIVATE.guid
 
-        if (_.get(this).fieldInputTypes.indexOf(input.type) >= 0) {
+        if (this.PRIVATE.fieldInputTypes.indexOf(input.type) >= 0) {
           this.type = 'field'
         }
 
-        if (_.get(this).toggleInputTypes.indexOf(input.type) >= 0) {
+        if (this.PRIVATE.toggleInputTypes.indexOf(input.type) >= 0) {
           this.type = 'toggle'
         }
       },
@@ -101,7 +101,7 @@ class ChassisFormControlElement extends HTMLElement {
       initLabel: label => {
         this.label = label
         label.slot = label.slot || 'label'
-        label.htmlFor = _.get(this).guid
+        label.htmlFor = this.PRIVATE.guid
 
         if (this.type === 'select') {
           this.label.addEventListener('click', (evt) => {
@@ -111,10 +111,10 @@ class ChassisFormControlElement extends HTMLElement {
       },
 
       initDefaultSelect: select => {
-        select.id = _.get(this).guid
+        select.id = this.PRIVATE.guid
         select.slot = select.slot || 'input'
         select.setAttribute('role', 'menu')
-        _.get(this).input = select
+        this.PRIVATE.input = select
 
         // Purge incompatible attributes
         let titleEls = select.querySelectorAll('option[title]')
@@ -131,15 +131,15 @@ class ChassisFormControlElement extends HTMLElement {
         this.type = 'select'
 
         if (!customElements.get('chassis-select')) {
-          return _.get(this).initDefaultSelect(select)
+          return this.PRIVATE.initDefaultSelect(select)
         }
 
-        _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
+        this.PRIVATE.initSelectSurrogate(select, document.createElement('chassis-select'))
       },
 
       initSelectSurrogate: (original, surrogate) => {
         surrogate.slot = 'input'
-        surrogate.id = _.get(this).guid
+        surrogate.id = this.PRIVATE.guid
 
         for (let attr of original.attributes) {
           if (attr.specified) {
@@ -155,17 +155,17 @@ class ChassisFormControlElement extends HTMLElement {
         surrogate.inject(original, this.querySelectorAll('label'))
 
         this.appendChild(surrogate)
-        _.get(this).input = surrogate
+        this.PRIVATE.input = surrogate
       },
 
       initSelectMenu: select => {
         this.type = 'select'
 
         if (!customElements.get('chassis-select')) {
-          return _.get(this).initDefaultSelect(select)
+          return this.PRIVATE.initDefaultSelect(select)
         }
 
-        _.get(this).initSelectSurrogate(select, document.createElement('chassis-select'))
+        this.PRIVATE.initSelectSurrogate(select, document.createElement('chassis-select'))
       },
 
       observer: new MutationObserver((mutations, observer) => {
@@ -176,31 +176,31 @@ class ChassisFormControlElement extends HTMLElement {
 
           switch (node.nodeName) {
             case 'LABEL':
-              return _.get(this).initLabel(node)
+              return this.PRIVATE.initLabel(node)
 
             case 'INPUT':
               // Check if there is an additional element adjacent to the input
               if (array[index + 1] === void 0) {
-                return _.get(this).initInput(node)
+                return this.PRIVATE.initInput(node)
               }
 
               let adjacentElement = array[index + 1].addedNodes.item(0)
 
               if (!adjacentElement || adjacentElement.nodeName !== 'DATALIST') {
-                return _.get(this).initInput(node)
+                return this.PRIVATE.initInput(node)
               }
 
-              return _.get(this).initDatalist(node, adjacentElement)
+              return this.PRIVATE.initDatalist(node, adjacentElement)
 
             case 'TEXTAREA':
-              return _.get(this).initInput(node)
+              return this.PRIVATE.initInput(node)
 
             case 'SELECT':
               if (!node.multiple) {
-                return _.get(this).initSelectMenu(node)
+                return this.PRIVATE.initSelectMenu(node)
               }
 
-              return _.get(this).initMultipleSelectMenu(node)
+              return this.PRIVATE.initMultipleSelectMenu(node)
 
             default: return
           }
@@ -210,7 +210,7 @@ class ChassisFormControlElement extends HTMLElement {
       })
     })
 
-    _.get(this).observer.observe(this, {
+    this.PRIVATE.observer.observe(this, {
       childList: true
     })
   }
@@ -220,7 +220,7 @@ class ChassisFormControlElement extends HTMLElement {
   }
 
   get input () {
-    return _.get(this).input
+    return this.PRIVATE.input
   }
 
   set input (input) {
@@ -229,7 +229,7 @@ class ChassisFormControlElement extends HTMLElement {
       return
     }
 
-    _.get(this).input = input
+    this.PRIVATE.input = input
   }
 
   get type () {
@@ -241,7 +241,7 @@ class ChassisFormControlElement extends HTMLElement {
   }
 
   connectedCallback () {
-    _.get(this).guid = _.get(this).generateGuid('control')
+    this.PRIVATE.guid = this.UTIL.generateGuid('control')
   }
 }
 

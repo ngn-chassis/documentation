@@ -61,14 +61,34 @@ customElements.define('chassis-optgroup', function () {
         _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
           sourceElement: null,
           addAttribute: function addAttribute(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
-              get: function get() {
+            var custom = (0, _typeof2.default)(prop) === 'object';
+
+            if (!custom && typeof prop !== 'string') {
+              return console.error('ERROR <chassis-optgroup> Attribute must be type "object" or "string"');
+            }
+
+            var props = {};
+
+            if (custom && prop.hasOwnProperty('get')) {
+              props.get = prop.get;
+            } else {
+              props.get = function () {
+                console.log('default get');
                 return this.getAttribute(prop);
-              },
-              set: function set(value) {
+              };
+            }
+
+            if (custom && prop.hasOwnProperty('set')) {
+              props.set = prop.set;
+            } else {
+              props.set = function (value) {
+                console.log('default set');
+
                 _.get(this).setAttributeValue(prop, value);
-              }
-            });
+              };
+            }
+
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
           },
           addAttributes: function addAttributes(props) {
             return props.forEach(function (prop) {

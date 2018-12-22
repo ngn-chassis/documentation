@@ -135,7 +135,8 @@ module.exports = class {
           }
 
           file.contents = babel.transform(file.contents, {
-            presets: ['minify']
+            presets: ['minify'],
+            comments: false
           }).code
         })
 
@@ -173,9 +174,7 @@ module.exports = class {
     ))
 
     this.css.append(newRules)
-    // this.css = cleanCss.minify(this.css.toString()).styles
-    // TODO: cleanCss is removing some rules, check into this
-    this.css = this.css.toString()
+    this.css = cleanCss.minify(this.css.toString()).styles
 
     cb && cb()
   }
@@ -222,12 +221,7 @@ module.exports = class {
     let methods = []
     let parsed = parser.parse(output)
 
-    let outputClassExpression = parsed.program.body[0].expression.arguments[1].callee.body.body[1].argument
-
-
-    // let inputConstructor = inputClassDecl.body.body.find(node => {
-    //   return node.key.name === 'constructor'
-    // })
+    let outputClassExpression = parsed.program.body[0].expression.arguments[1]
 
     let outputConstructor = outputClassExpression.body.body.find(node => {
       return node.key.name === 'constructor'
@@ -292,7 +286,7 @@ module.exports = class {
   }
 
   _transformSelector (selector) {
-    let regex = /\:host\((.*)\)/gi
+    let regex = /\:host\((.*)/gi
     let result = regex.exec(selector)
 
     if (!this.tagName) {

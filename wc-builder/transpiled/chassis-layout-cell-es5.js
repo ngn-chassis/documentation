@@ -61,14 +61,34 @@ customElements.define('chassis-layout-cell', function () {
         _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
           sourceElement: null,
           addAttribute: function addAttribute(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
-              get: function get() {
+            var custom = (0, _typeof2.default)(prop) === 'object';
+
+            if (!custom && typeof prop !== 'string') {
+              return console.error('ERROR <chassis-layout-cell> Attribute must be type "object" or "string"');
+            }
+
+            var props = {};
+
+            if (custom && prop.hasOwnProperty('get')) {
+              props.get = prop.get;
+            } else {
+              props.get = function () {
+                console.log('default get');
                 return this.getAttribute(prop);
-              },
-              set: function set(value) {
+              };
+            }
+
+            if (custom && prop.hasOwnProperty('set')) {
+              props.set = prop.set;
+            } else {
+              props.set = function (value) {
+                console.log('default set');
+
                 _.get(this).setAttributeValue(prop, value);
-              }
-            });
+              };
+            }
+
+            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
           },
           addAttributes: function addAttributes(props) {
             return props.forEach(function (prop) {
@@ -219,12 +239,20 @@ customElements.define('chassis-layout-cell', function () {
           }
         });
 
-        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
           children: [],
           styleSheet: null,
-          sizeRule: null,
-          size: null
+          sizeRule: null
         });
+
+        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttributes([{
+          name: 'size',
+          set: function set(value) {
+            console.log('custom set');
+
+            _.get(this).setAttributeValue('size', value);
+          }
+        }]);
 
         return _this;
       }
@@ -247,48 +275,44 @@ customElements.define('chassis-layout-cell', function () {
               _this2.size = _this2.getAttribute('size');
             }
           }, 0);
-        }
-      }, {
-        key: "attributeChangedCallback",
-        value: function attributeChangedCallback(attr, oldValue, newValue) {
-          attr = attr.toLowerCase();
+        } // attributeChangedCallback (attr, oldValue, newValue) {
+        //   attr = attr.toLowerCase()
+        //
+        //   if (newValue === oldValue) {
+        //     return
+        //   }
+        //
+        //   switch (attr) {
+        //     case 'size':
+        //     console.log('setting');
+        //       _.get(this).setAttributeValue(attr, newValue)
+        //       // if (_.get(this).size !== newValue) {
+        //       //   this.size = newValue
+        //       // }
+        //       break
+        //
+        //     default: return
+        //   }
+        // }
+        // get size () {
+        //   return this.hasAttribute('size') ? this.getAttribute('size') : 'auto'
+        // }
+        // set size (val) {
+        //   console.log('setting size to ' + val);
+        //   // if (!_.get(this).sizeRule) {
+        //   //   return
+        //   // }
+        //   //
+        //   // _.get(this).size = val
+        //   // _.get(this).sizeRule.style.setProperty('flex-basis', val)
+        //   // _.get(this).setAttributeValue('size', newValue)
+        //   // this.setAttribute('size', val)
+        // }
 
-          if (newValue === oldValue) {
-            return;
-          }
-
-          switch (attr) {
-            case 'size':
-              if (_.get(this).size !== newValue) {
-                this.size = newValue;
-              }
-
-              break;
-
-            default:
-              return;
-          }
-        }
-      }, {
-        key: "size",
-        get: function get() {
-          return this.hasAttribute('size') ? this.getAttribute('size') : 'auto';
-        },
-        set: function set(val) {
-          if (!_.get(this).sizeRule) {
-            return;
-          }
-
-          _.get(this).size = val;
-
-          _.get(this).sizeRule.style.setProperty('flex-basis', val);
-
-          this.setAttribute('size', val);
-        }
       }], [{
         key: "observedAttributes",
         get: function get() {
-          return ['size'];
+          return ['min', 'max', 'size'];
         }
       }]);
       return _class;

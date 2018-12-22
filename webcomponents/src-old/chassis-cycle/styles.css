@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+:host *,
+:host *:before,
+:host *:after {
+  box-sizing: border-box;
+}
+
+:host(:not([mode="custom"])) > ::slotted(:not([selected])) {
+  display: none !important;
+}

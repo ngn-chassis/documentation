@@ -1,4 +1,6 @@
 @charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Staatliches');
+
 
 @-ms-viewport {
     width: device-width;
@@ -625,7 +627,7 @@ html.chassis {
 }
 
 .chassis table, .chassis chassis-overlay, .chassis chassis-modal,
-.chassis chassis-control {
+.chassis chassis-control, .chassis chassis-layout-cell, .chassis chassis-layout {
     background: transparent none repeat 0% 0% / auto auto padding-box border-box scroll;
     border: medium none currentColor;
     border-radius: 0;
@@ -1188,6 +1190,11 @@ html.chassis {
 .chassis chassis-control.disabled {
     pointer-events: none;
     opacity: .382;
+}
+
+.chassis chassis-layout-cell {
+    background: rgb(237, 237, 237);
+    box-shadow: 0 0 0 2px black;
 }
 
 @-webkit-keyframes fadein {

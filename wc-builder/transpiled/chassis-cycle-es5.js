@@ -16,8 +16,8 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 
 customElements.define('chassis-cycle',
 /*#__PURE__*/
-function (_ChassisBaseComponent) {
-  (0, _inherits2.default)(_class, _ChassisBaseComponent);
+function (_ChassisElement) {
+  (0, _inherits2.default)(_class, _ChassisElement);
 
   function _class() {
     var _this;
@@ -25,7 +25,7 @@ function (_ChassisBaseComponent) {
     (0, _classCallCheck2.default)(this, _class);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([selected])){display:none!important}chassis-cycle{display:block}chassis-cycle *,chassis-cycle :after,chassis-cycle :before{box-sizing:border-box}chassis-cycle:not([mode=custom])) > :not([selected]){display:none!important}</style><slot></slot></template>"));
 
-    _this.UTIL.addPrivateProperties({
+    _this.UTIL.definePrivateProperties({
       dummyEl: document.createElement('div'),
       getChildIndex: function getChildIndex(child) {
         return [].slice.call(_this.children).indexOf(child);
@@ -417,4 +417,4 @@ function (_ChassisBaseComponent) {
     }
   }]);
   return _class;
-}(ChassisBaseComponent(HTMLElement)));
+}(ChassisElement(HTMLElement)));

@@ -18,6 +18,13 @@ custom-properties {
 }
 
 components {
+	chassis-layout-cell {
+		@state initial {
+			background: var(--grey-n00);
+			box-shadow: 0 0 0 2px black;
+		}
+	}
+
 	anchor {
 		@state initial {
 			color: var(--blue);

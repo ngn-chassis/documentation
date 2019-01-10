@@ -3,19 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "build-showroom.js",
-
-
   "scripts": {
     "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
-    "build-showroom": "cd showroom/ && npm run build --prod && cd ..",
+    "build-showroom": "cd showroom/ && npm run build && cd ..",
+    "build-showroom-dev": "cd showroom/ && npm run build-dev && cd ..",
+    "build-base-component": "node build-base-component.js webcomponents/chassis-element.js webcomponents/dist",
     "build-webcomponents": "cd wc-builder/ && build-webcomponents ../webcomponents/src ../webcomponents/dist --es5 --reservedNames=ChassisHTMLCollection,ChassisHTMLOptionsCollection && cd ..",
-    "build": "npm run link-chassis && npm run build-webcomponents && cp webcomponents/dist/*.js showroom/src/webcomponents && npm run build-showroom"
+    "build": "npm run link-chassis && npm run build-base-component && npm run build-webcomponents && cp webcomponents/dist/*.js showroom/src/webcomponents && npm run build-showroom"
   },
-
   "author": "Graham Butler",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@babel/core": "^7.2.2",
     "@babel/parser": "^7.1.2",
+    "@babel/plugin-transform-runtime": "^7.2.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-minify": "^0.2.0",

@@ -121,8 +121,8 @@ var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(0));
 
 customElements.define('chassis-control',
 /*#__PURE__*/
-function (_ChassisBaseComponent) {
-  (0, _inherits2.default)(_class, _ChassisBaseComponent);
+function (_ChassisElement) {
+  (0, _inherits2.default)(_class, _ChassisElement);
 
   function _class() {
     var _this;
@@ -130,7 +130,7 @@ function (_ChassisBaseComponent) {
     (0, _classCallCheck2.default)(this, _class);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:flex;contain:layout style;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}:host .hidden{display:none;visibility:hidden;opacity:0}:host([type=field]){flex-direction:column}:host([type=toggle]){align-items:center}:host .label-wrapper{flex:1 1 auto;display:flex}:host .input-wrapper{display:flex;align-items:center}:host([type=toggle]) .input-wrapper{order:-1;justify-content:center}:host([type=select]){flex-direction:column}chassis-control{display:flex;contain:layout style;max-width:100%}chassis-control *,chassis-control :after,chassis-control :before{box-sizing:border-box}chassis-control .hidden{display:none;visibility:hidden;opacity:0}chassis-control[type=field]){flex-direction:column}chassis-control[type=toggle]){align-items:center}chassis-control .label-wrapper{flex:1 1 auto;display:flex}chassis-control .input-wrapper{display:flex;align-items:center}chassis-control[type=toggle]) .input-wrapper{order:-1;justify-content:center}chassis-control[type=select]){flex-direction:column}</style><slot name=\"afterbegin\"></slot><slot name=\"beforelabelwrapper\"></slot><div class=\"label-wrapper\"><slot name=\"beforelabel\"></slot><slot name=\"label\"></slot><slot name=\"afterlabel\"></slot></div><slot name=\"afterlabelwrapper\"></slot><slot name=\"beforeinputwrapper\"></slot><div class=\"input-wrapper\"><slot name=\"beforeinput\"></slot><slot name=\"input\"></slot><slot name=\"afterinput\"></slot></div><slot name=\"afterinputwrapper\"></slot><slot name=\"beforeend\"></slot></template>"));
 
-    _this.UTIL.addPrivateProperties({
+    _this.UTIL.definePrivateProperties({
       fieldInputTypes: ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'],
       toggleInputTypes: ['checkbox', 'radio'],
       supportedTypes: ['field', 'toggle', 'select'],
@@ -427,7 +427,7 @@ function (_ChassisBaseComponent) {
     }
   }]);
   return _class;
-}(ChassisBaseComponent(HTMLElement)));
+}(ChassisElement(HTMLElement)));
 
 /***/ }),
 /* 2 */

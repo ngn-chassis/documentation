@@ -2,7 +2,7 @@ class ChassisFormControlElement extends HTMLElement {
   constructor () {
     super()
 
-    this.UTIL.addPrivateProperties({
+    this.UTIL.definePrivateProperties({
       fieldInputTypes: [
         'color',
         'date',

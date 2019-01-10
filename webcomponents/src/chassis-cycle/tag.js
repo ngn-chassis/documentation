@@ -2,7 +2,7 @@ class ChassisCycleElement extends HTMLElement {
   constructor () {
     super()
 
-    this.UTIL.addPrivateProperties({
+    this.UTIL.definePrivateProperties({
       dummyEl: document.createElement('div'),
 
       getChildIndex: child => [].slice.call(this.children).indexOf(child),

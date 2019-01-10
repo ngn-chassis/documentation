@@ -61,17 +61,17 @@ class ChassisLayoutCellElement extends HTMLElement {
   //   return this.hasAttribute('size') ? this.getAttribute('size') : 'auto'
   // }
 
-  // set size (val) {
-  //   console.log('setting size to ' + val);
-  //   // if (!_.get(this).sizeRule) {
-  //   //   return
-  //   // }
-  //   //
-  //   // _.get(this).size = val
-  //   // _.get(this).sizeRule.style.setProperty('flex-basis', val)
-  //   // _.get(this).setAttributeValue('size', newValue)
-  //   // this.setAttribute('size', val)
-  // }
+  set size (val) {
+    console.log('setting size to ' + val);
+    if (!_.get(this).sizeRule) {
+      return
+    }
+
+    _.get(this).size = val
+    _.get(this).sizeRule.style.setProperty('flex-basis', val)
+    _.get(this).setAttributeValue('size', newValue)
+    this.setAttribute('size', val)
+  }
 }
 
 customElements.define('chassis-layout-cell', ChassisLayoutCellElement)

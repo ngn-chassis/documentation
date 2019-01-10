@@ -134,7 +134,7 @@ module.exports = class {
             return
           }
 
-          file.contents = babel.transform(file.contents, {
+          file.contents = babel.transformSync(file.contents, {
             presets: ['minify'],
             comments: false
           }).code

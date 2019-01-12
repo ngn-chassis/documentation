@@ -7,7 +7,7 @@ Add ARIA roles for accessibility
 
 Add @chassis apply block margin/padding
 and @chassis apply nested-block margin/padding;
-and @chassis-apply h1-6 margin/line-height/font-size;
+and @chassis apply h1-6 margin/line-height/font-size;
 
 Instead of a separate chassis-multiple-select component,
 just combine chassis-select[multiple] with chassis-tagbin.
@@ -72,6 +72,7 @@ WIP: Math Functions:
 
 * Add mult() and rotate() functions to chassis apply mixin
 What was rotate() supposed to do again?
+Probably flip values, ie move margin-right value to margin-left, etc.
 
 -----------------------
 
@@ -112,17 +113,17 @@ chassis-select
 * Add focus
 - "label" attribute should override innerHTML as this is
   the default <select> behavior
-- Missing HTMLSelectElement methods:
+* Missing HTMLSelectElement methods:
   * - .add()
   * - .item()
   * - .namedItem()
   * - .remove()
-- Complete arrow key functions
+* Complete arrow key functions
 
-Spec Sheets still don't fully support nesting
-Theme doesn't support mixins
+* Spec Sheets still don't fully support nesting
+* Theme doesn't support mixins
 
-Spec sheet states can't have more than one selector. ie:
+* Spec sheet states can't have more than one selector. ie:
 
 component {
   @state disabled {

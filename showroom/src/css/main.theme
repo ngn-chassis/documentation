@@ -79,8 +79,21 @@ components {
 			border-radius: .236em;
 			color: white;
 
-			svg.icon {
+			& .icon {
 				stroke: currentColor;
+			}
+
+			& .test {
+				padding: .5em;
+				background: green;
+
+				& .test {
+					background: red;
+
+					& .test {
+						background: blue;
+					}
+				}
 			}
 		}
 

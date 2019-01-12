@@ -2,24 +2,6 @@ const ChassisElement = superClass => class extends superClass {
   constructor (templateString) {
     super()
 
-    this.addEventListener('attribute.change', evt => {
-      let { attribute, oldValue, newValue } = evt.detail
-
-      if (this.PRIVATE.attributes.includes(attribute)) {
-        if (this.PRIVATE[attribute] !== newValue) {
-          this.PRIVATE[attribute] = newValue
-        }
-
-        return
-      }
-
-      if (this.PRIVATE.booleanAttributes.includes(attribute)) {
-        if (newValue !== 'true' && newValue !== '') {
-          return this.UTIL.setBooleanAttributeValue(attribute, newValue)
-        }
-      }
-    })
-
     this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : ('keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode')
 
     this.attachShadow({mode: 'open'})
@@ -265,6 +247,24 @@ const ChassisElement = superClass => class extends superClass {
           }
 
           console.error(message)
+        }
+      }
+    })
+
+    this.addEventListener('attribute.change', evt => {
+      let { attribute, oldValue, newValue } = evt.detail
+
+      if (this.PRIVATE.attributes.includes(attribute)) {
+        if (this.PRIVATE[attribute] !== newValue) {
+          this.PRIVATE[attribute] = newValue
+        }
+
+        return
+      }
+
+      if (this.PRIVATE.booleanAttributes.includes(attribute)) {
+        if (newValue !== 'true' && newValue !== '') {
+          return this.UTIL.setBooleanAttributeValue(attribute, newValue)
         }
       }
     })

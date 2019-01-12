@@ -225,8 +225,7 @@ class ChassisFormControlElement extends HTMLElement {
 
   set input (input) {
     if (this.input) {
-      console.warn(`Setting <chassis-control> child input programmatically is not allowed.`)
-      return
+      return console.warn(`Setting <chassis-control> child input programmatically is not allowed.`)
     }
 
     this.PRIVATE.input = input

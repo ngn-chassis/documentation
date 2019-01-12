@@ -1,6 +1,4 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css?family=Staatliches');
-
 
 @-ms-viewport {
     width: device-width;
@@ -760,6 +758,7 @@ html.chassis {
 .chassis a.button .icon, .chassis .showroom .custom-1 .icon,
 .chassis .showroom .custom-2 .icon, .chassis .showroom .custom-3 .icon {
     height: calc(1.3827882373436318em - 2px);
+    stroke: currentColor;
 }
 
 .chassis a.button .left.icon, .chassis .showroom .custom-1 .left.icon,
@@ -777,9 +776,23 @@ html.chassis {
             transform: translateX(.4293858394957214em);
 }
 
-.chassis a.button svg.icon, .chassis .showroom .custom-1 svg.icon,
-.chassis .showroom .custom-2 svg.icon, .chassis .showroom .custom-3 svg.icon {
-    stroke: currentColor;
+.chassis a.button .test, .chassis .showroom .custom-1 .test,
+.chassis .showroom .custom-2 .test, .chassis .showroom .custom-3 .test {
+    padding: .5em;
+    background: green;
+}
+
+.chassis a.button .test .test, .chassis .showroom .custom-1 .test .test,
+.chassis .showroom .custom-2 .test .test,
+.chassis .showroom .custom-3 .test .test {
+    background: red;
+}
+
+.chassis a.button .test .test .test,
+.chassis .showroom .custom-1 .test .test .test,
+.chassis .showroom .custom-2 .test .test .test,
+.chassis .showroom .custom-3 .test .test .test {
+    background: blue;
 }
 
 .chassis a.button:hover, .chassis a.button.hover,

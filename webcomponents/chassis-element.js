@@ -28,6 +28,9 @@ const ChassisElement = superClass => class extends superClass {
       this.crypto = msCrypto
     }
 
+    // TODO: Add enumerable: false
+    // configurable: false
+    // writable: false
     Object.defineProperties(this, {
       PRIVATE: {
         value: {}
@@ -233,6 +236,7 @@ const ChassisElement = superClass => class extends superClass {
         }
       },
 
+      // TODO: look into throwing error here
       throw: {
         value: (type, vars) => {
           let message = `ERROR <${this.localName}> `

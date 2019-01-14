@@ -144,25 +144,37 @@ const ChassisElement = superClass => class extends superClass {
 
             return Object.defineProperty(this, prop, {
               set (value) {
-                this.throw('readonly', {prop})
+                this.throwError({
+                  type: 'readonly',
+                  vars: {prop}
+                })
               }
             })
           }
 
           if (typeof prop !== 'object') {
-            return console.error(`ERROR <${this.localName}> Read-only property must be type "object" or "string"`)
+            return this.UTIL.throwError({
+              type: 'type',
+              message: `Read-only property must be type "object" or "string"`
+            })
           }
 
           if (!prop.hasOwnProperty('name')) {
-            return console.error(`ERROR <${this.localName}> Read-only property definition object must must have a "name" property!`)
+            return this.UTIL.throwError({
+              type: 'reference',
+              message: `Read-only property definition object must must have a "name" property!`
+            })
           }
 
           this.PRIVATE.readOnlyProperties.push(prop.name)
 
           Object.defineProperty(this, props.name, {
             set (value) {
-              this.UTIL.throw('readonly', {
-                prop: prop.name
+              this.UTIL.throwError({
+                type: 'readonly',
+                vars: {
+                  prop: prop.name
+                }
               })
             },
 
@@ -236,21 +248,69 @@ const ChassisElement = superClass => class extends superClass {
         }
       },
 
-      // TODO: look into throwing error here
-      throw: {
-        value: (type, vars) => {
-          let message = `ERROR <${this.localName}> `
+      throwError: {
+        value: properties => {
+          let finalMessage = `<${this.localName}> `
 
-          switch (type) {
-            case 'readonly':
-              message += `Cannot set read-only property "${vars.prop}"`
-              break
+          let type = properties.type || 'custom'
+          let error = new Error()
+          let { vars } = properties || null
 
-            default:
-              message = message.trim()
+          if (type === 'dependency') {
+            finalMessage += 'Missing dependency'
+
+            if (vars) {
+              if (vars.hasOwnProperty('name')) {
+                finalMessage += `: ${vars.name}`
+              }
+
+              if (vars.hasOwnProperty('url')) {
+                finalMessage += ` ${vars.url}`
+              }
+            }
           }
 
-          console.error(message)
+          if (type === 'readonly') {
+            finalMessage += `Cannot set read-only property`
+
+            if (vars) {
+              if (vars.hasOwnProperty('prop')) {
+                finalMessage += ` "${vars.prop}"`
+              }
+            }
+          }
+
+          if (type === 'reference') {
+            error = new ReferenceError()
+          }
+
+          if (type === 'type') {
+            error = new TypeError()
+          }
+
+          if (properties.hasOwnProperty('message')) {
+            finalMessage += ` ${properties.message}`
+          }
+
+          error.message = finalMessage.trim()
+          throw error
+        }
+      },
+
+      childMonitor: {
+        value: null
+      },
+
+      monitorChildren: {
+        value: (callback, subtree = false) => {
+          this.childMonitor = new MutationObserver(callback)
+
+          this.childMonitor.observe(this, {
+            childList: true,
+            attributes: false,
+            characterData: false,
+            subtree: typeof subtree === 'boolean' ? subtree : false
+          })
         }
       }
     })

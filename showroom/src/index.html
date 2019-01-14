@@ -16,11 +16,12 @@
     <!-- <script src="webcomponents/chassis-cycle-es5.js"></script> -->
     <!-- <script src="webcomponents/chassis-select-es5.js"></script> -->
     <!-- <script src="webcomponents/chassis-datalist-es5.js"></script> -->
-
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.1.1/dist/howler.min.js"></script>
     <script src="webcomponents/chassis-element.js"></script>
+    <script src="webcomponents/gb-player.js"></script>
     <script src="webcomponents/chassis-control.js"></script>
     <script src="webcomponents/chassis-cycle.js"></script>
-    <script src="webcomponents/chassis-select.js"></script>
+    <!-- <script src="webcomponents/chassis-select.js"></script> -->
     <!-- <script src="webcomponents/chassis-datalist-es5.js"></script> -->
   </head>
 
@@ -57,6 +58,13 @@
 
       <div class="content">
         <section class="test">
+          <gb-player>
+            <button function="play">Play</button>
+            <button function="stop">Stop</button>
+            <button function="pause">Pause</button>
+          </gb-player>
+
+
           <chassis-control id="chassis-select">
             <label>Menu Label</label>
             <select name="name-test" placeholder="placeholder">

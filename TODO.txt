@@ -3,6 +3,8 @@
 Add @variation support to components
 
 WEB COMPONENTS
+Add <chassis-slider min max increment stepped>
+
 Add ARIA roles for accessibility
 
 Add @chassis apply block margin/padding

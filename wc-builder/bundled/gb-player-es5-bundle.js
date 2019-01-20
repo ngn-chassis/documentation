@@ -105,8 +105,8 @@ var _inherits2 = _interopRequireDefault(__webpack_require__(8));
 
 customElements.define('gb-player',
 /*#__PURE__*/
-function (_ChassisElement) {
-  (0, _inherits2.default)(_class, _ChassisElement);
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
   function _class() {
     var _this;
@@ -116,7 +116,46 @@ function (_ChassisElement) {
 
     _this.UTIL.definePrivateProperties({
       playlist: null,
-      currentSong: null
+      currentSong: null,
+      playButtonClickHandler: function playButtonClickHandler(evt) {
+        evt.preventDefault();
+
+        _this.play();
+      },
+      stopButtonClickHandler: function stopButtonClickHandler(evt) {
+        evt.preventDefault();
+
+        _this.stop();
+      },
+      pauseButtonClickHandler: function pauseButtonClickHandler(evt) {
+        evt.preventDefault();
+
+        _this.pause();
+      },
+      initializeButton: function initializeButton(button) {
+        if (!button.hasAttribute('function')) {
+          return;
+        }
+
+        var buttonFunction = button.getAttribute('function');
+
+        switch (buttonFunction) {
+          case 'play':
+            _this.playButton = button;
+            break;
+
+          case 'stop':
+            _this.stopButton = button;
+            break;
+
+          case 'pause':
+            _this.pauseButton = button;
+            break;
+
+          default:
+            return;
+        }
+      }
     });
 
     return _this;
@@ -125,6 +164,8 @@ function (_ChassisElement) {
   (0, _createClass2.default)(_class, [{
     key: "connectedCallback",
     value: function connectedCallback() {
+      var _this2 = this;
+
       if (typeof Howler === 'undefined' || typeof Howl === 'undefined') {
         return this.UTIL.throwError({
           type: 'dependency',
@@ -135,9 +176,36 @@ function (_ChassisElement) {
         });
       }
 
-      this.UTIL.monitorChildren(function (mutations) {
-        console.log(mutations);
-      });
+      setTimeout(function () {
+        for (var child in _this2.children) {
+          var element = _this2.children[child];
+
+          switch (element.localName) {
+            case 'button':
+              _this2.PRIVATE.initializeButton(element);
+
+              break;
+
+            default:
+              continue;
+          }
+        }
+      }, 0);
+    }
+  }, {
+    key: "disconnectedCallback",
+    value: function disconnectedCallback() {
+      if (this.playButton) {
+        this.playButton.removeEventListener('click', this.PRIVATE.playButtonClickHandler);
+      }
+
+      if (this.stopButton) {
+        this.stopButton.removeEventListener('click', this.PRIVATE.stopButtonClickHandler);
+      }
+
+      if (this.pauseButton) {
+        this.pauseButton.removeEventListener('click', this.PRIVATE.pauseButtonClickHandler);
+      }
     }
   }, {
     key: "play",
@@ -173,6 +241,33 @@ function (_ChassisElement) {
       this.PRIVATE.currentSong = song;
     }
   }, {
+    key: "playButton",
+    get: function get() {
+      return this.PRIVATE.playButton;
+    },
+    set: function set(button) {
+      this.PRIVATE.playButton = button;
+      button.addEventListener('click', this.PRIVATE.playButtonClickHandler);
+    }
+  }, {
+    key: "stopButton",
+    get: function get() {
+      return this.PRIVATE.stopButton;
+    },
+    set: function set(button) {
+      this.PRIVATE.stopButton = button;
+      button.addEventListener('click', this.PRIVATE.stopButtonClickHandler);
+    }
+  }, {
+    key: "pauseButton",
+    get: function get() {
+      return this.PRIVATE.pauseButton;
+    },
+    set: function set(button) {
+      this.PRIVATE.pauseButton = button;
+      button.addEventListener('click', this.PRIVATE.pauseButtonClickHandler);
+    }
+  }, {
     key: "playlist",
     get: function get() {
       return this.PRIVATE.playlist.map(function (song) {
@@ -184,7 +279,7 @@ function (_ChassisElement) {
       });
     },
     set: function set(playlist) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!Array.isArray(playlist)) {
         return this.UTIL.throwError({
@@ -195,7 +290,7 @@ function (_ChassisElement) {
 
       this.PRIVATE.playlist = playlist.map(function (song) {
         if (!song.hasOwnProperty('path')) {
-          _this2.UTIL.throwError({
+          _this3.UTIL.throwError({
             message: 'Song must include a "path" property!'
           });
 
@@ -203,7 +298,7 @@ function (_ChassisElement) {
         }
 
         if (!song.hasOwnProperty('id')) {
-          _this2.UTIL.throwError({
+          _this3.UTIL.throwError({
             message: 'Song must include a unique "id" property!'
           });
 
@@ -234,7 +329,7 @@ function (_ChassisElement) {
     }
   }]);
   return _class;
-}(ChassisElement(HTMLElement)));
+}(AuthorElement(HTMLElement)));
 
 /***/ }),
 /* 1 */

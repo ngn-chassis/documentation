@@ -7,7 +7,7 @@
     "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
     "build-showroom": "cd showroom/ && npm run build && cd ..",
     "build-showroom-dev": "cd showroom/ && npm run build-dev && cd ..",
-    "build-base-component": "node build-base-component.js webcomponents/chassis-element.js webcomponents/dist",
+    "build-base-component": "node build-base-component.js webcomponents/author-element.js webcomponents/dist",
     "build-webcomponents": "cd wc-builder/ && build-webcomponents ../webcomponents/src ../webcomponents/dist --es5 --reservedNames=ChassisHTMLCollection,ChassisHTMLOptionsCollection && cd ..",
     "build": "npm run link-chassis && npm run build-base-component && npm run build-webcomponents && cp webcomponents/dist/*.js showroom/src/webcomponents && npm run build-showroom"
   },

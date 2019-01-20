@@ -16,8 +16,8 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 
 customElements.define('chassis-cycle',
 /*#__PURE__*/
-function (_ChassisElement) {
-  (0, _inherits2.default)(_class, _ChassisElement);
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
   function _class() {
     var _this;
@@ -417,4 +417,4 @@ function (_ChassisElement) {
     }
   }]);
   return _class;
-}(ChassisElement(HTMLElement)));
+}(AuthorElement(HTMLElement)));

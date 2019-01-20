@@ -1,4 +1,4 @@
-customElements.define('{{TAG-NAME}}', class extends ChassisElement({{SUPER-CLASS}}) {
+customElements.define('{{TAG-NAME}}', class extends AuthorElement({{SUPER-CLASS}}) {
   constructor () {
     super(`{{TEMPLATE-STRING}}`)
   }

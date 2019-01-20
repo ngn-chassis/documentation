@@ -105,8 +105,8 @@ var _inherits2 = _interopRequireDefault(__webpack_require__(8));
 
 customElements.define('chassis-layout-cell',
 /*#__PURE__*/
-function (_ChassisElement) {
-  (0, _inherits2.default)(_class, _ChassisElement);
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
   function _class() {
     var _this;
@@ -139,37 +139,43 @@ function (_ChassisElement) {
       }
     });
 
+    _this.on('connected', function () {
+      _this.UTIL.definePrivateProperties({
+        children: [],
+        styleSheet: _this.shadowRoot.styleSheets[0],
+        sizeRule: null
+      });
+
+      var sheetLength = _this.PRIVATE.styleSheet.cssRules.length;
+
+      _this.PRIVATE.styleSheet.insertRule(':host([size]) {}', sheetLength);
+
+      _this.PRIVATE.sizeRule = _this.PRIVATE.styleSheet.cssRules[sheetLength];
+
+      _this.PRIVATE.styleSheet.insertRule(':host([max]) {}', sheetLength);
+
+      _this.PRIVATE.maxRule = _this.PRIVATE.styleSheet.cssRules[sheetLength];
+
+      _this.PRIVATE.styleSheet.insertRule(':host([min]) {}', sheetLength);
+
+      _this.PRIVATE.minRule = _this.PRIVATE.styleSheet.cssRules[sheetLength];
+
+      if (_this.hasAttribute('size')) {
+        _this.size = _this.getAttribute('size');
+      }
+    });
+
     return _this;
   }
 
-  (0, _createClass2.default)(_class, [{
-    key: "connectedCallback",
-    value: function connectedCallback() {
-      this.UTIL.definePrivateProperties({
-        children: [],
-        styleSheet: this.shadowRoot.styleSheets[0],
-        sizeRule: null
-      });
-      var sheetLength = this.PRIVATE.styleSheet.cssRules.length;
-      this.PRIVATE.styleSheet.insertRule(':host([size]) {}', sheetLength);
-      this.PRIVATE.sizeRule = this.PRIVATE.styleSheet.cssRules[sheetLength];
-      this.PRIVATE.styleSheet.insertRule(':host([max]) {}', sheetLength);
-      this.PRIVATE.maxRule = this.PRIVATE.styleSheet.cssRules[sheetLength];
-      this.PRIVATE.styleSheet.insertRule(':host([min]) {}', sheetLength);
-      this.PRIVATE.minRule = this.PRIVATE.styleSheet.cssRules[sheetLength];
-
-      if (this.hasAttribute('size')) {
-        this.size = this.getAttribute('size');
-      }
-    }
-  }], [{
+  (0, _createClass2.default)(_class, null, [{
     key: "observedAttributes",
     get: function get() {
       return ['max', 'min', 'size'];
     }
   }]);
   return _class;
-}(ChassisElement(HTMLElement)));
+}(AuthorElement(HTMLElement)));
 
 /***/ }),
 /* 1 */

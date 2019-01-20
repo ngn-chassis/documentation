@@ -56,6 +56,10 @@ const ChassisElement = superClass => class extends superClass {
 
       readOnlyProperties: {
         value: []
+      },
+
+      listeners: {
+        value: []
       }
     })
 
@@ -137,8 +141,6 @@ const ChassisElement = superClass => class extends superClass {
 
       defineReadOnlyProperty: {
         value: prop => {
-          let name = prop
-
           if (typeof prop === 'string') {
             this.PRIVATE.readOnlyProperties.push(prop)
 
@@ -168,7 +170,7 @@ const ChassisElement = superClass => class extends superClass {
 
           this.PRIVATE.readOnlyProperties.push(prop.name)
 
-          Object.defineProperty(this, props.name, {
+          Object.defineProperty(this, prop.name, {
             set (value) {
               this.UTIL.throwError({
                 type: 'readonly',
@@ -223,18 +225,6 @@ const ChassisElement = superClass => class extends superClass {
       createEvent: {
         value: (name, detail) => {
           return new CustomEvent(name, {detail})
-        }
-      },
-
-      emit: {
-        value: (name, detail, target = null) => {
-          let event = this.UTIL.createEvent(name, detail)
-
-          if (target) {
-            return target.dispatchEvent(event)
-          }
-
-          this.dispatchEvent(event)
         }
       },
 
@@ -312,11 +302,34 @@ const ChassisElement = superClass => class extends superClass {
             subtree: typeof subtree === 'boolean' ? subtree : false
           })
         }
+      },
+
+      registerListener: {
+        value: (element, evtName, callback) => {
+          let listener = {
+            id: `listener_${this.UTIL.generateGuid()}`,
+            apply: () => {
+              element.addEventListener(evtName, callback)
+            },
+            remove: () => {
+              element.removeEventListener(evtName, callback)
+            }
+          }
+
+          this.PRIVATE.listeners.push(listener)
+          listener.apply()
+        }
+      },
+
+      registerListeners: {
+        value: (element, listeners) => {
+          listeners.forEach(listener => this.UTIL.registerListener(element, listener.evt, listener.callback))
+        }
       }
     })
 
     this.addEventListener('attribute.change', evt => {
-      let { attribute, oldValue, newValue } = evt.detail
+      let { attribute, newValue } = evt.detail
 
       if (this.PRIVATE.attributes.includes(attribute)) {
         if (this.PRIVATE[attribute] !== newValue) {
@@ -335,10 +348,37 @@ const ChassisElement = superClass => class extends superClass {
   }
 
   attributeChangedCallback (attribute, oldValue, newValue) {
-    this.UTIL.emit('attribute.change', {
+    this.emit('attribute.change', {
       attribute,
       oldValue,
       newValue
     })
+  }
+
+  connectedCallback () {
+    this.emit('connected')
+
+    setTimeout(() => {
+      this.emit('rendered')
+    }, 0)
+  }
+
+  disconnectedCallback () {
+    this.PRIVATE.listeners.forEach(listener => listener.remove())
+    this.emit('disconnected')
+  }
+
+  emit (name, detail, target = null) {
+    let event = this.UTIL.createEvent(name, detail)
+
+    if (target) {
+      return target.dispatchEvent(event)
+    }
+
+    this.dispatchEvent(event)
+  }
+
+  on (evtName, callback) {
+    this.addEventListener(evtName, callback)
   }
 }

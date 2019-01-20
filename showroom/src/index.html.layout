@@ -13,45 +13,46 @@
     <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
 
-    <script src="webcomponents/chassis-element.js"></script>
-    <script src="webcomponents/chassis-layout.js"></script>
+    <script src="webcomponents/author-element.js"></script>
+    <script src="webcomponents/author-layout.js"></script>
+    <script src="webcomponents/author-layout-cell.js"></script>
   </head>
 
   <body class="layout showroom">
-    <chassis-layout id="layout" fullscreen>
-      <chassis-layout-cell class="header">
+    <author-layout id="layout" fullscreen>
+      <author-layout-cell class="header">
         header
-      </chassis-layout-cell>
-      <chassis-layout-cell orientation="horizontal" stretch>
-        <chassis-layout-cell size="23.6%">
+      </author-layout-cell>
+      <author-layout-cell orientation="horizontal" stretch>
+        <author-layout-cell size="23.6%">
           <aside class="sidebar">
             sidebar
           </aside>
-        </chassis-layout-cell>
-        <chassis-layout-cell stretch>
+        </author-layout-cell>
+        <author-layout-cell stretch>
           <div class="workspace">
             workspace
           </div>
-        </chassis-layout-cell>
-        <chassis-layout-cell orientation="vertical">
-          <chassis-layout-cell>
+        </author-layout-cell>
+        <author-layout-cell orientation="vertical">
+          <author-layout-cell>
             CELL 1
-          </chassis-layout-cell>
-          <chassis-layout-cell>
+          </author-layout-cell>
+          <author-layout-cell>
             CELL 2
-          </chassis-layout-cell>
-        </chassis-layout-cell>
-      </chassis-layout-cell>
-      <chassis-layout-cell class="footer">
+          </author-layout-cell>
+        </author-layout-cell>
+      </author-layout-cell>
+      <author-layout-cell class="footer">
         footer
-      </chassis-layout-cell>
-    </chassis-layout>
+      </author-layout-cell>
+    </author-layout>
 
     <script type="text/javascript">
       window.addEventListener('DOMContentLoaded', function () {
         window.test = document.getElementById('test')
         window.layout = document.getElementById('layout')
-        window.cell = document.querySelector('#layout chassis-layout-cell[size]')
+        window.cell = document.querySelector('#layout author-layout-cell[size]')
         // window.select = document.getElementById('select_menu').input
         //
         // window.select2 = document.getElementById('select_test')

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" class="chassis">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Chassis Showroom</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
+
+    <!-- <script src="webcomponents/author-control-es5.js"></script> -->
+    <!-- <script src="webcomponents/author-cycle-es5.js"></script> -->
+    <!-- <script src="webcomponents/author-select-es5.js"></script> -->
+    <!-- <script src="webcomponents/author-datalist-es5.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/howler@2.1.1/dist/howler.min.js"></script> -->
+    <script src="webcomponents/author-element.js"></script>
+    <!-- <script src="webcomponents/gb-player.js"></script> -->
+    <script src="webcomponents/author-control.js"></script>
+    <script src="webcomponents/author-cycle.js"></script>
+    <script src="webcomponents/author-tooltip.js"></script>
+    <!-- <script src="webcomponents/author-select.js"></script> -->
+    <!-- <script src="webcomponents/author-datalist-es5.js"></script> -->
+  </head>
+
+  <body class="authorio showroom">
+
+    <header>
+      <div class="width constraint">
+        <h1>NGN Chassis Documentation</h1>
+        <aside class="links">
+          <h2 class="hidden">Navigation</h2>
+          <a href="javascript:;">Showroom</a>
+          <a href="https://github.com/ngnjs" target="_blank">Github</a>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <aside class="sidebar">
+        <h2 class="hidden">Sidebar</h2>
+
+        <nav>
+          <h2 class="hidden">Sections</h2>
+          <a href="#typography_section">
+            Typography
+          </a>
+          <a href="#layout_section">
+            Layout
+          </a>
+          <a href="#components_section">
+            UI Components
+          </a>
+        </nav>
+      </aside>
+
+      <div class="content">
+        <section class="test">
+          <div>
+            Here is some text with a <span id="tooltip_test">tooltip</span>.
+            <author-tooltip id="tooltip" for="tooltip_test">
+              Here is some text in the tooltip.
+            </author-tooltip>
+
+            <script>
+              window.tooltip = document.getElementById('tooltip')
+
+
+            </script>
+          </div>
+
+          <gb-player>
+            <button function="play">Play</button>
+            <button function="stop">Stop</button>
+            <button function="pause">Pause</button>
+          </gb-player>
+
+
+          <author-control id="author-select">
+            <label>Menu Label</label>
+            <select name="name-test" placeholder="placeholder">
+              <option value="test1">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="7"></circle>
+                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                </svg>
+                Option 0
+              </option>
+              <option id="testaaaaa" label=" " value="test2">Option 1</option>
+              <option value="test3">Option 2</option>
+              <optgroup label="Option Group 1">
+                <option value="test5">Option 3</option>
+                <option value="test6">Option 4</option>
+                <option value="test7">Option 5</option>
+              </optgroup>
+              <optgroup label="Option Group 2">
+                <option value="test8">Option 6</option>
+                <option value="test9">Option 7</option>
+                <option value="test10">Option 8</option>
+              </optgroup>
+              <optgroup label="Option Group 3">
+                <option value="test8">Option 9</option>
+                <option value="test9">Option 10</option>
+                <option value="test10">Option 11</option>
+              </optgroup>
+            </select>
+          </author-control>
+
+          <label for="default-select">test</label>
+          <select id="default-select" multiple size="20">
+            <option id="test-option" value="1">Option 0</option>
+            <option id="test-option2" value="2" selected>Option 1</option>
+            <option value="3" selected>Option 2</option>
+            <option value="4">Option 3</option>
+            <option value="5" selected>Option 4</option>
+            <option value="6">Option 5</option>
+            <optgroup label="Option Group 2">
+              <option value="test8">Option 6</option>
+              <option value="test9">Option 7</option>
+              <option value="test10">Option 8</option>
+            </optgroup>
+          </select>
+
+          <!-- <author-control>
+            <label>Multiple Select</label>
+            <select multiple>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+          </author-control> -->
+        </section>
+
+
+        <section class="intro">
+          <p>
+            Chassis is a CSS pre-processor and UI framework for modern responsive UI development.
+          </p>
+
+          <p>
+            Chassis consists of:
+          </p>
+
+          <ul>
+            <li>
+              PostCSS-based pre-processor allows for the use of CSS4 syntax today
+            </li>
+            <li>
+              Typography-based layout engine automatically scales every element of your UI to the ideal dimensions for the viewport
+            </li>
+            <li>
+              A suite of modular, themeable and extendable web components
+            </li>
+            <li>
+              Convenient Mixins and Functions to speed development
+            </li>
+            <li>
+              A bunch of cool extras to make UI development painless
+            </li>
+          </ul>
+        </section>
+
+        <section id="typography_section" class="typography">
+          <header>
+            <h2>Typography</h2>
+          </header>
+
+          <section class="mixins">
+            <h3 class="hidden">Mixins</h3>
+            <section class="font-size">
+              <header>
+                <h4>font-size</h4>
+                <code class="example">@chassis font-size [alias] [mult(int)];</code>
+              </header>
+              <p>
+                Use the font-size mixin to apply a calculated font size to any element. If you would like to set a font-size between any two of the pre-calculated values, you can use the <code>mult()</code> function. It accepts any decimal number and will multiply the resulting calculated font-size against this decimal.
+              </p>
+            </section>
+            <section class="ellipsis">
+              <header>
+                <h4>ellipsis</h4>
+                <code class="example">@chassis ellipsis;</code>
+              </header>
+              <p>
+                Apply an ellipsis to the targeted element.
+              </p>
+              <p>
+                <span class="alert tag">NOTE</span> Ellipsis does not work on <code>inline</code> elements.
+              </p>
+            </section>
+          </section>
+        </section>
+
+        <section id="layout_section" class="layout">
+          <header>
+            <h2>Layout</h2>
+          </header>
+          <section class="mixins">
+            <h3 class="hidden">Mixins</h3>
+            <section class="constrain-width">
+              <header>
+                <h4>constrain-width</h4>
+                <code class="example">@chassis constrain-width [min(int)] [max(int)] [gutter()];</code>
+              </header>
+              <p>
+                Constrain the width of an element to min and max values. <code>gutter</code> will apply padding to the left and right sides of the element. By default, <code>constrain-width</code> uses your min and max layout width values as well as your layout gutter. This allows you to create full-width container elements and constrain the width of the content inside.
+              </p>
+              <p>
+                Helper class <code>.width constraint</code> applies this mixin with the default values.
+              </p>
+            </section>
+            <section class="inline-block-layout">
+              <header>
+                <h4>inline-block-layout</h4>
+                <code class="example">@chassis inline-block-layout <span class="nowrap">[no-margin</span>[-right[-bottom]]] <span class="nowrap">[no-padding</span>[-top[-right[-bottom[-left]]]]] <span class="nowrap">[no-line-height]</span> <span class="nowrap">[multi-line]</span>;</code>
+              </header>
+              <p>
+                Apply calculated margin, padding and line-height matching Chassis' built-in inline-block elements, like buttons and form fields.
+              </p>
+            </section>
+            <section class="z-index">
+              <header>
+                <h4>z-index</h4>
+                <code class="example">@chassis z-index [value or component];</code>
+              </header>
+              <p>
+                Chassis include the following default z-index values:
+              </p>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>min</td>
+                    <td>-1000</td>
+                  </tr>
+                  <tr>
+                    <td>behind</td>
+                    <td>-1</td>
+                  </tr>
+                  <tr>
+                    <td>default</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>front</td>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <td>max</td>
+                    <td>1000</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>
+                It also maintains a stack of components. You can insert components into this stack to have their default z-index automatically calculated. This relieves you of having to manage z-index manually.
+              </p>
+            </section>
+          </section>
+        </section>
+
+        <section id="components_section" class="ui-components">
+          <header>
+            <h2>UI Components</h2>
+            <p>
+              Chassis UI components are totally modular and completely themeable. They are built to work seamlessly with Chassis' Auto-Typography engine, so they are always proportioned correctly based on your core typography rules. Chassis provides a series of mixins for working with components:
+            </p>
+          </header>
+
+          <section class="examples">
+            <h3 class="hidden">Built-in UI Components</h3>
+
+            <section class="links">
+              <header>
+                <h4>Anchor</h4>
+                <p>
+                  Chassis links fully reset the default browser styles and are themeable.
+                </p>
+              </header>
+
+              <section class="example">
+                <code>
+                  &lt;a href="http://github.com/ngnjs"&gt;Default Anchor (Link)&lt;/a&gt;
+                </code>
+                <div class="output">
+                  <a href="javascript:;">Default Anchor (Link)</a>
+                </div>
+              </section>
+
+              <p>
+                If <code>anchor-button</code> is also included, adding class "button" to an anchor tag will apply anchor-button styles to it. Chassis is smart enough to know which properties need to be persisted from the default anchor, while resetting any properties that might conflict.
+              </p>
+
+              <section class="example">
+                <code>
+                  &lt;a class="button" href="http://github.com/ngnjs"&gt;Anchor Button&lt;/a&gt;
+                </code>
+                <div class="output">
+                  <a class="button" href="javascript:;">
+                    Anchor Button
+                    <div class="test">
+                      <div class="test">
+
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </section>
+            </section>
+
+            <section class="buttons">
+              <header>
+                <h4>Button</h4>
+                <p>
+                  Chassis' button component has calculated margin, padding and line-height values by default. Its proportions are determined by your base typography rules.
+                </p>
+              </header>
+
+              <section class="default">
+                <h5 class="hidden">Default</h5>
+
+                <section class="example">
+                  <code>
+                    &lt;button&gt;Default Button&lt;/button&gt;
+                  </code>
+                  <div class="output">
+                    <div class="top row">
+                      <button>
+                        <span>Default Button</span>
+                      </button>
+                      <button>
+                        <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="8" r="7"></circle>
+                          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        <span>Button with Left Icon</span>
+                      </button>
+                      <button>
+                        <svg class="right icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="8" r="7"></circle>
+                          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        <span>Button with Right Icon</span>
+                      </button>
+                    </div>
+
+                    <div class="bottom row">
+                      <button>
+                        button text will wrap to the next line when it is too wide for the viewport
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+              </section>
+
+              <section class="pill">
+                <h5 class="hidden">Pill</h5>
+                <p>
+                  Any button can be made into a pill shape simply by applying class "pill".
+                </p>
+
+                <section class="example">
+                  <code>&lt;button class="pill"&gt;Pill Button&lt;/a&gt;</code>
+                  <div class="output">
+                    <button class="pill">
+                      <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                      </svg>
+                      Pill Button
+                    </button>
+                  </div>
+                </section>
+
+              </section>
+
+              <section class="variations">
+                <h5 class="hidden">Variations</h5>
+
+                <section class="example">
+                  <code>
+                    &lt;a class="custom" href="http://github.com/ngnjs"&gt;Custom Button&lt;/a&gt;
+                  </code>
+                  <div class="output">
+                    <a class="custom-1" href="javascript:;">
+                      <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                      </svg>
+                      Custom Button
+                    </a>
+                    <a class="custom-2" href="javascript:;">
+                      <svg class="right icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                      </svg>
+                      Custom Button
+                    </a>
+                    <a class="custom-3" href="javascript:;">
+                      <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                      </svg>
+                      Custom Button
+                    </a>
+                  </div>
+                </section>
+
+              </section>
+            </section>
+
+            <section class="tags">
+              <header>
+                <h4>Tag</h4>
+              </header>
+              <p>
+                <span class="tag">
+                  <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  Tags
+                </span> display inline with text and can have icons placed in them. They come in regular and
+                <span class="pill tag">
+                  <svg class="left icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                  </svg>
+                  pill-shaped
+                </span> varieties.
+              </p>
+            </section>
+
+            <section>
+              <header>
+                <h4>author-cycle</h4>
+
+                <author-cycle id="cycle">
+                  <section selected>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                  </section>
+
+                  <section>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                  </section>
+
+                  <section>
+                    Page 3
+                  </section>
+                </author-cycle>
+
+                <script type="text/javascript">
+                  let cycle = document.getElementById('cycle')
+
+                  cycle.addEventListener('beforechange', evt => {
+                    evt.preventDefault()
+                    let { currentSelection, nextSelection, next } = evt.detail
+
+                    cycle.setAttribute('transition', '')
+                    currentSelection.element.setAttribute('fade-out', '')
+                    setTimeout(next, 500)
+                  })
+
+                  cycle.addEventListener('change', evt => {
+                    let { previousSelection, currentSelection } = evt.detail
+
+                    cycle.removeAttribute('transition')
+                    previousSelection.element.removeAttribute('fade-out')
+                    currentSelection.element.setAttribute('fade-in', '')
+                    setTimeout(() => currentSelection.element.removeAttribute('fade-in'), 1000)
+                  })
+                </script>
+              </header>
+            </section>
+
+            <section class="forms">
+              <form name="form">
+                <h4>Forms</h4>
+
+                <fieldset class="inputs">
+                  <h4>Basic Inputs</h4>
+
+                  <input type="text" placeholder="Placeholder">
+
+                  <author-control id="text_field">
+                    <label>Text field</label>
+                    <input type="text" placeholder="Placeholder">
+                  </author-control>
+
+                  <author-control id="email_field">
+                    <label>Email field</label>
+                    <input type="email" placeholder="my-email@address.com">
+                  </author-control>
+
+                  <author-control id="textarea">
+                    <label>Textarea</label>
+                    <textarea rows="5"></textarea>
+                  </author-control>
+                </fieldset>
+
+                <fieldset class="select-menu">
+                  <h4>Select Menu</h4>
+
+
+
+                  <!-- <author-control id="select">
+                    <label>Select Test</label>
+                    <select placeholder="test placeholder">
+                      <option>Test 1</option>
+                      <option selected>Test 2</option>
+                      <option disabled>Test 3</option>
+                      <option>Test 4</option>
+                    </select>
+                  </author-control>
+
+                  <select id="select2" placeholder="test placeholder">
+                    <option>Test 1</option>
+                    <option id="test2">Test 2</option>
+                    <option>Test 3</option>
+                    <option>Test 4</option>
+                  </select> -->
+                </fieldset>
+
+                <fieldset class="datalist">
+                  <author-control id="datalist">
+                    <label>Chassis Datalist</label>
+                    <input type="text" placeholder="Enter your search query">
+                    <datalist>
+                      <option value="1">Test Heyyy</option>
+                      <option value="2">Uh Huhhhh</option>
+                      <option value="3">Wuuuuut</option>
+                      <option value="4">Awww yeeaaaa</option>
+                      <option value="5">You know it</option>
+                    </datalist>
+                  </author-control>
+
+                  <!-- <label for="heyyy">Regular Datalist</label>
+                  <input list="testssss" id="heyyy" type="text">
+                  <datalist id="testssss">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </datalist> -->
+                </fieldset>
+
+                <fieldset>
+                  <h4>Radio Buttons</h4>
+
+                  <author-control id="radio_button_1">
+                    <label>Radio Button</label>
+                    <input name="radios" type="radio" value="">
+                  </author-control>
+                  <author-control id="radio_button_2">
+                    <label>Radio Button</label>
+                    <input name="radios" type="radio" value="">
+                  </author-control>
+                  <author-control id="radio_button_3">
+                    <label>Radio Button</label>
+                    <input name="radios" type="radio" value="">
+                  </author-control>
+
+                  <!-- <author-control-group>
+
+                  </author-control-group> -->
+                </fieldset>
+
+                <fieldset>
+                  <h4>Checkboxes</h4>
+
+                  <author-control id="checkbox_1">
+                    <label>Checkbox</label>
+                    <input name="checboxes" type="checkbox" value="">
+                  </author-control>
+                  <author-control id="checkbox_2">
+                    <label>Checkbox</label>
+                    <input name="checboxes" type="checkbox" value="">
+                  </author-control>
+                  <author-control id="checkbox_3">
+                    <label>Checkbox</label>
+                    <input name="checboxes" type="checkbox" value="">
+                  </author-control>
+
+                  <!-- <author-control-group>
+
+                  </author-control-group> -->
+                </fieldset>
+              </form>
+
+            </section>
+          </section>
+
+          <section class="mixins">
+            <h3>Mixins</h3>
+
+            <section class="include">
+              <header>
+                <h4>include</h4>
+                <code class="example">@chassis include [component [more components...]];</code>
+              </header>
+              <p>
+                To avoid unused CSS, Chassis will not load a UI component's styles unless it is first included. Components can have additional styles passed in through a theme file, or at the point of inclusion via CSS declarations. See <code>extend</code> for more information.
+              </p>
+              <p>
+                This mixin also accepts <code>all</code> as a value, in which case all Chassis UI Components will be loaded.
+              </p>
+            </section>
+            <section class="extend">
+              <header>
+                <h4>new</h4>
+                <code class="example">@chassis new [component] {...};</code>
+              </header>
+              <p>
+                Creates a new, unthemed instance of the chosen component. Accepts css or theme rules.
+              </p>
+              <p>
+                <code>new</code> uses a special syntax which is the same as that used in theme files.
+              </p>
+            </section>
+            <section class="extend">
+              <header>
+                <h4>extend</h4>
+                <code class="example">@chassis extend [component] {...};</code>
+              </header>
+              <p>
+                Chassis components can be extended with custom properties. This provides a way to create different versions of components on-the-fly.
+              </p>
+              <p>
+                <code>extend</code> uses a special syntax which is the same as that used in theme files.
+              </p>
+            </section>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="width constraint">
+        <span class="label">Viewport:</span>
+
+        <span class="below-min range">
+          Below min: <= 319px
+        </span>
+
+        <span class="tiny range">
+          Tiny: 320 - 511px
+        </span>
+
+        <span class="small range">
+          Small: 512 - 767px
+        </span>
+
+        <span class="medium range">
+          Medium: 768 - 1023px
+        </span>
+
+        <span class="large range">
+          Large: 1024 - 1199px
+        </span>
+
+        <span class="huge range">
+          Huge: 1200 - 1439px
+        </span>
+
+        <span class="massive range">
+          Massive: 1440 - 1600px
+        </span>
+
+        <span class="above-max range">
+          Above max: > 1600px
+        </span>
+      </div>
+    </footer>
+
+    <script type="text/javascript">
+      window.addEventListener('DOMContentLoaded', function () {
+        window.select = document.getElementById('default-select')
+        window.chassisSelect = document.getElementById('author-select').input
+
+        chassisSelect.addEventListener('change', evt => {
+          console.log('author-select change');
+        })
+
+        select.addEventListener('change', evt => {
+          console.log('select change');
+        })
+
+        // chassisSelect.beforeChange = function (current, selection, cb) {
+        //   console.log('before change');
+        //   console.log('current: ', current);
+        //   console.log('new selection: ', selection);
+        //   console.log('---------');
+        //   cb()
+        // }
+
+        // chassisSelect.afterChange = function (previous, current) {
+        //   console.log('after change');
+        //   console.log('previous selection: ', previous);
+        //   console.log('current selection: ', current);
+        //   console.log('---------');
+        // }
+
+        // chassisSelect.afterChange = function (prev, current) {
+        //   console.log('after change');
+        //   console.log('previous: ', prev);
+        //   console.log('current: ', current);
+        // }
+        //
+        // chassisSelect.addEventListener('change', evt => {
+        //   console.log('chassisSelect change');
+        // })
+        // window.old = document.getElementById('old')
+
+        // var old = document.getElementById('heyyy')
+        //
+        // console.log(old);
+        //
+        // old.addEventListener('input', function (evt) {
+        //   console.log('hey');
+        //   console.log(this.value);
+        // })
+      })
+
+      document.addEventListener('WebComponentsReady', function () {
+        // window.cycle = document.querySelector('author-cycle')
+        window.select = document.getElementById('default-select')
+        window.chassisSelect = document.getElementById('author-select').input
+
+        // select.addEventListener('change', evt => console.log(evt))
+        // chassisSelect.addEventListener('change', evt => console.log(evt))
+
+        // window.option = window.select[2]
+        //
+        // window.select2 = document.getElementById('select2')
+        // window.option2 = window.select2[2]
+        //
+        // window.select.addEventListener('change', function () {
+        //   console.log('change event fired');
+        // })
+
+        // setTimeout(function () {
+        //   var page = document.createElement('section')
+        //   page.innerHTML = 'New Page 1'
+        //   page.id = 'newPage1'
+        //   page.setAttribute('selected', '')
+        //
+        //   cycle.appendChild(page)
+        //
+        //   var page2 = document.createElement('section')
+        //   page2.innerHTML = 'New Page 2'
+        //   page2.id = 'newPage2'
+        //   page2.setAttribute('active', '')
+        //
+        //   cycle.appendChild(page2)
+        // }, 2000)
+
+        // var datalist = document.getElementById('datalist')
+        //
+        // datalist.input.addEventListener('input', function (evt) {
+        //   console.log(evt.target.value);
+        // })
+
+        // select.addOption({
+        //   label: 'heyyy',
+        //   value: 'test'
+        // })
+
+        // console.log(select.options);
+
+        // select.name = 'new-name'
+        // console.log(select.autofocus);
+      })
+    </script>
+  </body>
+
+</html>

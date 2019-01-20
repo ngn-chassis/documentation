@@ -16,8 +16,8 @@ var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/hel
 
 customElements.define('chassis-control',
 /*#__PURE__*/
-function (_ChassisElement) {
-  (0, _inherits2.default)(_class, _ChassisElement);
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
   function _class() {
     var _this;
@@ -321,4 +321,4 @@ function (_ChassisElement) {
     }
   }]);
   return _class;
-}(ChassisElement(HTMLElement)));
+}(AuthorElement(HTMLElement)));

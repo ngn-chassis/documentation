@@ -14,8 +14,8 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 
 customElements.define('chassis-grid-cell',
 /*#__PURE__*/
-function (_ChassisElement) {
-  (0, _inherits2.default)(_class, _ChassisElement);
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
   function _class() {
     (0, _classCallCheck2.default)(this, _class);
@@ -52,4 +52,4 @@ function (_ChassisElement) {
     }
   }]);
   return _class;
-}(ChassisElement(HTMLElement)));
+}(AuthorElement(HTMLElement)));

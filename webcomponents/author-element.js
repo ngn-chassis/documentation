@@ -288,8 +288,9 @@ const AuthorElement = superClass => class extends superClass {
       },
 
       /**
-       * Accepted values: 'custom', 'dependency', 'readonly', 'reference', 'type'
-       * @typedef {ErrorType}
+       * @typedef {string} ErrorType (custom, dependency, readonly, reference, type)
+       * Indentifier for JavaScript built-in Error types including:
+       * Error, TypeError, ReferenceError, or custom Error
        */
 
       /**
@@ -341,24 +342,24 @@ const AuthorElement = superClass => class extends superClass {
                 finalMessage += ` ${vars.url}`
               }
             }
-          }
 
-          if (type === 'readonly') {
+          } else if (type === 'readonly') {
             finalMessage += `Cannot set read-only property`
 
-            if (vars) {
-              if (vars.hasOwnProperty('prop')) {
-                finalMessage += ` "${vars.prop}"`
-              }
+            if (vars && vars.hasOwnProperty('prop')) {
+              finalMessage += ` "${vars.prop}"`
             }
-          }
 
-          if (type === 'reference') {
+          } else if (type === 'reference') {
             error = new ReferenceError()
-          }
 
-          if (type === 'type') {
+          } else if (type === 'type') {
             error = new TypeError()
+
+          } else {
+            return this.UTIL.throwError({
+              message: `Unrecognized error type "${type}". Accepted types: "custom", "dependency", "readonly", "reference", "type"`
+            })
           }
 
           if (properties.hasOwnProperty('message')) {
@@ -370,10 +371,11 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
-      /**
-       * Accepted values: 'warning', 'error', 'info', 'log'
-       * @typedef {String} ConsoleLogType
-       */
+       /**
+        * @typedef {string} ConsoleLogType (warning, error, info, log)
+        * Indentifier for window.console built-in methods including:
+        * warn(), error(), info(), log()
+        */
 
       /**
        * @method printToConsole

@@ -98,7 +98,7 @@ chassis-select.pill {
     }
   }
 
-  @chassis import components;
+  @chassis import dir(components);
   @chassis import overrides;
-  @chassis import layout;
+  @chassis import dir(layout);
 }

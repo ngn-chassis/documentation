@@ -27,8 +27,14 @@ function (_AuthorElement) {
     (0, _classCallCheck2.default)(this, _class);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([selected])){display:none!important}author-cycle{display:block}author-cycle *,author-cycle :after,author-cycle :before{box-sizing:border-box}author-cycle:not([mode=custom])) > :not([selected]){display:none!important}</style><slot></slot></template>"));
 
-    _this.UTIL.definePrivateProperties({
-      dummyEl: document.createElement('div'),
+    _this.UTIL.defineProperties({
+      dummyEl: {
+        private: true,
+        default: document.createElement('div')
+      }
+    });
+
+    _this.UTIL.definePrivateMethods({
       getChildIndex: function getChildIndex(child) {
         return [].slice.call(_this.children).indexOf(child);
       },
@@ -122,9 +128,8 @@ function (_AuthorElement) {
       }
     });
 
-    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), [{
-      name: 'connected',
-      callback: function callback() {
+    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      connected: function connected() {
         _this.UTIL.monitorChildren(function (mutations) {
           mutations.forEach(function (mutation) {
             var addedNodes = mutation.addedNodes,
@@ -141,10 +146,8 @@ function (_AuthorElement) {
             }
           });
         });
-      }
-    }, {
-      name: 'rendered',
-      callback: function callback() {
+      },
+      rendered: function rendered() {
         for (var index in _this.children) {
           if (!_this.children.hasOwnProperty(index)) {
             continue;
@@ -161,7 +164,7 @@ function (_AuthorElement) {
           }
         }
       }
-    }]);
+    });
 
     return _this;
   }
@@ -228,6 +231,9 @@ function (_AuthorElement) {
      * appendChild() or insertBefore()
      * This is done because of bugs with insertAdjacentElement() on web components
      * in Firefox and IE11.
+     * @param {string} position (beforebegin, afterbegin, beforeend, afterend)
+     * @param {HTMLElement} node
+     * Node to which to insert adjacent HTML
      * @override
      */
 

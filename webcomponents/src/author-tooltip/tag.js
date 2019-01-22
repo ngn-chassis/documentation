@@ -2,9 +2,17 @@ class AuthorTooltipElement extends HTMLElement {
   constructor () {
     super()
 
-    this.UTIL.definePrivateProperties({
-      position: [],
-      positionValues: ['left', 'center', 'right', 'top', 'bottom']
+    this.UTIL.defineProperties({
+      position: {
+        private: true,
+        default: []
+      },
+
+      positionValues: {
+        readonly: true,
+        private: true,
+        default: ['left', 'center', 'right', 'top', 'bottom']
+      }
     })
 
     this.UTIL.defineAttributes({
@@ -32,41 +40,31 @@ class AuthorTooltipElement extends HTMLElement {
       }
     })
 
-    this.UTIL.registerListeners(this, [
-      {
-        name: 'connected',
-        callback: () => {
-          this.hide()
+    this.UTIL.registerListeners(this, {
+      connected: () => {
+        this.hide()
 
-          if (!this.hasAttribute('for')) {
-            return this.UTIL.throwError({
-              message: `Missing required "for" attribute.`
-            })
-          }
-
-          this.annotatedElement = document.getElementById(this.getAttribute('for')) || null
-
-          if (!this.annotatedElement) {
-            return this.UTIL.throwError({
-              type: 'reference',
-              message: `Could not find element #${this.getAttribute('for')}. "for" attribute must be set to the id of the element to which to attach the tooltip.`
-            })
-          }
-
-          this.UTIL.registerListeners(this.annotatedElement, [
-            {
-              name: 'mouseenter',
-              callback: evt => this.show()
-            },
-
-            {
-              name: 'mouseleave',
-              callback: evt => this.hide()
-            }
-          ])
+        if (!this.hasAttribute('for')) {
+          return this.UTIL.throwError({
+            message: `Missing required "for" attribute.`
+          })
         }
+
+        this.annotatedElement = document.getElementById(this.getAttribute('for')) || null
+
+        if (!this.annotatedElement) {
+          return this.UTIL.throwError({
+            type: 'reference',
+            message: `Could not find element #${this.getAttribute('for')}. "for" attribute must be set to the id of the element to which to attach the tooltip.`
+          })
+        }
+
+        this.UTIL.registerListeners(this.annotatedElement, {
+          mouseenter: evt => this.show(),
+          mouseleave: evt => this.hide()
+        })
       }
-    ])
+    })
   }
 
   static get observedAttributes () {

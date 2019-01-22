@@ -130,9 +130,16 @@ function (_AuthorElement) {
     (0, _classCallCheck2.default)(this, _class);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{position:fixed;display:block}:host([hidden]){display:none}:host *,:host :after,:host :before{box-sizing:border-box}author-tooltip{position:fixed;display:block}author-tooltip[hidden]){display:none}author-tooltip *,author-tooltip :after,author-tooltip :before{box-sizing:border-box}</style><slot></slot></template>"));
 
-    _this.UTIL.definePrivateProperties({
-      position: [],
-      positionValues: ['left', 'center', 'right', 'top', 'bottom']
+    _this.UTIL.defineProperties({
+      position: {
+        private: true,
+        default: []
+      },
+      positionValues: {
+        readonly: true,
+        private: true,
+        default: ['left', 'center', 'right', 'top', 'bottom']
+      }
     });
 
     _this.UTIL.defineAttributes({
@@ -158,9 +165,8 @@ function (_AuthorElement) {
       }
     });
 
-    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), [{
-      name: 'connected',
-      callback: function callback() {
+    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      connected: function connected() {
         _this.hide();
 
         if (!_this.hasAttribute('for')) {
@@ -178,19 +184,16 @@ function (_AuthorElement) {
           });
         }
 
-        _this.UTIL.registerListeners(_this.annotatedElement, [{
-          name: 'mouseenter',
-          callback: function callback(evt) {
+        _this.UTIL.registerListeners(_this.annotatedElement, {
+          mouseenter: function mouseenter(evt) {
             return _this.show();
-          }
-        }, {
-          name: 'mouseleave',
-          callback: function callback(evt) {
+          },
+          mouseleave: function mouseleave(evt) {
             return _this.hide();
           }
-        }]);
+        });
       }
-    }]);
+    });
 
     return _this;
   }

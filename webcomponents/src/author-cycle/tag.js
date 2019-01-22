@@ -2,9 +2,14 @@ class AuthorCycleElement extends HTMLElement {
   constructor () {
     super()
 
-    this.UTIL.definePrivateProperties({
-      dummyEl: document.createElement('div'),
+    this.UTIL.defineProperties({
+      dummyEl: {
+        private: true,
+        default: document.createElement('div')
+      }
+    })
 
+    this.UTIL.definePrivateMethods({
       getChildIndex: child => [].slice.call(this.children).indexOf(child),
 
       getNextSelectedChild: child => {
@@ -104,48 +109,42 @@ class AuthorCycleElement extends HTMLElement {
       }
     })
 
-    this.UTIL.registerListeners(this, [
-      {
-        name: 'connected',
-        callback: () => {
-          this.UTIL.monitorChildren(mutations => {
-            mutations.forEach(mutation => {
-              let { addedNodes, removedNodes, type } = mutation
+    this.UTIL.registerListeners(this, {
+      connected: () => {
+        this.UTIL.monitorChildren(mutations => {
+          mutations.forEach(mutation => {
+            let { addedNodes, removedNodes, type } = mutation
 
-              switch (type) {
-                case 'childList':
-                  if (removedNodes.length > 0 && !this.selectedElement) {
-                    return this.previous()
-                  }
+            switch (type) {
+              case 'childList':
+                if (removedNodes.length > 0 && !this.selectedElement) {
+                  return this.previous()
+                }
 
-                  break
-              }
-            })
+                break
+            }
           })
-        }
+        })
       },
 
-      {
-        name: 'rendered',
-        callback: () => {
-          for (let index in this.children) {
-            if (!this.children.hasOwnProperty(index)) {
-              continue
-            }
+      rendered: () => {
+        for (let index in this.children) {
+          if (!this.children.hasOwnProperty(index)) {
+            continue
+          }
 
-            let child = this.children.item(index)
+          let child = this.children.item(index)
 
-            if (typeof child !== 'object') {
-              continue
-            }
+          if (typeof child !== 'object') {
+            continue
+          }
 
-            if (child !== this.selectedElement) {
-              this.PRIVATE.hideChild(child)
-            }
+          if (child !== this.selectedElement) {
+            this.PRIVATE.hideChild(child)
           }
         }
       }
-    ])
+    })
   }
 
   static get observedAttributes () {
@@ -262,6 +261,9 @@ class AuthorCycleElement extends HTMLElement {
    * appendChild() or insertBefore()
    * This is done because of bugs with insertAdjacentElement() on web components
    * in Firefox and IE11.
+   * @param {string} position (beforebegin, afterbegin, beforeend, afterend)
+   * @param {HTMLElement} node
+   * Node to which to insert adjacent HTML
    * @override
    */
   insertAdjacentElement (position, node) {

@@ -18,7 +18,7 @@ custom-properties {
 }
 
 components {
-	chassis-layout-cell {
+	author-layout-cell {
 		@state initial {
 			background: var(--grey-n00);
 			box-shadow: 0 0 0 2px black;
@@ -165,7 +165,7 @@ components {
 		}
 	}
 
-	chassis-control {
+	author-control {
 		@state initial {}
 
 		@state disabled {
@@ -196,20 +196,20 @@ components {
 		}
 	}
 
-	chassis-optgroup-label {
+	author-optgroup-label {
 		@state initial {
 			font-weight: 700;
 		}
 	}
 
-	chassis-optgroup {
+	author-optgroup {
 		@state initial {
 			margin: 0 .618em .618em;
 			border: 1px solid var(--grey-n04);
 		}
 	}
 
-	chassis-selected-options {
+	author-selected-options {
 		@state initial {
 			align-items: center;
 			justify-content: space-between;
@@ -224,7 +224,7 @@ components {
 		}
 	}
 
-	chassis-option {
+	author-option {
 		@state initial {}
 
 		@state hover {
@@ -232,7 +232,7 @@ components {
 		}
 	}
 
-	chassis-datalist {
+	author-datalist {
 		@state initial {
 			position: relative;
 			display: flex;
@@ -244,7 +244,7 @@ components {
 			box-shadow: inset 0 -2px 0 0 var(--grey-n04);
 			transition: all ease-in-out .1s;
 
-			chassis-options {
+			author-options {
 				position: absolute;
 				top: 100%;
 				left: 0;
@@ -265,7 +265,7 @@ components {
 		@state open {
 			box-shadow: inset 0 -2px 0 0 var(--blue);
 
-			chassis-options {
+			author-options {
 				height: auto;
 			}
 		}
@@ -279,7 +279,7 @@ components {
 		}
 	}
 
-	chassis-select {
+	author-select {
 		@state initial {
 			position: relative;
 			display: flex;
@@ -293,7 +293,7 @@ components {
 			box-shadow: inset 0 0 0 2px var(--grey-n04);
 			transition: all ease-in-out .1s;
 
-			chassis-options {
+			author-options {
 				height: 0;
 				max-height: 16.18em;
 				min-width: 100%;
@@ -308,7 +308,7 @@ components {
 				;
 			}
 
-			chassis-option[selected] {
+			author-option[selected] {
 				background: var(--blue);
 				color: white;
 			}
@@ -318,7 +318,7 @@ components {
 			box-shadow: inset 0 0 0 2px var(--blue);
 			border-radius: .236em .236em 0 0;
 
-			chassis-options {
+			author-options {
 				position: absolute;
 				top: 100%;
 			  left: 0;
@@ -337,7 +337,7 @@ components {
 		@state focus {
 			box-shadow: inset 0 0 0 2px var(--blue);
 
-			chassis-options {
+			author-options {
 				box-shadow: inset 0 0 0 2px var(--blue);
 			}
 		}
@@ -351,7 +351,7 @@ components {
 		} */
 
 		@state multiple {
-			chassis-options {
+			author-options {
 				height: auto;
 
 				box-shadow:
@@ -361,7 +361,7 @@ components {
 				;
 			}
 
-			/* chassis-selected-options {
+			/* author-selected-options {
 				display: none;
 			} */
 		}

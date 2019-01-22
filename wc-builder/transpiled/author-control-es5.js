@@ -12,6 +12,8 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/ge
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+
 customElements.define('author-control',
 /*#__PURE__*/
 function (_AuthorElement) {
@@ -27,11 +29,28 @@ function (_AuthorElement) {
       type: ''
     });
 
-    _this.UTIL.definePrivateProperties({
-      fieldInputTypes: ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'],
-      toggleInputTypes: ['checkbox', 'radio'],
-      supportedTypes: ['field', 'toggle', 'select'],
-      input: null,
+    _this.UTIL.defineProperties({
+      input: {
+        private: true
+      },
+      fieldInputTypes: {
+        readonly: true,
+        private: true,
+        default: ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea']
+      },
+      toggleInputTypes: {
+        readonly: true,
+        private: true,
+        default: ['checkbox', 'radio']
+      },
+      supportedTypes: {
+        readonly: true,
+        private: true,
+        default: ['field', 'toggle', 'select']
+      }
+    });
+
+    _this.UTIL.definePrivateMethods({
       initDatalist: function initDatalist(input, datalist) {
         _this.type = 'field';
 
@@ -285,7 +304,7 @@ function (_AuthorElement) {
       observer.disconnect();
     });
 
-    _this.on('connected', function () {
+    _this.UTIL.registerListener((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), 'connected', function () {
       _this.PRIVATE.guid = _this.UTIL.generateGuid('control');
     });
 

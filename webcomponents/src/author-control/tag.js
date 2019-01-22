@@ -6,43 +6,59 @@ class AuthorFormControlElement extends HTMLElement {
       type: ''
     })
 
-    this.UTIL.definePrivateProperties({
-      fieldInputTypes: [
-        'color',
-        'date',
-        'datetime-local',
-        'email',
-        'file',
-        'hidden',
-        'image',
-        'month',
-        'number',
-        'password',
-        'range',
-        'reset',
-        'search',
-        'submit',
-        'tel',
-        'text',
-        'time',
-        'url',
-        'week',
-        'textarea'
-      ],
+    this.UTIL.defineProperties({
+      input: {
+        private: true
+      },
 
-      toggleInputTypes: [
-        'checkbox',
-        'radio'
-      ],
+      fieldInputTypes: {
+        readonly: true,
+        private: true,
+        default: [
+          'color',
+          'date',
+          'datetime-local',
+          'email',
+          'file',
+          'hidden',
+          'image',
+          'month',
+          'number',
+          'password',
+          'range',
+          'reset',
+          'search',
+          'submit',
+          'tel',
+          'text',
+          'time',
+          'url',
+          'week',
+          'textarea'
+        ]
+      },
 
-      supportedTypes: [
-        'field',
-        'toggle',
-        'select'
-      ],
+      toggleInputTypes: {
+        readonly: true,
+        private: true,
+        default: [
+          'checkbox',
+          'radio'
+        ],
+      },
 
-      input: null,
+      supportedTypes: {
+        readonly: true,
+        private: true,
+        default: [
+          'field',
+          'toggle',
+          'select'
+        ]
+      }
+    })
 
+    this.UTIL.definePrivateMethods({
       initDatalist: (input, datalist) => {
         this.type = 'field'
 
@@ -214,7 +230,7 @@ class AuthorFormControlElement extends HTMLElement {
       observer.disconnect()
     })
 
-    this.on('connected', () => {
+    this.UTIL.registerListener(this, 'connected', () => {
       this.PRIVATE.guid = this.UTIL.generateGuid('control')
     })
   }

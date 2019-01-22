@@ -81,27 +81,43 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(1);
+var _interopRequireDefault = __webpack_require__(2);
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(2));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(3));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(3));
+var _createClass2 = _interopRequireDefault(__webpack_require__(4));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(4));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(5));
 
 var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(7));
 
 var _inherits2 = _interopRequireDefault(__webpack_require__(8));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(0));
 
 customElements.define('author-control',
 /*#__PURE__*/
@@ -118,11 +134,28 @@ function (_AuthorElement) {
       type: ''
     });
 
-    _this.UTIL.definePrivateProperties({
-      fieldInputTypes: ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea'],
-      toggleInputTypes: ['checkbox', 'radio'],
-      supportedTypes: ['field', 'toggle', 'select'],
-      input: null,
+    _this.UTIL.defineProperties({
+      input: {
+        private: true
+      },
+      fieldInputTypes: {
+        readonly: true,
+        private: true,
+        default: ['color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week', 'textarea']
+      },
+      toggleInputTypes: {
+        readonly: true,
+        private: true,
+        default: ['checkbox', 'radio']
+      },
+      supportedTypes: {
+        readonly: true,
+        private: true,
+        default: ['field', 'toggle', 'select']
+      }
+    });
+
+    _this.UTIL.definePrivateMethods({
       initDatalist: function initDatalist(input, datalist) {
         _this.type = 'field';
 
@@ -376,7 +409,7 @@ function (_AuthorElement) {
       observer.disconnect();
     });
 
-    _this.on('connected', function () {
+    _this.UTIL.registerListener((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), 'connected', function () {
       _this.PRIVATE.guid = _this.UTIL.generateGuid('control');
     });
 
@@ -405,7 +438,7 @@ function (_AuthorElement) {
 }(AuthorElement(HTMLElement)));
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -417,7 +450,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -429,7 +462,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -451,12 +484,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(5);
+var _typeof = __webpack_require__(6);
 
-var assertThisInitialized = __webpack_require__(6);
+var assertThisInitialized = __webpack_require__(0);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -469,7 +502,7 @@ function _possibleConstructorReturn(self, call) {
 module.exports = _possibleConstructorReturn;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
@@ -489,20 +522,6 @@ function _typeof(obj) {
 }
 
 module.exports = _typeof;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-module.exports = _assertThisInitialized;
 
 /***/ }),
 /* 7 */

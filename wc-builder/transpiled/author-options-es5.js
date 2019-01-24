@@ -38,7 +38,7 @@ function (_AuthorElement) {
       displayOptions: {
         readonly: true,
         get: function get() {
-          var ChassisHTMLOptionsCollection = _this.PRIVATE.generateChassisHTMLOptionsCollectionConstructor();
+          var AuthorHTMLOptionsCollection = _this.PRIVATE.generateAuthorHTMLOptionsCollectionConstructor();
 
           var array = _this.options.map(function (option) {
             return option.displayElement;
@@ -52,7 +52,7 @@ function (_AuthorElement) {
             return _this.removeOptionByIndex(index);
           };
 
-          return new ChassisHTMLOptionsCollection(array, _this.selectedIndex, addFunction, removeFunction);
+          return new AuthorHTMLOptionsCollection(array, _this.selectedIndex, addFunction, removeFunction);
         }
       },
       hoveredIndex: {
@@ -112,9 +112,9 @@ function (_AuthorElement) {
         get: function get() {
           var nodes = _this.querySelectorAll('[selected]');
 
-          var ChassisHTMLCollection = _this.PRIVATE.generateChassisHTMLCollectionConstructor();
+          var AuthorHTMLCollection = _this.PRIVATE.generateAuthorHTMLCollectionConstructor();
 
-          return new ChassisHTMLCollection(nodes);
+          return new AuthorHTMLCollection(nodes);
         }
       },
       Selection: {
@@ -252,16 +252,16 @@ function (_AuthorElement) {
           return !comparable.includes(option);
         });
       },
-      generateChassisHTMLCollectionConstructor: function generateChassisHTMLCollectionConstructor() {
+      generateAuthorHTMLCollectionConstructor: function generateAuthorHTMLCollectionConstructor() {
         var _p = new WeakMap();
 
         return (
           /*#__PURE__*/
           function () {
-            function ChassisHTMLCollection(arr) {
+            function AuthorHTMLCollection(arr) {
               var _this2 = this;
 
-              (0, _classCallCheck2.default)(this, ChassisHTMLCollection);
+              (0, _classCallCheck2.default)(this, AuthorHTMLCollection);
 
               _p.set(this, {
                 arr: arr
@@ -276,7 +276,7 @@ function (_AuthorElement) {
               });
             }
 
-            (0, _createClass2.default)(ChassisHTMLCollection, [{
+            (0, _createClass2.default)(AuthorHTMLCollection, [{
               key: "item",
               value: function item(index) {
                 return _p.get(this).arr[index];
@@ -310,7 +310,7 @@ function (_AuthorElement) {
             }, {
               key: Symbol.toStringTag,
               value: function value() {
-                return 'ChassisHTMLCollection';
+                return 'AuthorHTMLCollection';
               }
             }, {
               key: "length",
@@ -318,26 +318,26 @@ function (_AuthorElement) {
                 return _p.get(this).arr.length;
               }
             }]);
-            return ChassisHTMLCollection;
+            return AuthorHTMLCollection;
           }()
         );
       },
-      generateChassisHTMLOptionsCollectionConstructor: function generateChassisHTMLOptionsCollectionConstructor() {
+      generateAuthorHTMLOptionsCollectionConstructor: function generateAuthorHTMLOptionsCollectionConstructor() {
         var _p = new WeakMap();
 
-        var ChassisHTMLOptionsCollection =
+        var AuthorHTMLOptionsCollection =
         /*#__PURE__*/
-        function (_this$PRIVATE$Chassis) {
-          (0, _inherits2.default)(ChassisHTMLOptionsCollection, _this$PRIVATE$Chassis);
+        function (_this$PRIVATE$generat) {
+          (0, _inherits2.default)(AuthorHTMLOptionsCollection, _this$PRIVATE$generat);
 
-          function ChassisHTMLOptionsCollection(arr) {
+          function AuthorHTMLOptionsCollection(arr) {
             var _this4;
 
             var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
             var add = arguments.length > 2 ? arguments[2] : undefined;
             var remove = arguments.length > 3 ? arguments[3] : undefined;
-            (0, _classCallCheck2.default)(this, ChassisHTMLOptionsCollection);
-            _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ChassisHTMLOptionsCollection).call(this, arr));
+            (0, _classCallCheck2.default)(this, AuthorHTMLOptionsCollection);
+            _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorHTMLOptionsCollection).call(this, arr));
             _this4.selectedIndex = selectedIndex;
             _this4.add = add;
             _this4.remove = remove;
@@ -349,16 +349,16 @@ function (_AuthorElement) {
             return _this4;
           }
 
-          (0, _createClass2.default)(ChassisHTMLOptionsCollection, [{
+          (0, _createClass2.default)(AuthorHTMLOptionsCollection, [{
             key: Symbol.toStringTag,
             value: function value() {
-              return 'ChassisHTMLOptionsCollection';
+              return 'AuthorHTMLOptionsCollection';
             }
           }]);
-          return ChassisHTMLOptionsCollection;
-        }(_this.PRIVATE.ChassisHTMLCollection());
+          return AuthorHTMLOptionsCollection;
+        }(_this.PRIVATE.generateAuthorHTMLCollectionConstructor());
 
-        return ChassisHTMLOptionsCollection;
+        return AuthorHTMLOptionsCollection;
       },
       generateOptgroup: function generateOptgroup(optgroup) {
         if (!customElements.get('author-optgroup')) {
@@ -426,12 +426,11 @@ function (_AuthorElement) {
       generateOptionConstructor: function generateOptionConstructor() {
         var _p = new WeakMap();
 
-        var selectionHandler = _this.PRIVATE.optionSelectionHandler;
         return (
           /*#__PURE__*/
           function () {
-            function ChassisOptionObject(parent, key, sourceElement, displayElement) {
-              (0, _classCallCheck2.default)(this, ChassisOptionObject);
+            function AuthorOptionObject(parent, key, sourceElement, displayElement) {
+              (0, _classCallCheck2.default)(this, AuthorOptionObject);
               this.key = key;
               this.form = parent.form;
               this.defaultSelected = sourceElement.selected;
@@ -484,7 +483,7 @@ function (_AuthorElement) {
               });
             }
 
-            (0, _createClass2.default)(ChassisOptionObject, [{
+            (0, _createClass2.default)(AuthorOptionObject, [{
               key: "remove",
               value: function remove() {
                 this.sourceElement.remove();
@@ -557,7 +556,7 @@ function (_AuthorElement) {
                 this.setAttr('value', value);
               }
             }]);
-            return ChassisOptionObject;
+            return AuthorOptionObject;
           }()
         );
       },
@@ -618,7 +617,6 @@ function (_AuthorElement) {
         var _this$PRIVATE2 = _this.PRIVATE,
             cherryPicked = _this$PRIVATE2.cherryPicked,
             getCurrentSelection = _this$PRIVATE2.getCurrentSelection,
-            lastSelectedIndex = _this$PRIVATE2.lastSelectedIndex,
             Selection = _this$PRIVATE2.Selection,
             selectionStartIndex = _this$PRIVATE2.selectionStartIndex;
         var index = detail.index,
@@ -654,7 +652,7 @@ function (_AuthorElement) {
             cherryPicked = _this$PRIVATE3.cherryPicked,
             diffSelections = _this$PRIVATE3.diffSelections,
             getCurrentSelection = _this$PRIVATE3.getCurrentSelection,
-            generateChassisHTMLCollectionConstructor = _this$PRIVATE3.generateChassisHTMLCollectionConstructor,
+            generateAuthorHTMLCollectionConstructor = _this$PRIVATE3.generateAuthorHTMLCollectionConstructor,
             handleClickSelection = _this$PRIVATE3.handleClickSelection,
             handleKeyboardSelection = _this$PRIVATE3.handleKeyboardSelection,
             Selection = _this$PRIVATE3.Selection;
@@ -680,7 +678,7 @@ function (_AuthorElement) {
           var detail = {
             options: selection.options,
             previous: _this.selectedOptions,
-            next: new (generateChassisHTMLCollectionConstructor())(selection.displayElements)
+            next: new (generateAuthorHTMLCollectionConstructor())(selection.displayElements)
           };
 
           var cb = function cb() {

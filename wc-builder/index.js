@@ -135,7 +135,11 @@ module.exports = class {
           }
 
           file.contents = babel.transformSync(file.contents, {
-            presets: ['minify'],
+            presets: [['minify', {
+              mangle: {
+                exclude: this.reservedNames
+              }
+            }]],
             comments: false
           }).code
         })

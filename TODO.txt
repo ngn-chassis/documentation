@@ -1,5 +1,7 @@
 * === done
 
+Chassis should support the addition of postcss plugins
+
 Add @variation support to components
 
 WEB COMPONENTS

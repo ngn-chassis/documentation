@@ -2,10 +2,19 @@ class AuthorAudioPlayerElement extends HTMLElement {
   constructor () {
     super()
 
-    this.UTIL.definePrivateProperties({
-      playlist: null,
-      currentSong: null,
+    this.UTIL.defineProperties({
+      playlist: {
+        private: true,
+        default: null
+      },
 
+      currentSong: {
+        private: true,
+        default: null
+      }
+    })
+
+    this.UTIL.definePrivateMethods({
       playButtonClickHandler: evt => {
         evt.preventDefault()
         this.play()
@@ -45,46 +54,48 @@ class AuthorAudioPlayerElement extends HTMLElement {
         }
       }
     })
-  }
 
-  connectedCallback () {
-    if (typeof Howler === 'undefined' || typeof Howl === 'undefined') {
-      return this.UTIL.throwError({
-        type: 'dependency',
-        vars: {
-          name: 'Howler',
-          url: 'https://github.com/goldfire/howler.js/'
+    this.UTIL.registerListeners(this, {
+      connected: () => {
+        if (typeof Howler === 'undefined' || typeof Howl === 'undefined') {
+          return this.UTIL.throwError({
+            type: 'dependency',
+            vars: {
+              name: 'Howler',
+              url: 'https://github.com/goldfire/howler.js/'
+            }
+          })
         }
-      })
-    }
+      },
 
-    setTimeout(() => {
-      for (let child in this.children) {
-        let element = this.children[child]
+      disconnected: () => {
+        if (this.playButton) {
+          this.playButton.removeEventListener('click', this.PRIVATE.playButtonClickHandler)
+        }
 
-        switch (element.localName) {
-          case 'button':
-            this.PRIVATE.initializeButton(element)
-            break
+        if (this.stopButton) {
+          this.stopButton.removeEventListener('click', this.PRIVATE.stopButtonClickHandler)
+        }
 
-          default: continue
+        if (this.pauseButton) {
+          this.pauseButton.removeEventListener('click', this.PRIVATE.pauseButtonClickHandler)
+        }
+      },
+
+      rendered: () => {
+        for (let child in this.children) {
+          let element = this.children[child]
+
+          switch (element.localName) {
+            case 'button':
+              this.PRIVATE.initializeButton(element)
+              break
+
+            default: continue
+          }
         }
       }
-    }, 0)
-  }
-
-  disconnectedCallback () {
-    if (this.playButton) {
-      this.playButton.removeEventListener('click', this.PRIVATE.playButtonClickHandler)
-    }
-
-    if (this.stopButton) {
-      this.stopButton.removeEventListener('click', this.PRIVATE.stopButtonClickHandler)
-    }
-
-    if (this.pauseButton) {
-      this.pauseButton.removeEventListener('click', this.PRIVATE.pauseButtonClickHandler)
-    }
+    })
   }
 
   get currentSong () {
@@ -156,16 +167,10 @@ class AuthorAudioPlayerElement extends HTMLElement {
       }
 
       if (!song.hasOwnProperty('id')) {
-        this.UTIL.throwError({
-          message: 'Song must include a unique "id" property!'
-        })
-
-        return false
+        song.id = this.UTIL.generateGuid('song_')
       }
 
-      let audio = new Howl({
-        src: song.path
-      })
+      let audio = new Howl({ src: song.path })
 
       audio.on('play', () => {
         console.log('song started');
@@ -192,7 +197,8 @@ class AuthorAudioPlayerElement extends HTMLElement {
   }
 
   play () {
-    return this.PRIVATE.currentSong.audio.play()
+    let { currentSong } = this.PRIVATE
+    return currentSong ? currentSong.audio.play() : null
   }
 
   stop () {

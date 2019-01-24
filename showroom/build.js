@@ -16,7 +16,7 @@ class CustomProductionLine extends ProductionLine {
       tasks.add(`Process ${this.localDirectory(filepath)}`, next => {
         let chassis = new Chassis({
           minify,
-          sourceMap: minify,
+          sourceMap: 2,
           sourceMapPath: path.dirname(this.outputDirectory(filepath)),
           theme: path.resolve(`${this.SOURCE}/css/main.theme`),
 
@@ -28,7 +28,7 @@ class CustomProductionLine extends ProductionLine {
 
         chassis.process(filepath, (err, processed) => {
           if (err) {
-            throw err
+            return console.error(err)
           }
 
           if (processed.sourceMap) {

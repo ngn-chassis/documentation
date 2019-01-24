@@ -57,6 +57,8 @@ chassis-select.pill {
 }
 
 .showroom {
+  height: min(5,7,10)em;
+
   & .test span {
     color: white;
     background: var(--blue);

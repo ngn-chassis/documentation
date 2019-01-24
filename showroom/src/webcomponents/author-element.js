@@ -585,7 +585,7 @@ const AuthorElement = superClass => class extends superClass {
     if (target) {
       return target.dispatchEvent(event)
     }
-    
+
     this.dispatchEvent(event)
   }
 
@@ -604,3 +604,5 @@ const AuthorElement = superClass => class extends superClass {
     this.addEventListener(evtName, handler)
   }
 }
+
+// export default AuthorElement

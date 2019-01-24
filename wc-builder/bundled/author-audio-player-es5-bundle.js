@@ -81,27 +81,43 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(1);
+var _interopRequireDefault = __webpack_require__(2);
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(2));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(3));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(3));
+var _createClass2 = _interopRequireDefault(__webpack_require__(4));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(4));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(5));
 
 var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(7));
 
 var _inherits2 = _interopRequireDefault(__webpack_require__(8));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(0));
 
 customElements.define('author-audio-player',
 /*#__PURE__*/
@@ -114,9 +130,18 @@ function (_AuthorElement) {
     (0, _classCallCheck2.default)(this, _class);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}author-audio-player{display:block}author-audio-player *,author-audio-player :after,author-audio-player :before{box-sizing:border-box}</style><slot></slot></template>"));
 
-    _this.UTIL.definePrivateProperties({
-      playlist: null,
-      currentSong: null,
+    _this.UTIL.defineProperties({
+      playlist: {
+        private: true,
+        default: null
+      },
+      currentSong: {
+        private: true,
+        default: null
+      }
+    });
+
+    _this.UTIL.definePrivateMethods({
       playButtonClickHandler: function playButtonClickHandler(evt) {
         evt.preventDefault();
 
@@ -158,31 +183,38 @@ function (_AuthorElement) {
       }
     });
 
-    return _this;
-  }
+    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      connected: function connected() {
+        if (typeof Howler === 'undefined' || typeof Howl === 'undefined') {
+          return _this.UTIL.throwError({
+            type: 'dependency',
+            vars: {
+              name: 'Howler',
+              url: 'https://github.com/goldfire/howler.js/'
+            }
+          });
+        }
+      },
+      disconnected: function disconnected() {
+        if (_this.playButton) {
+          _this.playButton.removeEventListener('click', _this.PRIVATE.playButtonClickHandler);
+        }
 
-  (0, _createClass2.default)(_class, [{
-    key: "connectedCallback",
-    value: function connectedCallback() {
-      var _this2 = this;
+        if (_this.stopButton) {
+          _this.stopButton.removeEventListener('click', _this.PRIVATE.stopButtonClickHandler);
+        }
 
-      if (typeof Howler === 'undefined' || typeof Howl === 'undefined') {
-        return this.UTIL.throwError({
-          type: 'dependency',
-          vars: {
-            name: 'Howler',
-            url: 'https://github.com/goldfire/howler.js/'
-          }
-        });
-      }
-
-      setTimeout(function () {
-        for (var child in _this2.children) {
-          var element = _this2.children[child];
+        if (_this.pauseButton) {
+          _this.pauseButton.removeEventListener('click', _this.PRIVATE.pauseButtonClickHandler);
+        }
+      },
+      rendered: function rendered() {
+        for (var child in _this.children) {
+          var element = _this.children[child];
 
           switch (element.localName) {
             case 'button':
-              _this2.PRIVATE.initializeButton(element);
+              _this.PRIVATE.initializeButton(element);
 
               break;
 
@@ -190,27 +222,17 @@ function (_AuthorElement) {
               continue;
           }
         }
-      }, 0);
-    }
-  }, {
-    key: "disconnectedCallback",
-    value: function disconnectedCallback() {
-      if (this.playButton) {
-        this.playButton.removeEventListener('click', this.PRIVATE.playButtonClickHandler);
       }
+    });
 
-      if (this.stopButton) {
-        this.stopButton.removeEventListener('click', this.PRIVATE.stopButtonClickHandler);
-      }
+    return _this;
+  }
 
-      if (this.pauseButton) {
-        this.pauseButton.removeEventListener('click', this.PRIVATE.pauseButtonClickHandler);
-      }
-    }
-  }, {
+  (0, _createClass2.default)(_class, [{
     key: "play",
     value: function play() {
-      return this.PRIVATE.currentSong.audio.play();
+      var currentSong = this.PRIVATE.currentSong;
+      return currentSong ? currentSong.audio.play() : null;
     }
   }, {
     key: "stop",
@@ -279,7 +301,7 @@ function (_AuthorElement) {
       });
     },
     set: function set(playlist) {
-      var _this3 = this;
+      var _this2 = this;
 
       if (!Array.isArray(playlist)) {
         return this.UTIL.throwError({
@@ -290,7 +312,7 @@ function (_AuthorElement) {
 
       this.PRIVATE.playlist = playlist.map(function (song) {
         if (!song.hasOwnProperty('path')) {
-          _this3.UTIL.throwError({
+          _this2.UTIL.throwError({
             message: 'Song must include a "path" property!'
           });
 
@@ -298,11 +320,7 @@ function (_AuthorElement) {
         }
 
         if (!song.hasOwnProperty('id')) {
-          _this3.UTIL.throwError({
-            message: 'Song must include a unique "id" property!'
-          });
-
-          return false;
+          song.id = _this2.UTIL.generateGuid('song_');
         }
 
         var audio = new Howl({
@@ -332,7 +350,7 @@ function (_AuthorElement) {
 }(AuthorElement(HTMLElement)));
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -344,7 +362,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -356,7 +374,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -378,12 +396,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(5);
+var _typeof = __webpack_require__(6);
 
-var assertThisInitialized = __webpack_require__(6);
+var assertThisInitialized = __webpack_require__(0);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -396,7 +414,7 @@ function _possibleConstructorReturn(self, call) {
 module.exports = _possibleConstructorReturn;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
@@ -416,20 +434,6 @@ function _typeof(obj) {
 }
 
 module.exports = _typeof;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-module.exports = _assertThisInitialized;
 
 /***/ }),
 /* 7 */

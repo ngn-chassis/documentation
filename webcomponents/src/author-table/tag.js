@@ -1,4 +1,4 @@
-class AuthorTableElement extends HTMLElement {
+class AuthorDataTableElement extends HTMLElement {
   constructor () {
     super()
 
@@ -85,4 +85,4 @@ class AuthorTableElement extends HTMLElement {
   }
 }
 
-customElements.define('author-table', AuthorTableElement)
+customElements.define('author-table', AuthorDataTableElement)

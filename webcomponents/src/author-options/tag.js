@@ -3,7 +3,7 @@ class AuthorOptionsElement extends HTMLElement {
     super()
 
     this.UTIL.defineProperties({
-      cherryPicked: {
+      cherryPickedOptions: {
         private: true
       },
 
@@ -408,7 +408,7 @@ class AuthorOptionsElement extends HTMLElement {
 
       handleClickSelection: (detail, cb) => {
         let {
-          cherryPicked,
+          cherryPickedOptions,
           getCurrentSelection,
           lastSelectedIndex,
           Selection,
@@ -420,7 +420,7 @@ class AuthorOptionsElement extends HTMLElement {
 
         if (shiftKey && lastSelectedIndex !== null) {
           this.PRIVATE.lastSelectedIndex = index
-          this.PRIVATE.cherryPicked.clear()
+          this.PRIVATE.cherryPickedOptions.clear()
           let bounds = [index, selectionStartIndex].sort((a, b) => a - b)
           return cb(new Selection(bounds[0] === bounds[1] ? [selectedOption] : this.options.slice(bounds[0], bounds[1] + 1)))
         }
@@ -431,8 +431,8 @@ class AuthorOptionsElement extends HTMLElement {
           this.PRIVATE.lastSelectedIndex = index
           this.PRIVATE.selectionStartIndex = index
 
-          this.PRIVATE.cherryPicked.options = selectedOption.selected ? currentSelection.filter(option => option !== selectedOption) : this.options.filter(option => option === selectedOption || currentSelection.includes(option))
-          return cb(this.PRIVATE.cherryPicked)
+          this.PRIVATE.cherryPickedOptions.options = selectedOption.selected ? currentSelection.filter(option => option !== selectedOption) : this.options.filter(option => option === selectedOption || currentSelection.includes(option))
+          return cb(this.PRIVATE.cherryPickedOptions)
         }
 
         if (currentSelection.length === 1 && index === lastSelectedIndex) {
@@ -441,13 +441,13 @@ class AuthorOptionsElement extends HTMLElement {
 
         this.PRIVATE.lastSelectedIndex = index
         this.PRIVATE.selectionStartIndex = index
-        this.PRIVATE.cherryPicked.clear()
+        this.PRIVATE.cherryPickedOptions.clear()
         return cb(new Selection([selectedOption]))
       },
 
       handleKeyboardSelection: (detail, cb) => {
         let {
-          cherryPicked,
+          cherryPickedOptions,
           getCurrentSelection,
           Selection,
           selectionStartIndex
@@ -461,7 +461,7 @@ class AuthorOptionsElement extends HTMLElement {
 
         if (!shiftKey || currentSelection.length === 0) {
           this.PRIVATE.selectionStartIndex = index
-          this.PRIVATE.cherryPicked.clear()
+          this.PRIVATE.cherryPickedOptions.clear()
           return cb(new Selection([selectedOption]))
         }
 
@@ -470,8 +470,8 @@ class AuthorOptionsElement extends HTMLElement {
           let bounds = [index, selectionStartIndex].sort()
           let selection = new Selection(bounds[0] === bounds[1] ? [selectedOption] : this.options.slice(bounds[0], bounds[1] + 1))
 
-          if (cherryPicked.length > 0) {
-            selection.options = this.options.filter(option => selection.includes(option) || cherryPicked.includes(option))
+          if (cherryPickedOptions.length > 0) {
+            selection.options = this.options.filter(option => selection.includes(option) || cherryPickedOptions.includes(option))
           }
 
           return cb(selection)
@@ -480,7 +480,7 @@ class AuthorOptionsElement extends HTMLElement {
 
       optionSelectionHandler: evt => {
         let {
-          cherryPicked,
+          cherryPickedOptions,
           diffSelections,
           getCurrentSelection,
           generateAuthorHTMLCollectionConstructor,
@@ -489,8 +489,8 @@ class AuthorOptionsElement extends HTMLElement {
           Selection
         } = this.PRIVATE
 
-        if (cherryPicked === null) {
-          this.PRIVATE.cherryPicked = new Selection([])
+        if (cherryPickedOptions === null) {
+          this.PRIVATE.cherryPickedOptions = new Selection([])
         }
 
         let { index, keyboard } = evt.detail
@@ -554,7 +554,7 @@ class AuthorOptionsElement extends HTMLElement {
 
           default: return
         }
-      },
+      }
     })
 
     this.UTIL.registerListeners(this, {

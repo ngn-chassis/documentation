@@ -26,7 +26,7 @@ class AuthorOptionElement extends HTMLElement {
     })
 
     this.UTIL.definePrivateMethods({
-      mouseButtonDown: evt => {
+      mouseButtonIsDown: evt => {
         let code = evt.buttons !== undefined ? evt.buttons : evt.nativeEvent.which
         return code >= 1
       },
@@ -36,7 +36,7 @@ class AuthorOptionElement extends HTMLElement {
       mouseoutHandler: evt => this.hover = false,
 
       mouseoverHandler: evt => {
-        let mousedown = this.PRIVATE.mouseButtonDown(evt)
+        let mousedown = this.PRIVATE.mouseButtonIsDown(evt)
 
         if (!(this.parentNode.multiple && mousedown)) {
           this.hover = true
@@ -44,7 +44,7 @@ class AuthorOptionElement extends HTMLElement {
         }
 
         let { shiftKey, metaKey, ctrlKey } = evt
-        this.PRIVATE.select(shiftKey, metaKey, ctrlKey, mousedown)
+        this.PRIVATE.select(true, metaKey, ctrlKey, mousedown)
       },
 
       parentStateChangeHandler: evt => {
@@ -52,14 +52,25 @@ class AuthorOptionElement extends HTMLElement {
 
         switch (name) {
           case 'multiple':
-            if (value) {
-              this.removeEventListener('mouseup', this.PRIVATE.selectionHandler)
-              this.addEventListener('mousedown', this.PRIVATE.selectionHandler)
-            } else {
-              this.addEventListener('mouseup', this.PRIVATE.selectionHandler)
-              this.removeEventListener('mousedown', this.PRIVATE.selectionHandler)
-            }
+            return this.PRIVATE.setMode(value ? 'select-multiple' : 'select-one')
+
+          default: return
+        }
+      },
+
+      setMode: mode => {
+        switch (mode) {
+          case 'select-multiple':
+            this.off('mouseup', this.PRIVATE.selectionHandler)
+            this.on('mousedown', this.PRIVATE.selectionHandler)
             break
+
+          case 'select-one':
+            this.on('mouseup', this.PRIVATE.selectionHandler)
+            this.off('mousedown', this.PRIVATE.selectionHandler)
+            break
+
+          default: return
         }
       },
 
@@ -77,6 +88,7 @@ class AuthorOptionElement extends HTMLElement {
     this.UTIL.registerListeners(this, {
       connected: () => {
         this.parentNode.on('state.change', this.PRIVATE.parentStateChangeHandler)
+        this.parentNode.multiple && this.PRIVATE.setMode('select-multiple')
       },
 
       disconnected: () => {

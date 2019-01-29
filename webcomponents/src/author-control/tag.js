@@ -60,7 +60,7 @@ class AuthorFormControlElement extends HTMLElement {
 
     this.UTIL.definePrivateMethods({
       initDatalist: (input, datalist) => {
-        this.type = 'field'
+        this.type = 'select'
 
         if (!customElements.get('author-datalist')) {
           console.dir(input);

@@ -171,7 +171,7 @@ function (_AuthorElement) {
     });
 
     _this.UTIL.definePrivateMethods({
-      mouseButtonDown: function mouseButtonDown(evt) {
+      mouseButtonIsDown: function mouseButtonIsDown(evt) {
         var code = evt.buttons !== undefined ? evt.buttons : evt.nativeEvent.which;
         return code >= 1;
       },
@@ -182,7 +182,7 @@ function (_AuthorElement) {
         return _this.hover = false;
       },
       mouseoverHandler: function mouseoverHandler(evt) {
-        var mousedown = _this.PRIVATE.mouseButtonDown(evt);
+        var mousedown = _this.PRIVATE.mouseButtonIsDown(evt);
 
         if (!(_this.parentNode.multiple && mousedown)) {
           _this.hover = true;
@@ -193,7 +193,7 @@ function (_AuthorElement) {
             metaKey = evt.metaKey,
             ctrlKey = evt.ctrlKey;
 
-        _this.PRIVATE.select(shiftKey, metaKey, ctrlKey, mousedown);
+        _this.PRIVATE.select(true, metaKey, ctrlKey, mousedown);
       },
       parentStateChangeHandler: function parentStateChangeHandler(evt) {
         var _evt$detail = evt.detail,
@@ -202,17 +202,30 @@ function (_AuthorElement) {
 
         switch (name) {
           case 'multiple':
-            if (value) {
-              _this.removeEventListener('mouseup', _this.PRIVATE.selectionHandler);
+            return _this.PRIVATE.setMode(value ? 'select-multiple' : 'select-one');
 
-              _this.addEventListener('mousedown', _this.PRIVATE.selectionHandler);
-            } else {
-              _this.addEventListener('mouseup', _this.PRIVATE.selectionHandler);
+          default:
+            return;
+        }
+      },
+      setMode: function setMode(mode) {
+        switch (mode) {
+          case 'select-multiple':
+            _this.off('mouseup', _this.PRIVATE.selectionHandler);
 
-              _this.removeEventListener('mousedown', _this.PRIVATE.selectionHandler);
-            }
+            _this.on('mousedown', _this.PRIVATE.selectionHandler);
 
             break;
+
+          case 'select-one':
+            _this.on('mouseup', _this.PRIVATE.selectionHandler);
+
+            _this.off('mousedown', _this.PRIVATE.selectionHandler);
+
+            break;
+
+          default:
+            return;
         }
       },
       select: function select() {
@@ -244,6 +257,8 @@ function (_AuthorElement) {
     _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
       connected: function connected() {
         _this.parentNode.on('state.change', _this.PRIVATE.parentStateChangeHandler);
+
+        _this.parentNode.multiple && _this.PRIVATE.setMode('select-multiple');
       },
       disconnected: function disconnected() {
         _this.off('mousedown', _this.PRIVATE.selectionHandler);

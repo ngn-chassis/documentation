@@ -128,10 +128,10 @@ function (_AuthorElement) {
     var _this;
 
     (0, _classCallCheck2.default)(this, _class);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:block;width:100%}:host *,:host :after,:host :before{box-sizing:border-box}author-options{display:block;width:100%}author-options *,author-options :after,author-options :before{box-sizing:border-box}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptions\"></slot><slot></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>"));
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{contain:content;display:block;width:100%}:host *,:host :after,:host :before{box-sizing:border-box}author-options{contain:content;display:block;width:100%}author-options *,author-options :after,author-options :before{box-sizing:border-box}</style><slot name=\"afterbegin\"></slot><slot name=\"beforeoptions\"></slot><slot></slot><slot name=\"afteroptions\"></slot><slot name=\"beforeend\"></slot></template>"));
 
     _this.UTIL.defineProperties({
-      cherryPicked: {
+      cherryPickedOptions: {
         private: true
       },
       form: {
@@ -672,7 +672,7 @@ function (_AuthorElement) {
       },
       handleClickSelection: function handleClickSelection(detail, cb) {
         var _this$PRIVATE = _this.PRIVATE,
-            cherryPicked = _this$PRIVATE.cherryPicked,
+            cherryPickedOptions = _this$PRIVATE.cherryPickedOptions,
             getCurrentSelection = _this$PRIVATE.getCurrentSelection,
             lastSelectedIndex = _this$PRIVATE.lastSelectedIndex,
             Selection = _this$PRIVATE.Selection,
@@ -686,7 +686,7 @@ function (_AuthorElement) {
         if (shiftKey && lastSelectedIndex !== null) {
           _this.PRIVATE.lastSelectedIndex = index;
 
-          _this.PRIVATE.cherryPicked.clear();
+          _this.PRIVATE.cherryPickedOptions.clear();
 
           var bounds = [index, selectionStartIndex].sort(function (a, b) {
             return a - b;
@@ -699,12 +699,12 @@ function (_AuthorElement) {
         if (ctrlKey || metaKey) {
           _this.PRIVATE.lastSelectedIndex = index;
           _this.PRIVATE.selectionStartIndex = index;
-          _this.PRIVATE.cherryPicked.options = selectedOption.selected ? currentSelection.filter(function (option) {
+          _this.PRIVATE.cherryPickedOptions.options = selectedOption.selected ? currentSelection.filter(function (option) {
             return option !== selectedOption;
           }) : _this.options.filter(function (option) {
             return option === selectedOption || currentSelection.includes(option);
           });
-          return cb(_this.PRIVATE.cherryPicked);
+          return cb(_this.PRIVATE.cherryPickedOptions);
         }
 
         if (currentSelection.length === 1 && index === lastSelectedIndex) {
@@ -714,13 +714,13 @@ function (_AuthorElement) {
         _this.PRIVATE.lastSelectedIndex = index;
         _this.PRIVATE.selectionStartIndex = index;
 
-        _this.PRIVATE.cherryPicked.clear();
+        _this.PRIVATE.cherryPickedOptions.clear();
 
         return cb(new Selection([selectedOption]));
       },
       handleKeyboardSelection: function handleKeyboardSelection(detail, cb) {
         var _this$PRIVATE2 = _this.PRIVATE,
-            cherryPicked = _this$PRIVATE2.cherryPicked,
+            cherryPickedOptions = _this$PRIVATE2.cherryPickedOptions,
             getCurrentSelection = _this$PRIVATE2.getCurrentSelection,
             Selection = _this$PRIVATE2.Selection,
             selectionStartIndex = _this$PRIVATE2.selectionStartIndex;
@@ -733,7 +733,7 @@ function (_AuthorElement) {
         if (!shiftKey || currentSelection.length === 0) {
           _this.PRIVATE.selectionStartIndex = index;
 
-          _this.PRIVATE.cherryPicked.clear();
+          _this.PRIVATE.cherryPickedOptions.clear();
 
           return cb(new Selection([selectedOption]));
         } // 1 option or more selected
@@ -743,9 +743,9 @@ function (_AuthorElement) {
           var bounds = [index, selectionStartIndex].sort();
           var selection = new Selection(bounds[0] === bounds[1] ? [selectedOption] : _this.options.slice(bounds[0], bounds[1] + 1));
 
-          if (cherryPicked.length > 0) {
+          if (cherryPickedOptions.length > 0) {
             selection.options = _this.options.filter(function (option) {
-              return selection.includes(option) || cherryPicked.includes(option);
+              return selection.includes(option) || cherryPickedOptions.includes(option);
             });
           }
 
@@ -754,7 +754,7 @@ function (_AuthorElement) {
       },
       optionSelectionHandler: function optionSelectionHandler(evt) {
         var _this$PRIVATE3 = _this.PRIVATE,
-            cherryPicked = _this$PRIVATE3.cherryPicked,
+            cherryPickedOptions = _this$PRIVATE3.cherryPickedOptions,
             diffSelections = _this$PRIVATE3.diffSelections,
             getCurrentSelection = _this$PRIVATE3.getCurrentSelection,
             generateAuthorHTMLCollectionConstructor = _this$PRIVATE3.generateAuthorHTMLCollectionConstructor,
@@ -762,8 +762,8 @@ function (_AuthorElement) {
             handleKeyboardSelection = _this$PRIVATE3.handleKeyboardSelection,
             Selection = _this$PRIVATE3.Selection;
 
-        if (cherryPicked === null) {
-          _this.PRIVATE.cherryPicked = new Selection([]);
+        if (cherryPickedOptions === null) {
+          _this.PRIVATE.cherryPickedOptions = new Selection([]);
         }
 
         var _evt$detail = evt.detail,

@@ -365,5 +365,9 @@ components {
 				display: none;
 			} */
 		}
+
+		/* @state invalid {
+			border: 3px solid red;
+		} */
 	}
 }

@@ -252,101 +252,33 @@ function (_AuthorElement) {
           return !comparable.includes(option);
         });
       },
-      generateAuthorHTMLCollectionConstructor: function generateAuthorHTMLCollectionConstructor() {
-        var _p = new WeakMap();
-
-        return (
-          /*#__PURE__*/
-          function () {
-            function AuthorHTMLCollection(arr) {
-              var _this2 = this;
-
-              (0, _classCallCheck2.default)(this, AuthorHTMLCollection);
-
-              _p.set(this, {
-                arr: arr
-              });
-
-              arr.forEach(function (node, index) {
-                _this2[index] = node;
-
-                if (node.id) {
-                  _this2[node.id] = node;
-                }
-              });
-            }
-
-            (0, _createClass2.default)(AuthorHTMLCollection, [{
-              key: "item",
-              value: function item(index) {
-                return _p.get(this).arr[index];
-              }
-            }, {
-              key: "namedItem",
-              value: function namedItem(name) {
-                var matches = _p.get(this).arr.filter(function (item) {
-                  return item.id === name || item.name === name;
-                });
-
-                return matches.length > 0 ? matches[0] : null;
-              }
-            }, {
-              key: Symbol.iterator,
-              value: function value() {
-                var _this3 = this;
-
-                var index = 0;
-                return {
-                  next: function next() {
-                    var result = {
-                      value: _p.get(_this3).arr[index],
-                      done: !(index in _p.get(_this3).arr)
-                    };
-                    index++;
-                    return result;
-                  }
-                };
-              }
-            }, {
-              key: Symbol.toStringTag,
-              value: function value() {
-                return 'AuthorHTMLCollection';
-              }
-            }, {
-              key: "length",
-              get: function get() {
-                return _p.get(this).arr.length;
-              }
-            }]);
-            return AuthorHTMLCollection;
-          }()
-        );
-      },
       generateAuthorHTMLOptionsCollectionConstructor: function generateAuthorHTMLOptionsCollectionConstructor() {
         var _p = new WeakMap();
 
+        var AuthorHTMLCollection = _this.PRIVATE.generateAuthorHTMLCollectionConstructor();
+
         var AuthorHTMLOptionsCollection =
         /*#__PURE__*/
-        function (_this$PRIVATE$generat) {
-          (0, _inherits2.default)(AuthorHTMLOptionsCollection, _this$PRIVATE$generat);
+        function (_AuthorHTMLCollection) {
+          (0, _inherits2.default)(AuthorHTMLOptionsCollection, _AuthorHTMLCollection);
 
           function AuthorHTMLOptionsCollection(arr) {
-            var _this4;
+            var _this2;
 
             var selectedIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : -1;
             var add = arguments.length > 2 ? arguments[2] : undefined;
             var remove = arguments.length > 3 ? arguments[3] : undefined;
             (0, _classCallCheck2.default)(this, AuthorHTMLOptionsCollection);
-            _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorHTMLOptionsCollection).call(this, arr));
-            _this4.selectedIndex = selectedIndex;
-            _this4.add = add;
-            _this4.remove = remove;
+            _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorHTMLOptionsCollection).call(this, arr));
+            _this2.selectedIndex = selectedIndex;
+            _this2.add = add;
+            _this2.remove = remove;
 
-            _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this4)), {
+            _p.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this2)), {
               arr: arr
             });
 
-            return _this4;
+            return _this2;
           }
 
           (0, _createClass2.default)(AuthorHTMLOptionsCollection, [{
@@ -356,7 +288,7 @@ function (_AuthorElement) {
             }
           }]);
           return AuthorHTMLOptionsCollection;
-        }(_this.PRIVATE.generateAuthorHTMLCollectionConstructor());
+        }(AuthorHTMLCollection);
 
         return AuthorHTMLOptionsCollection;
       },
@@ -860,13 +792,13 @@ function (_AuthorElement) {
   }, {
     key: "deselectAll",
     value: function deselectAll() {
-      var _this5 = this;
+      var _this3 = this;
 
       var showPlaceholder = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       this.options.filter(function (option) {
         return option.selected;
       }).forEach(function (option, index, options) {
-        _this5.deselect(option, index = options.length - 1 && showPlaceholder);
+        _this3.deselect(option, index = options.length - 1 && showPlaceholder);
       });
     }
   }, {
@@ -915,10 +847,10 @@ function (_AuthorElement) {
   }, {
     key: "unHoverAllOptions",
     value: function unHoverAllOptions() {
-      var _this6 = this;
+      var _this4 = this;
 
       this.options.forEach(function (option, index) {
-        return _this6.unHoverOption(index);
+        return _this4.unHoverOption(index);
       });
     }
   }, {
@@ -929,7 +861,7 @@ function (_AuthorElement) {
   }, {
     key: "selectedIndex",
     get: function get() {
-      return this.selectedOptions.length > 0 ? this.selectedOptions.item(0).index : null;
+      return this.selectedOptions.length > 0 ? this.selectedOptions.item(0).index : -1;
     },
     set: function set(index) {
       this.emit('option.selected', {

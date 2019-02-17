@@ -1,5 +1,4 @@
-- Handle mouse dragging
-- Handle <chassis-options> scrolling
+- Handle <author-options> scrolling
 - Think about whether its worth it to add "size" attr for select-one menus
 - Make sure validation works properly
 - Figure out a way to insert custom svg icons for chassis-selected-options

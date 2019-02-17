@@ -135,6 +135,9 @@ function (_AuthorElement) {
     });
 
     _this.UTIL.defineProperties({
+      initialValue: {
+        default: null
+      },
       input: {
         private: true
       },
@@ -248,6 +251,7 @@ function (_AuthorElement) {
         input.slot = input.slot || 'input';
         _this.PRIVATE.input = input;
         input.id = _this.PRIVATE.guid;
+        _this.initialValue = input.value;
 
         if (_this.PRIVATE.fieldInputTypes.indexOf(input.type) >= 0) {
           _this.type = 'field';
@@ -256,6 +260,10 @@ function (_AuthorElement) {
         if (_this.PRIVATE.toggleInputTypes.indexOf(input.type) >= 0) {
           _this.type = 'toggle';
         }
+
+        _this.UTIL.registerListeners(_this.PRIVATE.input, {
+          input: _this.PRIVATE.inputHandler
+        });
       },
       initLabel: function initLabel(label) {
         _this.label = label;
@@ -304,9 +312,14 @@ function (_AuthorElement) {
             }
           }
         }
+
+        _this.UTIL.registerListeners(_this.PRIVATE.input, {
+          change: _this.PRIVATE.inputHandler
+        });
       },
       initMultipleSelectMenu: function initMultipleSelectMenu(select) {
         _this.type = 'select';
+        _this.initialValue = select.selectedOptions;
 
         if (!customElements.get('author-select')) {
           return _this.PRIVATE.initDefaultSelect(select);
@@ -355,15 +368,32 @@ function (_AuthorElement) {
         _this.appendChild(surrogate);
 
         _this.PRIVATE.input = surrogate;
+
+        _this.UTIL.registerListeners(_this.PRIVATE.input, {
+          change: _this.PRIVATE.inputHandler
+        });
       },
       initSelectMenu: function initSelectMenu(select) {
         _this.type = 'select';
+        _this.initialValue = select.selectedIndex;
 
         if (!customElements.get('author-select')) {
           return _this.PRIVATE.initDefaultSelect(select);
         }
 
         _this.PRIVATE.initSelectSurrogate(select, document.createElement('author-select'));
+      },
+      inputHandler: function inputHandler(evt) {
+        return _this.PRIVATE.validate(evt.target);
+      },
+      validate: function validate(input) {
+        if (input.checkValidity()) {
+          _this.removeAttribute('invalid');
+        } else {
+          _this.setAttribute('invalid', '');
+
+          _this.emit('invalid');
+        }
       }
     });
 
@@ -403,14 +433,20 @@ function (_AuthorElement) {
             return _this.PRIVATE.initMultipleSelectMenu(node);
 
           default:
+            _this.initialValue = node.value;
             return;
         }
       });
       observer.disconnect();
     });
 
-    _this.UTIL.registerListener((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), 'connected', function () {
-      _this.PRIVATE.guid = _this.UTIL.generateGuid('control');
+    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      connected: function connected() {
+        return _this.PRIVATE.guid = _this.UTIL.generateGuid('control_');
+      },
+      rendered: function rendered() {
+        return _this.PRIVATE.validate(_this.PRIVATE.input);
+      }
     });
 
     return _this;
@@ -431,7 +467,7 @@ function (_AuthorElement) {
   }], [{
     key: "observedAttributes",
     get: function get() {
-      return ['disabled'];
+      return ['disabled', 'invalid'];
     }
   }]);
   return _class;

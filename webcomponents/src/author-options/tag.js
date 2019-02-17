@@ -181,61 +181,12 @@ class AuthorOptionsElement extends HTMLElement {
         return comparator.filter(option => !comparable.includes(option))
       },
 
-      generateAuthorHTMLCollectionConstructor () {
-        let _p = new WeakMap()
-
-        return class AuthorHTMLCollection {
-          constructor (arr) {
-            _p.set(this, {arr})
-            arr.forEach((node, index) => {
-              this[index] = node
-
-              if (node.id) {
-                this[node.id] = node
-              }
-            })
-          }
-
-          get length () {
-            return _p.get(this).arr.length
-          }
-
-          item (index) {
-            return _p.get(this).arr[index]
-          }
-
-          namedItem (name) {
-            let matches = _p.get(this).arr.filter(item => item.id === name || item.name === name)
-            return matches.length > 0 ? matches[0] : null
-          }
-
-          [Symbol.iterator] () {
-            let index = 0
-
-            return {
-              next: () => {
-                let result = {
-                  value: _p.get(this).arr[index],
-                  done: !(index in _p.get(this).arr)
-                }
-
-                index++
-
-                return result
-              }
-            }
-          }
-
-          [Symbol.toStringTag] () {
-            return 'AuthorHTMLCollection'
-          }
-        }
-      },
-
       generateAuthorHTMLOptionsCollectionConstructor: () => {
         let _p = new WeakMap()
 
-        let AuthorHTMLOptionsCollection = class AuthorHTMLOptionsCollection extends this.PRIVATE.generateAuthorHTMLCollectionConstructor() {
+        let AuthorHTMLCollection = this.PRIVATE.generateAuthorHTMLCollectionConstructor()
+
+        let AuthorHTMLOptionsCollection = class AuthorHTMLOptionsCollection extends AuthorHTMLCollection {
           constructor (arr, selectedIndex = -1, add, remove) {
             super(arr)
             this.selectedIndex = selectedIndex
@@ -576,7 +527,7 @@ class AuthorOptionsElement extends HTMLElement {
   get selectedIndex () {
     return this.selectedOptions.length > 0
       ? this.selectedOptions.item(0).index
-      : null
+      : -1
   }
 
   set selectedIndex (index) {

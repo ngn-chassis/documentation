@@ -63,9 +63,15 @@ chassis-select.pill {
     @chassis apply-variation pill;
   }
 
-  & option:checked {
-    color: red;
+  & author-pane-resize-handle {
+    min-height: 1em;
+    min-width: 1em;
+    background: red;
   }
+
+  /* & :invalid {
+    border: 3px solid red;
+  } */
 
   & #cycle {
     height: auto;

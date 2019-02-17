@@ -204,13 +204,22 @@ function (_AuthorElement) {
         }
       },
       willValidate: {
-        readonly: true
+        readonly: true,
+        get: function get() {
+          return _this.sourceElement.willValidate;
+        }
       },
       validationMessage: {
-        readonly: true
+        readonly: true,
+        get: function get() {
+          return _this.sourceElement.validationMessage;
+        }
       },
       validity: {
-        readonly: true
+        readonly: true,
+        get: function get() {
+          return _this.sourceElement.validity;
+        }
       }
     });
 
@@ -321,6 +330,12 @@ function (_AuthorElement) {
 
         _this.emit('options.selected', evt.detail.options, _this.selectedOptionsElement);
 
+        if (_this.checkValidity()) {
+          _this.removeAttribute('invalid');
+        } else {
+          _this.setAttribute('invalid', '');
+        }
+
         if (afterChange && typeof afterChange === 'function') {
           afterChange(evt.detail.previous, _this.selectedOptions);
         }
@@ -365,6 +380,9 @@ function (_AuthorElement) {
       },
       toggleHandler: function toggleHandler(evt) {
         return _this.open = !_this.open;
+      },
+      validationHandler: function validationHandler(evt) {
+        return _this.emit('invalid');
       }
     });
 
@@ -405,6 +423,16 @@ function (_AuthorElement) {
           default:
             return;
         }
+      },
+      connected: function connected() {
+        _this.sourceElement.addEventListener('invalid', _this.PRIVATE.validationHandler);
+
+        if (!_this.checkValidity()) {
+          _this.setAttribute('invalid', '');
+        }
+      },
+      disconnected: function disconnected() {
+        _this.sourceElement.removeEventListener('invalid', _this.PRIVATE.validationHandler);
       },
       blur: _this.PRIVATE.blurHandler,
       focus: _this.PRIVATE.focusHandler,
@@ -557,6 +585,17 @@ function (_AuthorElement) {
       this.optionsElement.removeOptionByIndex(index);
     }
   }, {
+    key: "reportValidity",
+    value: function reportValidity() {
+      var isValid = this.sourceElement.checkValidity();
+
+      if (isValid) {
+        this.removeAttribute('invalid');
+      } else {
+        this.setAttribute('invalid', '');
+      }
+    }
+  }, {
     key: "setCustomValidity",
     value: function setCustomValidity(string) {
       this.sourceElement.setCustomValidity(string);
@@ -590,7 +629,7 @@ function (_AuthorElement) {
   }, {
     key: "selectedIndex",
     get: function get() {
-      return this.optionsElement ? this.optionsElement.selectedIndex : null;
+      return this.optionsElement ? this.optionsElement.selectedIndex : -1;
     },
     set: function set(index) {
       if (index < 0) {

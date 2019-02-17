@@ -7,6 +7,10 @@ class AuthorFormControlElement extends HTMLElement {
     })
 
     this.UTIL.defineProperties({
+      initialValue: {
+        default: null
+      },
+
       input: {
         private: true
       },
@@ -108,6 +112,7 @@ class AuthorFormControlElement extends HTMLElement {
         input.slot = input.slot || 'input'
         this.PRIVATE.input = input
         input.id = this.PRIVATE.guid
+        this.initialValue = input.value
 
         if (this.PRIVATE.fieldInputTypes.indexOf(input.type) >= 0) {
           this.type = 'field'
@@ -116,6 +121,10 @@ class AuthorFormControlElement extends HTMLElement {
         if (this.PRIVATE.toggleInputTypes.indexOf(input.type) >= 0) {
           this.type = 'toggle'
         }
+
+        this.UTIL.registerListeners(this.PRIVATE.input, {
+          input: this.PRIVATE.inputHandler
+        })
       },
 
       initLabel: label => {
@@ -145,10 +154,15 @@ class AuthorFormControlElement extends HTMLElement {
             option.removeAttribute('label')
           }
         }
+
+        this.UTIL.registerListeners(this.PRIVATE.input, {
+          change: this.PRIVATE.inputHandler
+        })
       },
 
       initMultipleSelectMenu: select => {
         this.type = 'select'
+        this.initialValue = select.selectedOptions
 
         if (!customElements.get('author-select')) {
           return this.PRIVATE.initDefaultSelect(select)
@@ -176,16 +190,32 @@ class AuthorFormControlElement extends HTMLElement {
 
         this.appendChild(surrogate)
         this.PRIVATE.input = surrogate
+
+        this.UTIL.registerListeners(this.PRIVATE.input, {
+          change: this.PRIVATE.inputHandler
+        })
       },
 
       initSelectMenu: select => {
         this.type = 'select'
+        this.initialValue = select.selectedIndex
 
         if (!customElements.get('author-select')) {
           return this.PRIVATE.initDefaultSelect(select)
         }
 
         this.PRIVATE.initSelectSurrogate(select, document.createElement('author-select'))
+      },
+
+      inputHandler: evt => this.PRIVATE.validate(evt.target),
+
+      validate: input => {
+        if (input.checkValidity()) {
+          this.removeAttribute('invalid')
+        } else {
+          this.setAttribute('invalid', '')
+          this.emit('invalid')
+        }
       }
     })
 
@@ -223,20 +253,23 @@ class AuthorFormControlElement extends HTMLElement {
 
             return this.PRIVATE.initMultipleSelectMenu(node)
 
-          default: return
+          default:
+            this.initialValue = node.value
+            return
         }
       })
 
       observer.disconnect()
     })
 
-    this.UTIL.registerListener(this, 'connected', () => {
-      this.PRIVATE.guid = this.UTIL.generateGuid('control')
+    this.UTIL.registerListeners(this, {
+      connected: () => this.PRIVATE.guid = this.UTIL.generateGuid('control_'),
+      rendered: () => this.PRIVATE.validate(this.PRIVATE.input)
     })
   }
 
   static get observedAttributes () {
-    return ['disabled']
+    return ['disabled', 'invalid']
   }
 
   get input () {

@@ -12,51 +12,70 @@
     <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
     <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
 
+    <!-- <script src="js/author-dragdrop.js"></script> -->
     <script src="webcomponents/author-element.js"></script>
-    <script src="webcomponents/author-pane.js"></script>
-    <script src="webcomponents/author-pane-resize-handle.js"></script>
-    <script src="webcomponents/author-test.js"></script>
+    <script src="webcomponents/author-draggable.js"></script>
+    <script src="webcomponents/author-droptarget.js"></script>
   </head>
 
   <body class="layout showroom">
-    <author-test></author-test>
+    <header>
+      <div class="width constraint">
+        <h1>NGN Chassis Documentation</h1>
+        <aside class="links">
+          <h2 class="hidden">Navigation</h2>
+          <a href="javascript:;">Showroom</a>
+          <a href="https://github.com/ngnjs" target="_blank">Github</a>
+        </aside>
+      </div>
+    </header>
 
-    <author-pane fullscreen>
-      <author-pane class="header">
-        HEADER
-      </author-pane>
+    <main>
+      <div class="content">
+        <section class="dnd">
+          <author-droptarget accepts="tyle">
+            <author-draggable id="draggable" type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+          </author-droptarget>
 
-      <author-pane-resize-handle></author-pane-resize-handle>
+          <author-droptarget accepts="tyle">
 
-      <author-pane class="body" horizontal stretch>
-        <author-pane class="left sidebar">
-          LEFT SIDEBAR
-        </author-pane>
+          </author-droptarget>
+        </section>
+      </div>
 
-        <author-pane-resize-handle></author-pane-resize-handle>
+    </main>
 
-        <author-pane class="workspace" stretch>
-          WORKSPACE 1
-        </author-pane>
+    <script>
+      window.addEventListener('DOMContentLoaded', evt => {
+        window.draggable = document.getElementById('draggable')
 
-        <author-pane-resize-handle></author-pane-resize-handle>
+        window.draggable.on('drag.start', evt => {
+          console.log('drag start');
+        })
 
-        <author-pane class="right sidebar">
-          RIGHT SIDEBAR
-        </author-pane>
-      </author-pane>
+        window.draggable.on('after.drag.start', evt => {
+          console.log('after drag start');
+        })
 
-      <author-pane-resize-handle></author-pane-resize-handle>
+        window.draggable.on('drag.active', evt => {
+          console.log('dragging');
+        })
 
-      <author-pane class="footer">
-        FOOTER
-      </author-pane>
-    </author-pane>
+        window.draggable.on('drag.end', evt => {
+          console.log('drag end');
+        })
 
-
-    <script type="text/javascript">
-      window.addEventListener('DOMContentLoaded', function () {
-        window.test = document.querySelector('author-test')
+        window.draggable.on('after.drag.end', evt => {
+          console.log('after drag end');
+        })
       })
     </script>
   </body>

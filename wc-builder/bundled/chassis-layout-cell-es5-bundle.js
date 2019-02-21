@@ -81,378 +81,104 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-function _setPrototypeOf(o, p) {
-  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-module.exports = _setPrototypeOf;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-module.exports = _assertThisInitialized;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-function _getPrototypeOf(o) {
-  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-module.exports = _getPrototypeOf;
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(5);
+var _interopRequireDefault = __webpack_require__(1);
 
-var _typeof2 = _interopRequireDefault(__webpack_require__(1));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(2));
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(6));
+var _createClass2 = _interopRequireDefault(__webpack_require__(3));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(7));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(4));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(8));
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(7));
 
-var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(3));
+var _inherits2 = _interopRequireDefault(__webpack_require__(8));
 
-var _inherits2 = _interopRequireDefault(__webpack_require__(9));
+customElements.define('chassis-layout-cell',
+/*#__PURE__*/
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
+  function _class() {
+    var _this;
 
-var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(10));
+    (0, _classCallCheck2.default)(this, _class);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}:host *,:host :after,:host :before{box-sizing:border-box}:host([stretch]){flex:1 1 100%}:host([orientation=horizontal]){flex-direction:row}:host([orientation=vertical]){flex-direction:column}chassis-layout-cell{display:flex;flex-direction:column;flex-grow:0;flex-shrink:0}chassis-layout-cell *,chassis-layout-cell :after,chassis-layout-cell :before{box-sizing:border-box}chassis-layout-cell[stretch]){flex:1 1 100%}chassis-layout-cell[orientation=horizontal]){flex-direction:row}chassis-layout-cell[orientation=vertical]){flex-direction:column}</style><slot></slot></template>"));
 
-customElements.define('chassis-layout-cell', function () {
-  var _ = new WeakMap();
+    _this.UTIL.defineAttributes({
+      max: {
+        default: 'auto',
+        set: function set(value) {
+          var propName = _this.parentNode.getAttribute('orientation') === 'horizontal' ? 'max-width' : 'max-height';
 
-  return (
-    /*#__PURE__*/
-    function (_HTMLElement) {
-      (0, _inherits2.default)(_class, _HTMLElement);
-
-      function _class() {
-        var _this;
-
-        (0, _classCallCheck2.default)(this, _class);
-        _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this));
-        _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
-
-        _this.attachShadow({
-          mode: 'open'
-        });
-
-        var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 0;\n  flex-shrink: 0;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host([stretch]) {\n  flex: 1 1 auto;\n}\n\n:host([orientation=\"horizontal\"]) {\n  flex-direction: row;\n}\n\n:host([orientation=\"vertical\"]) {\n  flex-direction: column;\n}\n\nchassis-layout-cell {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 0;\n  flex-shrink: 0;\n}\n\nchassis-layout-cell *,\nchassis-layout-cell *:before,\nchassis-layout-cell *:after {\n  box-sizing: border-box;\n}\n\nchassis-layout-cell[stretch] {\n  flex: 1 1 auto;\n}\n\nchassis-layout-cell[orientation=\"horizontal\"] {\n  flex-direction: row;\n}\n\nchassis-layout-cell[orientation=\"vertical\"] {\n  flex-direction: column;\n}</style><slot></slot></template>");
-        var template = container.querySelector('template');
-
-        if ('content' in template) {
-          _this.shadowRoot.appendChild(template.content.cloneNode(true));
-        } else {
-          template.childNodes.forEach(function (child) {
-            _this.shadowRoot.appendChild(child.cloneNode(true));
-          });
+          _this.PRIVATE.maxRule.style.setProperty(propName, value);
         }
+      },
+      min: {
+        default: 'auto',
+        set: function set(value) {
+          var propName = _this.parentNode.getAttribute('orientation') === 'horizontal' ? 'min-width' : 'min-height';
 
-        template = null;
-        _this.crypto = null;
-
-        try {
-          _this.crypto = crypto;
-        } catch (e) {
-          _this.crypto = msCrypto;
+          _this.PRIVATE.minRule.style.setProperty(propName, value);
         }
-
-        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          sourceElement: null,
-          addAttribute: function addAttribute(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
-              get: function get() {
-                return this.getAttribute(prop);
-              },
-              set: function set(value) {
-                _.get(this).setAttributeValue(prop, value);
-              }
-            });
-          },
-          addAttributes: function addAttributes(props) {
-            return props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttribute(prop);
-            });
-          },
-          setAttributeValue: function setAttributeValue(attr, val) {
-            _this.setAttribute(attr, val);
-
-            if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = val;
-            }
-          },
-          addReadOnlyProperty: function addReadOnlyProperty(prop) {
-            var custom = (0, _typeof2.default)(prop) === 'object';
-
-            if (!custom && typeof prop !== 'string') {
-              return console.error('ERROR <chassis-layout-cell> Read-only property must be type "object" or "string"');
-            }
-
-            var props = {
-              set: function set() {
-                _.get(this).throw('readonly', {
-                  prop: custom ? prop.name : prop
-                });
-              }
-            };
-
-            if (custom && prop.hasOwnProperty('get')) {
-              props.get = prop.get;
-            } else {
-              props.get = function () {
-                return _.get(this)[prop];
-              };
-            }
-
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
-          },
-          addReadOnlyProperties: function addReadOnlyProperties(props) {
-            return props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperty(prop);
-            });
-          },
-          setReadOnlyPropertyValue: function setReadOnlyPropertyValue(value) {
-            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = value;
-          },
-          addBooleanAttribute: function addBooleanAttribute(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
-              get: function get() {
-                return _.get(this).getBooleanAttributeValue(prop);
-              },
-              set: function set(value) {
-                _.get(this).setBooleanAttributeValue(prop, value);
-              }
-            });
-          },
-          addBooleanAttributes: function addBooleanAttributes(props) {
-            return props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttribute(prop);
-            });
-          },
-          getBooleanAttributeValue: function getBooleanAttributeValue(prop) {
-            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-          },
-          setBooleanAttributeValue: function setBooleanAttributeValue(attr, value) {
-            if (typeof value === 'boolean') {
-              value = value.toString();
-            }
-
-            var acceptableValues = ['true', 'false', '', null];
-
-            if (!acceptableValues.includes(value)) {
-              console.error("<".concat(_this.localName, "> \"").concat(attr, "\" attribute expected boolean but received \"").concat(value, "\""));
-
-              _this.removeAttribute(attr);
-
-              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
-              }
-
-              return;
-            }
-
-            switch (value) {
-              case 'false':
-              case null:
-                _this.removeAttribute(attr);
-
-                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
-                }
-
-                break;
-
-              case 'true':
-              case '':
-                _this.setAttribute(attr, '');
-
-                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = true;
-                }
-
-                break;
-
-              default:
-                return;
-            }
-          },
-          addPrivateProperties: function addPrivateProperties(props) {
-            for (var _prop in props) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[_prop] = props[_prop];
-            }
-          },
-          generateGuid: function generateGuid() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
-            });
-            return prefix ? "".concat(prefix, "_").concat(id) : id;
-          },
-          emit: function emit(name, detail) {
-            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-
-            if (target) {
-              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
-            }
-
-            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
-          },
-          newEvent: function newEvent(name, detail) {
-            return new CustomEvent(name, {
-              detail: detail
-            });
-          },
-          throw: function _throw(type, vars) {
-            var message = 'ERROR <chassis-layout-cell> ';
-
-            switch (type) {
-              case 'readonly':
-                message += "Cannot set read-only property \"".concat(vars.prop, "\".");
-                break;
-
-              default:
-                message = message.trim();
-            }
-
-            console.error(message);
-          }
-        });
-
-        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          children: [],
-          styleSheet: null,
-          sizeRule: null,
-          size: null
-        });
-
-        return _this;
+      },
+      size: {
+        default: 'auto',
+        set: function set(value) {
+          _this.PRIVATE.sizeRule.style.setProperty('flex-basis', value);
+        }
       }
+    });
 
-      (0, _createClass2.default)(_class, [{
-        key: "connectedCallback",
-        value: function connectedCallback() {
-          var _this2 = this;
+    _this.on('connected', function () {
+      _this.UTIL.definePrivateProperties({
+        children: [],
+        styleSheet: _this.shadowRoot.styleSheets[0],
+        sizeRule: null
+      });
 
-          setTimeout(function () {
-            _.get(_this2).styleSheet = _this2.shadowRoot.styleSheets[0];
+      var sheetLength = _this.PRIVATE.styleSheet.cssRules.length;
 
-            var sheetLength = _.get(_this2).styleSheet.cssRules.length;
+      _this.PRIVATE.styleSheet.insertRule(':host([size]) {}', sheetLength);
 
-            _.get(_this2).styleSheet.insertRule(':host([size]) {}', sheetLength);
+      _this.PRIVATE.sizeRule = _this.PRIVATE.styleSheet.cssRules[sheetLength];
 
-            _.get(_this2).sizeRule = _.get(_this2).styleSheet.cssRules[sheetLength];
+      _this.PRIVATE.styleSheet.insertRule(':host([max]) {}', sheetLength);
 
-            if (_this2.hasAttribute('size')) {
-              _this2.size = _this2.getAttribute('size');
-            }
-          }, 0);
-        }
-      }, {
-        key: "attributeChangedCallback",
-        value: function attributeChangedCallback(attr, oldValue, newValue) {
-          attr = attr.toLowerCase();
+      _this.PRIVATE.maxRule = _this.PRIVATE.styleSheet.cssRules[sheetLength];
 
-          if (newValue === oldValue) {
-            return;
-          }
+      _this.PRIVATE.styleSheet.insertRule(':host([min]) {}', sheetLength);
 
-          switch (attr) {
-            case 'size':
-              if (_.get(this).size !== newValue) {
-                this.size = newValue;
-              }
+      _this.PRIVATE.minRule = _this.PRIVATE.styleSheet.cssRules[sheetLength];
 
-              break;
+      if (_this.hasAttribute('size')) {
+        _this.size = _this.getAttribute('size');
+      }
+    });
 
-            default:
-              return;
-          }
-        }
-      }, {
-        key: "size",
-        get: function get() {
-          return this.hasAttribute('size') ? this.getAttribute('size') : 'auto';
-        },
-        set: function set(val) {
-          if (!_.get(this).sizeRule) {
-            return;
-          }
+    return _this;
+  }
 
-          _.get(this).size = val;
-
-          _.get(this).sizeRule.style.setProperty('flex-basis', val);
-
-          this.setAttribute('size', val);
-        }
-      }], [{
-        key: "observedAttributes",
-        get: function get() {
-          return ['size'];
-        }
-      }]);
-      return _class;
-    }((0, _wrapNativeSuper2.default)(HTMLElement))
-  );
-}());
+  (0, _createClass2.default)(_class, null, [{
+    key: "observedAttributes",
+    get: function get() {
+      return ['max', 'min', 'size'];
+    }
+  }]);
+  return _class;
+}(AuthorElement(HTMLElement)));
 
 /***/ }),
-/* 5 */
+/* 1 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -464,7 +190,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 6 */
+/* 2 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -476,7 +202,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 7 */
+/* 3 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -498,12 +224,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 8 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(1);
+var _typeof = __webpack_require__(5);
 
-var assertThisInitialized = __webpack_require__(2);
+var assertThisInitialized = __webpack_require__(6);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -516,10 +242,59 @@ function _possibleConstructorReturn(self, call) {
 module.exports = _possibleConstructorReturn;
 
 /***/ }),
-/* 9 */
+/* 5 */
+/***/ (function(module, exports) {
+
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var setPrototypeOf = __webpack_require__(0);
+var setPrototypeOf = __webpack_require__(9);
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
@@ -539,100 +314,19 @@ function _inherits(subClass, superClass) {
 module.exports = _inherits;
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var getPrototypeOf = __webpack_require__(3);
-
-var setPrototypeOf = __webpack_require__(0);
-
-var isNativeFunction = __webpack_require__(11);
-
-var construct = __webpack_require__(12);
-
-function _wrapNativeSuper(Class) {
-  var _cache = typeof Map === "function" ? new Map() : undefined;
-
-  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
-    if (Class === null || !isNativeFunction(Class)) return Class;
-
-    if (typeof Class !== "function") {
-      throw new TypeError("Super expression must either be null or a function");
-    }
-
-    if (typeof _cache !== "undefined") {
-      if (_cache.has(Class)) return _cache.get(Class);
-
-      _cache.set(Class, Wrapper);
-    }
-
-    function Wrapper() {
-      return construct(Class, arguments, getPrototypeOf(this).constructor);
-    }
-
-    Wrapper.prototype = Object.create(Class.prototype, {
-      constructor: {
-        value: Wrapper,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    return setPrototypeOf(Wrapper, Class);
-  };
-
-  return _wrapNativeSuper(Class);
-}
-
-module.exports = _wrapNativeSuper;
-
-/***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports) {
 
-function _isNativeFunction(fn) {
-  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
 }
 
-module.exports = _isNativeFunction;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var setPrototypeOf = __webpack_require__(0);
-
-function isNativeReflectConstruct() {
-  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === "function") return true;
-
-  try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function _construct(Parent, args, Class) {
-  if (isNativeReflectConstruct()) {
-    module.exports = _construct = Reflect.construct;
-  } else {
-    module.exports = _construct = function _construct(Parent, args, Class) {
-      var a = [null];
-      a.push.apply(a, args);
-      var Constructor = Function.bind.apply(Parent, a);
-      var instance = new Constructor();
-      if (Class) setPrototypeOf(instance, Class.prototype);
-      return instance;
-    };
-  }
-
-  return _construct.apply(null, arguments);
-}
-
-module.exports = _construct;
+module.exports = _setPrototypeOf;
 
 /***/ })
 /******/ ]);

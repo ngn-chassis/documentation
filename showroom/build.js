@@ -16,7 +16,7 @@ class CustomProductionLine extends ProductionLine {
       tasks.add(`Process ${this.localDirectory(filepath)}`, next => {
         let chassis = new Chassis({
           minify,
-          sourceMap: minify,
+          sourceMap: 2,
           sourceMapPath: path.dirname(this.outputDirectory(filepath)),
           theme: path.resolve(`${this.SOURCE}/css/main.theme`),
 
@@ -28,7 +28,7 @@ class CustomProductionLine extends ProductionLine {
 
         chassis.process(filepath, (err, processed) => {
           if (err) {
-            throw err
+            return console.error(err)
           }
 
           if (processed.sourceMap) {
@@ -91,7 +91,7 @@ class CustomProductionLine extends ProductionLine {
     })
 
     transpiler.on('complete', cb)
-    transpiler.run()
+    transpiler.run(true)
   }
 
   copyWebcomponents (cb) {
@@ -116,7 +116,7 @@ class CustomProductionLine extends ProductionLine {
     this.addTask('Copy Webcomponents', next => this.copyWebcomponents(next))
     this.addTask('Copy Polyfills', next => this.copyPolyfills(next))
     this.buildHTML()
-    // this.addTask('Build JavaScript', next => this.buildJavaScript(!dev, !dev, !dev, next))
+    this.addTask('Build JavaScript', next => this.buildJavaScript(!dev, !dev, !dev, next))
     this.addTask('Build CSS', next => this.buildCSS(!dev, next))
   }
 }

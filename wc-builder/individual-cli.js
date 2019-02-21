@@ -11,7 +11,7 @@ let args = process.argv.splice(2)
 let cfg = {
   src: args[0],
   transpile: args.includes('--es5'),
-  reservedNames: Utils.args.reservedNames.split(',')
+  reservedNames: Utils.args.hasOwnProperty('reservedNames') ? Utils.args.reservedNames.split(',') : null
 }
 
 if (args.length > 1) {

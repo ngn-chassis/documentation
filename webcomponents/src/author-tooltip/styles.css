@@ -1,0 +1,14 @@
+:host {
+  position: fixed;
+  display: block;
+}
+
+:host([hidden]) {
+  display: none;
+}
+
+:host *,
+:host *:before,
+:host *:after {
+  box-sizing: border-box;
+}

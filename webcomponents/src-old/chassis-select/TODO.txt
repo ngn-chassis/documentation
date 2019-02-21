@@ -1,0 +1,20 @@
+- Handle <author-options> scrolling
+- Think about whether its worth it to add "size" attr for select-one menus
+- Make sure validation works properly
+- Figure out a way to insert custom svg icons for chassis-selected-options
+- Make sure options with labels use label contents as innerHTML
+
+MULTIPLE SELECT
+- Handle focusing of options panel on click
+- Write Unit Tests
+
+
+V2
+---
+Add a "highlighted" state to option that is different from selected or hovered.
+This state could be used to alter the styling of options which are highlighted
+by keyboard commands, but are not hovered or having their selection state altered.
+
+Add an attribute when the options panel is scrolled. This could allow for adding
+inset box shadows on the top or bottom of the panel to indicate which direction
+it has been scrolled.

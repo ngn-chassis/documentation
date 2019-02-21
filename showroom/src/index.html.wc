@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" class="chassis">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Chassis Showroom</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.1.1/dist/howler.min.js"></script>
+
+    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
+
+    <script src="webcomponents/author-element.js"></script>
+    <script src="webcomponents/author-form.js"></script>
+    <script src="webcomponents/author-fieldset.js"></script>
+    <script src="webcomponents/author-audio-player.js"></script>
+    <script src="webcomponents/author-control.js"></script>
+    <script src="webcomponents/author-cycle.js"></script>
+    <script src="webcomponents/author-tooltip.js"></script>
+    <script src="webcomponents/author-selected-options.js"></script>
+    <script src="webcomponents/author-optgroup.js"></script>
+    <script src="webcomponents/author-optgroup-label.js"></script>
+    <script src="webcomponents/author-option.js"></script>
+    <script src="webcomponents/author-options.js"></script>
+    <script src="webcomponents/author-select.js"></script>
+    <!-- <script src="webcomponents/author-datalist-es5.js"></script> -->
+  </head>
+
+  <body class="authorio showroom">
+
+    <header>
+      <div class="width constraint">
+        <h1>NGN Chassis Documentation</h1>
+        <aside class="links">
+          <h2 class="hidden">Navigation</h2>
+          <a href="javascript:;">Showroom</a>
+          <a href="https://github.com/ngnjs" target="_blank">Github</a>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <aside class="sidebar">
+        <h2 class="hidden">Sidebar</h2>
+
+        <nav>
+          <h2 class="hidden">Sections</h2>
+          <a href="#typography_section">
+            Typography
+          </a>
+          <a href="#layout_section">
+            Layout
+          </a>
+          <a href="#components_section">
+            UI Components
+          </a>
+        </nav>
+      </aside>
+
+      <div class="content">
+        <div class="test-hey">
+          <div class="box">
+            BOX
+          </div>
+
+          <div class="green box">
+            GREEN BOX
+          </div>
+        </div>
+
+        <form>
+          <label>Name</label>
+          <input id="test_input" type="text" required>
+
+          <label>Age</label>
+          <input type="number" required>
+
+          <label>Favorite Foods</label>
+          <select id="test_select" multiple required>
+            <option>Chocolate</option>
+            <option>Flax</option>
+            <option>Elderberries</option>
+          </select>
+
+          <fieldset>
+            <legend>I am:</legend>
+
+            <label>Awesome</label>
+            <input type="checkbox">
+
+            <label>Hungry</label>
+            <input type="checkbox">
+
+            <label>Bored</label>
+            <input type="checkbox">
+          </fieldset>
+
+          <button type="submit">Submit</button>
+        </form>
+
+        <author-form>
+          <author-fieldset>
+            <author-control>
+              <label>Name</label>
+              <input type="text"  required>
+            </author-control>
+
+            <author-control>
+              <label>Age</label>
+              <input type="number" name="age" required>
+            </author-control>
+
+            <author-control>
+              <label>Favorite Foods</label>
+              <select name="favorite-foods" multiple required>
+                <option>Chocolate</option>
+                <option>Flax</option>
+                <option>Elderberries</option>
+              </select>
+            </author-control>
+          </author-fieldset>
+
+          <author-fieldset>
+            <legend>I am:</legend>
+
+            <author-control>
+              <label>Awesome</label>
+              <input name="iam-awesome" type="checkbox">
+            </author-control>
+
+            <author-control>
+              <label>Hungry</label>
+              <input name="iam-hungry" type="checkbox">
+            </author-control>
+
+            <author-control>
+              <label>Bored</label>
+              <input name="iam-bored" type="checkbox">
+            </author-control>
+          </author-fieldset>
+
+          <button type="submit">Submit</button>
+          <button type="reset">Reset</button>
+        </author-form>
+      </div>
+
+      <script>
+        window.addEventListener('DOMContentLoaded', evt => {
+          window.form = document.querySelector('form')
+          window.authorForm = document.querySelector('author-form')
+
+          window.authorForm.addEventListener('submit', evt => {
+            console.log(evt);
+          })
+
+          window.authorForm.addEventListener('invalid', evt => {
+            console.log(evt);
+          })
+
+          // for (let control of window.authorForm.controls) {
+          //   control.addEventListener('invalid', evt => {
+          //     console.log('works', evt);
+          //   })
+          // }
+
+          // window.form.addEventListener('submit', evt => {
+          //   evt.preventDefault()
+          //   window.data = new FormData(evt.target)
+          // })
+
+          // window.input = document.getElementById('test_input')
+          // window.input.addEventListener('invalid', evt => {
+          //   console.log('works');
+          // })
+          //
+          // window.select = document.getElementById('test_select')
+          // window.select.addEventListener('invalid', evt => {
+          //   console.log('works');
+          // })
+        })
+      </script>
+  </body>
+
+</html>

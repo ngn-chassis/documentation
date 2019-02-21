@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" class="chassis">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <title>Chassis Showroom</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- <script src="polyfills/webcomponents/custom-elements-es5-adapter.js"></script>
+    <script src="polyfills/webcomponents/webcomponents-lite.js"></script> -->
+
+    <script src="webcomponents/author-element.js"></script>
+    <script src="webcomponents/author-pane.js"></script>
+    <script src="webcomponents/author-pane-resize-handle.js"></script>
+    <script src="webcomponents/author-test.js"></script>
+  </head>
+
+  <body class="layout showroom">
+    <author-test></author-test>
+
+    <author-pane fullscreen>
+      <author-pane class="header">
+        HEADER
+      </author-pane>
+
+      <author-pane-resize-handle></author-pane-resize-handle>
+
+      <author-pane class="body" horizontal stretch>
+        <author-pane class="left sidebar">
+          LEFT SIDEBAR
+        </author-pane>
+
+        <author-pane-resize-handle></author-pane-resize-handle>
+
+        <author-pane class="workspace" stretch>
+          WORKSPACE 1
+        </author-pane>
+
+        <author-pane-resize-handle></author-pane-resize-handle>
+
+        <author-pane class="right sidebar">
+          RIGHT SIDEBAR
+        </author-pane>
+      </author-pane>
+
+      <author-pane-resize-handle></author-pane-resize-handle>
+
+      <author-pane class="footer">
+        FOOTER
+      </author-pane>
+    </author-pane>
+
+
+    <script type="text/javascript">
+      window.addEventListener('DOMContentLoaded', function () {
+        window.test = document.querySelector('author-test')
+      })
+    </script>
+  </body>
+
+</html>

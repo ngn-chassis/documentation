@@ -81,26 +81,11 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-function _setPrototypeOf(o, p) {
-  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-module.exports = _setPrototypeOf;
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
@@ -122,677 +107,433 @@ function _typeof(obj) {
 module.exports = _typeof;
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-module.exports = _assertThisInitialized;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-function _getPrototypeOf(o) {
-  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-module.exports = _getPrototypeOf;
-
-/***/ }),
-/* 4 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(5);
+var _interopRequireDefault = __webpack_require__(2);
 
-var _typeof2 = _interopRequireDefault(__webpack_require__(1));
+var _typeof2 = _interopRequireDefault(__webpack_require__(0));
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(6));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(3));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(7));
+var _createClass2 = _interopRequireDefault(__webpack_require__(4));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(8));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(5));
 
-var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(3));
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(7));
 
-var _inherits2 = _interopRequireDefault(__webpack_require__(9));
+var _inherits2 = _interopRequireDefault(__webpack_require__(8));
 
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
+customElements.define('chassis-cycle',
+/*#__PURE__*/
+function (_AuthorElement) {
+  (0, _inherits2.default)(_class, _AuthorElement);
 
-var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(10));
+  function _class() {
+    var _this;
 
-customElements.define('chassis-cycle', function () {
-  var _ = new WeakMap();
+    (0, _classCallCheck2.default)(this, _class);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this, "<template><style>@charset \"UTF-8\"; :host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([selected])){display:none!important}chassis-cycle{display:block}chassis-cycle *,chassis-cycle :after,chassis-cycle :before{box-sizing:border-box}chassis-cycle:not([mode=custom])) > :not([selected]){display:none!important}</style><slot></slot></template>"));
 
-  return (
-    /*#__PURE__*/
-    function (_HTMLElement) {
-      (0, _inherits2.default)(_class, _HTMLElement);
+    _this.UTIL.definePrivateProperties({
+      dummyEl: document.createElement('div'),
+      getChildIndex: function getChildIndex(child) {
+        return [].slice.call(_this.children).indexOf(child);
+      },
+      getNextSelectedChild: function getNextSelectedChild(child) {
+        var nextIndex = _this.PRIVATE.getChildIndex(child);
 
-      function _class() {
-        var _this;
-
-        (0, _classCallCheck2.default)(this, _class);
-        _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).call(this));
-        _this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : 'keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode';
-
-        _this.attachShadow({
-          mode: 'open'
-        });
-
-        var container = document.createElement('div');
-        container.insertAdjacentHTML('afterbegin', "<template><style>@charset \"UTF-8\"; :host {\n  display: block;\n}\n\n:host *,\n:host *:before,\n:host *:after {\n  box-sizing: border-box;\n}\n\n:host(:not([mode=\"custom\"])) > ::slotted(:not([selected])) {\n  display: none !important;\n}\n\nchassis-cycle {\n  display: block;\n}\n\nchassis-cycle *,\nchassis-cycle *:before,\nchassis-cycle *:after {\n  box-sizing: border-box;\n}\n\nchassis-cycle:not([mode=\"custom\"])) > :not([selected] {\n  display: none !important;\n}</style><slot></slot></template>");
-        var template = container.querySelector('template');
-
-        if ('content' in template) {
-          _this.shadowRoot.appendChild(template.content.cloneNode(true));
-        } else {
-          template.childNodes.forEach(function (child) {
-            _this.shadowRoot.appendChild(child.cloneNode(true));
-          });
+        return {
+          element: child,
+          index: nextIndex
+        };
+      },
+      hideChild: function hideChild(child) {
+        return child.removeAttribute('selected', '');
+      },
+      beforeChangeCallback: function beforeChangeCallback(child, previousSelection) {
+        if (_this.selectedIndex >= 0) {
+          _this.PRIVATE.hideChild(_this.children.item(_this.selectedIndex || 0));
         }
 
-        template = null;
-        _this.crypto = null;
+        child.setAttribute('selected', '');
 
-        try {
-          _this.crypto = crypto;
-        } catch (e) {
-          _this.crypto = msCrypto;
-        }
-
-        _.set((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-          sourceElement: null,
-          addAttribute: function addAttribute(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
-              get: function get() {
-                return this.getAttribute(prop);
-              },
-              set: function set(value) {
-                _.get(this).setAttributeValue(prop, value);
-              }
-            });
-          },
-          addAttributes: function addAttributes(props) {
-            return props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addAttribute(prop);
-            });
-          },
-          setAttributeValue: function setAttributeValue(attr, val) {
-            _this.setAttribute(attr, val);
-
-            if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = val;
-            }
-          },
-          addReadOnlyProperty: function addReadOnlyProperty(prop) {
-            var custom = (0, _typeof2.default)(prop) === 'object';
-
-            if (!custom && typeof prop !== 'string') {
-              return console.error('ERROR <chassis-cycle> Read-only property must be type "object" or "string"');
-            }
-
-            var props = {
-              set: function set() {
-                _.get(this).throw('readonly', {
-                  prop: custom ? prop.name : prop
-                });
-              }
-            };
-
-            if (custom && prop.hasOwnProperty('get')) {
-              props.get = prop.get;
-            } else {
-              props.get = function () {
-                return _.get(this)[prop];
-              };
-            }
-
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), custom ? prop.name : prop, props);
-          },
-          addReadOnlyProperties: function addReadOnlyProperties(props) {
-            return props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addReadOnlyProperty(prop);
-            });
-          },
-          setReadOnlyPropertyValue: function setReadOnlyPropertyValue(value) {
-            return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[prop] = value;
-          },
-          addBooleanAttribute: function addBooleanAttribute(prop) {
-            Object.defineProperty((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), prop, {
-              get: function get() {
-                return _.get(this).getBooleanAttributeValue(prop);
-              },
-              set: function set(value) {
-                _.get(this).setBooleanAttributeValue(prop, value);
-              }
-            });
-          },
-          addBooleanAttributes: function addBooleanAttributes(props) {
-            return props.forEach(function (prop) {
-              return _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addBooleanAttribute(prop);
-            });
-          },
-          getBooleanAttributeValue: function getBooleanAttributeValue(prop) {
-            return _this.hasAttribute(prop) && _this.getAttribute(prop) !== 'false';
-          },
-          setBooleanAttributeValue: function setBooleanAttributeValue(attr, value) {
-            if (typeof value === 'boolean') {
-              value = value.toString();
-            }
-
-            var acceptableValues = ['true', 'false', '', null];
-
-            if (!acceptableValues.includes(value)) {
-              console.error("<".concat(_this.localName, "> \"").concat(attr, "\" attribute expected boolean but received \"").concat(value, "\""));
-
-              _this.removeAttribute(attr);
-
-              if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-                _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
-              }
-
-              return;
-            }
-
-            switch (value) {
-              case 'false':
-              case null:
-                _this.removeAttribute(attr);
-
-                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = false;
-                }
-
-                break;
-
-              case 'true':
-              case '':
-                _this.setAttribute(attr, '');
-
-                if (_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement) {
-                  _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).sourceElement[attr] = true;
-                }
-
-                break;
-
-              default:
-                return;
-            }
-          },
-          addPrivateProperties: function addPrivateProperties(props) {
-            for (var _prop in props) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)))[_prop] = props[_prop];
-            }
-          },
-          generateGuid: function generateGuid() {
-            var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-              return (c ^ _this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16);
-            });
-            return prefix ? "".concat(prefix, "_").concat(id) : id;
-          },
-          emit: function emit(name, detail) {
-            var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-
-            if (target) {
-              return target.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
-            }
-
-            _this.dispatchEvent(_.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).newEvent(name, detail));
-          },
-          newEvent: function newEvent(name, detail) {
-            return new CustomEvent(name, {
-              detail: detail
-            });
-          },
-          throw: function _throw(type, vars) {
-            var message = 'ERROR <chassis-cycle> ';
-
-            switch (type) {
-              case 'readonly':
-                message += "Cannot set read-only property \"".concat(vars.prop, "\".");
-                break;
-
-              default:
-                message = message.trim();
-            }
-
-            console.error(message);
+        _this.dispatchEvent(new CustomEvent('change', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          detail: {
+            previousSelection: previousSelection,
+            currentSelection: _this.selected
           }
-        });
+        }));
+      },
+      showChild: function showChild(child) {
+        var _this$PRIVATE = _this.PRIVATE,
+            beforeChangeCallback = _this$PRIVATE.beforeChangeCallback,
+            getNextSelectedChild = _this$PRIVATE.getNextSelectedChild,
+            hideChild = _this$PRIVATE.hideChild;
+        var previousSelection = _this.selected;
+        var nextSelection = getNextSelectedChild(child);
 
-        _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).addPrivateProperties({
-          dummyEl: document.createElement('div'),
-          getChildIndex: function getChildIndex(child) {
-            return [].slice.call(_this.children).indexOf(child);
-          },
-          getNextSelectedChild: function getNextSelectedChild(child) {
-            var nextIndex = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).getChildIndex(child);
+        var beforechangeHandler = function beforechangeHandler(evt) {
+          _this.removeEventListener('beforechange', beforechangeHandler);
 
-            return {
-              element: child,
-              index: nextIndex
-            };
-          },
-          hideChild: function hideChild(child) {
-            return child.removeAttribute('selected', '');
-          },
-          beforeChangeCallback: function beforeChangeCallback(child, previousSelection) {
-            if (_this.selectedIndex >= 0) {
-              _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).hideChild(_this.children.item(_this.selectedIndex || 0));
-            }
-
-            child.setAttribute('selected', '');
-
-            _this.dispatchEvent(new CustomEvent('change', {
-              bubbles: true,
-              cancelable: true,
-              composed: true,
-              detail: {
-                previousSelection: previousSelection,
-                currentSelection: _this.selected
-              }
-            }));
-          },
-          showChild: function showChild(child) {
-            var _$get = _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))),
-                beforeChangeCallback = _$get.beforeChangeCallback,
-                getChildIndex = _$get.getChildIndex,
-                getNextSelectedChild = _$get.getNextSelectedChild,
-                hideChild = _$get.hideChild;
-
-            var previousSelection = _this.selected;
-            var nextSelection = getNextSelectedChild(child); // let beforeChangeCallback = () => {
-            //   if (this.selectedIndex >= 0) {
-            //     hideChild(this.children.item(this.selectedIndex || 0))
-            //   }
-            //
-            //   child.setAttribute('selected', '')
-            //
-            //   this.dispatchEvent(new CustomEvent('change', {
-            //     bubbles: true,
-            //     cancelable: true,
-            //     composed: true,
-            //
-            //     detail: {
-            //       previousSelection,
-            //       currentSelection: this.selected
-            //     }
-            //   }))
-            // }
-
-            var beforechangeHandler = function beforechangeHandler(evt) {
-              _this.removeEventListener('beforechange', beforechangeHandler);
-
-              if (evt.defaultPrevented) {
-                return;
-              }
-
-              beforeChangeCallback(child, previousSelection);
-            };
-
-            _this.addEventListener('beforechange', beforechangeHandler);
-
-            var beforechangeEvent = new CustomEvent('beforechange', {
-              bubbles: true,
-              cancelable: true,
-              composed: true,
-              detail: {
-                currentSelection: _this.selected,
-                nextSelection: nextSelection,
-                next: function next() {
-                  if (!this.defaultPrevented) {
-                    return console.warn("<chassis-cycle> Calling \"next()\" in \"beforechange\" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())");
-                  }
-
-                  beforeChangeCallback(child, previousSelection);
-                }
-              }
-            });
-            beforechangeEvent.detail.next = beforechangeEvent.detail.next.bind(beforechangeEvent);
-
-            _this.dispatchEvent(beforechangeEvent);
-          },
-          showChildByIndex: function showChildByIndex(index) {
-            if (_this.selectedIndex === index || index >= _this.children.length || index < 0) {
-              return;
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(_this.children.item(index));
-          },
-          showChildBySelector: function showChildBySelector(query) {
-            var nodes = _this.querySelectorAll(query);
-
-            if (!nodes.length) {
-              return;
-            }
-
-            if (nodes.length > 1) {
-              console.warn("<chassis-cycle> found multiple nodes matching \"".concat(query, "\". Displaying first result..."));
-            }
-
-            _.get((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this))).showChild(nodes.item(0));
-          }
-        });
-
-        return _this;
-      }
-
-      (0, _createClass2.default)(_class, [{
-        key: "connectedCallback",
-        value: function connectedCallback() {
-          var _this2 = this;
-
-          var observer = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
-              var addedNodes = mutation.addedNodes,
-                  removedNodes = mutation.removedNodes,
-                  type = mutation.type;
-
-              switch (type) {
-                case 'childList':
-                  if (removedNodes.length > 0 && !_this2.selectedElement) {
-                    return _this2.previous();
-                  }
-
-                  break;
-
-                default:
-                  return;
-              }
-            });
-          });
-          observer.observe(this, {
-            attributes: false,
-            childList: true,
-            characterData: false
-          });
-          setTimeout(function () {
-            for (var index in _this2.children) {
-              if (!_this2.children.hasOwnProperty(index)) {
-                continue;
-              }
-
-              var child = _this2.children.item(index);
-
-              if ((0, _typeof2.default)(child) !== 'object') {
-                continue;
-              }
-
-              if (child !== _this2.selectedElement) {
-                _.get(_this2).hideChild(child);
-              }
-            }
-          }, 0);
-        }
-        /**
-         * @method hide
-         * Deactivate a page.
-         * @deprecated
-         */
-
-      }, {
-        key: "hide",
-        value: function hide(child) {
-          console.warn("<chassis-cycle> \"hide()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage selected elements.");
-
-          _.get(this).hideChild(child);
-        }
-        /**
-         * @method hideActive
-         * Deactivate the currently selected page.
-         * @deprecated
-         */
-
-      }, {
-        key: "hideActive",
-        value: function hideActive() {
-          console.warn("<chassis-cycle> \"hideActive()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage selected elements.");
-
-          _.get(this).hideChild(this.selectedElement);
-        }
-        /**
-         * @method hideAll
-         * Deactivate all pages.
-         */
-
-      }, {
-        key: "hideAll",
-        value: function hideAll() {
-          for (var index in this.children) {
-            if (!this.children.hasOwnProperty(index)) {
-              continue;
-            }
-
-            var child = this.children.item(index);
-
-            if ((0, _typeof2.default)(child) !== 'object') {
-              continue;
-            }
-
-            _.get(this).hideChild(child);
-          }
-        }
-      }, {
-        key: "indexOf",
-        value: function indexOf(child) {
-          return _.get(this).getChildIndex(child);
-        }
-        /**
-         * @method insertAdjacentHTML
-         * Override this.prototype.insertAdjacentHTML and replace with
-         * appendChild() or insertBefore()
-         * This is done because of bugs with insertAdjacentHTML() on web components
-         * in Firefox and IE11.
-         * @override
-         */
-
-      }, {
-        key: "insertAdjacentHTML",
-        value: function insertAdjacentHTML(position, text) {
-          switch (position) {
-            case 'beforebegin':
-            case 'afterend':
-              return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text);
-
-            default:
-              _.get(this).dummyEl.insertAdjacentHTML(position, text);
-
-              var node = _.get(this).dummyEl.children.item(0);
-
-              while (_.get(this).dummyEl.firstChild) {
-                _.get(this).dummyEl.removeChild(_.get(this).dummyEl.firstChild);
-              }
-
-              return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild);
-          }
-        }
-        /**
-         * @method insertAdjacentElement
-         * Override this.prototype.insertAdjacentElement and replace with
-         * appendChild() or insertBefore()
-         * This is done because of bugs with insertAdjacentElement() on web components
-         * in Firefox and IE11.
-         * @override
-         */
-
-      }, {
-        key: "insertAdjacentElement",
-        value: function insertAdjacentElement(position, node) {
-          switch (position) {
-            case 'beforeend':
-              return this.appendChild(node);
-
-            case 'afterbegin':
-              return this.insertBefore(node, this.firstElementChild);
-
-            default:
-              return HTMLElement.prototype.insertAdjacentElement.call(this, position, node);
-          }
-        }
-        /**
-         * @method first
-         * A helper method to display the first child element.
-         */
-
-      }, {
-        key: "first",
-        value: function first() {
-          this.show(0);
-        }
-        /**
-         * @method last
-         * A helper method to display the last child element.
-         */
-
-      }, {
-        key: "last",
-        value: function last() {
-          this.show(this.children.length - 1);
-        }
-        /**
-         * @method next
-         * Deactivate the currently selected child element and activate the one
-         * immediately adjacent to it.
-         * @param {function} callback
-         * Executed when the operation is complete.
-         */
-
-      }, {
-        key: "next",
-        value: function next(callback) {
-          this.show(this.selectedIndex === this.children.length - 1 ? 0 : this.selectedIndex + 1);
-          callback && callback(this.selectedElement);
-        }
-        /**
-         * @method previous
-         * Deactivate the currently selected child element and activate the one
-         * immediately preceding it.
-         * @param {function} callback
-         * Executed when the operation is complete.
-         */
-
-      }, {
-        key: "previous",
-        value: function previous(callback) {
-          this.show(this.selectedIndex === 0 ? this.children.length - 1 : this.selectedIndex - 1);
-          callback && callback(this.selectedElement);
-        }
-        /**
-         * @method show
-         * Deselect the currently selected element and select a different one.
-         * @param {number | string | HTMLElement} query
-         * 1-based index,
-         * Element selector string, or
-         * HTMLElement to select
-         */
-
-      }, {
-        key: "show",
-        value: function show(query) {
-          if (query === null) {
-            if (!this.selectedIndex) {
-              _.get(this).showChildByIndex(0);
-            }
-
+          if (evt.defaultPrevented) {
             return;
           }
 
-          switch ((0, _typeof2.default)(query).toLowerCase()) {
-            case 'number':
-              return _.get(this).showChildByIndex(query);
+          beforeChangeCallback(child, previousSelection);
+        };
 
-            case 'string':
-              return isNaN(parseInt(query)) ? _.get(this).showChildBySelector(query) : _.get(this).showChildByIndex(parseInt(query));
+        _this.addEventListener('beforechange', beforechangeHandler);
+
+        var beforechangeEvent = new CustomEvent('beforechange', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          detail: {
+            currentSelection: _this.selected,
+            nextSelection: nextSelection,
+            next: function next() {
+              if (!this.defaultPrevented) {
+                return console.warn("<chassis-cycle> Calling \"next()\" in \"beforechange\" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())");
+              }
+
+              beforeChangeCallback(child, previousSelection);
+            }
+          }
+        });
+        beforechangeEvent.detail.next = beforechangeEvent.detail.next.bind(beforechangeEvent);
+
+        _this.dispatchEvent(beforechangeEvent);
+      },
+      showChildByIndex: function showChildByIndex(index) {
+        if (_this.selectedIndex === index || index >= _this.children.length || index < 0) {
+          return;
+        }
+
+        _this.PRIVATE.showChild(_this.children.item(index));
+      },
+      showChildBySelector: function showChildBySelector(query) {
+        var nodes = _this.querySelectorAll(query);
+
+        if (!nodes.length) {
+          return;
+        }
+
+        if (nodes.length > 1) {
+          console.warn("<chassis-cycle> found multiple nodes matching \"".concat(query, "\". Displaying first result..."));
+        }
+
+        _this.PRIVATE.showChild(nodes.item(0));
+      }
+    });
+
+    return _this;
+  }
+
+  (0, _createClass2.default)(_class, [{
+    key: "connectedCallback",
+    value: function connectedCallback() {
+      var _this2 = this;
+
+      var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          var addedNodes = mutation.addedNodes,
+              removedNodes = mutation.removedNodes,
+              type = mutation.type;
+
+          switch (type) {
+            case 'childList':
+              if (removedNodes.length > 0 && !_this2.selectedElement) {
+                return _this2.previous();
+              }
+
+              break;
 
             default:
-              return query instanceof HTMLElement ? _.get(this).showChild(query) : console.error("<chassis-cycle>: Invalid query \"".concat(query, "\""));
+              return;
           }
-        }
-      }, {
-        key: "selected",
-
-        /**
-         * @typedef {Object} SelectedElementProperties
-         * @property {HTMLElement} element The currently selected page.
-         * @property {Number} index The zero-based index of the currently selected page.
-         */
-
-        /**
-         * @property selected
-         * Information about the currently selected page.
-         * @return {SelectedElementProperties}
-         */
-        get: function get() {
-          return {
-            element: this.selectedElement,
-            index: this.selectedIndex
-          };
-        }
-        /**
-         * @property selectedElement
-         * The currently selected page.
-         * @return {HTMLElement}
-         */
-
-      }, {
-        key: "selectedElement",
-        get: function get() {
-          return this.selectedIndex === null ? null : this.children.item(this.selectedIndex);
-        }
-        /**
-         * @property selectedIndex
-         * The zero-based index of the currently selected page.
-         * @return {Number}
-         */
-
-      }, {
-        key: "selectedIndex",
-        get: function get() {
-          for (var index in this.children) {
-            if (!this.children.hasOwnProperty(index)) {
-              continue;
-            }
-
-            var child = this.children.item(index);
-
-            if ((0, _typeof2.default)(child) !== 'object') {
-              continue;
-            }
-
-            if (child.hasAttribute('selected')) {
-              return parseInt(index);
-            }
+        });
+      });
+      observer.observe(this, {
+        attributes: false,
+        childList: true,
+        characterData: false
+      });
+      setTimeout(function () {
+        for (var index in _this2.children) {
+          if (!_this2.children.hasOwnProperty(index)) {
+            continue;
           }
 
-          return null;
+          var child = _this2.children.item(index);
+
+          if ((0, _typeof2.default)(child) !== 'object') {
+            continue;
+          }
+
+          if (child !== _this2.selectedElement) {
+            _this2.PRIVATE.hideChild(child);
+          }
         }
-      }], [{
-        key: "observedAttributes",
-        get: function get() {
-          return ['mode'];
+      }, 0);
+    }
+    /**
+     * @method hide
+     * Deactivate a page.
+     * @deprecated
+     */
+
+  }, {
+    key: "hide",
+    value: function hide(child) {
+      console.warn("<chassis-cycle> \"hide()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage selected elements.");
+      this.PRIVATE.hideChild(child);
+    }
+    /**
+     * @method hideActive
+     * Deactivate the currently selected page.
+     * @deprecated
+     */
+
+  }, {
+    key: "hideActive",
+    value: function hideActive() {
+      console.warn("<chassis-cycle> \"hideActive()\" method is deprecated. Please use \"show()\" and \"hideAll()\" to manage selected elements.");
+      this.PRIVATE.hideChild(this.selectedElement);
+    }
+    /**
+     * @method hideAll
+     * Deactivate all pages.
+     */
+
+  }, {
+    key: "hideAll",
+    value: function hideAll() {
+      for (var index in this.children) {
+        if (!this.children.hasOwnProperty(index)) {
+          continue;
         }
-      }]);
-      return _class;
-    }((0, _wrapNativeSuper2.default)(HTMLElement))
-  );
-}());
+
+        var child = this.children.item(index);
+
+        if ((0, _typeof2.default)(child) !== 'object') {
+          continue;
+        }
+
+        this.PRIVATE.hideChild(child);
+      }
+    }
+  }, {
+    key: "indexOf",
+    value: function indexOf(child) {
+      return this.PRIVATE.getChildIndex(child);
+    }
+    /**
+     * @method insertAdjacentHTML
+     * Override this.prototype.insertAdjacentHTML and replace with
+     * appendChild() or insertBefore()
+     * This is done because of bugs with insertAdjacentHTML() on web components
+     * in Firefox and IE11.
+     * @override
+     */
+
+  }, {
+    key: "insertAdjacentHTML",
+    value: function insertAdjacentHTML(position, text) {
+      switch (position) {
+        case 'beforebegin':
+        case 'afterend':
+          return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text);
+
+        default:
+          var dummyEl = this.PRIVATE.dummyEl;
+          dummyEl.insertAdjacentHTML(position, text);
+          var node = dummyEl.children.item(0);
+
+          while (dummyEl.firstChild) {
+            dummyEl.removeChild(dummyEl.firstChild);
+          }
+
+          return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild);
+      }
+    }
+    /**
+     * @method insertAdjacentElement
+     * Override this.prototype.insertAdjacentElement and replace with
+     * appendChild() or insertBefore()
+     * This is done because of bugs with insertAdjacentElement() on web components
+     * in Firefox and IE11.
+     * @override
+     */
+
+  }, {
+    key: "insertAdjacentElement",
+    value: function insertAdjacentElement(position, node) {
+      switch (position) {
+        case 'beforeend':
+          return this.appendChild(node);
+
+        case 'afterbegin':
+          return this.insertBefore(node, this.firstElementChild);
+
+        default:
+          return HTMLElement.prototype.insertAdjacentElement.call(this, position, node);
+      }
+    }
+    /**
+     * @method first
+     * A helper method to display the first child element.
+     */
+
+  }, {
+    key: "first",
+    value: function first() {
+      this.show(0);
+    }
+    /**
+     * @method last
+     * A helper method to display the last child element.
+     */
+
+  }, {
+    key: "last",
+    value: function last() {
+      this.show(this.children.length - 1);
+    }
+    /**
+     * @method next
+     * Deactivate the currently selected child element and activate the one
+     * immediately adjacent to it.
+     * @param {function} callback
+     * Executed when the operation is complete.
+     */
+
+  }, {
+    key: "next",
+    value: function next(callback) {
+      this.show(this.selectedIndex === this.children.length - 1 ? 0 : this.selectedIndex + 1);
+      callback && callback(this.selectedElement);
+    }
+    /**
+     * @method previous
+     * Deactivate the currently selected child element and activate the one
+     * immediately preceding it.
+     * @param {function} callback
+     * Executed when the operation is complete.
+     */
+
+  }, {
+    key: "previous",
+    value: function previous(callback) {
+      this.show(this.selectedIndex === 0 ? this.children.length - 1 : this.selectedIndex - 1);
+      callback && callback(this.selectedElement);
+    }
+    /**
+     * @method show
+     * Deselect the currently selected element and select a different one.
+     * @param {number | string | HTMLElement} query
+     * 1-based index,
+     * Element selector string, or
+     * HTMLElement to select
+     */
+
+  }, {
+    key: "show",
+    value: function show(query) {
+      if (query === null) {
+        if (!this.selectedIndex) {
+          this.PRIVATE.showChildByIndex(0);
+        }
+
+        return;
+      }
+
+      switch ((0, _typeof2.default)(query).toLowerCase()) {
+        case 'number':
+          return this.PRIVATE.showChildByIndex(query);
+
+        case 'string':
+          return isNaN(parseInt(query)) ? this.PRIVATE.showChildBySelector(query) : this.PRIVATE.showChildByIndex(parseInt(query));
+
+        default:
+          return query instanceof HTMLElement ? this.PRIVATE.showChild(query) : console.error("<chassis-cycle>: Invalid query \"".concat(query, "\""));
+      }
+    }
+  }, {
+    key: "selected",
+
+    /**
+     * @typedef {Object} SelectedElementProperties
+     * @property {HTMLElement} element The currently selected page.
+     * @property {Number} index The zero-based index of the currently selected page.
+     */
+
+    /**
+     * @property selected
+     * Information about the currently selected page.
+     * @return {SelectedElementProperties}
+     */
+    get: function get() {
+      return {
+        element: this.selectedElement,
+        index: this.selectedIndex
+      };
+    }
+    /**
+     * @property selectedElement
+     * The currently selected page.
+     * @return {HTMLElement}
+     */
+
+  }, {
+    key: "selectedElement",
+    get: function get() {
+      return this.selectedIndex === null ? null : this.children.item(this.selectedIndex);
+    }
+    /**
+     * @property selectedIndex
+     * The zero-based index of the currently selected page.
+     * @return {Number}
+     */
+
+  }, {
+    key: "selectedIndex",
+    get: function get() {
+      for (var index in this.children) {
+        if (!this.children.hasOwnProperty(index)) {
+          continue;
+        }
+
+        var child = this.children.item(index);
+
+        if ((0, _typeof2.default)(child) !== 'object') {
+          continue;
+        }
+
+        if (child.hasAttribute('selected')) {
+          return parseInt(index);
+        }
+      }
+
+      return null;
+    }
+  }], [{
+    key: "observedAttributes",
+    get: function get() {
+      return ['mode'];
+    }
+  }]);
+  return _class;
+}(AuthorElement(HTMLElement)));
 
 /***/ }),
-/* 5 */
+/* 2 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -804,7 +545,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 6 */
+/* 3 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -816,7 +557,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 7 */
+/* 4 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -838,12 +579,12 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 8 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(1);
+var _typeof = __webpack_require__(0);
 
-var assertThisInitialized = __webpack_require__(2);
+var assertThisInitialized = __webpack_require__(6);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -856,10 +597,37 @@ function _possibleConstructorReturn(self, call) {
 module.exports = _possibleConstructorReturn;
 
 /***/ }),
-/* 9 */
+/* 6 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var setPrototypeOf = __webpack_require__(0);
+var setPrototypeOf = __webpack_require__(9);
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
@@ -879,100 +647,19 @@ function _inherits(subClass, superClass) {
 module.exports = _inherits;
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var getPrototypeOf = __webpack_require__(3);
-
-var setPrototypeOf = __webpack_require__(0);
-
-var isNativeFunction = __webpack_require__(11);
-
-var construct = __webpack_require__(12);
-
-function _wrapNativeSuper(Class) {
-  var _cache = typeof Map === "function" ? new Map() : undefined;
-
-  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
-    if (Class === null || !isNativeFunction(Class)) return Class;
-
-    if (typeof Class !== "function") {
-      throw new TypeError("Super expression must either be null or a function");
-    }
-
-    if (typeof _cache !== "undefined") {
-      if (_cache.has(Class)) return _cache.get(Class);
-
-      _cache.set(Class, Wrapper);
-    }
-
-    function Wrapper() {
-      return construct(Class, arguments, getPrototypeOf(this).constructor);
-    }
-
-    Wrapper.prototype = Object.create(Class.prototype, {
-      constructor: {
-        value: Wrapper,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    return setPrototypeOf(Wrapper, Class);
-  };
-
-  return _wrapNativeSuper(Class);
-}
-
-module.exports = _wrapNativeSuper;
-
-/***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports) {
 
-function _isNativeFunction(fn) {
-  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
 }
 
-module.exports = _isNativeFunction;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var setPrototypeOf = __webpack_require__(0);
-
-function isNativeReflectConstruct() {
-  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-  if (Reflect.construct.sham) return false;
-  if (typeof Proxy === "function") return true;
-
-  try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function _construct(Parent, args, Class) {
-  if (isNativeReflectConstruct()) {
-    module.exports = _construct = Reflect.construct;
-  } else {
-    module.exports = _construct = function _construct(Parent, args, Class) {
-      var a = [null];
-      a.push.apply(a, args);
-      var Constructor = Function.bind.apply(Parent, a);
-      var instance = new Constructor();
-      if (Class) setPrototypeOf(instance, Class.prototype);
-      return instance;
-    };
-  }
-
-  return _construct.apply(null, arguments);
-}
-
-module.exports = _construct;
+module.exports = _setPrototypeOf;
 
 /***/ })
 /******/ ]);

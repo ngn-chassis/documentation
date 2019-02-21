@@ -33,6 +33,8 @@ Utils.fs.lstat(src, (err, stats) => {
   }
 
   Utils.fs.readdir(src, (readErr, components) => {
+    components = components.filter(component => !component.startsWith('.'))
+
     if (readErr) {
       return console.error(readErr)
     }

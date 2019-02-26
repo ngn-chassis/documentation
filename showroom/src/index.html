@@ -14,9 +14,14 @@
 
     <!-- <script src="js/author-dragdrop.js"></script> -->
     <script src="webcomponents/author-element.js"></script>
+
+    <!-- <script src="https://cdn.author.io/author-elements/base/1.0.1/author-base.js"></script> -->
+
     <script src="webcomponents/author-draggable.js"></script>
     <script src="webcomponents/author-droptarget.js"></script>
     <script src="webcomponents/author-dragarea.js"></script>
+
+    <!-- <script src="https://cdn.author.io/author-elements/cycle/1.0.0/author-cycle.js"></script> -->
   </head>
 
   <body class="layout showroom">
@@ -35,39 +40,37 @@
       <div class="content">
         <section class="dnd">
           <author-droptarget accepts="tyle">
-            <!-- <author-dragarea> -->
-              <author-draggable id="draggable" type="tyle">
-                DRAG ME
-                <div>
-                  Here is a div
+            <author-draggable id="draggable" type="tyle">
+              DRAG ME
+              <div>
+                Here is a div
 
-                  <div>
-                    And another
-                  </div>
+                <div>
+                  And another
                 </div>
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-              <author-draggable type="tyle">
-                DRAG ME
-              </author-draggable>
-            <!-- </author-dragarea> -->
+              </div>
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
+            <author-draggable type="tyle">
+              DRAG ME
+            </author-draggable>
           </author-droptarget>
 
           <author-droptarget id="droptarget" accepts="tyle">
@@ -83,20 +86,25 @@
         window.draggable = document.getElementById('draggable')
         window.droptarget = document.getElementById('droptarget')
 
-        window.droptarget.on('drag.enter', evt => {
-          console.log('DRAG ENTER');
-        })
+        window.draggable.data = {
+          key: 'value'
+        }
 
-        window.droptarget.on('drag.over', evt => {
-          console.log('DRAG OVER');
-        })
+        // window.droptarget.on('drag.enter', evt => {
+        //   console.log('DRAG ENTER');
+        // })
 
-        window.droptarget.on('drag.leave', evt => {
-          console.log('DRAG LEAVE');
-        })
-        return
+        // window.droptarget.on('drag.over', evt => {
+        //   console.log('DRAG OVER');
+        // })
+
+        // window.droptarget.on('drag.leave', evt => {
+        //   console.log('DRAG LEAVE');
+        // })
+
         window.draggable.on('drag.start', evt => {
-          console.log('drag start');
+          console.log('drag.start')
+          console.log(evt);
         })
 
         window.draggable.on('after.drag.start', evt => {
@@ -104,11 +112,13 @@
         })
 
         window.draggable.on('drag', evt => {
-          console.log('dragging');
+          console.log('dragging')
+          console.log(evt)
         })
 
         window.draggable.on('drag.end', evt => {
           console.log('drag end');
+          console.log(evt);
         })
 
         window.draggable.on('after.drag.end', evt => {

@@ -1016,8 +1016,12 @@ const AuthorElement = superClass => class extends superClass {
    * @param  {HTMLElement} [target=null]
    * DOM node to fire the event at.
    */
-  emit (name, detail, target = null) {
-    let event = this.UTIL.createEvent(name, detail)
+  emit (name, init, target = null) {
+    if (name instanceof CustomEvent) {
+      return this.dispatchEvent(name)
+    }
+
+    let event = this.UTIL.createEvent(name, init)
 
     if (target) {
       return target.dispatchEvent(event)

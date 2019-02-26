@@ -70,6 +70,10 @@ chassis-select.pill {
         background: green;
       }
     }
+
+    &[over] {
+      box-shadow: inset 0 0 0 .236em var(--blue);
+    }
   }
 
   & author-draggable {

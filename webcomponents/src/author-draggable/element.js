@@ -43,6 +43,7 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
       },
 
       canDrop: {
+        private: true,
         default: false
       },
 
@@ -61,6 +62,10 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
 
           return this.direction.replace(/\s+/g,' ').trim().split(' ')
         }
+      },
+
+      data: {
+        default: null
       },
 
       dimensions: {
@@ -91,6 +96,16 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
       },
 
       dropTargets: {
+        private: true,
+        default: null
+      },
+
+      initialPosition: {
+        private: true,
+        default: null
+      },
+
+      initialTimestamp: {
         private: true,
         default: null
       },
@@ -155,13 +170,20 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
         return acc.join('; ')
       },
 
-      handshakeAcceptedHandler: evt => this.PRIVATE.dropTargets.push(evt.detail.dropTarget),
+      handshakeAcceptedHandler: evt => {
+        let { dropTarget } = evt.detail
+
+        this.PRIVATE.dropTargets.push(dropTarget)
+        dropTarget.on('drop.allow', evt => this.PRIVATE.canDrop = true)
+        dropTarget.on('drop.deny', evt => this.PRIVATE.canDrop = false)
+      },
 
       initializeClone: () => {
         this.setAttribute('dragging', '')
 
         this.PRIVATE.clone = this.cloneNode(true)
         this.PRIVATE.synchronizeStyles()
+        this.PRIVATE.clone.sourceElement = this
 
         this.removeAttribute('dragging')
         this.PRIVATE.clone.setAttribute('clone', '')
@@ -171,15 +193,23 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
 
       pointerupHandler: evt => {
         if (!this.PRIVATE.dragIsActive) {
+          // TODO: customize event data
           return this.emit('after.drag.end', evt)
         }
 
+        let dragendEvent = new CustomEvent('drag.end', this.PRIVATE.getEventData(evt, {
+          drag: {
+            distance: this.PRIVATE.getDragDistance(evt),
+            duration: evt.timeStamp - this.PRIVATE.initialTimestamp
+          },
+          position: this.PRIVATE.getPointerPosition(evt, false)
+        }))
+
+        this.emit(dragendEvent)
         this.PRIVATE.reset()
-        this.emit('drag.end', evt)
       },
 
       mouseupHandler: evt => {
-        console.log('mouseup')
         this.PRIVATE.forwardEvent(evt, 'pointerup', {}, document.body)
       },
 
@@ -208,34 +238,150 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
         this.emit('after.drag.start')
       },
 
+      getRelativePointerPosition: (relWidth, relHeight, x, y) => {
+        let bottom = relHeight - y
+        let right = relWidth - x
+
+        return {
+          x,
+          y,
+
+          top: {
+            px: y,
+            pct: this.PRIVATE.getPercentageDecimal(y, relHeight)
+          },
+
+          right: {
+            px: right,
+            pct: this.PRIVATE.getPercentageDecimal(right, relWidth)
+          },
+
+          bottom: {
+            px: bottom,
+            pct: this.PRIVATE.getPercentageDecimal(bottom, relHeight)
+          },
+
+          left: {
+            px: x,
+            pct: this.PRIVATE.getPercentageDecimal(x, relWidth)
+          }
+        }
+      },
+
+      getPercentageDecimal: (portion, whole, decimalPlaces = null) => {
+        let decimal = portion / whole
+
+        if (decimal < 0) {
+          return 0
+        }
+
+        if (decimalPlaces !== null) {
+          return decimal.toFixed(decimalPlaces)
+        }
+
+        return decimal
+      },
+
+      getPointerPosition: (evt, offset = true, client = true, doc = true,) => {
+        let obj = {}
+
+        if (offset) {
+          obj.offset = this.PRIVATE.getRelativePointerPosition(this.offsetWidth, this.offsetHeight, evt.offsetX, evt.offsetY)
+        }
+
+        if (client) {
+          obj.client = this.PRIVATE.getRelativePointerPosition(document.documentElement.clientWidth, document.documentElement.clientHeight, evt.clientX, evt.clientY)
+        }
+
+        if (doc) {
+          obj.document = this.PRIVATE.getRelativePointerPosition(document.documentElement.scrollWidth, document.documentElement.scrollHeight, evt.pageX, evt.pageY)
+        }
+
+        return obj
+      },
+
+      getEventData: (evt, props = {}) => {
+        let config = {
+          cancelable: true,
+          composed: true,
+
+          detail: Object.assign({
+            altKey: evt.altKey,
+            ctrlKey: evt.ctrlKey,
+            metaKey: evt.metaKey,
+            shiftKey: evt.shiftKey,
+            types: this.PRIVATE.types
+          }, props)
+        }
+
+        Object.defineProperty(config.detail, 'data', {
+          set: value => this.data = value,
+          get: () => this.data
+        })
+
+        return config
+      },
+
       pointerMoveHandler: evt => {
         if (!this.PRIVATE.dragIsActive) {
-          this.emit('drag.start')
-
           if (!this.free) {
             this.PRIVATE.initializeClone()
+          }
+
+          let dragstartEvent = new CustomEvent('drag.start', this.PRIVATE.getEventData(evt, {
+            position: this.PRIVATE.getPointerPosition(evt)
+          }))
+
+          this.emit(dragstartEvent)
+
+          if (dragstartEvent.defaultPrevented) {
+            return
           }
 
           this.PRIVATE.initiateDrag()
         }
 
-        this.emit('drag', evt)
+        let dragEvent = new CustomEvent('drag', this.PRIVATE.getEventData(evt, {
+          canDrop: this.PRIVATE.canDrop,
+          drag: {
+            distance: this.PRIVATE.getDragDistance(evt),
+            duration: evt.timeStamp - this.PRIVATE.initialTimestamp
+          },
+          position: this.PRIVATE.getPointerPosition(evt, false)
+        }))
+
+        this.emit(dragEvent)
+
+        if (dragEvent.defaultPrevented) {
+          return
+        }
+
         this.PRIVATE.updatePosition(evt)
       },
+
+      getDragDistance: evt => ({
+        x: Math.abs(this.PRIVATE.initialPosition.x - evt.pageX),
+        y: Math.abs(this.PRIVATE.initialPosition.y - evt.pageY)
+      }),
 
       reset: () => {
         if (this.free) {
           this.removeAttribute('dragging')
         } else {
           this.removeAttribute('ghost')
-          document.body.removeChild(this.PRIVATE.clone)
-          this.PRIVATE.clone = null
+
+          if (this.PRIVATE.clone !== null) {
+            document.body.removeChild(this.PRIVATE.clone)
+            this.PRIVATE.clone = null
+          }
         }
 
         this.PRIVATE.dragIsActive = false
         this.PRIVATE.pointerOffset = null
         this.PRIVATE.removeBodyListeners()
         this.PRIVATE.dropTargets = null
+        this.PRIVATE.initialPosition = null
+        this.PRIVATE.initialTimestamp = null
       },
 
       storeDropTargets: () => {
@@ -313,14 +459,6 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
         }
       },
 
-      'drop.permission.granted': evt => {
-        this.canDrop = true
-      },
-
-      'drop.permission.denied': evt => {
-        this.canDrop = false
-      },
-
       connected: () => {
         this.UTIL.insertStyleRule('dragging', ':host {}')
 
@@ -343,8 +481,14 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
         this.PRIVATE.forwardEvent(evt, 'pointerdown')
       },
 
+      pointerup: evt => {
+        this.PRIVATE.reset()
+      },
+
       pointerdown: evt => {
         let client = {}
+
+        this.PRIVATE.initialTimestamp = evt.timeStamp
 
         if (evt instanceof CustomEvent) {
           client.x = evt.detail.originalEvent.clientX
@@ -352,6 +496,11 @@ class AuthorDraggableElement extends AuthorElement(HTMLElement) {
         } else {
           client.x = evt.clientX
           client.y = evt.clientY
+        }
+
+        this.PRIVATE.initialPosition = {
+          x: client.x,
+          y: client.y
         }
 
         this.PRIVATE.pointerOffset = {

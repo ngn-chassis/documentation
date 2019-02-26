@@ -5,12 +5,70 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
     this.UTIL.defineProperties({
       dummyEl: {
         private: true,
+        readonly: true,
         default: document.createElement('div')
+      },
+
+      /**
+       * @typedef {Object} SelectedElementProperties
+       * @property {HTMLElement} element The currently selected page.
+       * @property {Number} index The zero-based index of the currently selected page.
+       */
+
+      /**
+       * @property selected
+       * Get information about the currently selected element.
+       * @return {SelectedElementProperties}
+       */
+      selected: {
+        readonly: true,
+        get: () => ({
+          element: this.selectedElement,
+          index: this.selectedIndex
+        })
+      },
+
+      /**
+       * @property selectedElement
+       * The currently selected element.
+       * @return {HTMLElement}
+       */
+      selectedElement: {
+        readonly: true,
+        get: () => this.selectedIndex === null ? null : this.children.item(this.selectedIndex)
+      },
+
+      /**
+       * @property selectedIndex
+       * The zero-based index of the currently selected element.
+       * @return {Number}
+       */
+      selectedIndex: {
+        readonly: true,
+        get: () => {
+          for (let index in this.children) {
+            if (!this.children.hasOwnProperty(index)) {
+              continue
+            }
+
+            let child = this.children.item(index)
+
+            if (typeof child !== 'object') {
+              continue
+            }
+
+            if (child.hasAttribute('selected')) {
+              return parseInt(index)
+            }
+          }
+
+          return null
+        }
       }
     })
 
     this.UTIL.definePrivateMethods({
-      getChildIndex: child => [].slice.call(this.children).indexOf(child),
+      getChildIndex: child => [...this.children].indexOf(child),
 
       getNextSelectedChild: child => {
         let nextIndex = this.PRIVATE.getChildIndex(child)
@@ -23,7 +81,7 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
 
       hideChild: child => child.removeAttribute('selected', ''),
 
-      beforeChangeCallback: (child, previousSelection) => {
+      handleChange: (child, previousSelection) => {
         if (this.selectedIndex >= 0) {
           this.PRIVATE.hideChild(this.children.item(this.selectedIndex || 0))
         }
@@ -44,7 +102,7 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
 
       showChild: child => {
         let {
-          beforeChangeCallback,
+          handleChange,
           getNextSelectedChild,
           hideChild
         } = this.PRIVATE
@@ -52,38 +110,40 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
         let previousSelection = this.selected
         let nextSelection = getNextSelectedChild(child)
 
-        let beforechangeHandler = evt => {
-          this.removeEventListener('beforechange', beforechangeHandler)
+        let beforechange = {
+          event: new CustomEvent('beforechange', {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
 
-          if (evt.defaultPrevented) {
-            return
+            detail: {
+              currentSelection: this.selected,
+              nextSelection
+            }
+          }),
+
+          handler: evt => {
+            this.off('beforechange', beforechange.handler)
+
+            if (evt.defaultPrevented) {
+              return
+            }
+
+            handleChange(child, previousSelection)
           }
-
-          beforeChangeCallback(child, previousSelection)
         }
 
-        this.addEventListener('beforechange', beforechangeHandler)
+        this.on('beforechange', beforechange.handler)
 
-        let beforechangeEvent = new CustomEvent('beforechange', {
-          bubbles: true,
-          cancelable: true,
-          composed: true,
-
-          detail: {
-            currentSelection: this.selected,
-            nextSelection,
-            next () {
-              if (!this.defaultPrevented) {
-                return console.warn(`<${this.localName}> Calling "next()" in "beforechange" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())`)
-              }
-
-              beforeChangeCallback(child, previousSelection)
-            }
+        beforechange.event.detail.next = (function () {
+          if (!this.defaultPrevented) {
+            return this.UTIL.printToConsole(`Calling "next()" in "beforechange" event handler will have no effect unless the event's default behavior is canceled. (use Event.preventDefault())`, 'warning')
           }
-        })
 
-        beforechangeEvent.detail.next = beforechangeEvent.detail.next.bind(beforechangeEvent)
-        this.dispatchEvent(beforechangeEvent)
+          handleChange(child, previousSelection)
+        }).bind(beforechange.event)
+
+        this.dispatchEvent(beforechange.event)
       },
 
       showChildByIndex: index => {
@@ -98,11 +158,11 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
         let nodes = this.querySelectorAll(query)
 
         if (!nodes.length) {
-          return
+          return this.UTIL.printToConsole(`Node matching query "${query}" not found. Aborting...`, 'warning')
         }
 
         if (nodes.length > 1) {
-          console.warn(`<${this.localName}> found multiple nodes matching "${query}". Displaying first result...`)
+          this.UTIL.printToConsole(`Found multiple nodes matching "${query}". Displaying first result...`, 'warning')
         }
 
         this.PRIVATE.showChild(nodes.item(0))
@@ -149,58 +209,6 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
 
   static get observedAttributes () {
     return ['mode']
-  }
-
-  /**
-   * @typedef {Object} SelectedElementProperties
-   * @property {HTMLElement} element The currently selected page.
-   * @property {Number} index The zero-based index of the currently selected page.
-   */
-
-  /**
-   * @property selected
-   * Get information about the currently selected element.
-   * @return {SelectedElementProperties}
-   */
-  get selected () {
-    return {
-      element: this.selectedElement,
-      index: this.selectedIndex
-    }
-  }
-
-  /**
-   * @property selectedElement
-   * The currently selected element.
-   * @return {HTMLElement}
-   */
-  get selectedElement () {
-    return this.selectedIndex === null ? null : this.children.item(this.selectedIndex)
-  }
-
-  /**
-   * @property selectedIndex
-   * The zero-based index of the currently selected element.
-   * @return {Number}
-   */
-  get selectedIndex () {
-    for (let index in this.children) {
-      if (!this.children.hasOwnProperty(index)) {
-        continue
-      }
-
-      let child = this.children.item(index)
-
-      if (typeof child !== 'object') {
-        continue
-      }
-
-      if (child.hasAttribute('selected')) {
-        return parseInt(index)
-      }
-    }
-
-    return null
   }
 
   /**
@@ -268,14 +276,9 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
    */
   insertAdjacentElement (position, node) {
     switch (position) {
-      case 'beforeend':
-        return this.appendChild(node)
-
-      case 'afterbegin':
-        return this.insertBefore(node, this.firstElementChild)
-
-      default:
-        return HTMLElement.prototype.insertAdjacentElement.call(this, position, node)
+      case 'beforeend': return this.appendChild(node)
+      case 'afterbegin': return this.insertBefore(node, this.firstElementChild)
+      default: return HTMLElement.prototype.insertAdjacentElement.call(this, position, node)
     }
   }
 
@@ -337,21 +340,21 @@ class AuthorCycleElement extends AuthorElement(HTMLElement) {
     }
 
     switch ((typeof query).toLowerCase()) {
-      case 'number':
-        return this.PRIVATE.showChildByIndex(query)
+      case 'number': return this.PRIVATE.showChildByIndex(query)
 
       case 'string':
-        return isNaN(parseInt(query))
-          ? this.PRIVATE.showChildBySelector(query)
-          : this.PRIVATE.showChildByIndex(parseInt(query))
+        let int = parseInt(query)
 
-      default:
-        return query instanceof HTMLElement
-          ? this.PRIVATE.showChild(query)
-          : this.UTIL.throwError({
-            type: 'reference',
-            message: `Invalid query "${query}"`
-          })
+        return isNaN(int)
+          ? this.PRIVATE.showChildBySelector(query)
+          : this.PRIVATE.showChildByIndex(int)
+
+      default: return query instanceof HTMLElement
+        ? this.PRIVATE.showChild(query)
+        : this.UTIL.throwError({
+          type: 'reference',
+          message: `Invalid query "${query}"`
+        })
     }
   }
 }

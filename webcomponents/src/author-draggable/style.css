@@ -13,4 +13,5 @@
   contain: content !important;
   position: fixed !important;
   z-index: 2147483647 !important;
+  will-change: left, top;
 }

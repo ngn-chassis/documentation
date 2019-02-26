@@ -24,7 +24,7 @@ module.exports = class {
 
     this.src = {
       root: cfg.src,
-      js: cfg.hasOwnProperty('js') ? cfg.js : path.join(cfg.src, 'tag.js'),
+      js: cfg.hasOwnProperty('js') ? cfg.js : path.join(cfg.src, 'element.js'),
       css: cfg.hasOwnProperty('css') ? cfg.css : path.join(cfg.src, 'style.css'),
       template: cfg.hasOwnProperty('template') ? cfg.template : path.join(cfg.src, 'template.html')
     }

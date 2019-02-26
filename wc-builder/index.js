@@ -1,17 +1,11 @@
 const fs = require('fs-extra')
 const path = require('path')
-const rimraf = require('rimraf')
 
 const TaskRunner = require('shortbus')
-const webpack = require('webpack')
-
-const babel = require('@babel/core')
-const parser = require('@babel/parser')
 
 const postcss = require('postcss')
 const cleanCss = new (require('clean-css'))()
 
-const uglify = require('uglify-js').minify
 const minifyHtml = require('html-minifier').minify
 
 module.exports = class {
@@ -26,24 +20,16 @@ module.exports = class {
     }
 
     this.sourceType = cfg.sourceType || 'script'
-    this.addTranspiledVersion = cfg.transpile || false
     this.filename = path.basename(cfg.src)
 
     this.src = {
       root: cfg.src,
       js: cfg.hasOwnProperty('js') ? cfg.js : path.join(cfg.src, 'tag.js'),
-      css: cfg.hasOwnProperty('css') ? cfg.css : path.join(cfg.src, 'styles.css'),
+      css: cfg.hasOwnProperty('css') ? cfg.css : path.join(cfg.src, 'style.css'),
       template: cfg.hasOwnProperty('template') ? cfg.template : path.join(cfg.src, 'template.html')
     }
 
     this.dest = cfg.dest || null
-
-    this.reservedNames = cfg.reservedNames || []
-
-    this.templates = {
-      bundled: path.resolve(__dirname, 'templates/bundled.js'),
-      import: path.resolve(__dirname, 'templates/import.js')
-    }
   }
 
   get finalTemplateString () {
@@ -56,15 +42,6 @@ module.exports = class {
   }
 
   build () {
-    let tempDirs = {
-      bundled: path.resolve(__dirname, 'bundled'),
-      transpiled: path.resolve(__dirname, 'transpiled')
-    }
-
-    for (let dir in tempDirs) {
-      this._mkdirp(tempDirs[dir])
-    }
-
     let processor = new TaskRunner()
 
     console.info(`Building "${this.filename}" component...`)
@@ -81,86 +58,7 @@ module.exports = class {
         contents: this.js.replace(/{{TEMPLATE-STRING}}/gi, this.finalTemplateString),
       }]
 
-      let compiler = new TaskRunner()
-
-      if (this.addTranspiledVersion) {
-        compiler.add('Generating ES5 Version...', next => {
-          let file = {
-            name: `${this.filename}-es5`,
-            contents: babel.transformSync(files[0].contents, {
-              presets: [require("@babel/preset-env")],
-              "plugins": ["@babel/plugin-transform-runtime"]
-            })
-          }
-
-          fs.writeFileSync(path.join(tempDirs.transpiled, `${file.name}.js`), file.contents.code);
-
-          let bundler = webpack({
-            devtool: 'source-map',
-            entry: path.join(tempDirs.transpiled, `${file.name}.js`),
-            output: {
-              path: tempDirs.bundled,
-              filename: `${file.name}-bundle.js`
-            },
-            plugins: [
-              new webpack.DefinePlugin({
-                'process.env': {
-                  'NODE_ENV': JSON.stringify('production')
-                }
-              })
-            ],
-            optimization: {
-              minimize: false
-            }
-          })
-
-          bundler.run((err, stats) => {
-            let bundled = fs.readFileSync(path.join(tempDirs.bundled, `${file.name}-bundle.js`));
-            file.contents = bundled.toString()
-            files.push(file)
-            next()
-          })
-        })
-      }
-
-      compiler.add('Compressing...', next => {
-        files.forEach(file => {
-          if (file.name.endsWith('-es5')) {
-            file.contents = uglify(file.contents, {
-              mangle: {
-                reserved: this.reservedNames
-              }
-            }).code
-            return
-          }
-
-          file.contents = babel.transformSync(file.contents, {
-            presets: [['minify', {
-              mangle: {
-                exclude: this.reservedNames
-              }
-            }]],
-            comments: false
-          }).code
-        })
-
-        next()
-      })
-
-      compiler.on('stepstarted', task => console.info(task.name))
-
-      compiler.on('complete', () => {
-        this._writeFiles(files, () => {
-          console.info(`Done.`)
-
-          // TODO: Find out why this doesn't work synchronously
-          // for (let dir in tempDirs) {
-          //   rimraf(tempDirs[dir], () => {})
-          // }
-        })
-      })
-
-      compiler.run(true)
+      this._writeFiles(files, () => console.info(`Done.`))
     })
 
     processor.run(true)
@@ -173,7 +71,7 @@ module.exports = class {
 
     this.css.walkRules(rule => newRules.push(
       rule.clone({
-        selector: this._transformSelector(this._stripUnsupportedSelectorElements(rule.selector))
+        selector: this._transformSelector(rule.selector)
       })
     ))
 
@@ -184,77 +82,30 @@ module.exports = class {
   }
 
   processJs (cb) {
-    let tagName = null
-    let input = this._readFile(this.src.js)
-    let output = this._readFile(this.templates.bundled)
+    this.js = this._readFile(this.src.js)
 
-    let ast = parser.parse(input, {sourceType: this.sourceType})
+    let regex = /customElements\.define\([\'|\"](.*)[\'|\"]\,/i
+    let tagName = regex.exec(this.js)
 
-    let inputClassDecl = ast.program.body.find(node => {
-      return node.type === 'ClassDeclaration'
-    })
-
-    let elDefinition = ast.program.body.find(node => {
-      return node.type === 'ExpressionStatement'
-        && node.expression.callee.object.name === 'customElements'
-        && node.expression.callee.property.name === 'define'
-    })
-
-    if (!elDefinition) {
-      console.error(`ERROR "${this.filename}": tag.js must include a Custom Element Definition as follows:`)
-      console.info(`customElements.define('${this.filename || 'tag-name'}', ${inputClassDecl.id.name || 'ClassIdentifier'})`);
-      console.error('Aborting...');
-      return
+    if (tagName === null) {
+      console.error('ERROR: tag.js must include a Custom Element Definition as follows:')
+      console.info(`customElements.define('tag-name', ClassIdentifier)`)
+      return console.error('Aborting...')
     }
 
-    tagName = elDefinition.expression.arguments[0].value
+    tagName = tagName[1]
 
     if (!tagName || !tagName.includes('-')) {
-      console.error(`ERROR "${this.filename}": Web Component must have a Tag Name with at least one hyphen! Aborting...`)
-      return
+      return console.error(`ERROR: Custom element must have a tag name with at least one hyphen! Aborting...`)
     }
 
     // Used by this.processCss() as replacement for :host selector
     this.tagName = tagName
-
-    output = output
-      .replace(/{{CLASS-IDENTIFIER}}/gi, inputClassDecl.id.name)
-      .replace(/{{SUPER-CLASS}}/gi, inputClassDecl.superClass.name || 'HTMLElement')
-      .replace(/{{TAG-NAME}}/gi, tagName)
-
-    let methods = []
-    let parsed = parser.parse(output)
-
-    let outputClassExpression = parsed.program.body[0].expression.arguments[1]
-
-    let outputConstructor = outputClassExpression.body.body.find(node => {
-      return node.key.name === 'constructor'
-    })
-
-    inputClassDecl.body.body.forEach(method => {
-      if (method.key.name === 'constructor') {
-        method.body.body.forEach(node => {
-          if (node.hasOwnProperty('expression') && node.expression.hasOwnProperty('callee') && node.expression.callee.type === 'Super') {
-            return
-          }
-
-          outputConstructor.body.body.push(node)
-        })
-
-        return
-      }
-
-      outputClassExpression.body.body.push(method)
-    })
-
-    this.js = babel.transformFromAst(parsed).code
-
     cb && cb()
   }
 
   processTemplate (cb) {
     this.template = this._readFile(this.src.template)
-
     cb && cb()
   }
 
@@ -276,33 +127,31 @@ module.exports = class {
     return fs.readFileSync(filepath).toString()
   }
 
-  _stripUnsupportedSelectorElements (selector) {
-    let slugs = selector.split(' ')
-
-    return slugs.map(slug => {
-      if (slug.includes('::slotted')) {
-        // return /\(([^)]+)\)/.exec(slug)[1]
-        return slug.replace('::slotted(', '').slice(0, -1)
-      }
-
-      return slug
-    }).join(' ')
-  }
-
   _transformSelector (selector) {
-    let regex = /\:host\((.*)/gi
-    let result = regex.exec(selector)
-
     if (!this.tagName) {
-      console.error(`ERROR ${this.filename}: Valid tag name not found. Aborting...`)
-      return
+      return console.error(`ERROR ${this.filename}: Valid tag name not found. Aborting...`)
     }
 
-    if (!result) {
-      return selector.replace(/:host/g, this.tagName)
+    let regex = {
+      host: /\:host\((.*?)\)\s?/i,
+      hostContext: /\:host-context\((.*?)\)\s?/i,
+      slotted: /\:{2}slotted\((.*?)\)\s?/i
     }
 
-    return selector.replace(result[0], `${this.tagName}${result[1]}`)
+    // STEP 1: Replace :host() instances
+    let result = regex.host.exec(selector)
+    selector = result === null ? selector : selector.replace(result[0].trim(), `${this.tagName}${result[1]}`)
+
+    // STEP 2: Replace host-context() instances
+    result = regex.hostContext.exec(selector)
+    selector = result === null ? selector : selector.replace(result[0].trim(), `${result[1]} ${this.tagName}`)
+
+    // STEP 3: Replace ::slotted() instances
+    result = regex.slotted.exec(selector)
+    selector = result === null ? selector : selector.replace(result[0].trim(), `${result[1]}`)
+
+    // STEP 4: Replace remaining :host instances
+    return selector.replace(/\:host/gi, this.tagName)
   }
 
   _writeFiles (files, cb) {

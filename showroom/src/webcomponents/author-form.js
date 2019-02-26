@@ -1,1 +1,224 @@
-customElements.define("author-form",class extends AuthorElement(HTMLElement){constructor(){super(`<template><style>@charset "UTF-8";</style><slot></slot></template>`),this.UTIL.defineAttributes({novalidate:!1}),this.UTIL.defineProperties({validationHandlersApplied:{private:!0,default:!1},sourceElement:{private:!0,readonly:!0,default:document.createElement("form")},isValid:{readonly:!0,get:()=>0===this.invalidFields.length},controls:{readonly:!0,get:()=>this.querySelectorAll("author-control")},elements:{readonly:!0,get:()=>{let AuthorHTMLFormControlsCollection=this.PRIVATE.generateAuthorHTMLFormControlsCollectionConstructor(),a=this.querySelectorAll("author-control, author-fieldset, fieldset, button"),b=[];for(let c of a)"author-control"===c.localName&&(c=c.input),b.push(c);return new AuthorHTMLFormControlsCollection(b)}},resetButtons:{get:()=>this.querySelectorAll("button[type=\"reset\"]")},submitButtons:{get:()=>this.querySelectorAll("button[type=\"submit\"]")},invalidFields:{readonly:!0,get:()=>this.querySelectorAll("author-control[invalid]")},validFields:{readonly:!0,get:()=>this.querySelectorAll("author-control:not([invalid])")}}),this.UTIL.definePrivateMethods({generateAuthorHTMLFormControlsCollectionConstructor:()=>{let a=new WeakMap,AuthorHTMLFormControlsCollection=class extends this.PRIVATE.generateAuthorHTMLCollectionConstructor(){constructor(b){super(b),a.set(this,{arr:b})}get length(){return a.get(this).arr.length}[Symbol.toStringTag](){return`AuthorHTMLFormControlsCollection`}};return AuthorHTMLFormControlsCollection},validationHandler:a=>{let{attribute:b}=a.detail;"invalid"===b&&(0<this.invalidFields.length?this.setAttribute("invalid",""):this.removeAttribute("invalid"))},applyValidationHandlers:()=>{for(let a of this.controls)a.on("attribute.changed",this.PRIVATE.validationHandler);this.PRIVATE.validationHandlersApplied=!0},removeValidationHandlers:()=>{for(let a of this.controls)a.off("attribute.changed",this.PRIVATE.validationHandler);this.PRIVATE.validationHandlersApplied=!1}}),this.UTIL.registerListeners(this,{"attribute.changed":a=>{let{attribute:b}=a.detail;"novalidate"===b?this.novalidate?(this.removeAttribute("invalid"),this.PRIVATE.validationHandlersApplied&&this.PRIVATE.removeValidationHandlers()):(0<this.invalidFields.length&&this.setAttribute("invalid",""),!this.PRIVATE.validationHandlersApplied&&this.PRIVATE.applyValidationHandlers()):void 0},rendered:()=>{if(this.novalidate||this.PRIVATE.validationHandlersApplied||this.PRIVATE.applyValidationHandlers(),0<this.submitButtons.length)for(let a of this.submitButtons)this.UTIL.registerListener(a,"click",a=>(a.preventDefault(),this.novalidate||this.isValid?this.submit():void this.emit("invalid",{invalidFields:this.invalidFields})));if(0<this.resetButtons.length)for(let a of this.resetButtons)this.UTIL.registerListener(a,"click",a=>{a.preventDefault(),this.reset()})}})}static get observedAttributes(){return["novalidate"]}get data(){let a={};for(let[b,c]of this.controls.entries()){let{name:d,value:e}=c.input;d||(this.UTIL.printToConsole("Input is missing \"name\" attribute.","warning"),d=b),a[d]=e}return a}reset(){for(let a of this.controls){let{input:b}=a;switch(b.localName){case"input":case"textarea":b.value=a.initialValue;break;case"author-select":case"select":}}}submit(){this.emit("submit",{invalidFields:this.invalidFields,data:this.data})}});
+class AuthorFormElement extends AuthorElement(HTMLElement) {
+  constructor () {
+    super(`<template><style>@charset "UTF-8";</style><slot></slot></template>`)
+
+    this.UTIL.defineAttributes({
+      novalidate: false
+    })
+
+    this.UTIL.defineProperties({
+      validationHandlersApplied: {
+        private: true,
+        default: false
+      },
+
+      sourceElement: {
+        private: true,
+        readonly: true,
+        default: document.createElement('form')
+      },
+
+      isValid: {
+        readonly: true,
+        get: () => this.invalidFields.length === 0
+      },
+
+      controls: {
+        readonly: true,
+        get: () => this.querySelectorAll('author-control')
+      },
+
+      elements: {
+        readonly: true,
+        get: () => {
+          let AuthorHTMLFormControlsCollection = this.PRIVATE.generateAuthorHTMLFormControlsCollectionConstructor()
+          let elements = this.querySelectorAll('author-control, author-fieldset, fieldset, button')
+          let arr = []
+
+          for (let element of elements) {
+            if (element.localName === 'author-control') {
+              element = element.input
+            }
+
+            arr.push(element)
+          }
+
+          return new AuthorHTMLFormControlsCollection(arr)
+        }
+      },
+
+      resetButtons: {
+        get: () => this.querySelectorAll('button[type="reset"]')
+      },
+
+      submitButtons: {
+        get: () => this.querySelectorAll('button[type="submit"]')
+      },
+
+      invalidFields: {
+        readonly: true,
+        get: () => this.querySelectorAll('author-control[invalid]')
+      },
+
+      validFields: {
+        readonly: true,
+        get: () => this.querySelectorAll('author-control:not([invalid])')
+      }
+    })
+
+    this.UTIL.definePrivateMethods({
+      generateAuthorHTMLFormControlsCollectionConstructor: () => {
+        let _p = new WeakMap()
+
+        let AuthorHTMLFormControlsCollection = class AuthorHTMLFormControlsCollection extends this.PRIVATE.generateAuthorHTMLCollectionConstructor() {
+          constructor (arr) {
+            super(arr)
+            _p.set(this, { arr })
+          }
+
+          get length () {
+            return _p.get(this).arr.length
+          }
+
+          [Symbol.toStringTag] () {
+            return `AuthorHTMLFormControlsCollection`
+          }
+        }
+
+        return AuthorHTMLFormControlsCollection
+      },
+
+      validationHandler: evt => {
+        let { attribute } = evt.detail
+
+        if (attribute === 'invalid') {
+          if (this.invalidFields.length > 0) {
+            this.setAttribute('invalid', '')
+          } else {
+            this.removeAttribute('invalid')
+          }
+        }
+      },
+
+      applyValidationHandlers: () => {
+        for (let control of this.controls) {
+          control.on('attribute.changed', this.PRIVATE.validationHandler)
+        }
+
+        this.PRIVATE.validationHandlersApplied = true
+      },
+
+      removeValidationHandlers: () => {
+        for (let control of this.controls) {
+          control.off('attribute.changed', this.PRIVATE.validationHandler)
+        }
+
+        this.PRIVATE.validationHandlersApplied = false
+      }
+    })
+
+    this.UTIL.registerListeners(this, {
+      'attribute.changed': evt => {
+        let { attribute } = evt.detail
+
+        switch (attribute) {
+          case 'novalidate':
+            if (this.novalidate) {
+              this.removeAttribute('invalid')
+
+              if (this.PRIVATE.validationHandlersApplied) {
+                this.PRIVATE.removeValidationHandlers()
+              }
+            } else {
+              if (this.invalidFields.length > 0) {
+                this.setAttribute('invalid', '')
+              }
+
+              if (!this.PRIVATE.validationHandlersApplied) {
+                this.PRIVATE.applyValidationHandlers()
+              }
+            }
+
+            break
+        }
+      },
+
+      rendered: () => {
+        if (!this.novalidate && !this.PRIVATE.validationHandlersApplied) {
+           this.PRIVATE.applyValidationHandlers()
+        }
+
+        if (this.submitButtons.length > 0) {
+          for (let submitButton of this.submitButtons) {
+            this.UTIL.registerListener(submitButton, 'click', evt => {
+              evt.preventDefault()
+
+              if (this.novalidate || this.isValid) {
+                return this.submit()
+              }
+
+              this.emit('invalid', { invalidFields: this.invalidFields })
+            })
+          }
+        }
+
+        if (this.resetButtons.length > 0) {
+          for (let resetButton of this.resetButtons) {
+            this.UTIL.registerListener(resetButton, 'click', evt => {
+              evt.preventDefault()
+              this.reset()
+            })
+          }
+        }
+      }
+    })
+  }
+
+  static get observedAttributes () {
+    return ['novalidate']
+  }
+
+  get data () {
+    let data = {}
+
+    for (let [index, control] of this.controls.entries()) {
+      let { name, value } = control.input
+
+      if (!name) {
+        this.UTIL.printToConsole('Input is missing "name" attribute.', 'warning')
+        name = index
+      }
+
+      data[name] = value
+    }
+
+    return data
+  }
+
+  reset () {
+    for (let control of this.controls) {
+      let { input } = control
+
+      switch (input.localName) {
+        case 'input':
+        case 'textarea':
+          input.value = control.initialValue
+          break
+
+        case 'author-select':
+        case 'select':
+          // input.selectedIndex = control.initialValue
+          break
+      }
+    }
+  }
+
+  submit () {
+    this.emit('submit', {
+      invalidFields: this.invalidFields,
+      data: this.data
+    })
+  }
+}
+
+customElements.define('author-form', AuthorFormElement)

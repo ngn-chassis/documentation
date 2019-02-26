@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -103,20 +103,6 @@ module.exports = _setPrototypeOf;
 /* 1 */
 /***/ (function(module, exports) {
 
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-module.exports = _assertThisInitialized;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
 function _getPrototypeOf(o) {
   module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
     return o.__proto__ || Object.getPrototypeOf(o);
@@ -127,79 +113,41 @@ function _getPrototypeOf(o) {
 module.exports = _getPrototypeOf;
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _interopRequireDefault = __webpack_require__(4);
+var _interopRequireDefault = __webpack_require__(3);
 
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(4));
 
-var _createClass2 = _interopRequireDefault(__webpack_require__(6));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(5));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(7));
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(1));
 
-var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(2));
+var _inherits2 = _interopRequireDefault(__webpack_require__(8));
 
-var _inherits2 = _interopRequireDefault(__webpack_require__(9));
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(9));
 
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(1));
-
-var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(10));
-
-var AuthorOptgroupElement =
+var AuthorDragareaElement =
 /*#__PURE__*/
 function (_HTMLElement) {
-  (0, _inherits2.default)(AuthorOptgroupElement, _HTMLElement);
+  (0, _inherits2.default)(AuthorDragareaElement, _HTMLElement);
 
-  function AuthorOptgroupElement() {
-    var _this;
-
-    (0, _classCallCheck2.default)(this, AuthorOptgroupElement);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorOptgroupElement).call(this));
-
-    _this.UTIL.definePrivateMethods({
-      optionSelectionHandler: function optionSelectionHandler(evt) {
-        return _this.emit('option.selected', evt.detail, _this.parentNode);
-      },
-      parentStateChangeHandler: function parentStateChangeHandler(evt) {
-        return _this.emit('state.change', evt.detail);
-      }
-    });
-
-    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
-      connected: function connected() {
-        _this.parentNode.on('state.change', _this.PRIVATE.parentStateChangeHandler);
-      },
-      disconnected: function disconnected() {
-        _this.parentNode.off('state.change', _this.PRIVATE.parentStateChangeHandler);
-      },
-      'option.selected': _this.PRIVATE.optionSelectionHandler
-    });
-
-    return _this;
+  function AuthorDragareaElement() {
+    (0, _classCallCheck2.default)(this, AuthorDragareaElement);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorDragareaElement).call(this));
   }
 
-  (0, _createClass2.default)(AuthorOptgroupElement, [{
-    key: "options",
-    get: function get() {
-      return this.parentNode.options;
-    }
-  }, {
-    key: "multiple",
-    get: function get() {
-      return this.parentNode.multiple;
-    }
-  }]);
-  return AuthorOptgroupElement;
+  return AuthorDragareaElement;
 }((0, _wrapNativeSuper2.default)(HTMLElement));
 
-customElements.define('author-optgroup', AuthorOptgroupElement);
+customElements.define('author-dragarea', AuthorDragareaElement);
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports) {
 
 function _interopRequireDefault(obj) {
@@ -211,7 +159,7 @@ function _interopRequireDefault(obj) {
 module.exports = _interopRequireDefault;
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -223,34 +171,12 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-module.exports = _createClass;
-
-/***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(8);
+var _typeof = __webpack_require__(6);
 
-var assertThisInitialized = __webpack_require__(1);
+var assertThisInitialized = __webpack_require__(7);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
@@ -263,7 +189,7 @@ function _possibleConstructorReturn(self, call) {
 module.exports = _possibleConstructorReturn;
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports) {
 
 function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
@@ -285,7 +211,21 @@ function _typeof(obj) {
 module.exports = _typeof;
 
 /***/ }),
-/* 9 */
+/* 7 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var setPrototypeOf = __webpack_require__(0);
@@ -308,16 +248,16 @@ function _inherits(subClass, superClass) {
 module.exports = _inherits;
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getPrototypeOf = __webpack_require__(2);
+var getPrototypeOf = __webpack_require__(1);
 
 var setPrototypeOf = __webpack_require__(0);
 
-var isNativeFunction = __webpack_require__(11);
+var isNativeFunction = __webpack_require__(10);
 
-var construct = __webpack_require__(12);
+var construct = __webpack_require__(11);
 
 function _wrapNativeSuper(Class) {
   var _cache = typeof Map === "function" ? new Map() : undefined;
@@ -356,7 +296,7 @@ function _wrapNativeSuper(Class) {
 module.exports = _wrapNativeSuper;
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 function _isNativeFunction(fn) {
@@ -366,7 +306,7 @@ function _isNativeFunction(fn) {
 module.exports = _isNativeFunction;
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var setPrototypeOf = __webpack_require__(0);
@@ -405,4 +345,4 @@ module.exports = _construct;
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=author-optgroup-es5-bundle.js.map
+//# sourceMappingURL=author-dragarea-es5-bundle.js.map

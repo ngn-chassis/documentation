@@ -1,6 +1,6 @@
-class AuthorAudioPlayerElement extends HTMLElement {
+class AuthorAudioPlayerElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineProperties({
       playlist: {

@@ -1,6 +1,6 @@
-class AuthorPaneResizeHandleElement extends HTMLElement {
+class AuthorPaneResizeHandleElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineProperties({
       initialized: {

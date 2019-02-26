@@ -681,7 +681,7 @@ const AuthorElement = superClass => class extends superClass {
       removeStyleProperty: {
         value: (ruleName, propertyName) => {
           let rule = this.PRIVATE.getStyleRule(ruleName)
-          
+
           rule.default.style.removeProperty(propertyName)
 
           if (rule.hasOwnProperty('legacy')) {

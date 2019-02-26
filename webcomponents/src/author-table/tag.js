@@ -1,6 +1,6 @@
-class AuthorDataTableElement extends HTMLElement {
+class AuthorDataTableElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.definePrivateProperties({
       headers: null,

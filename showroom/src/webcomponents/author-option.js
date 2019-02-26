@@ -1,1 +1,129 @@
-customElements.define("author-option",class extends AuthorElement(HTMLElement){constructor(){super(`<template><style>@charset "UTF-8"; :host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}author-option{contain:content;display:flex;flex-direction:column;max-width:100%}author-option *,author-option :after,author-option :before{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeoption"></slot><slot></slot><slot name="afteroption"></slot><slot name="beforeend"></slot></template>`),this.UTIL.defineAttributes({disabled:!1,hover:!1,id:"",label:"",selected:!1,value:""}),this.UTIL.defineProperties({defaultSelected:!1,form:{readonly:!0,private:!0},index:{readonly:!0,get:()=>this.parentNode.options.findIndex(a=>a.displayElement===this)}}),this.UTIL.definePrivateMethods({mouseButtonIsDown:a=>{let b=a.buttons===void 0?a.nativeEvent.which:a.buttons;return 1<=b},mousemoveHandler:()=>this.emit("option.hovered",this.index),mouseoutHandler:()=>this.hover=!1,mouseoverHandler:a=>{let b=this.PRIVATE.mouseButtonIsDown(a);if(!(this.parentNode.multiple&&b))return void(this.hover=!0);let{shiftKey:c,metaKey:d,ctrlKey:e}=a;this.PRIVATE.select(!0,d,e,b)},parentStateChangeHandler:a=>{let{name:b,value:c}=a.detail;return"multiple"===b?this.PRIVATE.setMode(c?"select-multiple":"select-one"):void 0},setMode:a=>{switch(a){case"select-multiple":this.off("mouseup",this.PRIVATE.selectionHandler),this.on("mousedown",this.PRIVATE.selectionHandler);break;case"select-one":this.on("mouseup",this.PRIVATE.selectionHandler),this.off("mousedown",this.PRIVATE.selectionHandler);break;default:}},select:(a=!1,b=!1,c=!1,d=!1)=>{let{index:e}=this;this.emit("option.selected",{index:e,shiftKey:a,metaKey:b,ctrlKey:c,mousedown:d},this.parentNode)},selectionHandler:a=>{let{shiftKey:b,metaKey:c,ctrlKey:d}=a;this.PRIVATE.select(b,c,d)}}),this.UTIL.registerListeners(this,{connected:()=>{this.parentNode.on("state.change",this.PRIVATE.parentStateChangeHandler),this.parentNode.multiple&&this.PRIVATE.setMode("select-multiple")},disconnected:()=>{this.off("mousedown",this.PRIVATE.selectionHandler),this.parentNode.off("state.change",this.PRIVATE.parentStateChangeHandler)},mouseover:this.PRIVATE.mouseoverHandler,mousemove:this.PRIVATE.mousemoveHandler,mouseout:this.PRIVATE.mouseoutHandler,mouseup:this.PRIVATE.selectionHandler})}static get observedAttributes(){return["disabled","hover","label","selected","value"]}get text(){return this.innerHTML}set text(a){this.innerHTML=a}remove(){this.parentNode.options.splice(this.index,1),super.remove()}});
+class AuthorOptionElement extends AuthorElement(HTMLElement) {
+  constructor () {
+    super(`<template><style>@charset "UTF-8"; :host{contain:content;display:flex;flex-direction:column;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}author-option{contain:content;display:flex;flex-direction:column;max-width:100%}author-option *,author-option :after,author-option :before{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeoption"></slot><slot></slot><slot name="afteroption"></slot><slot name="beforeend"></slot></template>`)
+
+    this.UTIL.defineAttributes({
+      disabled: false,
+      hover: false,
+      id: '',
+      label: '',
+      selected: false,
+      value: ''
+    })
+
+    this.UTIL.defineProperties({
+      defaultSelected: false,
+
+      form: {
+        readonly: true,
+        private: true
+      },
+
+      index: {
+        readonly: true,
+        get: () => this.parentNode.options.findIndex(option => option.displayElement === this)
+      }
+    })
+
+    this.UTIL.definePrivateMethods({
+      mouseButtonIsDown: evt => {
+        let code = evt.buttons !== undefined ? evt.buttons : evt.nativeEvent.which
+        return code >= 1
+      },
+
+      mousemoveHandler: evt => this.emit('option.hovered', this.index),
+
+      mouseoutHandler: evt => this.hover = false,
+
+      mouseoverHandler: evt => {
+        let mousedown = this.PRIVATE.mouseButtonIsDown(evt)
+
+        if (!(this.parentNode.multiple && mousedown)) {
+          this.hover = true
+          return
+        }
+
+        let { shiftKey, metaKey, ctrlKey } = evt
+        this.PRIVATE.select(true, metaKey, ctrlKey, mousedown)
+      },
+
+      parentStateChangeHandler: evt => {
+        let { name, value } = evt.detail
+
+        switch (name) {
+          case 'multiple':
+            return this.PRIVATE.setMode(value ? 'select-multiple' : 'select-one')
+
+          default: return
+        }
+      },
+
+      setMode: mode => {
+        switch (mode) {
+          case 'select-multiple':
+            this.off('mouseup', this.PRIVATE.selectionHandler)
+            this.on('mousedown', this.PRIVATE.selectionHandler)
+            break
+
+          case 'select-one':
+            this.on('mouseup', this.PRIVATE.selectionHandler)
+            this.off('mousedown', this.PRIVATE.selectionHandler)
+            break
+
+          default: return
+        }
+      },
+
+      select: (shiftKey = false, metaKey = false, ctrlKey = false, mousedown = false) => {
+        let { index } = this
+        this.emit('option.selected', {index, shiftKey, metaKey, ctrlKey, mousedown}, this.parentNode)
+      },
+
+      selectionHandler: evt => {
+        let { shiftKey, metaKey, ctrlKey } = evt
+        this.PRIVATE.select(shiftKey, metaKey, ctrlKey)
+      }
+    })
+
+    this.UTIL.registerListeners(this, {
+      connected: () => {
+        this.parentNode.on('state.change', this.PRIVATE.parentStateChangeHandler)
+        this.parentNode.multiple && this.PRIVATE.setMode('select-multiple')
+      },
+
+      disconnected: () => {
+        this.off('mousedown', this.PRIVATE.selectionHandler)
+        this.parentNode.off('state.change', this.PRIVATE.parentStateChangeHandler)
+      },
+
+      mouseover: this.PRIVATE.mouseoverHandler,
+      mousemove: this.PRIVATE.mousemoveHandler,
+      mouseout: this.PRIVATE.mouseoutHandler,
+      mouseup: this.PRIVATE.selectionHandler
+    })
+  }
+
+  static get observedAttributes () {
+    return ['disabled', 'hover', 'label', 'selected', 'value']
+  }
+
+  get text () {
+    return this.innerHTML
+  }
+
+  set text (content) {
+    this.innerHTML = content
+  }
+
+  /**
+   * @method remove
+   * Remove this option from the DOM.
+   * @override
+   */
+  remove () {
+    this.parentNode.options.splice(this.index, 1)
+    super.remove()
+  }
+}
+
+customElements.define('author-option', AuthorOptionElement)

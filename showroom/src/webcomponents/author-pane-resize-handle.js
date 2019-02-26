@@ -1,1 +1,149 @@
-customElements.define("author-pane-resize-handle",class extends AuthorElement(HTMLElement){constructor(){super(`<template><style>@charset "UTF-8"; :host{display:flex;cursor:row-resize}:host *,:host :after,:host :before{box-sizing:border-box}:host-context(author-pane[horizontal]){cursor:col-resize}author-pane-resize-handle{display:flex;cursor:row-resize}author-pane-resize-handle *,author-pane-resize-handle :after,author-pane-resize-handle :before{box-sizing:border-box}author-pane-resize-handle-context(author-pane[horizontal]){cursor:col-resize}</style><slot></slot></template>`),this.UTIL.defineProperties({initialized:{private:!0,default:!1},maxSize:{private:!0,default:null},startPosition:{private:!0,default:null},offset:{private:!0,default:null}}),this.UTIL.definePrivateMethods({cleanupMouseEventHandlers:()=>{document.removeEventListener("mousemove",this.PRIVATE.globalMousemoveHandler),document.removeEventListener("mouseup",this.PRIVATE.globalMouseupHandler)},generatePercentage:a=>`${100*(a/this.parentNode.totalSize)}%`,globalMousemoveHandler:a=>{let b="x"===this.PRIVATE.axis?a.clientX:a.clientY;if(b===this.PRIVATE.startPosition)return;let{totalSize:c}=this.parentNode,{previousPane:d,nextPane:e,maxSize:f,offset:g,generatePercentage:h,handleResize:i}=this.PRIVATE,j=b-g.previous-d.dimensions.left;(!j||0>j)&&(j=0),j>=f&&(j=f),e.element.size=h(f-j),d.element.size=h(j)},globalMouseupHandler:()=>{this.PRIVATE.startPosition=null,this.PRIVATE.offset=null,this.PRIVATE.cleanupMouseEventHandlers()}}),this.UTIL.registerListeners(this,{disconnected:()=>this.PRIVATE.cleanupMouseEventHandlers(),initialize:()=>{this.PRIVATE.initialized||(this.UTIL.defineProperties({axis:{private:!0,readonly:!0,get:()=>this.parentNode.hasAttribute("horizontal")?"x":"y"},dimensions:{private:!0,readonly:!0,get:()=>this.getBoundingClientRect()},previousPane:{private:!0,readonly:!0,get:()=>{let{previousElementSibling:a}=this;return{element:a,dimensions:a.getBoundingClientRect()}}},nextPane:{private:!0,readonly:!0,get:()=>{let{nextElementSibling:a}=this;return{element:a,dimensions:a.getBoundingClientRect()}}}}),this.PRIVATE.initialized=!0)},mousedown:a=>{let b,c,d,{axis:e,dimensions:f,previousPane:g,nextPane:h}=this.PRIVATE;"x"===e?(b=a.clientX,c="width",d="right"):"y"===e?(b=a.clientY,c="height",d="bottom"):void 0;this.PRIVATE.startPosition=b,this.PRIVATE.maxSize=g.dimensions[c]+h.dimensions[c],this.PRIVATE.offset={previous:this.PRIVATE.startPosition-f[e],next:f[d]-b},document.addEventListener("mousemove",this.PRIVATE.globalMousemoveHandler),document.addEventListener("mouseup",this.PRIVATE.globalMouseupHandler)}})}});
+class AuthorPaneResizeHandleElement extends AuthorElement(HTMLElement) {
+  constructor () {
+    super(`<template><style>@charset "UTF-8"; :host{display:flex;cursor:row-resize}:host *,:host :after,:host :before{box-sizing:border-box}:host-context(author-pane[horizontal]){cursor:col-resize}author-pane-resize-handle{display:flex;cursor:row-resize}author-pane-resize-handle *,author-pane-resize-handle :after,author-pane-resize-handle :before{box-sizing:border-box}author-pane[horizontal] author-pane-resize-handle{cursor:col-resize}</style><slot></slot></template>`)
+
+    this.UTIL.defineProperties({
+      initialized: {
+        private: true,
+        default: false
+      },
+
+      maxSize: {
+        private: true,
+        default: null
+      },
+
+      startPosition: {
+        private: true,
+        default: null
+      },
+
+      offset: {
+        private: true,
+        default: null
+      }
+    })
+
+    this.UTIL.definePrivateMethods({
+      cleanupMouseEventHandlers: () => {
+        document.removeEventListener('mousemove', this.PRIVATE.globalMousemoveHandler)
+        document.removeEventListener('mouseup', this.PRIVATE.globalMouseupHandler)
+      },
+
+      generatePercentage: value => `${(value / this.parentNode.totalSize) * 100}%`,
+
+      globalMousemoveHandler: evt => {
+        let mousePosition = this.PRIVATE.axis === 'x' ? evt.clientX : evt.clientY
+
+        if (mousePosition === this.PRIVATE.startPosition) {
+          return
+        }
+
+        let { totalSize } = this.parentNode
+        let { previousPane, nextPane, maxSize, offset, generatePercentage, handleResize } = this.PRIVATE
+        let previousSize = (mousePosition - offset.previous) - previousPane.dimensions.left
+
+        if (!previousSize || previousSize < 0) {
+          previousSize = 0
+        }
+
+        if (previousSize >= maxSize) {
+          previousSize = maxSize
+        }
+
+        nextPane.element.size = generatePercentage(maxSize - previousSize)
+        previousPane.element.size = generatePercentage(previousSize)
+      },
+
+      globalMouseupHandler: evt => {
+        this.PRIVATE.startPosition = null
+        this.PRIVATE.offset = null
+        this.PRIVATE.cleanupMouseEventHandlers()
+      }
+    })
+
+    this.UTIL.registerListeners(this, {
+      disconnected: () => this.PRIVATE.cleanupMouseEventHandlers(),
+
+      initialize: () => {
+        if (this.PRIVATE.initialized) {
+          return
+        }
+
+        this.UTIL.defineProperties({
+          axis: {
+            private: true,
+            readonly: true,
+            get: () => this.parentNode.hasAttribute('horizontal') ? 'x' : 'y'
+          },
+
+          dimensions: {
+            private: true,
+            readonly: true,
+            get: () => this.getBoundingClientRect()
+          },
+
+          previousPane: {
+            private: true,
+            readonly: true,
+            get: () => {
+              let { previousElementSibling } = this
+
+              return {
+                element: previousElementSibling,
+                dimensions: previousElementSibling.getBoundingClientRect()
+              }
+            }
+          },
+
+          nextPane: {
+            private: true,
+            readonly: true,
+            get: () => {
+              let { nextElementSibling } = this
+
+              return {
+                element: nextElementSibling,
+                dimensions: nextElementSibling.getBoundingClientRect()
+              }
+            }
+          }
+        })
+
+        this.PRIVATE.initialized = true
+      },
+
+      mousedown: evt => {
+        let { axis, dimensions, previousPane, nextPane } = this.PRIVATE
+        let startPosition, dimension, offsetReference
+
+        switch (axis) {
+          case 'x':
+            startPosition = evt.clientX
+            dimension = 'width'
+            offsetReference = 'right'
+            break
+
+          case 'y':
+            startPosition = evt.clientY
+            dimension = 'height'
+            offsetReference = 'bottom'
+            break
+        }
+
+        this.PRIVATE.startPosition = startPosition
+        this.PRIVATE.maxSize = previousPane.dimensions[dimension] + nextPane.dimensions[dimension]
+
+        this.PRIVATE.offset = {
+          previous: this.PRIVATE.startPosition - dimensions[axis],
+          next: dimensions[offsetReference] - startPosition
+        }
+
+        document.addEventListener('mousemove', this.PRIVATE.globalMousemoveHandler)
+        document.addEventListener('mouseup', this.PRIVATE.globalMouseupHandler)
+      }
+    })
+  }
+}
+
+customElements.define('author-pane-resize-handle', AuthorPaneResizeHandleElement)

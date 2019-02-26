@@ -16,6 +16,7 @@
     <script src="webcomponents/author-element.js"></script>
     <script src="webcomponents/author-draggable.js"></script>
     <script src="webcomponents/author-droptarget.js"></script>
+    <script src="webcomponents/author-dragarea.js"></script>
   </head>
 
   <body class="layout showroom">
@@ -34,18 +35,42 @@
       <div class="content">
         <section class="dnd">
           <author-droptarget accepts="tyle">
-            <author-draggable id="draggable" type="tyle">
-              DRAG ME
-            </author-draggable>
-            <author-draggable type="tyle">
-              DRAG ME
-            </author-draggable>
-            <author-draggable type="tyle">
-              DRAG ME
-            </author-draggable>
+            <!-- <author-dragarea> -->
+              <author-draggable id="draggable" type="tyle">
+                DRAG ME
+                <div>
+                  Here is a div
+
+                  <div>
+                    And another
+                  </div>
+                </div>
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+              <author-draggable type="tyle">
+                DRAG ME
+              </author-draggable>
+            <!-- </author-dragarea> -->
           </author-droptarget>
 
-          <author-droptarget accepts="tyle">
+          <author-droptarget id="droptarget" accepts="tyle">
 
           </author-droptarget>
         </section>
@@ -56,7 +81,20 @@
     <script>
       window.addEventListener('DOMContentLoaded', evt => {
         window.draggable = document.getElementById('draggable')
+        window.droptarget = document.getElementById('droptarget')
 
+        window.droptarget.on('drag.enter', evt => {
+          console.log('DRAG ENTER');
+        })
+
+        window.droptarget.on('drag.over', evt => {
+          console.log('DRAG OVER');
+        })
+
+        window.droptarget.on('drag.leave', evt => {
+          console.log('DRAG LEAVE');
+        })
+        return
         window.draggable.on('drag.start', evt => {
           console.log('drag start');
         })
@@ -65,7 +103,7 @@
           console.log('after drag start');
         })
 
-        window.draggable.on('drag.active', evt => {
+        window.draggable.on('drag', evt => {
           console.log('dragging');
         })
 

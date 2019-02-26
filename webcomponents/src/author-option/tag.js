@@ -1,6 +1,6 @@
-class AuthorOptionElement extends HTMLElement {
+class AuthorOptionElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineAttributes({
       disabled: false,

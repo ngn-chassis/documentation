@@ -1,6 +1,6 @@
-class AuthorPaneElement extends HTMLElement {
+class AuthorPaneElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineAttributes({
       horizontal: false,

@@ -1,6 +1,6 @@
-class AuthorOptgroupLabelElement extends HTMLElement {
+class AuthorOptgroupLabelElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
   }
 }
 

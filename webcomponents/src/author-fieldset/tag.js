@@ -1,6 +1,6 @@
-class AuthorFieldsetElement extends HTMLElement {
+class AuthorFieldsetElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineAttributes({
       name: ''

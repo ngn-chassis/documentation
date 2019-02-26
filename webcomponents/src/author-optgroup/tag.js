@@ -1,6 +1,6 @@
-class AuthorOptgroupElement extends HTMLElement {
+class AuthorOptgroupElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.definePrivateMethods({
       optionSelectionHandler: evt => this.emit('option.selected', evt.detail, this.parentNode),

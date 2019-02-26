@@ -1,6 +1,6 @@
-class AuthorSelectedOptionsElement extends HTMLElement {
+class AuthorSelectedOptionsElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineProperties({
       contentsElement: {

@@ -1,1 +1,59 @@
-customElements.define("author-fieldset",class extends AuthorElement(HTMLElement){constructor(){super(`<template><style>@charset "UTF-8";</style><slot></slot></template>`),this.UTIL.defineAttributes({name:""}),this.UTIL.defineProperties({sourceElement:{private:!0,readonly:!0,default:document.createElement("fieldset")},disabled:!1,elements:{readonly:!0,get:()=>""},form:{readonly:!0,get:()=>""},type:{readonly:!0,default:"author-fieldset"},validationMessage:{readonly:!0,get:()=>this.PRIVATE.sourceElement.validationMessage},validity:{readonly:!0,get:()=>this.PRIVATE.sourceElement.validity},willValidate:{readonly:!0,get:()=>this.PRIVATE.sourceElement.willValidate}})}checkValidity(){this.PRIVATE.sourceElement.checkValidity()}setCustomValidity(a=""){this.PRIVATE.sourceElement.setCustomValidity(a)}});
+class AuthorFieldsetElement extends AuthorElement(HTMLElement) {
+  constructor () {
+    super(`<template><style>@charset "UTF-8";</style><slot></slot></template>`)
+
+    this.UTIL.defineAttributes({
+      name: ''
+    })
+
+    this.UTIL.defineProperties({
+      sourceElement: {
+        private: true,
+        readonly: true,
+        default: document.createElement('fieldset')
+      },
+
+      disabled: false,
+
+      elements: {
+        readonly: true,
+        get: () => ''
+      },
+
+      form: {
+        readonly: true,
+        get: () => ''
+      },
+
+      type: {
+        readonly: true,
+        default: 'author-fieldset'
+      },
+
+      validationMessage: {
+        readonly: true,
+        get: () => this.PRIVATE.sourceElement.validationMessage
+      },
+
+      validity: {
+        readonly: true,
+        get: () => this.PRIVATE.sourceElement.validity
+      },
+
+      willValidate: {
+        readonly: true,
+        get: () => this.PRIVATE.sourceElement.willValidate
+      }
+    })
+  }
+
+  checkValidity () {
+    this.PRIVATE.sourceElement.checkValidity()
+  }
+
+  setCustomValidity (string = '') {
+    this.PRIVATE.sourceElement.setCustomValidity(string)
+  }
+}
+
+customElements.define('author-fieldset', AuthorFieldsetElement)

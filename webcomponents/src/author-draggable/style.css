@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  cursor: move;
+}
+
+:host *,
+:host *:before,
+:host *:after {
+  box-sizing: border-box;
+}
+
+:host([clone][dragging]) {
+  contain: content !important;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+}

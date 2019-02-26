@@ -1,1 +1,504 @@
-!function(n){var o={};function r(e){if(o[e])return o[e].exports;var t=o[e]={i:e,l:!1,exports:{}};return n[e].call(t.exports,t,t.exports,r),t.l=!0,t.exports}r.m=n,r.c=o,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)r.d(n,o,function(e){return t[e]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=1)}([function(e,t){e.exports=function(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}},function(e,t,n){"use strict";var o=n(2),r=o(n(3)),i=o(n(4)),u=o(n(6)),a=o(n(7)),l=o(n(0));customElements.define("author-pane-resize-handle",function(e){function t(){var s;return(0,r.default)(this,t),(s=(0,i.default)(this,(0,u.default)(t).call(this,'<template><style>@charset "UTF-8"; :host{display:flex;cursor:row-resize}:host *,:host :after,:host :before{box-sizing:border-box}:host-context(author-pane[horizontal]){cursor:col-resize}author-pane-resize-handle{display:flex;cursor:row-resize}author-pane-resize-handle *,author-pane-resize-handle :after,author-pane-resize-handle :before{box-sizing:border-box}author-pane-resize-handle-context(author-pane[horizontal]){cursor:col-resize}</style><slot></slot></template>'))).UTIL.defineProperties({initialized:{private:!0,default:!1},maxSize:{private:!0,default:null},startPosition:{private:!0,default:null},offset:{private:!0,default:null}}),s.UTIL.definePrivateMethods({cleanupMouseEventHandlers:function(){document.removeEventListener("mousemove",s.PRIVATE.globalMousemoveHandler),document.removeEventListener("mouseup",s.PRIVATE.globalMouseupHandler)},generatePercentage:function(e){return"".concat(e/s.parentNode.totalSize*100,"%")},globalMousemoveHandler:function(e){var t="x"===s.PRIVATE.axis?e.clientX:e.clientY;if(t!==s.PRIVATE.startPosition){s.parentNode.totalSize;var n=s.PRIVATE,o=n.previousPane,r=n.nextPane,i=n.maxSize,u=n.offset,a=n.generatePercentage,l=(n.handleResize,t-u.previous-o.dimensions.left);(!l||l<0)&&(l=0),i<=l&&(l=i),r.element.size=a(i-l),o.element.size=a(l)}},globalMouseupHandler:function(e){s.PRIVATE.startPosition=null,s.PRIVATE.offset=null,s.PRIVATE.cleanupMouseEventHandlers()}}),s.UTIL.registerListeners((0,l.default)((0,l.default)(s)),{disconnected:function(){return s.PRIVATE.cleanupMouseEventHandlers()},initialize:function(){s.PRIVATE.initialized||(s.UTIL.defineProperties({axis:{private:!0,readonly:!0,get:function(){return s.parentNode.hasAttribute("horizontal")?"x":"y"}},dimensions:{private:!0,readonly:!0,get:function(){return s.getBoundingClientRect()}},previousPane:{private:!0,readonly:!0,get:function(){var e=(0,l.default)((0,l.default)(s)).previousElementSibling;return{element:e,dimensions:e.getBoundingClientRect()}}},nextPane:{private:!0,readonly:!0,get:function(){var e=(0,l.default)((0,l.default)(s)).nextElementSibling;return{element:e,dimensions:e.getBoundingClientRect()}}}}),s.PRIVATE.initialized=!0)},mousedown:function(e){var t,n,o,r=s.PRIVATE,i=r.axis,u=r.dimensions,a=r.previousPane,l=r.nextPane;switch(i){case"x":t=e.clientX,n="width",o="right";break;case"y":t=e.clientY,n="height",o="bottom"}s.PRIVATE.startPosition=t,s.PRIVATE.maxSize=a.dimensions[n]+l.dimensions[n],s.PRIVATE.offset={previous:s.PRIVATE.startPosition-u[i],next:u[o]-t},document.addEventListener("mousemove",s.PRIVATE.globalMousemoveHandler),document.addEventListener("mouseup",s.PRIVATE.globalMouseupHandler)}}),s}return(0,a.default)(t,e),t}(AuthorElement(HTMLElement)))},function(e,t){e.exports=function(e){return e&&e.__esModule?e:{default:e}}},function(e,t){e.exports=function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}},function(e,t,n){var o=n(5),r=n(0);e.exports=function(e,t){return!t||"object"!==o(t)&&"function"!=typeof t?r(e):t}},function(t,e){function n(e){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function o(e){return"function"==typeof Symbol&&"symbol"===n(Symbol.iterator)?t.exports=o=function(e){return n(e)}:t.exports=o=function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":n(e)},o(e)}t.exports=o},function(t,e){function n(e){return t.exports=n=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)},n(e)}t.exports=n},function(e,t,n){var o=n(8);e.exports=function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&o(e,t)}},function(n,e){function o(e,t){return n.exports=o=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e},o(e,t)}n.exports=o}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+module.exports = _setPrototypeOf;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(4);
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(6));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(2));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(8));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(1));
+
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(9));
+
+var AuthorPaneResizeHandleElement =
+/*#__PURE__*/
+function (_HTMLElement) {
+  (0, _inherits2.default)(AuthorPaneResizeHandleElement, _HTMLElement);
+
+  function AuthorPaneResizeHandleElement() {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, AuthorPaneResizeHandleElement);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorPaneResizeHandleElement).call(this));
+
+    _this.UTIL.defineProperties({
+      initialized: {
+        private: true,
+        default: false
+      },
+      maxSize: {
+        private: true,
+        default: null
+      },
+      startPosition: {
+        private: true,
+        default: null
+      },
+      offset: {
+        private: true,
+        default: null
+      }
+    });
+
+    _this.UTIL.definePrivateMethods({
+      cleanupMouseEventHandlers: function cleanupMouseEventHandlers() {
+        document.removeEventListener('mousemove', _this.PRIVATE.globalMousemoveHandler);
+        document.removeEventListener('mouseup', _this.PRIVATE.globalMouseupHandler);
+      },
+      generatePercentage: function generatePercentage(value) {
+        return "".concat(value / _this.parentNode.totalSize * 100, "%");
+      },
+      globalMousemoveHandler: function globalMousemoveHandler(evt) {
+        var mousePosition = _this.PRIVATE.axis === 'x' ? evt.clientX : evt.clientY;
+
+        if (mousePosition === _this.PRIVATE.startPosition) {
+          return;
+        }
+
+        var totalSize = _this.parentNode.totalSize;
+        var _this$PRIVATE = _this.PRIVATE,
+            previousPane = _this$PRIVATE.previousPane,
+            nextPane = _this$PRIVATE.nextPane,
+            maxSize = _this$PRIVATE.maxSize,
+            offset = _this$PRIVATE.offset,
+            generatePercentage = _this$PRIVATE.generatePercentage,
+            handleResize = _this$PRIVATE.handleResize;
+        var previousSize = mousePosition - offset.previous - previousPane.dimensions.left;
+
+        if (!previousSize || previousSize < 0) {
+          previousSize = 0;
+        }
+
+        if (previousSize >= maxSize) {
+          previousSize = maxSize;
+        }
+
+        nextPane.element.size = generatePercentage(maxSize - previousSize);
+        previousPane.element.size = generatePercentage(previousSize);
+      },
+      globalMouseupHandler: function globalMouseupHandler(evt) {
+        _this.PRIVATE.startPosition = null;
+        _this.PRIVATE.offset = null;
+
+        _this.PRIVATE.cleanupMouseEventHandlers();
+      }
+    });
+
+    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      disconnected: function disconnected() {
+        return _this.PRIVATE.cleanupMouseEventHandlers();
+      },
+      initialize: function initialize() {
+        if (_this.PRIVATE.initialized) {
+          return;
+        }
+
+        _this.UTIL.defineProperties({
+          axis: {
+            private: true,
+            readonly: true,
+            get: function get() {
+              return _this.parentNode.hasAttribute('horizontal') ? 'x' : 'y';
+            }
+          },
+          dimensions: {
+            private: true,
+            readonly: true,
+            get: function get() {
+              return _this.getBoundingClientRect();
+            }
+          },
+          previousPane: {
+            private: true,
+            readonly: true,
+            get: function get() {
+              var _assertThisInitialize = (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)),
+                  previousElementSibling = _assertThisInitialize.previousElementSibling;
+
+              return {
+                element: previousElementSibling,
+                dimensions: previousElementSibling.getBoundingClientRect()
+              };
+            }
+          },
+          nextPane: {
+            private: true,
+            readonly: true,
+            get: function get() {
+              var _assertThisInitialize2 = (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)),
+                  nextElementSibling = _assertThisInitialize2.nextElementSibling;
+
+              return {
+                element: nextElementSibling,
+                dimensions: nextElementSibling.getBoundingClientRect()
+              };
+            }
+          }
+        });
+
+        _this.PRIVATE.initialized = true;
+      },
+      mousedown: function mousedown(evt) {
+        var _this$PRIVATE2 = _this.PRIVATE,
+            axis = _this$PRIVATE2.axis,
+            dimensions = _this$PRIVATE2.dimensions,
+            previousPane = _this$PRIVATE2.previousPane,
+            nextPane = _this$PRIVATE2.nextPane;
+        var startPosition, dimension, offsetReference;
+
+        switch (axis) {
+          case 'x':
+            startPosition = evt.clientX;
+            dimension = 'width';
+            offsetReference = 'right';
+            break;
+
+          case 'y':
+            startPosition = evt.clientY;
+            dimension = 'height';
+            offsetReference = 'bottom';
+            break;
+        }
+
+        _this.PRIVATE.startPosition = startPosition;
+        _this.PRIVATE.maxSize = previousPane.dimensions[dimension] + nextPane.dimensions[dimension];
+        _this.PRIVATE.offset = {
+          previous: _this.PRIVATE.startPosition - dimensions[axis],
+          next: dimensions[offsetReference] - startPosition
+        };
+        document.addEventListener('mousemove', _this.PRIVATE.globalMousemoveHandler);
+        document.addEventListener('mouseup', _this.PRIVATE.globalMouseupHandler);
+      }
+    });
+
+    return _this;
+  }
+
+  return AuthorPaneResizeHandleElement;
+}((0, _wrapNativeSuper2.default)(HTMLElement));
+
+customElements.define('author-pane-resize-handle', AuthorPaneResizeHandleElement);
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+module.exports = _classCallCheck;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(7);
+
+var assertThisInitialized = __webpack_require__(1);
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return assertThisInitialized(self);
+}
+
+module.exports = _possibleConstructorReturn;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) setPrototypeOf(subClass, superClass);
+}
+
+module.exports = _inherits;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(2);
+
+var setPrototypeOf = __webpack_require__(0);
+
+var isNativeFunction = __webpack_require__(10);
+
+var construct = __webpack_require__(11);
+
+function _wrapNativeSuper(Class) {
+  var _cache = typeof Map === "function" ? new Map() : undefined;
+
+  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
+    if (Class === null || !isNativeFunction(Class)) return Class;
+
+    if (typeof Class !== "function") {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    if (typeof _cache !== "undefined") {
+      if (_cache.has(Class)) return _cache.get(Class);
+
+      _cache.set(Class, Wrapper);
+    }
+
+    function Wrapper() {
+      return construct(Class, arguments, getPrototypeOf(this).constructor);
+    }
+
+    Wrapper.prototype = Object.create(Class.prototype, {
+      constructor: {
+        value: Wrapper,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    return setPrototypeOf(Wrapper, Class);
+  };
+
+  return _wrapNativeSuper(Class);
+}
+
+module.exports = _wrapNativeSuper;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+function _isNativeFunction(fn) {
+  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+}
+
+module.exports = _isNativeFunction;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (isNativeReflectConstruct()) {
+    module.exports = _construct = Reflect.construct;
+  } else {
+    module.exports = _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+module.exports = _construct;
+
+/***/ })
+/******/ ]);
+//# sourceMappingURL=author-pane-resize-handle-es5-bundle.js.map

@@ -1,1 +1,933 @@
-!function(n){var o={};function r(e){if(o[e])return o[e].exports;var t=o[e]={i:e,l:!1,exports:{}};return n[e].call(t.exports,t,t.exports,r),t.l=!0,t.exports}r.m=n,r.c=o,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)r.d(n,o,function(e){return t[e]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=2)}([function(t,e){function n(e){return t.exports=n=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)},n(e)}t.exports=n},function(e,t){e.exports=function(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}},function(e,t,n){"use strict";var o=n(3),i=o(n(4)),r=o(n(5)),l=o(n(6)),u=o(n(0)),s=o(n(8)),a=o(n(10)),d=o(n(1));customElements.define("author-select",function(e){function t(){var r;return(0,i.default)(this,t),(r=(0,l.default)(this,(0,u.default)(t).call(this,'<template><style>@charset "UTF-8"; :host{display:inline-block;max-width:100%}:host *,:host :after,:host :before{box-sizing:border-box}author-select{display:inline-block;max-width:100%}author-select *,author-select :after,author-select :before{box-sizing:border-box}</style><slot name="afterbegin"></slot><slot name="beforeselectedoptions"></slot><slot name="selectedoptions"></slot><slot name="afterselectedoptions"></slot><slot name="beforeoptions"></slot><slot name="options"></slot><slot name="afteroptions"></slot><slot name="beforeend"></slot></template>'))).UTIL.defineProperties({form:{readonly:!0},hoveredIndex:{readonly:!0,get:function(){return r.optionsElement.hoveredIndex}},injected:{private:!0,default:!1},labels:{private:!0},middleware:{private:!0,default:{beforeChange:null,afterChange:null}},options:{readonly:!0,get:function(){return r.optionsElement.displayOptions}},optionsElement:{readonly:!0,get:function(){return r.querySelector("author-options")}},selectedOptions:{readonly:!0,get:function(){return r.optionsElement?r.optionsElement.selectedOptions:null}},selectedOptionsElement:{readonly:!0,get:function(){return r.querySelector("author-selected-options")}},title:{private:!0,default:""},type:{readonly:!0,get:function(){return r.multiple?"select-multiple":"select-one"}},willValidate:{readonly:!0,get:function(){return r.sourceElement.willValidate}},validationMessage:{readonly:!0,get:function(){return r.sourceElement.validationMessage}},validity:{readonly:!0,get:function(){return r.sourceElement.validity}}}),r.UTIL.defineAttributes({name:"",placeholder:"",autofocus:!1,disabled:!1,multiple:!1,open:!1,required:!1,size:{get:function(){return r.PRIVATE.throwSizeAttributeWarning()},set:function(){return r.PRIVATE.throwSizeAttributeWarning()}}}),r.UTIL.definePrivateMethods({addOpenListeners:function(){document.body.addEventListener("mousedown",r.PRIVATE.bodyMousedownHandler),document.body.addEventListener("touchcancel",r.PRIVATE.bodyMousedownHandler),document.body.addEventListener("touchend",r.PRIVATE.bodyMousedownHandler)},blurHandler:function(e){return r.off("keydown",r.PRIVATE.keydownHandler)},bodyMousedownHandler:function(e){e.target===(0,d.default)((0,d.default)(r))||r.contains(e.target)||(r.open=!1)},focusHandler:function(e){return r.on("keydown",r.PRIVATE.keydownHandler)},keydownHandler:function(e){var t=-1<r.hoveredIndex?r.hoveredIndex:-1<r.selectedIndex?r.selectedIndex:-1;switch(e[r.keySource]){case 13:case"Enter":case 32:case" ":if(e.preventDefault(),!r.multiple){if(!r.open&&(32===e[r.keySource]||" "===e[r.keySource]))return void(r.open=!0);if(r.hoveredIndex===r.selectedIndex||-1===r.hoveredIndex)return void(r.open=!1);r.selectedIndex=r.hoveredIndex}break;case 38:case"ArrowUp":return e.preventDefault(),r.multiple||r.open?r.emit("keydown.arrowUp",{shiftKey:e.shiftKey,startIndex:t},r.optionsElement):void(r.open=!0);case 40:case"ArrowDown":return e.preventDefault(),r.multiple||r.open?r.emit("keydown.arrowDown",{shiftKey:e.shiftKey,startIndex:t},r.optionsElement):void(r.open=!0);default:return}},optionSelectionHandler:function(e){e.stopPropagation();var t=r.PRIVATE.middleware.afterChange;r.dispatchEvent(new Event("change",{})),r.open&&r.removeAttribute("open"),r.emit("options.selected",e.detail.options,r.selectedOptionsElement),r.checkValidity()?r.removeAttribute("invalid"):r.setAttribute("invalid",""),t&&"function"==typeof t&&t(e.detail.previous,r.selectedOptions)},removeOpenListeners:function(){document.body.removeEventListener("mousedown",r.PRIVATE.bodyMousedownHandler),document.body.removeEventListener("touchcancel",r.PRIVATE.bodyMousedownHandler),document.body.removeEventListener("touchend",r.PRIVATE.bodyMousedownHandler)},stateChangeHandler:function(e){var t=e.detail,n=t.name,o=t.value;switch(n){case"open":return o?r.multiple?r.removeAttribute("open"):(r.optionsElement.unHoverAllOptions(),r.PRIVATE.addOpenListeners()):r.PRIVATE.removeOpenListeners();case"multiple":o&&r.hasAttribute("open")&&r.removeAttribute("open");break;default:return}},throwSizeAttributeWarning:function(){r.UTIL.printToConsole('"size" attribute is not supported. Please use CSS to set the height of the options panel instead.',"warning")},toggleHandler:function(e){return r.open=!r.open},validationHandler:function(e){return r.emit("invalid")}}),r.UTIL.registerListeners((0,d.default)((0,d.default)(r)),{"attribute.change":function(e){var t=e.detail,n=t.attribute,o=t.oldValue;if(t.newValue!==o)switch(n){case"multiple":return r.emit("state.change",{name:"multiple",value:r.multiple});case"open":return r.emit("state.change",{name:"open",value:r.open});case"placeholder":r.selectedOptionsElement&&r.selectedOptionsElement.update();break;case"size":return r.PRIVATE.throwSizeAttributeWarning();default:return}},connected:function(){r.sourceElement.addEventListener("invalid",r.PRIVATE.validationHandler),r.checkValidity()||r.setAttribute("invalid","")},disconnected:function(){r.sourceElement.removeEventListener("invalid",r.PRIVATE.validationHandler)},blur:r.PRIVATE.blurHandler,focus:r.PRIVATE.focusHandler,"options.selected":r.PRIVATE.optionSelectionHandler,"state.change":r.PRIVATE.stateChangeHandler,toggle:r.PRIVATE.toggleHandler,rendered:function(){r.hasAttribute("tabindex")||r.setAttribute("tabindex",0),r.autofocus&&r.focus()}}),r}return(0,a.default)(t,e),(0,r.default)(t,[{key:"add",value:function(e,t){this.optionsElement.add(e,t)}},{key:"checkValidity",value:function(){return this.sourceElement.checkValidity()}},{key:"clear",value:function(){this.optionsElement.clear(),this.selectedOptionsElement.clear()}},{key:"deselectAll",value:function(){this.optionsElement.deselectAll()}},{key:"inject",value:function(e,t){if(!this.PRIVATE.injected){this.UTIL.defineProperty("sourceElement",{readonly:!0,default:e});var n=document.createElement("author-selected-options");n.slot="selectedoptions";var o=document.createElement("author-options");if(o.slot="options",this.PRIVATE.labels=t,this.appendChild(n),this.appendChild(o),0<e.children.length){if(!this.multiple){var r=!0,i=!1,l=void 0;try{for(var u,s=e.children[Symbol.iterator]();!(r=(u=s.next()).done);r=!0){var a=u.value;a.index!==e.selectedIndex&&a.removeAttribute("selected")}}catch(e){i=!0,l=e}finally{try{r||null==s.return||s.return()}finally{if(i)throw l}}}this.optionsElement.addOptions(e.children),this.multiple||this.selectedOptionsElement.add(this.optionsElement.options[this.selectedIndex])}this.PRIVATE.injected=!0}}},{key:"item",value:function(e){return this.optionsElement.item(e)}},{key:"namedItem",value:function(e){return this.optionsElement.namedItem(e)}},{key:"querySelector",value:function(e){return":checked"!==e?(0,s.default)((0,u.default)(t.prototype),"querySelector",this).call(this,e):0<this.selectedOptions.length?this.selectedOptions[0]:null}},{key:"querySelectorAll",value:function(e){return":checked"!==e?(0,s.default)((0,u.default)(t.prototype),"querySelectorAll",this).call(this,e):this.optionsElement.querySelectorAll("[selected]")}},{key:"remove",value:function(){var e=0<arguments.length&&void 0!==arguments[0]?arguments[0]:null;if(null===e)return(0,s.default)((0,u.default)(t.prototype),"remove",this).call(this);this.optionsElement.removeOptionByIndex(e)}},{key:"reportValidity",value:function(){this.sourceElement.checkValidity()?this.removeAttribute("invalid"):this.setAttribute("invalid","")}},{key:"setCustomValidity",value:function(e){this.sourceElement.setCustomValidity(e)}},{key:Symbol.toStringTag,value:function(){return"AuthorSelectElement"}},{key:"afterChange",get:function(){return this.PRIVATE.middleware.afterChange},set:function(e){this.PRIVATE.middleware.afterChange=e.bind(this)}},{key:"beforeChange",get:function(){return this.PRIVATE.middleware.beforeChange},set:function(e){this.PRIVATE.middleware.beforeChange=e.bind(this)}},{key:"length",get:function(){return this.options.length}},{key:"selectedIndex",get:function(){return this.optionsElement?this.optionsElement.selectedIndex:-1},set:function(e){if(e<0)return this.deselectAll();this.optionsElement.selectedIndex=e}},{key:"value",get:function(){if(0===this.selectedOptions.length)return null;var e=this.selectedOptions.item(0);return e?e.value||e.text:null}}],[{key:"observedAttributes",get:function(){return["autofocus","disabled","multiple","name","open","placeholder","tabindex","size"]}}]),t}(AuthorElement(HTMLElement)))},function(e,t){e.exports=function(e){return e&&e.__esModule?e:{default:e}}},function(e,t){e.exports=function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}},function(e,t){function o(e,t){for(var n=0;n<t.length;n++){var o=t[n];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(e,o.key,o)}}e.exports=function(e,t,n){return t&&o(e.prototype,t),n&&o(e,n),e}},function(e,t,n){var o=n(7),r=n(1);e.exports=function(e,t){return!t||"object"!==o(t)&&"function"!=typeof t?r(e):t}},function(t,e){function n(e){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function o(e){return"function"==typeof Symbol&&"symbol"===n(Symbol.iterator)?t.exports=o=function(e){return n(e)}:t.exports=o=function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":n(e)},o(e)}t.exports=o},function(o,e,t){t(0);var i=t(9);function r(e,t,n){return"undefined"!=typeof Reflect&&Reflect.get?o.exports=r=Reflect.get:o.exports=r=function(e,t,n){var o=i(e,t);if(o){var r=Object.getOwnPropertyDescriptor(o,t);return r.get?r.get.call(n):r.value}},r(e,t,n||e)}o.exports=r},function(e,t,n){var o=n(0);e.exports=function(e,t){for(;!Object.prototype.hasOwnProperty.call(e,t)&&null!==(e=o(e)););return e}},function(e,t,n){var o=n(11);e.exports=function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&o(e,t)}},function(n,e){function o(e,t){return n.exports=o=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e},o(e,t)}n.exports=o}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+module.exports = _setPrototypeOf;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(4);
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(6));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(7));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(0));
+
+var _get2 = _interopRequireDefault(__webpack_require__(9));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(11));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(2));
+
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(12));
+
+var AuthorSelectElement =
+/*#__PURE__*/
+function (_HTMLElement) {
+  (0, _inherits2.default)(AuthorSelectElement, _HTMLElement);
+
+  function AuthorSelectElement() {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, AuthorSelectElement);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorSelectElement).call(this));
+
+    _this.UTIL.defineProperties({
+      form: {
+        readonly: true
+      },
+      hoveredIndex: {
+        readonly: true,
+        get: function get() {
+          return _this.optionsElement.hoveredIndex;
+        }
+      },
+      injected: {
+        private: true,
+        default: false
+      },
+      labels: {
+        private: true
+      },
+      middleware: {
+        private: true,
+        default: {
+          beforeChange: null,
+          afterChange: null
+        }
+      },
+      options: {
+        readonly: true,
+        get: function get() {
+          return _this.optionsElement.displayOptions;
+        }
+      },
+      optionsElement: {
+        readonly: true,
+        get: function get() {
+          return _this.querySelector('author-options');
+        }
+      },
+      selectedOptions: {
+        readonly: true,
+        get: function get() {
+          return _this.optionsElement ? _this.optionsElement.selectedOptions : null;
+        }
+      },
+      selectedOptionsElement: {
+        readonly: true,
+        get: function get() {
+          return _this.querySelector('author-selected-options');
+        }
+      },
+      title: {
+        private: true,
+        default: ''
+      },
+      type: {
+        readonly: true,
+        get: function get() {
+          return _this.multiple ? 'select-multiple' : 'select-one';
+        }
+      },
+      willValidate: {
+        readonly: true,
+        get: function get() {
+          return _this.sourceElement.willValidate;
+        }
+      },
+      validationMessage: {
+        readonly: true,
+        get: function get() {
+          return _this.sourceElement.validationMessage;
+        }
+      },
+      validity: {
+        readonly: true,
+        get: function get() {
+          return _this.sourceElement.validity;
+        }
+      }
+    });
+
+    _this.UTIL.defineAttributes({
+      name: '',
+      placeholder: '',
+      autofocus: false,
+      disabled: false,
+      multiple: false,
+      open: false,
+      required: false,
+      size: {
+        get: function get() {
+          return _this.PRIVATE.throwSizeAttributeWarning();
+        },
+        set: function set() {
+          return _this.PRIVATE.throwSizeAttributeWarning();
+        }
+      }
+    });
+
+    _this.UTIL.definePrivateMethods({
+      addOpenListeners: function addOpenListeners() {
+        document.body.addEventListener('mousedown', _this.PRIVATE.bodyMousedownHandler);
+        document.body.addEventListener('touchcancel', _this.PRIVATE.bodyMousedownHandler);
+        document.body.addEventListener('touchend', _this.PRIVATE.bodyMousedownHandler);
+      },
+      blurHandler: function blurHandler(evt) {
+        return _this.off('keydown', _this.PRIVATE.keydownHandler);
+      },
+      bodyMousedownHandler: function bodyMousedownHandler(evt) {
+        if (evt.target === (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) || _this.contains(evt.target)) {
+          return;
+        }
+
+        _this.open = false;
+      },
+      focusHandler: function focusHandler(evt) {
+        return _this.on('keydown', _this.PRIVATE.keydownHandler);
+      },
+      keydownHandler: function keydownHandler(evt) {
+        var startIndex = _this.hoveredIndex > -1 ? _this.hoveredIndex : _this.selectedIndex > -1 ? _this.selectedIndex : -1;
+
+        switch (evt[_this.keySource]) {
+          case 13:
+          case 'Enter':
+          case 32:
+          case ' ':
+            evt.preventDefault();
+
+            if (!_this.multiple) {
+              if (!_this.open && (evt[_this.keySource] === 32 || evt[_this.keySource] === ' ')) {
+                _this.open = true;
+                return;
+              }
+
+              if (_this.hoveredIndex === _this.selectedIndex || _this.hoveredIndex === -1) {
+                _this.open = false;
+                return;
+              }
+
+              _this.selectedIndex = _this.hoveredIndex;
+            }
+
+            break;
+
+          case 38:
+          case 'ArrowUp':
+            evt.preventDefault();
+
+            if (!_this.multiple && !_this.open) {
+              _this.open = true;
+              return;
+            }
+
+            return _this.emit('keydown.arrowUp', {
+              shiftKey: evt.shiftKey,
+              startIndex: startIndex
+            }, _this.optionsElement);
+
+          case 40:
+          case 'ArrowDown':
+            evt.preventDefault();
+
+            if (!_this.multiple && !_this.open) {
+              _this.open = true;
+              return;
+            }
+
+            return _this.emit('keydown.arrowDown', {
+              shiftKey: evt.shiftKey,
+              startIndex: startIndex
+            }, _this.optionsElement);
+
+          default:
+            return;
+        }
+      },
+      optionSelectionHandler: function optionSelectionHandler(evt) {
+        evt.stopPropagation();
+        var afterChange = _this.PRIVATE.middleware.afterChange;
+
+        _this.dispatchEvent(new Event('change', {}));
+
+        if (_this.open) {
+          _this.removeAttribute('open');
+        }
+
+        _this.emit('options.selected', evt.detail.options, _this.selectedOptionsElement);
+
+        if (_this.checkValidity()) {
+          _this.removeAttribute('invalid');
+        } else {
+          _this.setAttribute('invalid', '');
+        }
+
+        if (afterChange && typeof afterChange === 'function') {
+          afterChange(evt.detail.previous, _this.selectedOptions);
+        }
+      },
+      removeOpenListeners: function removeOpenListeners() {
+        document.body.removeEventListener('mousedown', _this.PRIVATE.bodyMousedownHandler);
+        document.body.removeEventListener('touchcancel', _this.PRIVATE.bodyMousedownHandler);
+        document.body.removeEventListener('touchend', _this.PRIVATE.bodyMousedownHandler);
+      },
+      stateChangeHandler: function stateChangeHandler(evt) {
+        var _evt$detail = evt.detail,
+            name = _evt$detail.name,
+            value = _evt$detail.value;
+
+        switch (name) {
+          case 'open':
+            if (!value) {
+              return _this.PRIVATE.removeOpenListeners();
+            }
+
+            if (_this.multiple) {
+              return _this.removeAttribute('open');
+            }
+
+            _this.optionsElement.unHoverAllOptions();
+
+            return _this.PRIVATE.addOpenListeners();
+
+          case 'multiple':
+            if (value && _this.hasAttribute('open')) {
+              _this.removeAttribute('open');
+            }
+
+            break;
+
+          default:
+            return;
+        }
+      },
+      throwSizeAttributeWarning: function throwSizeAttributeWarning() {
+        _this.UTIL.printToConsole("\"size\" attribute is not supported. Please use CSS to set the height of the options panel instead.", 'warning');
+      },
+      toggleHandler: function toggleHandler(evt) {
+        return _this.open = !_this.open;
+      },
+      validationHandler: function validationHandler(evt) {
+        return _this.emit('invalid');
+      }
+    });
+
+    _this.UTIL.registerListeners((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      'attribute.change': function attributeChange(evt) {
+        var _evt$detail2 = evt.detail,
+            attribute = _evt$detail2.attribute,
+            oldValue = _evt$detail2.oldValue,
+            newValue = _evt$detail2.newValue;
+
+        if (newValue === oldValue) {
+          return;
+        }
+
+        switch (attribute) {
+          case 'multiple':
+            return _this.emit('state.change', {
+              name: 'multiple',
+              value: _this.multiple
+            });
+
+          case 'open':
+            return _this.emit('state.change', {
+              name: 'open',
+              value: _this.open
+            });
+
+          case 'placeholder':
+            if (_this.selectedOptionsElement) {
+              _this.selectedOptionsElement.update();
+            }
+
+            break;
+
+          case 'size':
+            return _this.PRIVATE.throwSizeAttributeWarning();
+
+          default:
+            return;
+        }
+      },
+      connected: function connected() {
+        _this.sourceElement.addEventListener('invalid', _this.PRIVATE.validationHandler);
+
+        if (!_this.checkValidity()) {
+          _this.setAttribute('invalid', '');
+        }
+      },
+      disconnected: function disconnected() {
+        _this.sourceElement.removeEventListener('invalid', _this.PRIVATE.validationHandler);
+      },
+      blur: _this.PRIVATE.blurHandler,
+      focus: _this.PRIVATE.focusHandler,
+      'options.selected': _this.PRIVATE.optionSelectionHandler,
+      'state.change': _this.PRIVATE.stateChangeHandler,
+      toggle: _this.PRIVATE.toggleHandler,
+      rendered: function rendered() {
+        if (!_this.hasAttribute('tabindex')) {
+          _this.setAttribute('tabindex', 0);
+        }
+
+        _this.autofocus && _this.focus();
+      }
+    });
+
+    return _this;
+  }
+
+  (0, _createClass2.default)(AuthorSelectElement, [{
+    key: "add",
+    value: function add(option, index) {
+      this.optionsElement.add(option, index);
+    }
+  }, {
+    key: "checkValidity",
+    value: function checkValidity() {
+      return this.sourceElement.checkValidity();
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this.optionsElement.clear();
+      this.selectedOptionsElement.clear();
+    }
+  }, {
+    key: "deselectAll",
+    value: function deselectAll() {
+      this.optionsElement.deselectAll();
+    }
+  }, {
+    key: "inject",
+    value: function inject(select, labels) {
+      // Prevent re-injections
+      if (this.PRIVATE.injected) {
+        return;
+      }
+
+      this.UTIL.defineProperty('sourceElement', {
+        readonly: true,
+        default: select
+      });
+      var selectedOptionsElement = document.createElement('author-selected-options');
+      selectedOptionsElement.slot = 'selectedoptions';
+      var optionsElement = document.createElement('author-options');
+      optionsElement.slot = 'options';
+      this.PRIVATE.labels = labels;
+      this.appendChild(selectedOptionsElement);
+      this.appendChild(optionsElement);
+
+      if (select.children.length > 0) {
+        if (!this.multiple) {
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = select.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var option = _step.value;
+
+              if (option.index !== select.selectedIndex) {
+                option.removeAttribute('selected');
+              }
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return != null) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+        }
+
+        this.optionsElement.addOptions(select.children);
+
+        if (!this.multiple) {
+          this.selectedOptionsElement.add(this.optionsElement.options[this.selectedIndex]);
+        }
+      }
+
+      this.PRIVATE.injected = true;
+    }
+  }, {
+    key: "item",
+    value: function item(index) {
+      return this.optionsElement.item(index);
+    }
+  }, {
+    key: "namedItem",
+    value: function namedItem(id) {
+      return this.optionsElement.namedItem(id);
+    }
+    /**
+     * method querySelector
+     * @param  {string} selector
+     * @return {HTMLElement}
+     * @override
+     */
+
+  }, {
+    key: "querySelector",
+    value: function querySelector(selector) {
+      if (selector !== ':checked') {
+        return (0, _get2.default)((0, _getPrototypeOf2.default)(AuthorSelectElement.prototype), "querySelector", this).call(this, selector);
+      }
+
+      return this.selectedOptions.length > 0 ? this.selectedOptions[0] : null;
+    }
+    /**
+     * method querySelectorAll
+     * @param  {string} selector
+     * @return {NodeList}
+     * @override
+     */
+
+  }, {
+    key: "querySelectorAll",
+    value: function querySelectorAll(selector) {
+      if (selector !== ':checked') {
+        return (0, _get2.default)((0, _getPrototypeOf2.default)(AuthorSelectElement.prototype), "querySelectorAll", this).call(this, selector);
+      }
+
+      return this.optionsElement.querySelectorAll('[selected]');
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (index === null) {
+        return (0, _get2.default)((0, _getPrototypeOf2.default)(AuthorSelectElement.prototype), "remove", this).call(this);
+      }
+
+      this.optionsElement.removeOptionByIndex(index);
+    }
+  }, {
+    key: "reportValidity",
+    value: function reportValidity() {
+      var isValid = this.sourceElement.checkValidity();
+
+      if (isValid) {
+        this.removeAttribute('invalid');
+      } else {
+        this.setAttribute('invalid', '');
+      }
+    }
+  }, {
+    key: "setCustomValidity",
+    value: function setCustomValidity(string) {
+      this.sourceElement.setCustomValidity(string);
+    }
+  }, {
+    key: Symbol.toStringTag,
+    value: function value() {
+      return 'AuthorSelectElement';
+    }
+  }, {
+    key: "afterChange",
+    get: function get() {
+      return this.PRIVATE.middleware.afterChange;
+    },
+    set: function set(func) {
+      this.PRIVATE.middleware.afterChange = func.bind(this);
+    }
+  }, {
+    key: "beforeChange",
+    get: function get() {
+      return this.PRIVATE.middleware.beforeChange;
+    },
+    set: function set(func) {
+      this.PRIVATE.middleware.beforeChange = func.bind(this);
+    }
+  }, {
+    key: "length",
+    get: function get() {
+      return this.options.length;
+    }
+  }, {
+    key: "selectedIndex",
+    get: function get() {
+      return this.optionsElement ? this.optionsElement.selectedIndex : -1;
+    },
+    set: function set(index) {
+      if (index < 0) {
+        return this.deselectAll();
+      }
+
+      this.optionsElement.selectedIndex = index;
+    }
+  }, {
+    key: "value",
+    get: function get() {
+      if (this.selectedOptions.length === 0) {
+        return null;
+      }
+
+      var selectedOption = this.selectedOptions.item(0);
+      return selectedOption ? selectedOption.value || selectedOption.text : null;
+    }
+  }], [{
+    key: "observedAttributes",
+    get: function get() {
+      return ['autofocus', 'disabled', 'multiple', 'name', 'open', 'placeholder', 'tabindex', 'size'];
+    }
+  }]);
+  return AuthorSelectElement;
+}((0, _wrapNativeSuper2.default)(HTMLElement));
+
+customElements.define('author-select', AuthorSelectElement);
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+module.exports = _classCallCheck;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+module.exports = _createClass;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(8);
+
+var assertThisInitialized = __webpack_require__(2);
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return assertThisInitialized(self);
+}
+
+module.exports = _possibleConstructorReturn;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(0);
+
+var superPropBase = __webpack_require__(10);
+
+function _get(target, property, receiver) {
+  if (typeof Reflect !== "undefined" && Reflect.get) {
+    module.exports = _get = Reflect.get;
+  } else {
+    module.exports = _get = function _get(target, property, receiver) {
+      var base = superPropBase(target, property);
+      if (!base) return;
+      var desc = Object.getOwnPropertyDescriptor(base, property);
+
+      if (desc.get) {
+        return desc.get.call(receiver);
+      }
+
+      return desc.value;
+    };
+  }
+
+  return _get(target, property, receiver || target);
+}
+
+module.exports = _get;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(0);
+
+function _superPropBase(object, property) {
+  while (!Object.prototype.hasOwnProperty.call(object, property)) {
+    object = getPrototypeOf(object);
+    if (object === null) break;
+  }
+
+  return object;
+}
+
+module.exports = _superPropBase;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(1);
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) setPrototypeOf(subClass, superClass);
+}
+
+module.exports = _inherits;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(0);
+
+var setPrototypeOf = __webpack_require__(1);
+
+var isNativeFunction = __webpack_require__(13);
+
+var construct = __webpack_require__(14);
+
+function _wrapNativeSuper(Class) {
+  var _cache = typeof Map === "function" ? new Map() : undefined;
+
+  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
+    if (Class === null || !isNativeFunction(Class)) return Class;
+
+    if (typeof Class !== "function") {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    if (typeof _cache !== "undefined") {
+      if (_cache.has(Class)) return _cache.get(Class);
+
+      _cache.set(Class, Wrapper);
+    }
+
+    function Wrapper() {
+      return construct(Class, arguments, getPrototypeOf(this).constructor);
+    }
+
+    Wrapper.prototype = Object.create(Class.prototype, {
+      constructor: {
+        value: Wrapper,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    return setPrototypeOf(Wrapper, Class);
+  };
+
+  return _wrapNativeSuper(Class);
+}
+
+module.exports = _wrapNativeSuper;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+function _isNativeFunction(fn) {
+  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+}
+
+module.exports = _isNativeFunction;
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(1);
+
+function isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (isNativeReflectConstruct()) {
+    module.exports = _construct = Reflect.construct;
+  } else {
+    module.exports = _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+module.exports = _construct;
+
+/***/ })
+/******/ ]);
+//# sourceMappingURL=author-select-es5-bundle.js.map

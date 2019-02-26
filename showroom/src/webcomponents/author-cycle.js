@@ -1,1 +1,361 @@
-customElements.define("author-cycle",class extends AuthorElement(HTMLElement){constructor(){super(`<template><style>@charset "UTF-8"; :host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([selected])){display:none!important}author-cycle{display:block}author-cycle *,author-cycle :after,author-cycle :before{box-sizing:border-box}author-cycle:not([mode=custom])) > :not([selected]){display:none!important}</style><slot></slot></template>`),this.UTIL.defineProperties({dummyEl:{private:!0,default:document.createElement("div")}}),this.UTIL.definePrivateMethods({getChildIndex:a=>[].slice.call(this.children).indexOf(a),getNextSelectedChild:a=>{let b=this.PRIVATE.getChildIndex(a);return{element:a,index:b}},hideChild:a=>a.removeAttribute("selected",""),beforeChangeCallback:(a,b)=>{0<=this.selectedIndex&&this.PRIVATE.hideChild(this.children.item(this.selectedIndex||0)),a.setAttribute("selected",""),this.dispatchEvent(new CustomEvent("change",{bubbles:!0,cancelable:!0,composed:!0,detail:{previousSelection:b,currentSelection:this.selected}}))},showChild:a=>{let{beforeChangeCallback:b,getNextSelectedChild:c,hideChild:d}=this.PRIVATE,e=this.selected,f=c(a),g=c=>{this.removeEventListener("beforechange",g);c.defaultPrevented||b(a,e)};this.addEventListener("beforechange",g);let h=new CustomEvent("beforechange",{bubbles:!0,cancelable:!0,composed:!0,detail:{currentSelection:this.selected,nextSelection:f,next(){return this.defaultPrevented?void b(a,e):console.warn(`<${this.localName}> Calling "next()" in "beforechange" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())`)}}});h.detail.next=h.detail.next.bind(h),this.dispatchEvent(h)},showChildByIndex:a=>{this.selectedIndex===a||a>=this.children.length||0>a||this.PRIVATE.showChild(this.children.item(a))},showChildBySelector:a=>{let b=this.querySelectorAll(a);b.length&&(1<b.length&&console.warn(`<${this.localName}> found multiple nodes matching "${a}". Displaying first result...`),this.PRIVATE.showChild(b.item(0)))}}),this.UTIL.registerListeners(this,{connected:()=>{this.UTIL.monitorChildren(a=>{a.forEach(a=>{let{addedNodes:b,removedNodes:c,type:d}=a;switch(d){case"childList":if(0<c.length&&!this.selectedElement)return this.previous();}})})},rendered:()=>{for(let a in this.children){if(!this.children.hasOwnProperty(a))continue;let b=this.children.item(a);"object"==typeof b&&b!==this.selectedElement&&this.PRIVATE.hideChild(b)}}})}static get observedAttributes(){return["mode"]}get selected(){return{element:this.selectedElement,index:this.selectedIndex}}get selectedElement(){return null===this.selectedIndex?null:this.children.item(this.selectedIndex)}get selectedIndex(){for(let a in this.children){if(!this.children.hasOwnProperty(a))continue;let b=this.children.item(a);if("object"==typeof b&&b.hasAttribute("selected"))return parseInt(a)}return null}hideAll(){for(let a in this.children){if(!this.children.hasOwnProperty(a))continue;let b=this.children.item(a);"object"==typeof b&&this.PRIVATE.hideChild(b)}}indexOf(a){return this.PRIVATE.getChildIndex(a)}insertAdjacentHTML(a,b){switch(a){case"beforebegin":case"afterend":return HTMLElement.prototype.insertAdjacentHTML.call(this,a,b);default:let{dummyEl:c}=this.PRIVATE;c.insertAdjacentHTML(a,b);let d=c.children.item(0);for(;c.firstChild;)c.removeChild(c.firstChild);return"beforeend"===a?this.appendChild(d):this.insertBefore(d,this.firstElementChild);}}insertAdjacentElement(a,b){return"beforeend"===a?this.appendChild(b):"afterbegin"===a?this.insertBefore(b,this.firstElementChild):HTMLElement.prototype.insertAdjacentElement.call(this,a,b)}first(){this.show(0)}last(){this.show(this.children.length-1)}next(a){this.show(this.selectedIndex===this.children.length-1?0:this.selectedIndex+1),a&&a(this.selectedElement)}previous(a){this.show(0===this.selectedIndex?this.children.length-1:this.selectedIndex-1),a&&a(this.selectedElement)}show(a){if(null===a)return void(this.selectedIndex||this.PRIVATE.showChildByIndex(0));switch((typeof a).toLowerCase()){case"number":return this.PRIVATE.showChildByIndex(a);case"string":return isNaN(parseInt(a))?this.PRIVATE.showChildBySelector(a):this.PRIVATE.showChildByIndex(parseInt(a));default:return a instanceof HTMLElement?this.PRIVATE.showChild(a):this.UTIL.throwError({type:"reference",message:`Invalid query "${a}"`});}}});
+class AuthorCycleElement extends AuthorElement(HTMLElement) {
+  constructor () {
+    super(`<template><style>@charset "UTF-8"; :host{display:block}:host *,:host :after,:host :before{box-sizing:border-box}:host(:not([mode=custom]))>::slotted(:not([selected])){display:none!important}author-cycle{display:block}author-cycle *,author-cycle :after,author-cycle :before{box-sizing:border-box}author-cycle:not([mode=custom])>:not([selected]){display:none!important}</style><slot></slot></template>`)
+
+    this.UTIL.defineProperties({
+      dummyEl: {
+        private: true,
+        default: document.createElement('div')
+      }
+    })
+
+    this.UTIL.definePrivateMethods({
+      getChildIndex: child => [].slice.call(this.children).indexOf(child),
+
+      getNextSelectedChild: child => {
+        let nextIndex = this.PRIVATE.getChildIndex(child)
+
+        return {
+          element: child,
+          index: nextIndex
+        }
+      },
+
+      hideChild: child => child.removeAttribute('selected', ''),
+
+      beforeChangeCallback: (child, previousSelection) => {
+        if (this.selectedIndex >= 0) {
+          this.PRIVATE.hideChild(this.children.item(this.selectedIndex || 0))
+        }
+
+        child.setAttribute('selected', '')
+
+        this.dispatchEvent(new CustomEvent('change', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+
+          detail: {
+            previousSelection,
+            currentSelection: this.selected
+          }
+        }))
+      },
+
+      showChild: child => {
+        let {
+          beforeChangeCallback,
+          getNextSelectedChild,
+          hideChild
+        } = this.PRIVATE
+
+        let previousSelection = this.selected
+        let nextSelection = getNextSelectedChild(child)
+
+        let beforechangeHandler = evt => {
+          this.removeEventListener('beforechange', beforechangeHandler)
+
+          if (evt.defaultPrevented) {
+            return
+          }
+
+          beforeChangeCallback(child, previousSelection)
+        }
+
+        this.addEventListener('beforechange', beforechangeHandler)
+
+        let beforechangeEvent = new CustomEvent('beforechange', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+
+          detail: {
+            currentSelection: this.selected,
+            nextSelection,
+            next () {
+              if (!this.defaultPrevented) {
+                return console.warn(`<${this.localName}> Calling "next()" in "beforechange" event will not do anything unless the event's default behavior is canceled. (use Event.preventDefault())`)
+              }
+
+              beforeChangeCallback(child, previousSelection)
+            }
+          }
+        })
+
+        beforechangeEvent.detail.next = beforechangeEvent.detail.next.bind(beforechangeEvent)
+        this.dispatchEvent(beforechangeEvent)
+      },
+
+      showChildByIndex: index => {
+        if (this.selectedIndex === index || index >= this.children.length || index < 0) {
+          return
+        }
+
+        this.PRIVATE.showChild(this.children.item(index))
+      },
+
+      showChildBySelector: query => {
+        let nodes = this.querySelectorAll(query)
+
+        if (!nodes.length) {
+          return
+        }
+
+        if (nodes.length > 1) {
+          console.warn(`<${this.localName}> found multiple nodes matching "${query}". Displaying first result...`)
+        }
+
+        this.PRIVATE.showChild(nodes.item(0))
+      }
+    })
+
+    this.UTIL.registerListeners(this, {
+      connected: () => {
+        this.UTIL.monitorChildren(mutations => {
+          mutations.forEach(mutation => {
+            let { addedNodes, removedNodes, type } = mutation
+
+            switch (type) {
+              case 'childList':
+                if (removedNodes.length > 0 && !this.selectedElement) {
+                  return this.previous()
+                }
+
+                break
+            }
+          })
+        })
+      },
+
+      rendered: () => {
+        for (let index in this.children) {
+          if (!this.children.hasOwnProperty(index)) {
+            continue
+          }
+
+          let child = this.children.item(index)
+
+          if (typeof child !== 'object') {
+            continue
+          }
+
+          if (child !== this.selectedElement) {
+            this.PRIVATE.hideChild(child)
+          }
+        }
+      }
+    })
+  }
+
+  static get observedAttributes () {
+    return ['mode']
+  }
+
+  /**
+   * @typedef {Object} SelectedElementProperties
+   * @property {HTMLElement} element The currently selected page.
+   * @property {Number} index The zero-based index of the currently selected page.
+   */
+
+  /**
+   * @property selected
+   * Get information about the currently selected element.
+   * @return {SelectedElementProperties}
+   */
+  get selected () {
+    return {
+      element: this.selectedElement,
+      index: this.selectedIndex
+    }
+  }
+
+  /**
+   * @property selectedElement
+   * The currently selected element.
+   * @return {HTMLElement}
+   */
+  get selectedElement () {
+    return this.selectedIndex === null ? null : this.children.item(this.selectedIndex)
+  }
+
+  /**
+   * @property selectedIndex
+   * The zero-based index of the currently selected element.
+   * @return {Number}
+   */
+  get selectedIndex () {
+    for (let index in this.children) {
+      if (!this.children.hasOwnProperty(index)) {
+        continue
+      }
+
+      let child = this.children.item(index)
+
+      if (typeof child !== 'object') {
+        continue
+      }
+
+      if (child.hasAttribute('selected')) {
+        return parseInt(index)
+      }
+    }
+
+    return null
+  }
+
+  /**
+   * @method hideAll
+   * Deactivate all pages.
+   */
+  hideAll () {
+    for (let index in this.children) {
+      if (!this.children.hasOwnProperty(index)) {
+        continue
+      }
+
+      let child = this.children.item(index)
+
+      if (typeof child !== 'object') {
+        continue
+      }
+
+      this.PRIVATE.hideChild(child)
+    }
+  }
+
+  indexOf (child) {
+    return this.PRIVATE.getChildIndex(child)
+  }
+
+  /**
+   * @method insertAdjacentHTML
+   * Override this.prototype.insertAdjacentHTML and replace with
+   * appendChild() or insertBefore()
+   * This is done because of bugs with insertAdjacentHTML() on web components
+   * in Firefox and IE11.
+   * @override
+   */
+  insertAdjacentHTML (position, text) {
+    switch (position) {
+      case 'beforebegin':
+      case 'afterend':
+        return HTMLElement.prototype.insertAdjacentHTML.call(this, position, text)
+
+      default:
+        let { dummyEl } = this.PRIVATE
+
+        dummyEl.insertAdjacentHTML(position, text)
+        let node = dummyEl.children.item(0)
+
+        while (dummyEl.firstChild) {
+          dummyEl.removeChild(dummyEl.firstChild)
+        }
+
+        return position === 'beforeend' ? this.appendChild(node) : this.insertBefore(node, this.firstElementChild)
+    }
+  }
+
+  /**
+   * @method insertAdjacentElement
+   * Override this.prototype.insertAdjacentElement and replace with
+   * appendChild() or insertBefore()
+   * This is done because of bugs with insertAdjacentElement() on web components
+   * in Firefox and IE11.
+   * @param {string} position (beforebegin, afterbegin, beforeend, afterend)
+   * @param {HTMLElement} node
+   * Node to which to insert adjacent HTML
+   * @override
+   */
+  insertAdjacentElement (position, node) {
+    switch (position) {
+      case 'beforeend':
+        return this.appendChild(node)
+
+      case 'afterbegin':
+        return this.insertBefore(node, this.firstElementChild)
+
+      default:
+        return HTMLElement.prototype.insertAdjacentElement.call(this, position, node)
+    }
+  }
+
+  /**
+   * @method first
+   * A helper method to display the first child element.
+   */
+  first () {
+    this.show(0)
+  }
+
+  /**
+   * @method last
+   * A helper method to display the last child element.
+   */
+  last () {
+    this.show(this.children.length - 1)
+  }
+
+  /**
+   * @method next
+   * Deactivate the currently selected child element and activate the one
+   * immediately adjacent to it.
+   * @param {function} callback
+   * Executed when the operation is complete.
+   */
+  next (callback) {
+    this.show(this.selectedIndex === this.children.length - 1 ? 0 : this.selectedIndex + 1)
+    callback && callback(this.selectedElement)
+  }
+
+  /**
+   * @method previous
+   * Deactivate the currently selected child element and activate the one
+   * immediately preceding it.
+   * @param {function} callback
+   * Executed when the operation is complete.
+   */
+  previous (callback) {
+    this.show(this.selectedIndex === 0 ? this.children.length - 1 : this.selectedIndex - 1)
+    callback && callback(this.selectedElement)
+  }
+
+  /**
+   * @method show
+   * Deselect the currently selected element and select a different one.
+   * @param {number | string | HTMLElement} query
+   * 1-based index,
+   * Element selector string, or
+   * HTMLElement to select
+   */
+  show (query) {
+    if (query === null) {
+      if (!this.selectedIndex) {
+        this.PRIVATE.showChildByIndex(0)
+      }
+
+      return
+    }
+
+    switch ((typeof query).toLowerCase()) {
+      case 'number':
+        return this.PRIVATE.showChildByIndex(query)
+
+      case 'string':
+        return isNaN(parseInt(query))
+          ? this.PRIVATE.showChildBySelector(query)
+          : this.PRIVATE.showChildByIndex(parseInt(query))
+
+      default:
+        return query instanceof HTMLElement
+          ? this.PRIVATE.showChild(query)
+          : this.UTIL.throwError({
+            type: 'reference',
+            message: `Invalid query "${query}"`
+          })
+    }
+  }
+}
+
+customElements.define('author-cycle', AuthorCycleElement)
+
+// export default AuthorCycleElement

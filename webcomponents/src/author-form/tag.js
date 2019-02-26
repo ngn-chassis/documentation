@@ -1,6 +1,6 @@
-class AuthorFormElement extends HTMLElement {
+class AuthorFormElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineAttributes({
       novalidate: false

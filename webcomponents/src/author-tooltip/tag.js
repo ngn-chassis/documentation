@@ -1,6 +1,6 @@
-class AuthorTooltipElement extends HTMLElement {
+class AuthorTooltipElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineProperties({
       position: {

@@ -1,6 +1,6 @@
-class AuthorGridCellElement extends HTMLElement {
+class AuthorGridCellElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     // this.UTIL.defineAttributes({
     //   max: {

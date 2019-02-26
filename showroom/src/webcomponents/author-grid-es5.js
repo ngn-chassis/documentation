@@ -1,1 +1,504 @@
-!function(r){var n={};function o(t){if(n[t])return n[t].exports;var e=n[t]={i:t,l:!1,exports:{}};return r[t].call(e.exports,e,e.exports,o),e.l=!0,e.exports}o.m=r,o.c=n,o.d=function(t,e,r){o.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r})},o.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},o.t=function(e,t){if(1&t&&(e=o(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(o.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var n in e)o.d(r,n,function(t){return e[t]}.bind(null,n));return r},o.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return o.d(e,"a",e),e},o.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},o.p="",o(o.s=1)}([function(t,e){t.exports=function(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}},function(t,e,r){"use strict";var n=r(2),o=n(r(3)),u=n(r(4)),i=n(r(5)),s=n(r(7)),l=n(r(8)),c=n(r(0));customElements.define("author-grid",function(t){function r(){var e;return(0,o.default)(this,r),(e=(0,i.default)(this,(0,s.default)(r).call(this,'<template><style>@charset "UTF-8"; :host{display:grid}:host([inline]){display:inline-grid}author-grid{display:grid}author-grid[inline]){display:inline-grid}</style><slot></slot></template>'))).UTIL.defineAttributes({columns:{set:function(t){return e.PRIVATE.updateColumns(t)}},rows:{set:function(t){return e.PRIVATE.updateRows(t)}},gutter:{default:"none",set:function(t){return e.PRIVATE.updateGutter()}}}),e.UTIL.definePrivateProperties({columnsRule:null,rowsRule:null,gutterRule:null,observer:new MutationObserver(function(t){t.forEach(function(t){t.addedNodes,t.removedNodes;switch(t.type){case"childList":return e.PRIVATE.resetZIndexes();default:return}})}),resetZIndexes:function(){console.log("resetting z-indexes")},updateGutter:function(){var t=0<arguments.length&&void 0!==arguments[0]?arguments[0]:e.getAttribute("gutter").trim();e.PRIVATE.gutterRule&&e.PRIVATE.gutterRule.style.setProperty("grid-gap",t)},updateColumns:function(){var t=0<arguments.length&&void 0!==arguments[0]?arguments[0]:e.getAttribute("columns").trim();e.children.length&&e.PRIVATE.columnsRule&&e.PRIVATE.columnsRule.style.setProperty("grid-template-columns",e.PRIVATE.getProcessedGridTemplateValue(t))},updateRows:function(){var t=0<arguments.length&&void 0!==arguments[0]?arguments[0]:e.getAttribute("rows").trim();e.children.length&&e.PRIVATE.rowsRule&&e.PRIVATE.rowsRule.style.setProperty("grid-template-rows",e.PRIVATE.getProcessedGridTemplateValue(t))},getProcessedGridTemplateValue:function(t){if(!isNaN(t)){for(var e=parseInt(t),r=[],n=0;n<e;n++)r.push("1fr");t=r.join(" ")}return t}}),e.PRIVATE.observer.observe((0,c.default)((0,c.default)(e)),{attributes:!1,childList:!0,characterData:!1}),e}return(0,l.default)(r,t),(0,u.default)(r,[{key:"connectedCallback",value:function(){var t=this;this.UTIL.definePrivateProperties({styleSheet:this.shadowRoot.styleSheets[0]});var e=this.PRIVATE.styleSheet,r=this.PRIVATE.styleSheet.cssRules.length;e.insertRule(":host([gutter]) {}",r),this.PRIVATE.gutterRule=e.cssRules[r],e.insertRule(":host([columns]) {}",r),this.PRIVATE.columnsRule=e.cssRules[r],e.insertRule(":host([rows]) {}",r),this.PRIVATE.rowsRule=e.cssRules[r],setTimeout(function(){t.hasAttribute("gutter")&&t.PRIVATE.updateGutter(),t.hasAttribute("columns")&&t.PRIVATE.updateColumns(),t.hasAttribute("rows")&&t.PRIVATE.updateRows()},0)}}],[{key:"observedAttributes",get:function(){return["columns","rows","gutter"]}}]),r}(AuthorElement(HTMLElement)))},function(t,e){t.exports=function(t){return t&&t.__esModule?t:{default:t}}},function(t,e){t.exports=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}},function(t,e){function n(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}t.exports=function(t,e,r){return e&&n(t.prototype,e),r&&n(t,r),t}},function(t,e,r){var n=r(6),o=r(0);t.exports=function(t,e){return!e||"object"!==n(e)&&"function"!=typeof e?o(t):e}},function(e,t){function r(t){return(r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function n(t){return"function"==typeof Symbol&&"symbol"===r(Symbol.iterator)?e.exports=n=function(t){return r(t)}:e.exports=n=function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":r(t)},n(t)}e.exports=n},function(e,t){function r(t){return e.exports=r=Object.setPrototypeOf?Object.getPrototypeOf:function(t){return t.__proto__||Object.getPrototypeOf(t)},r(t)}e.exports=r},function(t,e,r){var n=r(9);t.exports=function(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function");t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,writable:!0,configurable:!0}}),e&&n(t,e)}},function(r,t){function n(t,e){return r.exports=n=Object.setPrototypeOf||function(t,e){return t.__proto__=e,t},n(t,e)}r.exports=n}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+module.exports = _setPrototypeOf;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(4);
+
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(5));
+
+var _createClass2 = _interopRequireDefault(__webpack_require__(6));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(7));
+
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(2));
+
+var _inherits2 = _interopRequireDefault(__webpack_require__(9));
+
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(1));
+
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(10));
+
+var AuthorGridElement =
+/*#__PURE__*/
+function (_HTMLElement) {
+  (0, _inherits2.default)(AuthorGridElement, _HTMLElement);
+
+  function AuthorGridElement() {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, AuthorGridElement);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(AuthorGridElement).call(this));
+
+    _this.UTIL.defineAttributes({
+      columns: {
+        set: function set(value) {
+          return _this.PRIVATE.updateColumns(value);
+        }
+      },
+      rows: {
+        set: function set(value) {
+          return _this.PRIVATE.updateRows(value);
+        }
+      },
+      gutter: {
+        default: 'none',
+        set: function set(value) {
+          return _this.PRIVATE.updateGutter();
+        }
+      }
+    });
+
+    _this.UTIL.definePrivateProperties({
+      columnsRule: null,
+      rowsRule: null,
+      gutterRule: null,
+      observer: new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          var addedNodes = mutation.addedNodes,
+              removedNodes = mutation.removedNodes,
+              type = mutation.type;
+
+          switch (type) {
+            case 'childList':
+              return _this.PRIVATE.resetZIndexes();
+
+            default:
+              return;
+          }
+        });
+      }),
+      resetZIndexes: function resetZIndexes() {
+        console.log('resetting z-indexes');
+      },
+      updateGutter: function updateGutter() {
+        var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.getAttribute('gutter').trim();
+
+        if (!_this.PRIVATE.gutterRule) {
+          return;
+        }
+
+        _this.PRIVATE.gutterRule.style.setProperty('grid-gap', value);
+      },
+      updateColumns: function updateColumns() {
+        var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.getAttribute('columns').trim();
+
+        if (!_this.children.length || !_this.PRIVATE.columnsRule) {
+          return;
+        }
+
+        _this.PRIVATE.columnsRule.style.setProperty('grid-template-columns', _this.PRIVATE.getProcessedGridTemplateValue(value));
+      },
+      updateRows: function updateRows() {
+        var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this.getAttribute('rows').trim();
+
+        if (!_this.children.length || !_this.PRIVATE.rowsRule) {
+          return;
+        }
+
+        _this.PRIVATE.rowsRule.style.setProperty('grid-template-rows', _this.PRIVATE.getProcessedGridTemplateValue(value));
+      },
+      getProcessedGridTemplateValue: function getProcessedGridTemplateValue(value) {
+        if (!isNaN(value)) {
+          var quantity = parseInt(value);
+          var array = [];
+
+          for (var i = 0; i < quantity; i++) {
+            array.push('1fr');
+          }
+
+          value = array.join(' ');
+        }
+
+        return value;
+      }
+    });
+
+    _this.PRIVATE.observer.observe((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+      attributes: false,
+      childList: true,
+      characterData: false
+    });
+
+    return _this;
+  }
+
+  (0, _createClass2.default)(AuthorGridElement, [{
+    key: "connectedCallback",
+    value: function connectedCallback() {
+      var _this2 = this;
+
+      this.UTIL.definePrivateProperties({
+        styleSheet: this.shadowRoot.styleSheets[0]
+      });
+      var styleSheet = this.PRIVATE.styleSheet;
+      var sheetLength = this.PRIVATE.styleSheet.cssRules.length;
+      styleSheet.insertRule(':host([gutter]) {}', sheetLength);
+      this.PRIVATE.gutterRule = styleSheet.cssRules[sheetLength];
+      styleSheet.insertRule(':host([columns]) {}', sheetLength);
+      this.PRIVATE.columnsRule = styleSheet.cssRules[sheetLength];
+      styleSheet.insertRule(':host([rows]) {}', sheetLength);
+      this.PRIVATE.rowsRule = styleSheet.cssRules[sheetLength];
+      setTimeout(function () {
+        if (_this2.hasAttribute('gutter')) {
+          _this2.PRIVATE.updateGutter();
+        }
+
+        if (_this2.hasAttribute('columns')) {
+          _this2.PRIVATE.updateColumns();
+        }
+
+        if (_this2.hasAttribute('rows')) {
+          _this2.PRIVATE.updateRows();
+        }
+      }, 0);
+    }
+  }], [{
+    key: "observedAttributes",
+    get: function get() {
+      return ['columns', 'rows', 'gutter'];
+    }
+  }]);
+  return AuthorGridElement;
+}((0, _wrapNativeSuper2.default)(HTMLElement));
+
+customElements.define('author-grid', AuthorGridElement);
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+module.exports = _classCallCheck;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+module.exports = _createClass;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(8);
+
+var assertThisInitialized = __webpack_require__(1);
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return assertThisInitialized(self);
+}
+
+module.exports = _possibleConstructorReturn;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) setPrototypeOf(subClass, superClass);
+}
+
+module.exports = _inherits;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getPrototypeOf = __webpack_require__(2);
+
+var setPrototypeOf = __webpack_require__(0);
+
+var isNativeFunction = __webpack_require__(11);
+
+var construct = __webpack_require__(12);
+
+function _wrapNativeSuper(Class) {
+  var _cache = typeof Map === "function" ? new Map() : undefined;
+
+  module.exports = _wrapNativeSuper = function _wrapNativeSuper(Class) {
+    if (Class === null || !isNativeFunction(Class)) return Class;
+
+    if (typeof Class !== "function") {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    if (typeof _cache !== "undefined") {
+      if (_cache.has(Class)) return _cache.get(Class);
+
+      _cache.set(Class, Wrapper);
+    }
+
+    function Wrapper() {
+      return construct(Class, arguments, getPrototypeOf(this).constructor);
+    }
+
+    Wrapper.prototype = Object.create(Class.prototype, {
+      constructor: {
+        value: Wrapper,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    return setPrototypeOf(Wrapper, Class);
+  };
+
+  return _wrapNativeSuper(Class);
+}
+
+module.exports = _wrapNativeSuper;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+function _isNativeFunction(fn) {
+  return Function.toString.call(fn).indexOf("[native code]") !== -1;
+}
+
+module.exports = _isNativeFunction;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(0);
+
+function isNativeReflectConstruct() {
+  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+  if (Reflect.construct.sham) return false;
+  if (typeof Proxy === "function") return true;
+
+  try {
+    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function _construct(Parent, args, Class) {
+  if (isNativeReflectConstruct()) {
+    module.exports = _construct = Reflect.construct;
+  } else {
+    module.exports = _construct = function _construct(Parent, args, Class) {
+      var a = [null];
+      a.push.apply(a, args);
+      var Constructor = Function.bind.apply(Parent, a);
+      var instance = new Constructor();
+      if (Class) setPrototypeOf(instance, Class.prototype);
+      return instance;
+    };
+  }
+
+  return _construct.apply(null, arguments);
+}
+
+module.exports = _construct;
+
+/***/ })
+/******/ ]);
+//# sourceMappingURL=author-grid-es5-bundle.js.map

@@ -1,6 +1,6 @@
-class AuthorGridElement extends HTMLElement {
+class AuthorGridElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineAttributes({
       columns: {

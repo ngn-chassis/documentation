@@ -1,6 +1,6 @@
-class AuthorCycleElement extends HTMLElement {
+class AuthorCycleElement extends AuthorElement(HTMLElement) {
   constructor () {
-    super()
+    super(`{{TEMPLATE-STRING}}`)
 
     this.UTIL.defineProperties({
       dummyEl: {
@@ -357,3 +357,5 @@ class AuthorCycleElement extends HTMLElement {
 }
 
 customElements.define('author-cycle', AuthorCycleElement)
+
+// export default AuthorCycleElement

@@ -3,89 +3,93 @@ const ComponentsShowroomMenu = new GRegistry({
   selector: 'main .sidebar',
   namespace: 'menu.',
 
-  templates: {
-    accordion: './js/registries/menu/templates/accordion.html',
-    section: './js/registries/menu/templates/section.html',
-    child: './js/registries/menu/templates/child.html'
+  properties: {
+    selectedSection: {
+      type: String,
+      default: 'introduction'
+    }
   },
 
   references: {
     drawer: '> author-drawer',
-    sections: 'nav > .sections',
+    list: 'nav > .sections',
+    sections: 'nav > .sections > .section',
     headers: 'nav .section .header'
   },
 
   init () {
-    this.on({
-      populate: sections => setTimeout(() => this.render(this.ref.sections.element, sections.map(section => (
-        this.createElement('div', {
-          'class': 'section'
-        }, [
-          this.createElement({
-            tag: 'div',
-
-            attributes: {
-              'class': 'header',
-              'data-key': section.key
-            },
-
-            on: {
-              click: evt => console.log(section.label)
-            },
-
-            children: [section.label]
-          })
-        ])
-      ))), 3000)
-
-      // populate: sections => this.render(this.ref.sections.element, sections.map(section => (
-      //   this.createElement('div', {
-      //     'class': 'section'
-      //   }, [
-      //     this.createElement({
-      //       tag: 'div',
-      //
-      //       attributes: {
-      //         'class': 'header',
-      //         'data-key': section.key
-      //       },
-      //
-      //       on: {
-      //         click: evt => console.log(section.label)
-      //       },
-      //
-      //       children: [section.label]
-      //     })
-      //   ])
-      // )))
+    this.properties.on('field.update', change => {
+      switch (change.field) {
+        case 'selectedSection': return this.emit('populate')
+      }
     })
 
-    // this.ref.headers.forEach(header => {
-    //   header.addEventListener('click', evt => this.emit('section.select', header.dataset.section))
-    // })
+    this.on({
+      populate: () => this.render(this.ref.list.element, MenuStore.records.map((section, index) => {
+        let hasChildren = section.children.recordCount > 0
+        let isSelected = section.key === this.properties.selectedSection
+
+        return this.createElement({
+          tag: 'div',
+
+          attributes: {
+            'class': classNames({
+              accordion: hasChildren,
+              selected: isSelected
+            }, 'section')
+          },
+
+          on: !isSelected ? {
+            click: evt => this.emit('section.select', index, section.key)
+          } : {},
+
+          children: [
+            this.createElement({
+              tag: 'div',
+
+              attributes: {
+                class: 'header'
+              },
+
+              children: [
+                section.label,
+                hasChildren ? this.createElement({
+                  tag: 'svg',
+
+                  attributes: {
+                    class: 'icon',
+                    src: 'assets/icons/chevron-down.svg'
+                  }
+                }) : null
+              ]
+            }),
+
+            hasChildren ? this.createElement({
+              tag: 'ul',
+
+              attributes: {
+                class: 'children'
+              },
+
+              children: section.children.records.map(child => (
+                this.createElement({
+                  tag: 'li',
+                  children: [child.label]
+                })
+              ))
+            }) : null
+          ]
+        })
+      }))
+      .then(() => this.emit('rendered'))
+      .catch(error => console.error(error)),
+
+      section: {
+        selected: key => this.properties.selectedSection = key
+      }
+    })
   }
 })
-
-// this.createElement({
-//   tag: 'div',
-//
-//   attributes: {
-//     'class': 'section'
-//   },
-//
-//   on: {
-//     click: evt => console.log('clicked')
-//   },
-//
-//   component: new SectionElement(arg1, arg2, arg3),
-//
-//   children: [
-//     this.createElement('div', {
-//       'class': 'header',
-//       'data-key': section.key
-//     }, [section.label])
-//   ]
-// })
 
 // this.render(MenuStore.records.map(record => ({
 //   template: record.children.recordCount > 0 ? 'accordion' : 'section',

@@ -111,6 +111,14 @@ class CustomProductionLine extends ProductionLine {
     cb && cb()
   }
 
+  copyLibs (cb) {
+    this.walk(this.LIBS).forEach(filepath => {
+      fs.copySync(filepath, this.outputDirectory(filepath))
+    })
+
+    cb && cb()
+  }
+
   copyPolyfills (cb) {
     this.walk(this.POLYFILLS).forEach(filepath => {
       fs.copySync(filepath, this.outputDirectory(filepath))
@@ -125,6 +133,7 @@ class CustomProductionLine extends ProductionLine {
     this.copyAssets()
     this.addTask('Copy Custom Elements', next => this.copyCustomElements(next))
     this.addTask('Copy Polyfills', next => this.copyPolyfills(next))
+    this.addTask('Copy Libraries', next => this.copyLibs(next))
     this.buildHTML()
     this.addTask('Build JavaScript', next => this.buildJavaScript(!dev, !dev, !dev, next))
     this.addTask('Build CSS', next => this.buildCSS(!dev, next))
@@ -154,6 +163,7 @@ const builder = new CustomProductionLine({
 
 builder.ASSETS = ['/assets']
 builder.CONFIG = path.join(builder.SOURCE, '/config/**/*.json')
+builder.LIBS = path.join(builder.SOURCE, '/lib/**/*.*')
 builder.CSS = path.join(builder.SOURCE, '/css/**/*.css')
 builder.JAVASCRIPT = path.join(builder.SOURCE, '/js/**/*.js')
 builder.CUSTOMELEMENTS = './node_modules/@author.io/element-*'

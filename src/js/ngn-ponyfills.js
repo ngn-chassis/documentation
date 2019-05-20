@@ -5,6 +5,20 @@ class GRegistry extends NGNX.VIEW.Registry {
     Object.defineProperties(this, {
       vDOMs: NGN.privateconst(new Map()),
 
+      createDOMObject: NGN.privateconst(({
+        tag = null,
+        attributes = null,
+        on = null,
+        component = null,
+        children = []
+      }) => ({
+        tag,
+        attributes,
+        on,
+        component,
+        children: children.filter(Boolean)
+      })),
+
       parseElement: NGN.privateconst(element => this.createDOMObject({
         tag: element.localName,
 
@@ -19,27 +33,48 @@ class GRegistry extends NGNX.VIEW.Registry {
             case 3: return child.data
             default: return null
           }
-        }).filter(Boolean)
+        })
       })),
 
+      // TODO: Handle component creation and management
       createNode: NGN.privateconst(node => {
         if (typeof node === 'string') {
           return document.createTextNode(node)
         }
 
         let element = document.createElement(node.tag)
-        node.children.map(this.createNode).forEach(element.appendChild.bind(element))
+
+        for (let attribute in node.attributes) {
+          element.setAttribute(attribute, node.attributes[attribute])
+        }
+
+        if (node.on) {
+          for (let listener in node.on) {
+            element.addEventListener(listener, node.on[listener])
+          }
+        }
+
+        if (node.children) {
+          node.children.map(this.createNode).forEach(element.appendChild.bind(element))
+        }
 
         return element
       }),
 
       nodesMatch: NGN.privateconst((subject, comparator) => {
-        return typeof subject === typeof comparator
-          || typeof subject === 'string' && subject === comparator
-          || subject.tag === comparator.tag
+        if (typeof subject !== typeof comparator) {
+          return false
+        }
+
+        if (typeof subject === 'string' && subject === comparator) {
+          return true
+        }
+
+        // TODO do a proper object comparison to support event listeners and components
+        return subject.tag === comparator.tag && subject.attributes === comparator.attributes
       }),
 
-      updateChildNodes: NGN.privateconst(({
+      updateChildNode: NGN.privateconst(({
         target = null,
         newNode = null,
         oldNode = null,
@@ -53,6 +88,10 @@ class GRegistry extends NGNX.VIEW.Registry {
           return target.childNodes[index] && target.removeChild(target.childNodes[index])
         }
 
+        // TODO: Run a diff and return the properties that are different.
+        // Then, for example, if it is only an attribute or listener that is
+        // different, apply the change without replacing the element.
+        // There are numerous other optimizations that could be made here as well.
         if (!this.nodesMatch(newNode, oldNode)) {
           return target.replaceChild(this.createNode(newNode), target.childNodes[index])
         }
@@ -62,7 +101,7 @@ class GRegistry extends NGNX.VIEW.Registry {
         }
 
         for (let i = 0; i < Math.max(newNode.children.length, oldNode.children.length); i++) {
-          this.updateChildNodes({
+          this.updateChildNode({
             target: target.childNodes[index],
             newNode: newNode.children[i],
             oldNode: oldNode.children[i],
@@ -87,7 +126,7 @@ class GRegistry extends NGNX.VIEW.Registry {
         let oldChildren = this.vDOMs.get(target).children
 
         for (let i = 0; i < Math.max(newChildren.length, oldChildren.length); i++) {
-          this.updateChildNodes({
+          this.updateChildNode({
             target,
             newNode: NGN.coalesce(newChildren[i]),
             oldNode: NGN.coalesce(oldChildren[i]),
@@ -95,26 +134,15 @@ class GRegistry extends NGNX.VIEW.Registry {
           })
         }
 
+        if (NGN.hasOwnProperty('DOM')) {
+          NGN.DOM.svg.update()
+        }
+
+        this.vDOMs.get(target).children = newChildren
+
         resolve()
       }))
     })
-  }
-
-  // TODO: Support "once" handlers too
-  createDOMObject ({
-    tag = null,
-    attributes = null,
-    on = null,
-    component = null,
-    children = null
-  }) {
-    return {
-      tag,
-      attributes,
-      on,
-      component,
-      children
-    }
   }
 
   createElement (...args) {

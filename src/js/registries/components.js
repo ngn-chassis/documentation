@@ -3,12 +3,23 @@ const ComponentsShowroom = new NGNX.VIEW.Registry({
   namespace: 'components.',
 
   references: {
-
+    content: 'author-cycle.content'
   },
 
   init () {
     MenuStore.on({
-      load: () => this.emit('menu.populate', MenuStore.records)
+      load: () => this.emit('menu.populate')
+    })
+
+    this.on({
+      menu: {
+        section: {
+          select: (index, key) => {
+            this.ref.content.element.show(index)
+            this.emit('menu.section.selected', key)
+          }
+        }
+      }
     })
 
     NGN.NET.json('config/menu.json', (err, cfg) => {

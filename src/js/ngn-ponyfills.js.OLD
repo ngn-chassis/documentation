@@ -1,0 +1,265 @@
+class GRegistry extends NGNX.VIEW.Registry {
+  constructor (cfg) {
+    super(cfg)
+
+    this.timedout = false
+    this.timer = null
+
+    Object.defineProperties(this, {
+      resetTimer: NGN.privateconst(() => {
+        if (this.timer) {
+          clearInterval(this.timer)
+        }
+
+        this.timedout = false
+        this.timer = null
+      })
+    })
+  }
+
+  // renderElement (tag, attrs, ...children) {
+  //   // fragments to append multiple children to the initial node
+  //   let fragments = document.createDocumentFragment()
+  //   let element = document.createElement(tag)
+  //
+  //   children.forEach(child => {
+  //     if (child instanceof HTMLElement) {
+  //       fragments.appendChild(child)
+  //     } else if (typeof child === 'string'){
+  //       fragments.appendChild(document.createTextNode(child))
+  //     } else {
+  //       console.log('not appendable', child);
+  //     }
+  //   })
+  //
+  //   element.appendChild(fragments)
+  //
+  //   return Object.assign(element, attrs)
+  // }
+
+  renderTemplate ({
+    action = 'append',
+    children = null,
+    type = 'node',
+    template = null,
+    html = null,
+    target = null,
+    position = 'beforeend',
+    properties = {},
+    on = {}
+  }) {
+    return new Promise((resolve, reject) => {
+      if (!template) {
+        return reject('Invalid template!')
+      }
+
+      if (!this.templates.hasOwnProperty(template)) {
+        return reject(`The Registry does not have a reference to a template called ${template.trim()}.`)
+      }
+
+      // If a data model was provided for properties, get a representation of it.
+      if (properties instanceof NGN.DATA.Entity) {
+        properties = properties.representation
+      }
+
+      if (typeof properties !== 'object') {
+        return reject('The data provided to the renderer could not be processed because it is not a key/value object.')
+      }
+
+      // If the target is a selector, reference the element.
+      if (typeof target === 'string') {
+        let string = target
+        target = document.querySelector(target)
+
+        if (target === null) {
+          return reject(`%c ${string} %c is not a valid selector or the referenced parent DOM element could not be found.`, NGN.css, '')
+        }
+      }
+
+      let templateString
+      let element
+      let childNodes
+
+      let tasks = new NGN.Tasks()
+
+      // if (children && children.length > 0) {
+      //   childNodes = document.createDocumentFragment()
+      //
+      //   tasks.add('Rendering children...', next => {
+      //     this.render(children).then(results => {
+      //       results.forEach(result => childNodes.appendChild(result))
+      //       next()
+      //     })
+      //   })
+      // }
+
+      tasks.add('Fetching template...', next => {
+        NGN.NET.template(this.templates[template], properties, string => {
+          templateString = string
+
+          if (!target && type === 'string') {
+            if (on) {
+              console.warn('Returning template string. Event Listeners will not be applied.')
+            }
+
+            resolve(string)
+          }
+
+          next()
+        })
+      })
+
+      tasks.add('Rendering template...', next => {
+        console.log(templateString);
+
+        let dummy = document.createElement('div')
+        dummy.innerHTML = templateString
+        element = dummy.firstElementChild
+
+        if (on) {
+          for (let evt in on) {
+            element.addEventListener(evt, on[evt])
+          }
+        }
+
+        if (target) {
+          switch (action) {
+            case 'append':
+              target.appendChild(element)
+              break
+
+            case 'prepend':
+              target.prepend(element) // IE requires Node.prepend() polyfill
+              break
+
+            // case 'insertBefore':
+            //
+            //   break
+            //
+            // case 'insertAfter':
+            //
+            //   break
+            //
+            // case 'insert':
+            //
+            //   break
+
+            default: reject(`Invalid action "${action}"`)
+          }
+        }
+
+        next()
+
+        // this.guaranteeChildElement(target, element, () => {
+        //   next()
+        //   // console.log('guaranteed');
+        //   // console.log(template);
+        //   // console.log(element);
+        //   // // console.log(childNodes);
+        //   // console.log('----------------');
+        //   //
+        //   //
+        //   // next()
+        // })
+      })
+
+      tasks.on('complete', () => resolve(element))
+      tasks.run(true)
+    })
+  }
+
+  guaranteeChildSelector (...args) {
+    if (this.timedout) {
+      this.resetTimer()
+      return console.error('Timed Out!');
+    }
+
+    let parentSelector = null
+    let selector = args[0]
+    let callback = args[1]
+
+    if (typeof callback === 'string') {
+      parentSelector = args[0]
+      selector = args[1]
+      callback = args[2]
+    }
+
+    if (!this.timer) {
+      this.timer = setInterval(() => this.timedout = true, 3000)
+    }
+
+    let ref = new HTMLReferenceElement(`${parentSelector ? `${parentSelector} ` : ''}${selector}`)
+
+    if (!ref.element) {
+      return window.requestAnimationFrame(() => this.guaranteeChildSelector(...args));
+    }
+
+    this.resetTimer()
+    callback && callback(ref)
+  }
+
+  guaranteeChildElement (...args) {
+    if (this.timedout) {
+      this.resetTimer()
+      return console.error('Timed Out!');
+    }
+
+    let parent = null
+    let element = args[0]
+    let callback = args[1]
+
+    if (callback instanceof HTMLElement) {
+      parent = args[0]
+      element = args[1]
+      callback = args[2]
+    }
+
+    if (!this.timer) {
+      this.timer = setInterval(() => this.timedout = true, 3000)
+    }
+
+    console.log(parent);
+    console.log(element);
+
+    if (!parent.contains(element)) {
+      return window.requestAnimationFrame(() => this.guaranteeChildSelector(...args));
+    }
+
+    this.resetTimer()
+    callback && callback(element)
+  }
+
+  render (cfg) {
+    return new Promise((resolve, reject) => {
+      if (Array.isArray(cfg)) {
+        if (cfg.length === 0) {
+          return resolve([])
+        }
+
+        let elements = []
+
+        this.threshold('template.rendered', cfg.length, () => {
+          if (NGN.hasOwnProperty('DOM')) {
+            NGN.DOM.svg.update()
+          }
+
+          resolve(elements)
+        })
+
+        return cfg.forEach(cfg => this.renderTemplate(cfg).then(element => {
+          elements.push(element)
+          this.emit('template.rendered')
+        }))
+      }
+
+      switch (typeof cfg) {
+        case 'object': return this.renderTemplate(cfg)
+          .then(element => resolve(element))
+          .catch(err => reject(err))
+
+        // case 'function': return console.log('render jsx')
+        default: return reject('Invalid configuration!')
+      }
+    })
+  }
+}

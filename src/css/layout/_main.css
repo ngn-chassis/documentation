@@ -1,0 +1,116 @@
+& main {
+  flex: 1 1 auto;
+  display: flex;
+  @chassis constrain-width;
+
+  & > * {
+    padding-top: calc(3 * var(--inline-block-margin-y));
+  }
+
+  & > .sidebar {
+    display: none;
+    overflow: auto;
+    margin: 0;
+
+    & h3 {
+      display: none;
+    }
+
+    & nav {
+      & h3 {
+        display: none;
+      }
+
+      & .section {
+        & .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          @chassis apply inline-block padding;
+          border-radius: var(--default-border-radius) 0 0 var(--default-border-radius);
+          color: var(--anchor-color);
+        }
+
+        &:hover {
+          & .header {
+            cursor: pointer;
+            text-decoration: underline;
+          }
+        }
+
+        &.selected {
+          & .header {
+            background: var(--sidebar-link-hover-bg-color);
+            color: var(--sidebar-link-hover-text-color);
+            pointer-events: none;
+          }
+
+          &:hover .header {
+            text-decoration: none;
+          }
+        }
+
+        &.accordion {
+          & > .header {
+            display: flex;
+
+            & svg.icon {
+              margin-left: var(--inline-block-padding-x);
+            }
+          }
+
+          &:hover > .header svg.icon {
+            background: var(--grey-0);
+            border-radius: var(--default-border-radius);
+          }
+
+          &.collapsed {
+            & .children {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    @chassis vp-width from medium {
+      position: sticky;
+      top: 0;
+
+      flex: 0 0 23.6%;
+      align-self: flex-start;
+
+      display: block;
+      min-width: 200px;
+      max-width: 260px;
+    }
+  }
+
+  & > .content {
+    flex: 1 1 auto;
+
+    & > section {
+      & h2,
+      & h3 {
+        @chassis font-size larger;
+        border-bottom: 1px solid var(--grey-1);
+      }
+
+      & h4 {
+        @chassis font-size root;
+      }
+
+      @chassis import dir(sections);
+
+      @chassis vp-width from medium {
+        @chassis constrain-width gutter(6.18%);
+        margin-bottom: calc(5 * var(--inline-block-margin-y));
+        padding-right: 0;
+      }
+    }
+
+    @chassis vp-width from medium {
+      border-left: 1px solid var(--grey-1);
+    }
+  }
+}

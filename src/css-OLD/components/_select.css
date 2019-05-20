@@ -1,0 +1,27 @@
+/* WIP */
+author-select.pill {
+  @chassis apply pill radius;
+
+  & author-selected-options {
+  	@chassis apply pill radius;
+  }
+
+  & author-options {
+    @chassis apply pill radius-bottom;
+  }
+
+  & author-selected-options,
+  & author-option,
+  & author-optgroup-label {
+    @chassis apply pill padding-x;
+  }
+
+  &[open] {
+    border-radius: 0;
+
+    & author-selected-options,
+    & author-options {
+      border-radius: 0;
+    }
+  }
+}

@@ -1,0 +1,141 @@
+[
+  {
+    "key": "introduction",
+    "label": "Introduction",
+    "children": []
+  },
+  {
+    "key": "anchor",
+    "label": "Anchor",
+    "children": []
+  },
+  {
+    "key": "buttons",
+    "label": "Buttons",
+    "children": [
+      {
+        "key": "button",
+        "label": "Button"
+      },
+      {
+        "key": "anchor-button",
+        "label": "Anchor Button"
+      }
+    ]
+  },
+  {
+    "key": "form-controls",
+    "label": "Form Controls",
+    "children": [
+      {
+        "key": "input",
+        "label": "Input"
+      },
+      {
+        "key": "textarea",
+        "label": "Textarea"
+      },
+      {
+        "key": "checkbox",
+        "label": "Checkbox"
+      },
+      {
+        "key": "radio-button",
+        "label": "Radio Button"
+      },
+      {
+        "key": "select",
+        "label": "Select Menu"
+      },
+      {
+        "key": "datalist",
+        "label": "Datalist"
+      }
+    ]
+  },
+  {
+    "key": "svg-icon",
+    "label": "SVG Icon",
+    "children": []
+  },
+  {
+    "key": "table",
+    "label": "Table",
+    "children": []
+  },
+  {
+    "key": "tag",
+    "label": "Tag",
+    "children": []
+  },
+  {
+    "key": "web-components",
+    "label": "Web Components",
+    "children": [
+      {
+        "key": "author-cell",
+        "label": "author-cell"
+      },
+      {
+        "key": "author-cell-group",
+        "label": "author-cell-group"
+      },
+      {
+        "key": "author-control",
+        "label": "author-control"
+      },
+      {
+        "key": "author-cycle",
+        "label": "author-cycle"
+      },
+      {
+        "key": "author-datalist",
+        "label": "author-datalist"
+      },
+      {
+        "key": "author-menu",
+        "label": "author-menu"
+      },
+      {
+        "key": "author-optgroup",
+        "label": "author-optgroup"
+      },
+      {
+        "key": "author-optgroup-label",
+        "label": "author-optgroup-label"
+      },
+      {
+        "key": "author-option",
+        "label": "author-option"
+      },
+      {
+        "key": "author-options",
+        "label": "author-options"
+      },
+      {
+        "key": "author-pane",
+        "label": "author-pane"
+      },
+      {
+        "key": "author-pane-handle",
+        "label": "author-pane-handle"
+      },
+      {
+        "key": "author-select",
+        "label": "author-select"
+      },
+      {
+        "key": "author-selected-options",
+        "label": "author-selected-options"
+      },
+      {
+        "key": "author-table",
+        "label": "author-table"
+      },
+      {
+        "key": "author-tooltip",
+        "label": "author-tooltip"
+      }
+    ]
+  }
+]

@@ -1,0 +1,5 @@
+& author-pane-resize-handle {
+  min-height: 1em;
+  min-width: 1em;
+  background: red;
+}

@@ -1,9 +1,0 @@
-:host {
-  display: flex;
-}
-
-:host *,
-:host *:before,
-:host *:after {
-  box-sizing: border-box;
-}

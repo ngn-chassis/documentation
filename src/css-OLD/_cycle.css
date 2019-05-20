@@ -1,0 +1,30 @@
+& #cycle {
+  height: auto;
+  max-height: 1000px;
+  transition: max-height 1s ease-out;
+
+  @chassis apply inline-block margin-bottom padding;
+  border: 2px solid var(--grey-n03);
+  border-radius: .236em;
+
+  & section {
+    margin: 0;
+
+    & > p {
+      margin: 0;
+    }
+
+    &[fade-in] {
+      animation: fadein 1s;
+    }
+
+    &[fade-out] {
+      opacity: 0;
+      animation: fadeout 500ms;
+    }
+  }
+
+  &[transition] {
+    max-height: 0;
+  }
+}

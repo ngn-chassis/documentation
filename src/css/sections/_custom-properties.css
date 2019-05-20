@@ -1,0 +1,5 @@
+&.custom-properties {
+  & table {
+    @chassis font-size small;
+  }
+}

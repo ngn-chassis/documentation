@@ -1,0 +1,5 @@
+& .hey {
+  background: var(--red);
+
+  @chassis import dir(components/test/imports);
+}

@@ -1,0 +1,17 @@
+&.buttons {
+  & button.custom {
+    @chassis extend button {
+      @state initial {
+        background: var(--green-light);
+      }
+
+      @state hover {
+        background: var(--green);
+      }
+
+      @state active {
+        background: var(--green-dark);
+      }
+    }
+  }
+}

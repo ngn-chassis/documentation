@@ -1,5 +1,0 @@
-when a page change is requested, operations will commence in this order:
-'page-change' event fires
-beforeChange() middleware runs
-'page-changed' event fires
-afterChange() middleware runs

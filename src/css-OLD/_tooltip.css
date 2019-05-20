@@ -1,0 +1,14 @@
+& .test span {
+  color: white;
+  background: var(--blue);
+  @chassis apply pill;
+}
+
+& author-tooltip {
+  @chassis apply inline-block padding;
+  background: black;
+  color: white;
+  margin-top: 1em;
+  @chassis apply pill;
+  box-shadow: .236em .236em .618em 0 color-mod(black a(23.6%));
+}

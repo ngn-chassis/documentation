@@ -1,0 +1,163 @@
+& > header {
+  &.primary {
+    padding: 1rem 0;
+    background: var(--blue);
+
+    & > .width.constraint {
+      display: flex;
+      align-items: center;
+    }
+
+    & .title {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+
+      & a {
+        display: block;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      & h1 {
+        margin: 0 var(--inline-block-padding-x) 0 0;
+        @chassis font-size root;
+        font-weight: 700;
+        color: var(--white);
+
+        &.authorio {
+          font-family: itc-avant-garde-gothic-pro, sans-serif;
+          font-weight: 500;
+          font-style: normal;
+        }
+      }
+
+      & .version.tag {
+        @chassis new tag {
+          @state initial {
+            background: var(--blue-dark);
+            color: var(--white);
+          }
+        }
+      }
+    }
+
+    & nav {
+      display: flex;
+      align-items: center;
+      margin: 0;
+
+      & h3 {
+        display: none;
+      }
+
+      & > a {
+        margin-left: var(--inline-block-padding-x);
+        opacity: .618;
+
+        @chassis font-size small;
+        color: var(--white);
+        text-transform: uppercase;
+        text-decoration: none;
+
+        & .label {
+          display: none;
+        }
+
+        & svg.icon {
+          stroke: var(--white);
+          fill: var(--white);
+        }
+
+        &:first-of-type {
+          margin-left: 0;
+        }
+
+        &:hover {
+          opacity: 1;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &.secondary {
+    /* padding: var(--inline-block-padding-y) 0; */
+    background: var(--header-secondary-background-color);
+    border-bottom: var(--header-secondary-border-width) var(--header-secondary-border-style) var(--header-secondary-border-color);
+
+    & > .width.constraint {
+      display: flex;
+      align-items: center;
+    }
+
+    & .mobile-only {
+      flex: 0 0 auto;
+      display: flex;
+      align-self: stretch;
+      align-items: center;
+      /* padding-left: var(--layout-min-gutter); */
+    }
+
+    & h2 {
+      flex: 1 1 auto;
+      margin: 0;
+      font-family: var(--font-family);
+      @chassis font-size large;
+    }
+
+    & .search {
+      width: 100%;
+
+      & .input-wrapper {
+        display: flex;
+        align-items: center;
+      }
+
+      & input {
+        @chassis new input {
+          @state initial {
+            box-shadow: none; /* TODO This shouldn't be necessary, this is a bug in Chassis */
+            @chassis font-size large;
+          }
+        }
+      }
+    }
+
+    & nav {
+      display: flex;
+      align-items: baseline;
+      margin: 0;
+
+      & h3 {
+        display: none;
+      }
+
+      & > a {
+        margin-left: var(--inline-block-padding-x);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    @chassis vp-width from medium {
+      & > .width.constraint {
+        align-items: baseline;
+      }
+
+      & .content {
+        display: flex;
+        align-items: baseline;
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+@chassis init;
+@chassis include all;
+
+.showroom {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  & h1,
+  & h2,
+  & h3,
+  & h4 {
+    /* font-family: itc-avant-garde-gothic-pro, sans-serif; */
+    /* font-weight: 500; */
+    /* font-style: normal; */
+    font-weight: bold;
+    color: var(--black);
+  }
+
+  /* & h4 {
+    font-weight: bold;
+    color: var(--black);
+  } */
+
+  & code {
+    @chassis new tag {
+      @state initial {
+        font-family: monospace;
+        background: var(--grey-0);
+        border-radius: var(--default-border-radius);
+      }
+    }
+  }
+
+  @chassis import dir(components);
+  @chassis import dir(layout);
+  @chassis import mobile;
+
+  @chassis vp-width from medium {
+    & .mobile-only {
+      display: none !important;
+    }
+  }
+}

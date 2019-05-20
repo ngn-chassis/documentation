@@ -1,36 +1,31 @@
 {
-  "name": "chassis-dev",
+  "name": "chassis-showroom",
   "version": "1.0.0",
   "description": "",
-  "main": "build-showroom.js",
+  "main": "build.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "link-chassis": "cd node_modules/@chassis && npm link @chassis/core && npm link @chassis/gulp && cd ../..",
-    "build-showroom": "cd showroom/ && npm run build && cd ..",
-    "build-showroom-dev": "cd showroom/ && npm run build-dev && cd ..",
-    "build-base-component": "node build-base-component.js webcomponents/author-element.js webcomponents/dist",
-    "build-webcomponents": "cd wc-builder/ && build-webcomponents ../webcomponents/src ../webcomponents/dist --es5 --reservedNames=AuthorHTMLCollection,AuthorHTMLOptionsCollection,AuthorHTMLFormControlsCollection && cd ..",
-    "build": "npm run link-chassis && npm run build-base-component && npm run build-webcomponents && cp webcomponents/dist/*.js showroom/src/webcomponents && npm run build-showroom"
+    "build": "npm link @chassis/core && node build.js --prod",
+    "build-dev": "npm link @chassis/core && node build.js --dev"
   },
   "author": "Graham Butler",
   "license": "BSD-3-Clause",
-  "dependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/parser": "^7.1.2",
-    "@babel/plugin-transform-runtime": "^7.2.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-minify": "^0.2.0",
-    "babel-runtime": "^6.26.0",
-    "fs-extra": "^7.0.0",
-    "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "postcss-selector-not": "^3.0.1",
-    "rollup": "^0.66.6"
-  },
   "devDependencies": {
-    "@chassis/core": "^2.1.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "productionline-web": "^1.1.8",
-    "shortbus": "^1.2.8"
+    "fs-extra": "^8.0.1",
+    "productionline-web": "^1.1.8"
+  },
+  "dependencies": {
+    "@author.io/element-base": "^1.1.4",
+    "@author.io/element-control": "^1.0.15",
+    "@author.io/element-cycle": "^1.0.2",
+    "@author.io/element-drawer": "^1.0.1",
+    "@author.io/element-optgroup": "^1.0.1",
+    "@author.io/element-optgroup-label": "^1.0.1",
+    "@author.io/element-option": "^1.0.4",
+    "@author.io/element-options": "^1.1.3",
+    "@author.io/element-select": "^1.0.12",
+    "@author.io/element-selected-options": "^1.0.2",
+    "jsx-transform": "^2.4.0"
   }
 }

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" class="chassis">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Author.io Chassis Showroom</title>
+
+    <link rel="stylesheet" href="https://use.typekit.net/urx6izk.css">
+    <link rel="stylesheet" href="/css/main.css">
+
+    <script src="https://cdn.author.io/ngn/latest/debug.js"></script>
+    <script src="https://cdn.author.io/ngnx/latest/debug.js"></script>
+
+    <script src="js/ngn-ponyfills.js"></script>
+
+    <script src="assets/webcomponents/author-base.min.js"></script>
+    <script src="assets/webcomponents/author-cycle.min.js"></script>
+    <script src="assets/webcomponents/author-drawer.min.js"></script>
+    <script src="assets/webcomponents/author-control.min.js"></script>
+    <script src="assets/webcomponents/author-menu.min.js"></script>
+    <script src="assets/webcomponents/author-options.min.js"></script>
+    <script src="assets/webcomponents/author-option.min.js"></script>
+    <script src="assets/webcomponents/author-datalist.min.js"></script>
+  </head>
+
+  <body class="authorio chassis components showroom">
+
+    <header class="primary">
+      <div class="width constraint">
+        <!-- <h1 class="authorio">author.io</h1> -->
+        <div class="title">
+          <a href="#">
+            <h1>Chassis UI Framework</h1>
+          </a>
+
+          <div class="version tag">
+            2.3.9
+          </div>
+        </div>
+
+        <nav>
+          <h3>Author.io Sites</h3>
+
+          <a href="https://github.com/ngnjs" target="_blank">
+            <svg class="icon" src="assets/icons/github.svg"></svg>
+            <span class="label">Github</span>
+          </a>
+          <a href="#" target="_blank">
+            <svg class="icon" src="assets/icons/youtube-small.svg"></svg>
+            <span class="label">Youtube</span>
+          </a>
+
+          <!-- <a href="#" target="_blank">Codepen</a>
+          <a href="#" target="_blank">Other</a> -->
+        </nav>
+      </div>
+    </header>
+
+    <header class="secondary">
+      <div class="width constraint">
+        <author-control class="search">
+          <div class="input-wrapper">
+            <svg class="icon" src="assets/icons/search.svg"></svg>
+            <input type="text" placeholder="Search">
+          </div>
+          <datalist>
+            <option value="1">Test 1</option>
+            <option value="2">Test 2</option>
+            <option value="3">Test 3</option>
+            <option value="4">Test 4</option>
+            <option value="5">Test 5</option>
+          </datalist>
+        </author-control>
+
+        <div class="mobile-only">
+          <button class="bare hamburger">
+            <svg class="icon" src="assets/icons/hamburger.svg"></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <aside class="sidebar">
+        <author-drawer position="right" inert>
+          <h3>Sidebar</h3>
+
+          <nav class="test hey">
+            <h3>Sections Menu</h3>
+
+            <div class="testttt">
+              <div class="child 1">
+                <div class="nested child 1">
+                  NESTED HEYYYY
+                </div>
+                <div class="nested child 2">
+                  AWWWW YEAAAA
+                </div>
+              </div>
+
+              <div class="child 2">
+                WUUUUT
+              </div>
+            </div>
+
+            <!-- <div class="selected section">
+              <div class="header" data-section="introduction">
+                Introduction
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="header" data-section="anchor">
+                Anchor
+              </div>
+            </div>
+
+            <div class="collapsed accordion section">
+              <div class="header" data-section="buttons">
+                Buttons
+                <svg class="icon" src="assets/icons/chevron-down.svg"></svg>
+              </div>
+
+              <ul class="children">
+                <li data-section="button">
+                  Button
+                </li>
+                <li href="#showroom_section_buttons_anchor-button" data-section="anchor-button">
+                  Anchor Button
+                </li>
+              </ul>
+            </div>
+
+            <div class="collapsed accordion section">
+              <div class="header" data-section="form-controls">
+                Form Controls
+                <svg class="icon" src="assets/icons/chevron-down.svg"></svg>
+              </div>
+
+              <ul class="children">
+                <li data-section="input">
+                  Input
+                </li>
+                <li data-section="textarea">
+                  Textarea
+                </li>
+                <li data-section="checkbox">
+                  Checkbox
+                </li>
+                <li data-section="radio-button">
+                  Radio Button
+                </li>
+                <li data-section="select-menu">
+                  Select Menu
+                </li>
+                <li data-section="datalist">
+                  Datalist
+                </li>
+              </ul>
+            </div>
+
+            <div class="section">
+              <div class="header" data-section="svg-icon">
+                SVG Icon
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="header" data-section="table">
+                Table
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="header" data-section="tag">
+                Tag
+              </div>
+            </div>
+
+            <div class="collapsed accordion section">
+              <div class="header" data-section="web-components">
+                Web Components
+                <svg class="icon" src="assets/icons/chevron-down.svg"></svg>
+              </div>
+
+              <ul class="children">
+                <li data-section="author-cell">
+                  author-cell
+                </li>
+                <li data-section="author-cell-group">
+                  author-cell-group
+                </li>
+                <li data-section="author-control">
+                  author-control
+                </li>
+                <li data-section="author-cycle">
+                  author-cycle
+                </li>
+                <li data-section="author-datalist">
+                  author-datalist
+                </li>
+                <li data-section="author-menu">
+                  author-menu
+                </li>
+                <li data-section="author-optgroup">
+                  author-optgroup
+                </li>
+                <li data-section="author-optgroup-label">
+                  author-optgroup-label
+                </li>
+                <li data-section="author-option">
+                  author-option
+                </li>
+                <li data-section="author-options">
+                  author-options
+                </li>
+                <li data-section="author-pane">
+                  author-pane
+                </li>
+                <li data-section="author-pane-handle">
+                  author-pane-handle
+                </li>
+                <li data-section="author-select">
+                  author-select
+                </li>
+                <li data-section="author-selected-options">
+                  author-selected-options
+                </li>
+                <li data-section="author-table">
+                  author-table
+                </li>
+                <li data-section="author-tooltip">
+                  author-tooltip
+                </li>
+              </ul>
+            </div> -->
+          </nav>
+        </author-drawer>
+      </aside>
+
+      <author-cycle class="content">
+        <section id="showroom_section_introduction" class="introduction" selected>
+          <h3>
+            Chassis Components
+          </h3>
+
+          <p>
+            Chassis includes a suite of themeable components which make UI development fast and painless. These components are customizable and extendable using the <code>@chassis new</code> or <code>@chassis extend</code> mixins.
+          </p>
+          <p>
+            Chassis components are designed to work seamlessly with Chassis' automated typography-based layout system. The size of each component can be changed using the <code>@chassis font-size</code> mixin, or it can be sized manually if desired.
+          </p>
+        </section>
+
+        <section id="showroom_section_anchor" class="anchor">
+          <h3>Anchor (Link)</h3>
+
+          <section class="component">
+            <a href="javascript:;" class="default">Default Anchor (Link)</a>
+          </section>
+
+          <h4>Themeable States</h4>
+
+          <table class="states">
+            <tbody>
+              <tr>
+                <td>
+                  <code>initial</code>
+                </td>
+                <td>
+                  Default anchor state
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>link</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>visited</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>hover</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>active</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>disabled</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>empty</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>enabled</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>focus</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>focus-within</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <section class="example theme">
+            <h4>Example Theme</h4>
+
+
+          </section>
+        </section>
+
+        <section id="showroom_section_buttons" class="buttons">
+          <h3>Buttons</h3>
+
+          <section class="component">
+            <button class="default">Default Button</button>
+          </section>
+
+          <h4>Themeable States</h4>
+
+          <table class="states">
+            <tbody>
+              <tr>
+                <td>
+                  <code>initial</code>
+                </td>
+                <td>
+                  Default button state
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>visited</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>active</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>default</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>disabled</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>empty</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>enabled</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>focus</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>focus-within</code>
+                </td>
+                <td>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <section class="example theme">
+            <h4>Example Theme</h4>
+
+
+          </section>
+
+          <section class="customization">
+            <h4>Making custom buttons</h4>
+
+            <section class="component">
+              <button class="custom">Custom Button</button>
+            </section>
+
+            <p>
+              Custom Chassis Buttons can be made using <code>@chassis new</code> or <code>@chassis extend</code> mixins.
+            </p>
+
+            EXAMPLE CODE
+          </section>
+        </section>
+
+        <section id="showroom_section_form-controls" class="form-controls">
+          <h3>
+            Form Controls
+          </h3>
+
+          <p class="note">
+            The best way to use Chassis Form Controls is with <a href="#">author-control</a>. This is a wrapper component which provides a simple API for interacting with all types of form controls. It adds a number of workflow-enhancing features. Chassis Form Controls can still be used without author-control if desired.
+          </p>
+        </section>
+
+        <section id="showroom_section_svg-icon" class="svg-icon">
+          <h3>
+            SVG Icon
+          </h3>
+        </section>
+
+        <section id="showroom_section_table" class="table">
+          <h3>
+            Table
+          </h3>
+        </section>
+
+        <section id="showroom_section_tag" class="tag">
+          <h3>
+            Tag
+          </h3>
+        </section>
+
+        <section id="showroom_section_web-components" class="web-components">
+          <h3>
+            Web Components
+          </h3>
+        </section>
+      </author-cycle>
+    </main>
+
+    <footer>
+      <div class="width constraint">
+        Copyright &copy; 2019 Author.io
+      </div>
+
+      <!-- <div class="width constraint">
+        <span class="label">Viewport:</span>
+
+        <span class="below-min range">
+          Below min: <= 319px
+        </span>
+
+        <span class="tiny range">
+          Tiny: 320 - 511px
+        </span>
+
+        <span class="small range">
+          Small: 512 - 767px
+        </span>
+
+        <span class="medium range">
+          Medium: 768 - 1023px
+        </span>
+
+        <span class="large range">
+          Large: 1024 - 1199px
+        </span>
+
+        <span class="huge range">
+          Huge: 1200 - 1439px
+        </span>
+
+        <span class="massive range">
+          Massive: 1440 - 1600px
+        </span>
+
+        <span class="above-max range">
+          Above max: > 1600px
+        </span>
+      </div> -->
+    </footer>
+
+    <script src="js/index.js"></script>
+  </body>
+</html>

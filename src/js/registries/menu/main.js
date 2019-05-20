@@ -11,13 +11,13 @@ const ComponentsShowroomMenu = new GRegistry({
 
   references: {
     drawer: '> author-drawer',
-    nav: 'nav',
+    sections: 'nav > .sections',
     headers: 'nav .section .header'
   },
 
   init () {
     this.on({
-      populate: sections => this.render(this.ref.nav.element, sections.map(section => (
+      populate: sections => setTimeout(() => this.render(this.ref.sections.element, sections.map(section => (
         this.createElement('div', {
           'class': 'section'
         }, [
@@ -36,7 +36,28 @@ const ComponentsShowroomMenu = new GRegistry({
             children: [section.label]
           })
         ])
-      )))
+      ))), 3000)
+
+      // populate: sections => this.render(this.ref.sections.element, sections.map(section => (
+      //   this.createElement('div', {
+      //     'class': 'section'
+      //   }, [
+      //     this.createElement({
+      //       tag: 'div',
+      //
+      //       attributes: {
+      //         'class': 'header',
+      //         'data-key': section.key
+      //       },
+      //
+      //       on: {
+      //         click: evt => console.log(section.label)
+      //       },
+      //
+      //       children: [section.label]
+      //     })
+      //   ])
+      // )))
     })
 
     // this.ref.headers.forEach(header => {

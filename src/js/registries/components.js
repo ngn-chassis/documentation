@@ -14,20 +14,14 @@ const ComponentsShowroom = new NGNX.VIEW.Registry({
     this.on({
       menu: {
         section: {
-          select: (index, key) => {
+          select: (index, section, child) => {
             this.ref.content.element.show(index)
-            this.emit('menu.section.selected', key)
+            this.emit('menu.section.selected', section, child)
           }
         }
       }
     })
 
-    NGN.NET.json('config/menu.json', (err, cfg) => {
-      if (err) {
-        throw err
-      }
-
-      MenuStore.load(cfg)
-    })
+    API.fetchMenuConfig(cfg => MenuStore.load(cfg))
   }
 })

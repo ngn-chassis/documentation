@@ -12,9 +12,7 @@ const ComponentsShowroomMenu = new GRegistry({
 
   references: {
     drawer: '> author-drawer',
-    list: 'nav > .sections',
-    sections: 'nav > .sections > .section',
-    headers: 'nav .section .header'
+    list: 'nav > .sections'
   },
 
   init () {
@@ -44,40 +42,30 @@ const ComponentsShowroomMenu = new GRegistry({
           } : {},
 
           children: [
-            this.createElement({
-              tag: 'div',
+            this.createElement('div', {
+              class: 'header'
+            }, [
+              section.label,
+              hasChildren ? this.createElement({
+                tag: 'svg',
 
-              attributes: {
-                class: 'header'
-              },
+                attributes: {
+                  class: 'icon',
+                  src: 'assets/icons/chevron-down.svg'
+                }
+              }) : null
+            ]),
 
-              children: [
-                section.label,
-                hasChildren ? this.createElement({
-                  tag: 'svg',
+            hasChildren ? this.createElement('ul', {
+              class: 'children',
+            }, section.children.records.map(child => this.createElement({
+              tag: 'li',
+              children: [child.label],
 
-                  attributes: {
-                    class: 'icon',
-                    src: 'assets/icons/chevron-down.svg'
-                  }
-                }) : null
-              ]
-            }),
-
-            hasChildren ? this.createElement({
-              tag: 'ul',
-
-              attributes: {
-                class: 'children'
-              },
-
-              children: section.children.records.map(child => (
-                this.createElement({
-                  tag: 'li',
-                  children: [child.label]
-                })
-              ))
-            }) : null
+              on: {
+                click: evt => this.emit('section.select', index, section.key, child.key)
+              }
+            }))) : null
           ]
         })
       }))
@@ -85,35 +73,14 @@ const ComponentsShowroomMenu = new GRegistry({
       .catch(error => console.error(error)),
 
       section: {
-        selected: key => this.properties.selectedSection = key
+        selected: (section, child) => {
+          this.properties.selectedSection = section
+
+          if (child) {
+            window.location.hash = `${section}_${child}`
+          }
+        }
       }
     })
   }
 })
-
-// this.render(MenuStore.records.map(record => ({
-//   template: record.children.recordCount > 0 ? 'accordion' : 'section',
-//   target: this.ref.nav.element,
-//
-//   properties: {
-//     key: record.key,
-//     label: record.label
-//   },
-//
-//   on: {
-//     click: evt => console.log(`You clicked ${record.label}.`)
-//   }//,
-//
-//   // children: record.children.records.map(child => ({
-//   //   template: 'child',
-//   //
-//   //   properties: {
-//   //     key: child.key,
-//   //     label: child.label
-//   //   },
-//   //
-//   //   on: {
-//   //     click: evt => console.log(`You clicked ${child.label}.`)
-//   //   }
-//   // }))
-// }))).then(elements => console.log(elements))

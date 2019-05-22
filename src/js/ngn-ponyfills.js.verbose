@@ -92,87 +92,142 @@ class GRegistry extends NGNX.VIEW.Registry {
         },
         index = 0
       }) => {
-        // If no old node specified, add new node
+        console.log('OLD NODE: ', this.createNode(virtual.old));
+        console.log('NEW NODE: ', this.createNode(virtual.new));
+
         if (virtual.old === null) {
+          console.log('NO OLD NODE. APPENDING NEW NODE...');
+          console.log('-------------------------------');
           return target.appendChild(this.createNode(virtual.new))
         }
 
         let currentNode = target.childNodes[index]
 
-        // If no new node specified, remove old node
         if (virtual.new === null) {
+          console.log('NO NEW NODE. REMOVING OLD NODE...');
+          console.log('-------------------------------');
           return nodeToReplace && target.removeChild(nodeToReplace)
         }
 
-        // Compare and reconcile node types
         if (typeof virtual.new !== typeof virtual.old) {
+          console.log('TYPE MISMATCH. REPLACING OLD WITH NEW...');
+          console.log('-------------------------------');
           return target.replaceChild(this.createNode(virtual.new), currentNode)
         }
 
         if (typeof virtual.new === 'string') {
+          console.log('NEW AND OLD NODES ARE BOTH STRINGS');
+
           if (virtual.new !== virtual.old) {
+            console.log('...BUT THEY DONT MATCH. REPLACING OLD WITH NEW...');
+            console.log('-------------------------------');
             return target.replaceChild(this.createNode(virtual.new), currentNode)
           }
 
-          return
+          console.log('NEW NODE MATCHES OLD NODE. SKIPPING...');
+          return console.log('-------------------------------');
         }
 
-        // Compare and reconcile node tags
+        console.log('NEW AND OLD NODES ARE BOTH ELEMENTS');
+
         if (virtual.new.tag !== virtual.old.tag) {
+          console.log('TAG MISMATCH. REPLACING...');
+          console.log('-------------------------------');
           return target.replaceChild(this.createNode(virtual.new), currentNode)
         }
 
-        // Compare and reconcile attributes
         if (!virtual.old.attributes) {
+          console.log('OLD NODE HAS NO ATTRIBUTES');
+
           if (virtual.new.attributes) {
+            console.log('...BUT NEW NODE DOES. ADDING NEW ATTRIBUTES...');
             for (let attribute in virtual.new.attributes) {
               currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
             }
           }
 
         } else if (!virtual.new.attributes) {
+          console.log('NEW NODE HAS NO ATTRIBUTES. REMOVING ALL ATTRIBUTES FROM OLD NODE...');
+
           while(currentNode.attributes.length > 0) {
             currentNode.removeAttribute(currentNode.attributes[0].name)
           }
 
         } else  {
+          console.log('COMPARING ATTRIBUTES...');
+
           let newNodeHasAttribute = false
           let oldNodeHasAttribute = false
           let shared = false
           let match = false
 
           for (let attribute in Object.assign({}, virtual.new.attributes, virtual.old.attributes)) {
+            console.log(`ATTRIBUTE: ${attribute}`);
+
             newNodeHasAttribute = virtual.new.attributes.hasOwnProperty(attribute)
             oldNodeHasAttribute = virtual.old.attributes.hasOwnProperty(attribute)
             shared = newNodeHasAttribute && oldNodeHasAttribute
             match = shared ? virtual.new.attributes[attribute].trim() === virtual.old.attributes[attribute].trim() : false
 
+            // console.log(`NEW NODE HAS "${attribute}" ATTR: ${virtual.new.attributes.hasOwnProperty(attribute)}`);
+            // console.log(`VALUE: ${virtual.new.attributes[attribute].trim()}`);
+            // console.log(`OLD NODE HAS "${attribute}" ATTR: ${virtual.old.attributes.hasOwnProperty(attribute)}`);
+            // console.log(`VALUE: ${virtual.old.attributes[attribute].trim()}`);
+            //
+            // console.log(`VALUES MATCH: ${virtual.new.attributes[attribute].trim() === virtual.old.attributes[attribute].trim()}`);
+
             if (shared) {
+              console.log(`OLD AND NEW BOTH HAVE "${attribute}" ATTRIBUTE`);
+
               if (match) {
+                console.log('...AND THEY BOTH HAVE THE SAME VALUE. SKIPPING...');
                 continue
               } else {
+                console.log('...AND THEY HAVE DIFFERENT VALUES. REPLACING OLD WITH NEW...');
                 currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
               }
-
             } else if (newNodeHasAttribute) {
+              console.log(`OLD NODE DOES NOT HAVE "${attribute}" ATTRIBUTE BUT NEW NODE DOES. ADDING...`);
               currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
-
             } else {
+              console.log(`OLD NODE HAS "${attribute}" ATTRIBUTE BUT NEW NODE DOES NOT. REMOVING...`);
               currentNode.removeAttribute(attribute)
             }
           }
         }
 
-        // Compare node children
+        // let patch = {
+        //   attributes: Object.keys(virtual.new.attributes).filter(key => {
+        //     return virtual.new.attributes[key] !== virtual.old.attributes[key]
+        //   })//,
+        //
+        //   // on: Object.keys(virtual.new.on).filter(listener => {
+        //   //   return virtual.new.on[listener] !== virtual.old.on[listener]
+        //   // })
+        // }
+        //
+        // if (patch.attributes.length > 0) {
+        //   patch.attributes.forEach(attribute => {
+        //     currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
+        //   })
+        // }
+
         if (virtual.new.children.length === 0) {
+          console.log('NEW NODE HAS NO CHILDREN.');
+
           if (virtual.old.children.length === 0) {
+            console.log('...AND NEITHER DOES OLD NODE. SKIPPING...');
+            console.log('=--------------------------=');
             return
           }
 
+          console.log('...BUT OLD NODE DOES. REMOVING...');
+          console.log('=--------------------------=');
           return this.clearChildNodes(target)
         }
 
-        // If children are present, reconcile them
+        console.log('\n\n');
+        console.log('PROCESSING CHILD NODES...');
         for (let i = 0; i < Math.max(virtual.new.children.length, virtual.old.children.length); i++) {
           this.reconcileNodes({
             target: currentNode,

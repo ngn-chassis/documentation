@@ -54,19 +54,6 @@ class GRegistry extends NGNX.VIEW.Registry {
         return [...target.childNodes].every(child => child.nodeType === 3 && !child.data.trim())
       }),
 
-      nodesMatch: NGN.privateconst((subject, comparator) => {
-        if (typeof subject !== typeof comparator) {
-          return false
-        }
-
-        if (typeof subject === 'string' && subject === comparator) {
-          return true
-        }
-
-        // TODO do a proper object comparison to support event listeners and components
-        return subject.tag === comparator.tag && subject.attributes === comparator.attributes
-      }),
-
       parseElement: NGN.privateconst(element => this.createDOMObject({
         tag: element.localName,
 
@@ -84,100 +71,89 @@ class GRegistry extends NGNX.VIEW.Registry {
         }) : []
       })),
 
-      applyNodeListeners: NGN.privateconst((node, virtual) => {
-        if (Object.keys(virtual.listeners).length === 0) {
+      reconcileAttributes: NGN.privateconst((currentNode, virtual) => {
+        if (!virtual.old.attributes && virtual.new.attributes) {
+          for (let attribute in virtual.new.attributes) {
+            currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
+          }
+
           return
         }
 
-        for (let listener in virtual.listeners) {
-          node.addEventListener(listener, virtual.listeners[listener])
-        }
-      }),
-
-      reconcileAttributes: NGN.privateconst((currentNode, virtual) => {
-        if (!virtual.old.attributes) {
-          if (virtual.new.attributes) {
-            for (let attribute in virtual.new.attributes) {
-              currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
-            }
-          }
-
-        } else if (!virtual.new.attributes) {
+        if (!virtual.new.attributes && virtual.old.attributes) {
           while(currentNode.attributes.length > 0) {
             currentNode.removeAttribute(currentNode.attributes[0].name)
           }
 
-        } else  {
-          let newNodeHasAttribute = false
-          let oldNodeHasAttribute = false
-          let shared = false
-          let match = false
+          return
+        }
 
-          for (let attribute in Object.assign({}, virtual.new.attributes, virtual.old.attributes)) {
-            newNodeHasAttribute = virtual.new.attributes.hasOwnProperty(attribute)
-            oldNodeHasAttribute = virtual.old.attributes.hasOwnProperty(attribute)
-            shared = newNodeHasAttribute && oldNodeHasAttribute
-            match = shared ? virtual.new.attributes[attribute].trim() === virtual.old.attributes[attribute].trim() : false
+        for (let attribute in Object.assign({}, virtual.new.attributes, virtual.old.attributes)) {
+          let newNodeHasAttribute = virtual.new.attributes.hasOwnProperty(attribute)
+          let oldNodeHasAttribute = virtual.old.attributes.hasOwnProperty(attribute)
+          let shared = newNodeHasAttribute && oldNodeHasAttribute
+          let match = shared ? virtual.new.attributes[attribute].trim() === virtual.old.attributes[attribute].trim() : false
 
-            if (shared) {
-              if (match) {
-                continue
-              } else {
-                currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
-              }
-
-            } else if (newNodeHasAttribute) {
-              currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
-
-            } else {
-              currentNode.removeAttribute(attribute)
-            }
+          if (match) {
+            continue
           }
+
+          if (shared) {
+            currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
+            continue
+          }
+
+          if (newNodeHasAttribute) {
+            currentNode.setAttribute(attribute, virtual.new.attributes[attribute])
+            continue
+          }
+
+          currentNode.removeAttribute(attribute)
         }
       }),
 
       reconcileListeners: NGN.privateconst((currentNode, virtual) => {
-        if (Object.keys(virtual.old.listeners).length === 0) {
-          if (Object.keys(virtual.new.listeners).length > 0) {
-            for (let listener in virtual.new.listeners) {
-              currentNode.addEventListener(listener, virtual.new.listeners[listener])
-            }
+        let oldNodeHasListeners = Object.keys(virtual.old.listeners).length > 0
+        let newNodeHasListeners = Object.keys(virtual.new.listeners).length > 0
+
+        if (!oldNodeHasListeners && newNodeHasListeners) {
+          for (let listener in virtual.new.listeners) {
+            currentNode.addEventListener(listener, virtual.new.listeners[listener])
           }
 
-        } else if (Object.keys(virtual.new.listeners).length === 0) {
-          if (Object.keys(virtual.old.listeners).length > 0) {
-            for (let listener in virtual.old.listeners) {
-              currentNode.removeEventListener(listener, virtual.old.listeners[listener])
-            }
+          return
+        }
+
+        if (!newNodeHasListeners && oldNodeHasListeners) {
+          for (let listener in virtual.old.listeners) {
+            currentNode.removeEventListener(listener, virtual.old.listeners[listener])
           }
 
-        } else  {
-          let newNodeHasListener = false
-          let oldNodeHasListener = false
-          let shared = false
-          let match = false
+          return
+        }
 
-          for (let listener in Object.assign({}, virtual.new.listeners, virtual.old.listeners)) {
-            newNodeHasListener = virtual.new.listeners.hasOwnProperty(listener)
-            oldNodeHasListener = virtual.old.listeners.hasOwnProperty(listener)
-            shared = newNodeHasListener && oldNodeHasListener
-            match = shared ? virtual.new.listeners[listener] === virtual.old.listeners[listener] : false
+        for (let listener in Object.assign({}, virtual.new.listeners, virtual.old.listeners)) {
+          let newNodeHasListener = virtual.new.listeners.hasOwnProperty(listener)
+          let oldNodeHasListener = virtual.old.listeners.hasOwnProperty(listener)
+          let shared = newNodeHasListener && oldNodeHasListener
+          let match = shared ? virtual.new.listeners[listener] === virtual.old.listeners[listener] : false
 
-            if (shared) {
-              if (match) {
-                continue
-              } else {
-                currentNode.removeEventListener(listener, virtual.old.listeners[listener])
-                currentNode.addEventListener(listener, virtual.new.listeners[listener])
-              }
-
-            } else if (newNodeHasListener) {
-              currentNode.addEventListener(listener, virtual.new.listeners[listener])
-
-            } else {
-              currentNode.removeEventListener(listener, virtual.old.listeners[listener])
-            }
+          if (match) {
+            continue
           }
+
+          if (shared) {
+            currentNode.removeEventListener(listener, virtual.old.listeners[listener])
+            currentNode.addEventListener(listener, virtual.new.listeners[listener])
+            continue
+          }
+
+          if (newNodeHasListener) {
+            currentNode.addEventListener(listener, virtual.new.listeners[listener])
+            continues
+          }
+
+          currentNode.removeEventListener(listener, virtual.old.listeners[listener])
         }
       }),
 

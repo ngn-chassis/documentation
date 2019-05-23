@@ -3,7 +3,7 @@ class GRegistry extends NGNX.VIEW.Registry {
     super(cfg)
 
     Object.defineProperties(this, {
-      vDOMs: NGN.privateconst(new Map()),
+      vDOMs: NGN.privateconst(new WeakMap()),
 
       clearChildNodes: NGN.privateconst(target => {
         let replacement = target.cloneNode(false)
@@ -14,37 +14,37 @@ class GRegistry extends NGNX.VIEW.Registry {
       createDOMObject: NGN.privateconst(({
         tag = null,
         attributes = null,
-        on = null,
+        on: listeners = null,
         component = null,
         children = []
       }) => ({
         tag,
         attributes,
-        on,
+        listeners: NGN.coalesce(listeners, {}),
         component,
         children: children.filter(Boolean)
       })),
 
       // TODO: Handle component creation and management
-      createNode: NGN.privateconst(node => {
-        if (typeof node === 'string') {
-          return document.createTextNode(node)
+      createNode: NGN.privateconst(virtual => {
+        if (typeof virtual === 'string') {
+          return document.createTextNode(virtual)
         }
 
-        let element = document.createElement(node.tag)
+        let element = document.createElement(virtual.tag)
 
-        for (let attribute in node.attributes) {
-          element.setAttribute(attribute, node.attributes[attribute])
+        for (let attribute in virtual.attributes) {
+          element.setAttribute(attribute, virtual.attributes[attribute])
         }
 
-        if (node.on) {
-          for (let listener in node.on) {
-            element.addEventListener(listener, node.on[listener])
+        if (virtual.listeners) {
+          for (let listener in virtual.listeners) {
+            element.addEventListener(listener, virtual.listeners[listener])
           }
         }
 
-        if (node.children) {
-          node.children.map(this.createNode).forEach(element.appendChild.bind(element))
+        if (virtual.children) {
+          virtual.children.map(this.createNode).forEach(element.appendChild.bind(element))
         }
 
         return element
@@ -84,6 +84,16 @@ class GRegistry extends NGNX.VIEW.Registry {
         }) : []
       })),
 
+      applyNodeListeners: NGN.privateconst((node, virtual) => {
+        if (Object.keys(virtual.listeners).length === 0) {
+          return
+        }
+
+        for (let listener in virtual.listeners) {
+          node.addEventListener(listener, virtual.listeners[listener])
+        }
+      }),
+
       reconcileNodes: NGN.privateconst(({
         target = null,
         virtual = {
@@ -101,17 +111,17 @@ class GRegistry extends NGNX.VIEW.Registry {
 
         // If no new node specified, remove old node
         if (virtual.new === null) {
-          return nodeToReplace && target.removeChild(nodeToReplace)
+          return currentNode && target.removeChild(target.childNodes[index])
         }
 
         // Compare and reconcile node types
         if (typeof virtual.new !== typeof virtual.old) {
-          return target.replaceChild(this.createNode(virtual.new), currentNode)
+          return target.replaceChild(this.createNode(newNode), target.childNodes[index])
         }
 
         if (typeof virtual.new === 'string') {
           if (virtual.new !== virtual.old) {
-            return target.replaceChild(this.createNode(virtual.new), currentNode)
+            return target.replaceChild(this.createNode(newNode), target.childNodes[index])
           }
 
           return
@@ -119,7 +129,7 @@ class GRegistry extends NGNX.VIEW.Registry {
 
         // Compare and reconcile node tags
         if (virtual.new.tag !== virtual.old.tag) {
-          return target.replaceChild(this.createNode(virtual.new), currentNode)
+          return target.replaceChild(this.createNode(newNode), target.childNodes[index])
         }
 
         // Compare and reconcile attributes
@@ -163,7 +173,51 @@ class GRegistry extends NGNX.VIEW.Registry {
           }
         }
 
-        // Compare node children
+        // Compare and reconcile event listeners
+        if (Object.keys(virtual.old.listeners).length === 0) {
+          if (Object.keys(virtual.new.listeners).length > 0) {
+            for (let listener in virtual.new.listeners) {
+              currentNode.addEventListener(listener, virtual.new.listeners[listener])
+            }
+          }
+
+        } else if (Object.keys(virtual.new.listeners).length === 0) {
+          if (Object.keys(virtual.old.listeners).length > 0) {
+            for (let listener in virtual.old.listeners) {
+              currentNode.removeEventListener(listener, virtual.old.listeners[listener])
+            }
+          }
+
+        } else  {
+          let newNodeHasListener = false
+          let oldNodeHasListener = false
+          let shared = false
+          let match = false
+
+          for (let listener in Object.assign({}, virtual.new.listeners, virtual.old.listeners)) {
+            newNodeHasListener = virtual.new.listeners.hasOwnProperty(listener)
+            oldNodeHasListener = virtual.old.listeners.hasOwnProperty(listener)
+            shared = newNodeHasListener && oldNodeHasListener
+            match = shared ? virtual.new.listeners[listener] === virtual.old.listeners[listener] : false
+
+            if (shared) {
+              if (match) {
+                continue
+              } else {
+                currentNode.removeEventListener(listener, virtual.old.listeners[listener])
+                currentNode.addEventListener(listener, virtual.new.listeners[listener])
+              }
+
+            } else if (newNodeHasListener) {
+              currentNode.addEventListener(listener, virtual.new.listeners[listener])
+
+            } else {
+              currentNode.removeEventListener(listener, virtual.old.listeners[listener])
+            }
+          }
+        }
+
+        // Compare and reconcile node children
         if (virtual.new.children.length === 0) {
           if (virtual.old.children.length === 0) {
             return
@@ -230,7 +284,7 @@ class GRegistry extends NGNX.VIEW.Registry {
 
         this.vDOMs.get(target).children = newChildren
 
-        resolve()
+        resolve(target)
       }))
     })
   }
@@ -255,6 +309,10 @@ class GRegistry extends NGNX.VIEW.Registry {
 
   // TODO: Add try/catch to handle errors from this.createElement
   render (...args) {
+    if (args[0] instanceof HTMLReferenceElement) {
+      return this.renderHTML(args[0].element, args[1])
+    }
+
     if (args[0] instanceof HTMLElement) {
       return this.renderHTML(...args)
     }

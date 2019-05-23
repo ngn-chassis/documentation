@@ -23,7 +23,7 @@ const ComponentsShowroomMenu = new GRegistry({
     })
 
     this.on({
-      populate: () => this.render(this.ref.list.element, MenuStore.records.map((section, index) => {
+      populate: () => this.render(this.ref.list, MenuStore.records.map((section, index) => {
         let hasChildren = section.children.recordCount > 0
         let isSelected = section.key === this.properties.selectedSection
 
@@ -39,7 +39,7 @@ const ComponentsShowroomMenu = new GRegistry({
 
           on: !isSelected ? {
             click: evt => this.emit('section.select', index, section.key)
-          } : {},
+          } : null,
 
           children: [
             this.createElement('div', {
@@ -69,7 +69,7 @@ const ComponentsShowroomMenu = new GRegistry({
           ]
         })
       }))
-      .then(() => this.emit('rendered'))
+      .then(target => this.emit('rendered'))
       .catch(error => console.error(error)),
 
       section: {

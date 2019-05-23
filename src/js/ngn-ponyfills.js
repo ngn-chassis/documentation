@@ -94,45 +94,7 @@ class GRegistry extends NGNX.VIEW.Registry {
         }
       }),
 
-      reconcileNodes: NGN.privateconst(({
-        target = null,
-        virtual = {
-          old: null,
-          new: null
-        },
-        index = 0
-      }) => {
-        // If no old node specified, add new node
-        if (virtual.old === null) {
-          return target.appendChild(this.createNode(virtual.new))
-        }
-
-        let currentNode = target.childNodes[index]
-
-        // If no new node specified, remove old node
-        if (virtual.new === null) {
-          return currentNode && target.removeChild(target.childNodes[index])
-        }
-
-        // Compare and reconcile node types
-        if (typeof virtual.new !== typeof virtual.old) {
-          return target.replaceChild(this.createNode(newNode), target.childNodes[index])
-        }
-
-        if (typeof virtual.new === 'string') {
-          if (virtual.new !== virtual.old) {
-            return target.replaceChild(this.createNode(newNode), target.childNodes[index])
-          }
-
-          return
-        }
-
-        // Compare and reconcile node tags
-        if (virtual.new.tag !== virtual.old.tag) {
-          return target.replaceChild(this.createNode(newNode), target.childNodes[index])
-        }
-
-        // Compare and reconcile attributes
+      reconcileAttributes: NGN.privateconst((currentNode, virtual) => {
         if (!virtual.old.attributes) {
           if (virtual.new.attributes) {
             for (let attribute in virtual.new.attributes) {
@@ -172,8 +134,9 @@ class GRegistry extends NGNX.VIEW.Registry {
             }
           }
         }
+      }),
 
-        // Compare and reconcile event listeners
+      reconcileListeners: NGN.privateconst((currentNode, virtual) => {
         if (Object.keys(virtual.old.listeners).length === 0) {
           if (Object.keys(virtual.new.listeners).length > 0) {
             for (let listener in virtual.new.listeners) {
@@ -216,6 +179,51 @@ class GRegistry extends NGNX.VIEW.Registry {
             }
           }
         }
+      }),
+
+      reconcileNodes: NGN.privateconst(({
+        target = null,
+        virtual = {
+          old: null,
+          new: null
+        },
+        index = 0
+      }) => {
+        // If no old node specified, add new node
+        if (virtual.old === null) {
+          return target.appendChild(this.createNode(virtual.new))
+        }
+
+        let currentNode = target.childNodes[index]
+
+        // If no new node specified, remove old node
+        if (virtual.new === null) {
+          return currentNode && target.removeChild(target.childNodes[index])
+        }
+
+        // Compare and reconcile node types
+        if (typeof virtual.new !== typeof virtual.old) {
+          return target.replaceChild(this.createNode(newNode), target.childNodes[index])
+        }
+
+        if (typeof virtual.new === 'string') {
+          if (virtual.new !== virtual.old) {
+            return target.replaceChild(this.createNode(newNode), target.childNodes[index])
+          }
+
+          return
+        }
+
+        // Compare and reconcile node tags
+        if (virtual.new.tag !== virtual.old.tag) {
+          return target.replaceChild(this.createNode(newNode), target.childNodes[index])
+        }
+
+        // Compare and reconcile attributes
+        this.reconcileAttributes(currentNode, virtual)
+
+        // Compare and reconcile event listeners
+        this.reconcileListeners(currentNode, virtual)
 
         // Compare and reconcile node children
         if (virtual.new.children.length === 0) {
